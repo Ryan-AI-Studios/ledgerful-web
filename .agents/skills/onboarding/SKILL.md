@@ -41,6 +41,8 @@ session_start{
   read:
     - AGENTS.md
     - .agents/plan.md
+    - conductor/conductor.md
+    - PRODUCT.md
     - C:\dev\Roadmap.md
   optional_commands:
     - ai-brains preflight --summary
@@ -50,6 +52,23 @@ session_start{
     - identify the active WEB track or create the smallest track note needed
     - check whether the work changes public claims, docs, pricing, trust, or deployment
     - decide which verification gates apply
+}
+
+uiux_skill_routing{
+  required_skill:"impeccable"
+  use_when:
+    - creating or changing public-facing pages
+    - changing homepage, docs, pricing, trust, changelog, launch, or SEO surfaces
+    - changing layout, spacing, typography, palette, imagery, motion, interaction, or responsive behavior
+    - writing or revising forward-facing UX copy
+    - auditing accessibility, focus states, keyboard navigation, contrast, or mobile behavior
+    - shaping feature matrices, pricing cards, trust/security diagrams, onboarding paths, empty states, or error states
+  required_setup:
+    - run `node C:\Users\RyanB\.agents\skills\impeccable\scripts\context.mjs` once per session
+    - read `PRODUCT.md`
+    - read the brand register reference for public marketing/docs/trust surfaces
+    - if no `DESIGN.md` exists, treat the visual system as provisional and record design decisions in the active track review
+  rule:"Do not implement forward-facing UI/UX from generic frontend instincts; route through impeccable first, then verify with browser/mobile/accessibility checks."
 }
 
 repo_boundaries{

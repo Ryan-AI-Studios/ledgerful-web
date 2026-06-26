@@ -13,4 +13,4 @@
 - [x] Run full local verification.
 - [x] Deploy the source change to production.
 - [x] Verify production robots metadata and close review findings.
-- [ ] Commit and push the intentional source changes.
+- [x] Commit and push the intentional source changes.

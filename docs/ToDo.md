@@ -41,9 +41,9 @@ Owner: `WEB-0005-LaunchFactResolution`.
 - [ ] Add only source-backed trust or social proof; do not add placeholder
   customers, logos, uptime, or adoption metrics.
 
-## Planned Public-Web Tracks
+## Open Public-Web Tracks
 
-- [ ] `WEB-0002-TruthGatedMarketingPricing`: finish the buyer-facing feature
+- [ ] `WEB-0002-TruthGatedMarketingPricing` (Draft): finish the buyer-facing feature
   matrix and pricing boundaries for available, beta, local-only, hosted
   planned, and enterprise planned capabilities.
 - [ ] `WEB-0003-TrustSecurityCenter`: complete local-first data-flow,
@@ -54,14 +54,8 @@ Owner: `WEB-0005-LaunchFactResolution`.
   instructions.
 - [ ] `WEB-0005-LaunchFactResolution`: close every item in the launch-facts
   section above.
-- [ ] `WEB-0006-DependencyBaseline`: reconcile the already-recorded scaffold
-  dependency baseline with current live package metadata, address or explicitly
-  accept remaining advisories, and close or rescope the track.
-
 ## Deployment And Operations
 
-- [ ] Commit and push the `WEB-0007-QuietPreviewDeployment` source and evidence
-  so the connected Git repository matches the live CLI deployment.
 - [ ] Prove Git-driven Preview deployment on a non-production branch and record
   the resulting Vercel URL.
 - [ ] Add CI that runs build, lint, quiet-preview policy, and link checks for
@@ -79,13 +73,8 @@ Owner: `WEB-0005-LaunchFactResolution`.
 - [ ] Add a repository-owned browser/e2e suite; the initial route smoke used a
   system Chrome/Playwright installation without a committed test harness.
 - [ ] Run and record Lighthouse/accessibility evidence for production pages.
-- [ ] Investigate the two moderate npm advisories recorded by
-  `WEB-0001-InitializePublicSite`; do not use a forced dependency upgrade
-  without a scoped upgrade track.
 - [ ] Create `DESIGN.md` from the implemented visual system so future tracks do
   not rely on provisional design decisions in review notes.
-- [ ] Reconcile stale `WEB-0001` wording in its review packet after
-  `WEB-0007-QuietPreviewDeployment` closes the deployment residuals.
 
 ## Cross-Repo Dependencies
 

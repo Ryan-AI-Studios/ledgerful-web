@@ -2,7 +2,8 @@
 
 ## Status
 
-Status: Implemented, pending final ChangeGuard gate and second review pass.
+Status: Completed. Final ChangeGuard and review gates passed; production
+deployment evidence is recorded in `WEB-0007-QuietPreviewDeployment`.
 
 The public site scaffold now exists and renders the required route set:
 
@@ -153,12 +154,8 @@ Screenshots captured for local inspection:
 
 ## Known Residuals
 
-- Production Vercel deployment was not run in this track.
-- `NEXT_PUBLIC_SITE_URL` defaults to `https://www.ledgerful.dev`; deployment must set it to the real canonical production URL before launch.
-- Vercel CLI was not used or verified in this implementation pass.
-- `npm audit` reports two moderate advisories in the current dependency tree; `npm audit fix --force` was not run because it may introduce breaking dependency changes outside this track's pin policy.
 - Playwright was used from the local environment/system Chrome for manual smoke; no Playwright dependency or e2e suite was added in track 1.
 
 ## Closure Criteria
 
-Open critical/high findings: none after fixes, pending second review confirmation.
+Open critical/high findings: none.

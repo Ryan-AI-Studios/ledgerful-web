@@ -2,8 +2,7 @@
 
 ## Status
 
-Implemented and deployed. The track remains in progress until the intentional
-source changes are committed and pushed to the connected Git repository.
+Completed and deployed.
 
 ## Deployment Evidence
 
@@ -93,4 +92,5 @@ Next.js source consulted:
 - Manual read-only diff review found no unsupported public claims, broken
   launch facts, accessibility changes, or SEO gaps in the quiet-preview policy.
 - Open critical/high findings: none.
-- Remaining workflow item: commit and push the intentional source changes.
+- Source commit: `b394eca`.
+- `origin/main` received the source commit after all push hooks passed.

@@ -73,12 +73,12 @@ Before any track can be marked **Completed**:
 | Track | Status | Owner | Summary |
 |---|---|---|---|
 | WEB-0001-InitializePublicSite | Completed | manager | Scaffold the static public site, define the first public routes, add launch-safe truth gates, configure web verification, and establish the visual/product baseline. |
-| WEB-0002-TruthGatedMarketingPricing | Planned | manager | Add feature status matrix and pricing copy with available/beta/local-only/hosted-planned/enterprise-planned states. |
+| WEB-0002-TruthGatedMarketingPricing | Draft | manager | Add feature status matrix and pricing copy with available/beta/local-only/hosted-planned/enterprise-planned states. |
 | WEB-0003-TrustSecurityCenter | Planned | manager | Document local-first data flow, telemetry/sync/hosted modes, release verification, responsible disclosure, and subprocessors once hosted services exist. |
 | WEB-0004-InstallDocsReleaseVerification | Planned | manager | Public install docs for CLI, MCP, GitHub Action, checksums, release smoke, and support bundle guidance. |
 | WEB-0005-LaunchFactResolution | Planned | manager | Resolve canonical GitHub URL, status URL, license wording, registry/package links, and trust/social proof before public launch. |
-| WEB-0006-DependencyBaseline | Planned | manager | Refresh current Next/React/Tailwind/TypeScript/ESLint/lucide pins from npm and official docs; record why selected dependencies are active and maintained. |
-| WEB-0007-QuietPreviewDeployment | In Progress | manager | Record the live Vercel/domain baseline, block indexing during quiet preview, and maintain a durable deferred-work register. |
+| WEB-0006-DependencyBaseline | Completed | manager | Refresh current Next/React/Tailwind/TypeScript/ESLint/lucide pins from npm and official docs; record why selected dependencies are active and maintained. |
+| WEB-0007-QuietPreviewDeployment | Completed | manager | Record the live Vercel/domain baseline, block indexing during quiet preview, and maintain a durable deferred-work register. |
 
 ## How To Start A Track
 

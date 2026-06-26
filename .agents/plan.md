@@ -28,12 +28,12 @@ track specs and plans; keep this file as a short orientation pointer.
 | Track | Status | Summary |
 |---|---|---|
 | WEB-0001-InitializePublicSite | Completed | Create the static public site, docs/pricing/trust/changelog routes, lint/build/link-check gates, Vercel-ready config, and launch placeholders that are visibly unresolved. |
-| WEB-0002-TruthGatedMarketingPricing | Planned | Add feature status matrix and pricing copy with available/beta/local-only/hosted-planned/enterprise-planned states. |
+| WEB-0002-TruthGatedMarketingPricing | Draft | Add an evidence-led edition ladder and feature matrix with explicit available/beta/local-only/hosted-planned/enterprise-planned states. |
 | WEB-0003-TrustSecurityCenter | Planned | Document local-first data flow, telemetry/sync/hosted modes, release verification, responsible disclosure, and subprocessors once hosted services exist. |
 | WEB-0004-InstallDocsReleaseVerification | Planned | Public install docs for CLI, MCP, GitHub Action, checksums, release smoke, and support bundle guidance. |
 | WEB-0005-LaunchFactResolution | Planned | Resolve canonical GitHub URL, status URL, license wording, registry/package links, and any trust/social proof before public launch. |
-| WEB-0006-DependencyBaseline | Planned | Before or during scaffold, refresh current Next/React/Tailwind/TypeScript/ESLint/lucide pins from npm and official docs; record why the selected dependencies are active and maintained. |
-| WEB-0007-QuietPreviewDeployment | In Progress | Record the live Vercel/domain baseline, block indexing during quiet preview, and maintain `docs/ToDo.md` as the durable deferred-work register. |
+| WEB-0006-DependencyBaseline | Completed | Refresh current Next/React/Tailwind/TypeScript/ESLint/lucide pins from npm and official docs; resolve actionable advisories and record compatibility pins. |
+| WEB-0007-QuietPreviewDeployment | Completed | Record the live Vercel/domain baseline, block indexing during quiet preview, and maintain `docs/ToDo.md` as the durable deferred-work register. |
 
 For current status, use `conductor/conductor.md`.
 

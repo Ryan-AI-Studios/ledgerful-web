@@ -23,6 +23,16 @@ export const metadata: Metadata = {
     "Ledgerful is local-first change intelligence and signed provenance for programming teams evaluating repo risk and trust evidence.",
   applicationName: "Ledgerful",
   authors: [{ name: "Ryan AI Studios" }],
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+    googleBot: {
+      index: false,
+      follow: false,
+      noimageindex: true,
+    },
+  },
   openGraph: {
     title: "Ledgerful",
     description:

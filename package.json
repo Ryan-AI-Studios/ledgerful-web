@@ -8,6 +8,7 @@
     "start": "next start",
     "start:links": "next start --port 4173",
     "lint": "eslint",
+    "check:preview": "npm run build && node scripts/check-quiet-preview.mjs",
     "check:links": "cross-env NEXT_PUBLIC_SITE_URL=http://127.0.0.1:4173 npm run build && start-server-and-test start:links http://127.0.0.1:4173 \"linkinator http://127.0.0.1:4173 --recurse --skip ^mailto:\""
   },
   "dependencies": {

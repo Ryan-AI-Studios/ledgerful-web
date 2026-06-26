@@ -78,6 +78,7 @@ Before any track can be marked **Completed**:
 | WEB-0004-InstallDocsReleaseVerification | Planned | manager | Public install docs for CLI, MCP, GitHub Action, checksums, release smoke, and support bundle guidance. |
 | WEB-0005-LaunchFactResolution | Planned | manager | Resolve canonical GitHub URL, status URL, license wording, registry/package links, and trust/social proof before public launch. |
 | WEB-0006-DependencyBaseline | Planned | manager | Refresh current Next/React/Tailwind/TypeScript/ESLint/lucide pins from npm and official docs; record why selected dependencies are active and maintained. |
+| WEB-0007-QuietPreviewDeployment | In Progress | manager | Record the live Vercel/domain baseline, block indexing during quiet preview, and maintain a durable deferred-work register. |
 
 ## How To Start A Track
 

@@ -30,6 +30,8 @@ source_order:
   - C:\dev\Roadmap.md
   - AGENTS.md
   - .agents/plan.md
+  - conductor/conductor.md
+  - docs/ToDo.md
   - current repo files
   - C:\dev\ChangeGuard\conductor\conductor.md
   - C:\dev\ledgerful-frontend\conductor\conductor.md
@@ -42,6 +44,7 @@ session_start{
     - AGENTS.md
     - .agents/plan.md
     - conductor/conductor.md
+    - docs/ToDo.md
     - PRODUCT.md
     - C:\dev\Roadmap.md
   optional_commands:
@@ -50,6 +53,7 @@ session_start{
     - changeguard ledger status --compact
   then:
     - identify the active WEB track or create the smallest track note needed
+    - reconcile the active track with docs/ToDo.md and remove completed deferred items once evidence is recorded
     - check whether the work changes public claims, docs, pricing, trust, or deployment
     - decide which verification gates apply
 }

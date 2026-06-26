@@ -1,0 +1,10 @@
+# Local environment and agent state must never enter deployment source uploads.
+.env
+.env.*
+!.env.example
+.changeguard
+.agents
+.claude
+.impeccable
+output
+

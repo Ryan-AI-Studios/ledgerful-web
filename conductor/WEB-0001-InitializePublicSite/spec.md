@@ -32,6 +32,19 @@ Create the first working public site baseline:
   - `/pricing` pricing and feature-state matrix.
   - `/trust` trust/security center starter.
   - `/changelog` changelog starter.
+- SEO infrastructure:
+  - `sitemap.ts`.
+  - `robots.ts`.
+  - route metadata for core pages.
+- Brand/share assets:
+  - favicon/icon assets.
+  - Apple touch icon.
+  - Open Graph image strategy.
+  - social-card metadata for launch-safe link previews.
+- Branded resilience surfaces:
+  - `not-found.tsx`.
+  - `error.tsx`.
+  - static-first fallback content that remains useful before hydration.
 - Shared content model for feature states:
   - `available`.
   - `beta`.
@@ -48,6 +61,8 @@ Create the first working public site baseline:
 - Visible handling for unresolved launch facts.
 - Initial visual direction aligned to `PRODUCT.md` and `impeccable` brand-register guidance.
 - Repo verification updated from temporary `git diff --check` to web gates after scripts exist.
+- Baseline HTTP security headers appropriate for a static public trust site.
+- Link-check gate for internal routes and intentional external links.
 
 ## Out Of Scope
 
@@ -195,13 +210,32 @@ Seed context from `impeccable` for this greenfield project:
 - No server-only secrets in client code.
 - No `.env` commits.
 - Add `metadata` for core routes.
+- Add `sitemap.ts` and `robots.ts`.
+- Add branded `not-found.tsx` and `error.tsx`; keep copy helpful and claim-safe.
+- Add favicon/icon/Open Graph assets or dynamic metadata/image generation using
+  current Next.js-supported APIs.
+- Add security headers in `next.config.ts` or the current Next.js-supported
+  configuration surface:
+  - `Content-Security-Policy` appropriate for a static marketing/docs site.
+  - `X-Frame-Options` or `frame-ancestors` policy.
+  - `X-Content-Type-Options: nosniff`.
+  - `Referrer-Policy`.
+  - `Permissions-Policy`.
 - Use semantic landmarks.
 - Use `next/link` for internal navigation.
+- Avoid unnecessary `'use client'`; default to Server Components and static
+  rendering unless interaction requires client-side JavaScript.
+- Define a first-class color-scheme strategy before building tokens:
+  - Either light-only for track 1 with explicit future dark-mode token slots, or
+    light/dark support in the initial token system.
+  - Do not add a theme package such as `next-themes` without current docs,
+    maintenance check, and a real interaction requirement.
 - Use `lucide-react` for icons only after dependency pin is selected.
 - Avoid adding a UI component library in this track unless a concrete need
   appears.
-- If a link checker is added, choose an actively maintained tool and document
-  why.
+- Add a link checker or equivalent link-validation script. Choose an actively
+  maintained tool and document why. If using `lychee`, verify current install
+  and Windows behavior before pinning it.
 
 ## Verification Strategy
 
@@ -210,6 +244,7 @@ Minimum commands after scaffold:
 ```powershell
 npm run build
 npm run lint
+npm run check:links
 changeguard scan --impact
 changeguard verify --scope fast
 ```
@@ -223,6 +258,11 @@ Manual checks:
 - Confirm unresolved launch facts are visibly labeled and not clickable as real
   production claims.
 - Confirm pricing planned features are not described as live.
+- Confirm JavaScript-disabled or pre-hydration rendering still shows meaningful
+  page content and navigation.
+- Confirm branded `not-found` behavior for an unknown route.
+- Confirm social/share metadata and icon assets are not generic scaffold
+  defaults.
 
 Optional but preferred once app exists:
 
@@ -233,8 +273,19 @@ Optional but preferred once app exists:
 ## Definition Of Done
 
 - Next.js public site scaffold exists and builds.
+- SEO infrastructure exists: `sitemap.ts`, `robots.ts`, and metadata for core
+  routes.
+- Favicon/icon and Open Graph/social preview assets are Ledgerful-branded or
+  intentionally generated; no generic scaffold icons remain.
+- Branded `not-found.tsx` and `error.tsx` exist.
+- Baseline security headers are configured and documented.
+- Pages remain useful without unnecessary client-side JavaScript; `'use client'`
+  is limited to components that require browser interactivity.
+- Color-scheme strategy is documented, including whether track 1 ships
+  light-only tokens with dark-mode slots or actual light/dark support.
 - `npm run build` passes.
 - `npm run lint` passes.
+- `npm run check:links` or the chosen equivalent link-check command passes.
 - `changeguard scan --impact` is current.
 - `changeguard verify --scope fast` passes using web-appropriate verify steps.
 - `PRODUCT.md` remains consistent with implemented public copy.

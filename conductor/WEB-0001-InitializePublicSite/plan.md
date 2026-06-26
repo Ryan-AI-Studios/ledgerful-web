@@ -29,6 +29,7 @@ npm view tailwindcss version
 npm view @tailwindcss/postcss version
 npm view eslint version
 npm view lucide-react version
+npm view next-themes version
 ```
 
 Expected: each command returns a single version.
@@ -40,6 +41,9 @@ Use Context7 or official docs for:
 - Next.js App Router install/scaffold.
 - Tailwind CSS v4 with Next.js.
 - Vercel deployment/environment basics.
+- Next.js metadata, sitemap, robots, Open Graph image, not-found, and error boundary conventions.
+- Current link-checker options, including `lychee` if considered.
+- `next-themes` only if implementation chooses interactive theme switching.
 
 Expected: implementation notes cite the docs used and the selected versions.
 
@@ -61,6 +65,8 @@ Create `conductor/WEB-0001-InitializePublicSite/review.md` with:
 - @tailwindcss/postcss:
 - eslint:
 - lucide-react:
+- next-themes, if used:
+- link checker selected:
 - Docs consulted:
 
 ## Findings
@@ -110,6 +116,69 @@ npm install
 ```
 
 Expected: dependencies install and `package-lock.json` is created or updated.
+
+**Step 4: Preserve static-first defaults**
+
+Review scaffolded files and remove unnecessary client-only code.
+
+Expected: no `'use client'` directive appears unless the component has a real
+browser-interaction requirement.
+
+## Task 2A: Add SEO, Metadata, And Security Baseline
+
+**Files:**
+- Modify: `next.config.ts`
+- Modify: `src/app/layout.tsx`
+- Create: `src/app/sitemap.ts`
+- Create: `src/app/robots.ts`
+- Create: `src/app/not-found.tsx`
+- Create: `src/app/error.tsx`
+- Create or modify: `public/favicon.ico`, `public/icon.svg`, `public/apple-icon.png`, or Next.js metadata image files
+- Create optionally: `src/app/opengraph-image.tsx` if using generated Open Graph images
+
+**Step 1: Add route metadata**
+
+Define site title, description, canonical base URL placeholder, Open Graph, and
+Twitter/social metadata in the current Next.js-supported metadata API.
+
+Expected: shared previews are Ledgerful-branded and do not use scaffold defaults.
+
+**Step 2: Add sitemap and robots**
+
+Create `sitemap.ts` and `robots.ts` for the public routes.
+
+Expected: `/`, `/docs`, `/pricing`, `/trust`, and `/changelog` are discoverable.
+
+**Step 3: Add icons and Open Graph asset strategy**
+
+Use branded icon assets or generated metadata images. If final assets are not
+available, create intentional temporary Ledgerful assets and record replacement
+requirements in `review.md`.
+
+Expected: no generic Next.js icon or broken social preview remains.
+
+**Step 4: Add branded error surfaces**
+
+Create:
+
+- `not-found.tsx` for unknown routes.
+- `error.tsx` for unexpected route errors.
+
+Expected: broken links and runtime failures show helpful Ledgerful-branded copy
+without overclaiming product status.
+
+**Step 5: Add security headers**
+
+Configure baseline headers appropriate for a static public site:
+
+- Content Security Policy.
+- Frame protection.
+- `X-Content-Type-Options`.
+- `Referrer-Policy`.
+- `Permissions-Policy`.
+
+Expected: headers are strict enough for trust posture but do not break local dev,
+fonts, images, Open Graph assets, or Vercel deployment.
 
 ## Task 3: Establish Content Data Model
 
@@ -186,6 +255,18 @@ Use OKLCH CSS custom properties. Start from the `impeccable` seed hue near 113
 degrees, but compose a disciplined evidence-first palette with contrast checks.
 
 Expected: no hex color literals in authored CSS except third-party resets if scaffolded.
+
+**Step 2A: Decide color-scheme strategy**
+
+Choose one and record the reason in `review.md`:
+
+- Light-only for track 1 with explicit dark-mode token slots.
+- Full light/dark token support in track 1.
+
+Do not add `next-themes` unless there is a real theme-toggle requirement and
+current docs/maintenance checks support it.
+
+Expected: dark mode is not an accidental retrofit; token structure leaves a clear path.
 
 **Step 3: Build navigation**
 
@@ -342,9 +423,26 @@ timeout_secs = 300
 description = "Lint public web"
 command = "npm run lint"
 timeout_secs = 300
+
+[[verify.steps]]
+description = "Check public web links"
+command = "npm run check:links"
+timeout_secs = 300
 ```
 
 Keep `git diff --check` steps if useful.
+
+**Step 1A: Add link-check script**
+
+Choose and configure an actively maintained link checker. If using `lychee`,
+verify install/docs and Windows behavior before pinning. Add a script such as:
+
+```json
+"check:links": "<chosen link checker command>"
+```
+
+Expected: internal routes and intentional external links are checked, while
+unresolved launch facts are represented as non-links or explicitly allowed.
 
 **Step 2: Verify config**
 
@@ -371,9 +469,10 @@ Run:
 ```powershell
 npm run build
 npm run lint
+npm run check:links
 ```
 
-Expected: both pass.
+Expected: all pass.
 
 **Step 2: Run ChangeGuard**
 
@@ -403,7 +502,9 @@ Check:
 - `/pricing`.
 - `/trust`.
 - `/changelog`.
+- a missing route such as `/missing-route-for-smoke`.
 - Keyboard tab order and focus states.
+- JavaScript-disabled or pre-hydration content path.
 
 Expected: all routes render; no overlapping text; unresolved facts visible.
 

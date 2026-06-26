@@ -25,6 +25,8 @@ Live npm registry snapshot:
 | `@tailwindcss/postcss` | `4.3.1` |
 | `eslint` | `10.5.0` |
 | `lucide-react` | `1.21.0` |
+| `next-themes` | Not selected; only evaluate if track 1 implements theme switching. |
+| link checker | Not selected; implementation must verify active maintenance and Windows behavior before pinning. |
 
 Docs consulted:
 
@@ -41,6 +43,8 @@ Implementation note:
 - Context7 did not resolve the official Tailwind docs cleanly in this pass.
   During implementation, verify Tailwind v4 setup through the official Tailwind
   site or the Next.js bundled docs before editing config.
+- Treat `next-themes` and `lychee` as candidate tools, not default dependencies.
+  Add them only after current docs, maintenance, and Windows behavior are checked.
 
 ## Design Baseline
 
@@ -61,6 +65,30 @@ Draft constraints:
 - Use OKLCH tokens and verify contrast.
 - Treat the current visual system as provisional until `DESIGN.md` exists or
   implementation creates stable tokens.
+- Decide the color-scheme strategy during implementation. Engineering-tool
+  audience makes dark mode worth considering, but track 1 should not add a theme
+  runtime package unless the UX requires interactive switching.
+
+## Accepted Draft Improvements
+
+Folded in from external review:
+
+- Add `sitemap.ts` and `robots.ts` to the track baseline.
+- Add branded favicon/icon/apple-touch/Open Graph/social preview strategy.
+- Add branded `not-found.tsx` and `error.tsx`.
+- Explicitly prefer static-first Server Components and avoid unnecessary
+  `'use client'`.
+- Add baseline security headers for the public trust posture.
+- Add a first-class color-scheme decision so dark mode is either implemented or
+  intentionally deferred with token slots.
+- Add automated link checking to the verification plan.
+
+Not accepted as hard requirements:
+
+- `next-themes` is not required yet; it is a candidate if the implemented UX
+  needs theme switching.
+- `lychee` is not required yet; it is a candidate if current docs/Windows
+  behavior make it the best link checker.
 
 ## Truth-Gate Baseline
 
@@ -98,6 +126,8 @@ Before switching status to **In Progress**:
 - Run `changeguard scan --impact`.
 - Rerun dependency version checks.
 - Load `impeccable` if touching UI/UX or forward-facing copy.
+- Verify current docs for SEO metadata, Open Graph images, security headers,
+  link checking, and any theme package before implementation.
 
 ## Findings
 

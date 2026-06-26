@@ -59,11 +59,20 @@ Before any track can be marked **Completed**:
 - Review findings have no open critical/high items.
 - Registry status in this file is updated.
 
+## Track Statuses
+
+- **Planned** - Backlog item exists but has no execution draft.
+- **Planning** - Spec/plan are being authored or revised.
+- **Draft** - Spec/plan/review packet are ready for implementation, but app/code work has not started.
+- **In Progress** - Implementation has started.
+- **Blocked** - Work cannot continue without external input, credentials, or upstream fixes.
+- **Completed** - Definition of Done is satisfied and evidence is recorded.
+
 ## Track Registry
 
 | Track | Status | Owner | Summary |
 |---|---|---|---|
-| WEB-0001-InitializePublicSite | Planning | manager | Scaffold the static public site, define the first public routes, add launch-safe truth gates, configure web verification, and establish the visual/product baseline. |
+| WEB-0001-InitializePublicSite | Draft | manager | Scaffold the static public site, define the first public routes, add launch-safe truth gates, configure web verification, and establish the visual/product baseline. |
 | WEB-0002-TruthGatedMarketingPricing | Planned | manager | Add feature status matrix and pricing copy with available/beta/local-only/hosted-planned/enterprise-planned states. |
 | WEB-0003-TrustSecurityCenter | Planned | manager | Document local-first data flow, telemetry/sync/hosted modes, release verification, responsible disclosure, and subprocessors once hosted services exist. |
 | WEB-0004-InstallDocsReleaseVerification | Planned | manager | Public install docs for CLI, MCP, GitHub Action, checksums, release smoke, and support bundle guidance. |
@@ -76,7 +85,7 @@ Before any track can be marked **Completed**:
 2. Run `ai-brains preflight --summary` with the repo-local `.env` context.
 3. Run `changeguard doctor`, `changeguard ledger status --compact`, and `changeguard scan --impact`.
 4. Confirm dependency docs/pins are current when the track changes packages.
-5. Set the track status to **In Progress**.
+5. If status is **Draft**, set the track status to **In Progress**.
 6. Start implementation against `plan.md`.
 7. Create/update `conductor/<track>/review.md` during review.
 

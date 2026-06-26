@@ -2,7 +2,8 @@
 
 This repo starts as the public web surface for Ledgerful. The roadmap source of
 truth is `C:\dev\Roadmap.md`; the public-web responsibility is the WEB track
-family.
+family. The authoritative track registry now lives in
+[`conductor/conductor.md`](../conductor/conductor.md).
 
 ## Track Naming Convention
 
@@ -19,8 +20,8 @@ Examples:
 - `WEB-0003-TrustSecurityCenter`
 
 Each non-trivial track should have a short objective, files touched, test plan,
-manual evidence, and claim-audit notes. If this repo later adopts a full
-`conductor/` directory, move these tracks there and keep this file as a pointer.
+manual evidence, and claim-audit notes. Use the conductor directory for active
+track specs and plans; keep this file as a short orientation pointer.
 
 ## Active Roadmap-Derived Tracks
 
@@ -32,6 +33,8 @@ manual evidence, and claim-audit notes. If this repo later adopts a full
 | WEB-0004-InstallDocsReleaseVerification | Planned | Public install docs for CLI, MCP, GitHub Action, checksums, release smoke, and support bundle guidance. |
 | WEB-0005-LaunchFactResolution | Planned | Resolve canonical GitHub URL, status URL, license wording, registry/package links, and any trust/social proof before public launch. |
 | WEB-0006-DependencyBaseline | Planned | Before or during scaffold, refresh current Next/React/Tailwind/TypeScript/ESLint/lucide pins from npm and official docs; record why the selected dependencies are active and maintained. |
+
+For current status, use `conductor/conductor.md`.
 
 ## Definition of Done
 

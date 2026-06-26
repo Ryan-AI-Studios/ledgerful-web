@@ -44,3 +44,11 @@ Thumbs.db
 # Local generated scratch output
 output/
 .impeccable/live/
+
+# Agent configuration
+agents.md
+AGENTS.md
+claude.md
+CLAUDE.md
+.agents/
+.claude/

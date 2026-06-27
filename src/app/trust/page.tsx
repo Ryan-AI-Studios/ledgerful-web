@@ -417,33 +417,23 @@ export default function TrustPage() {
       {/* ── Section 10: License ──────────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="License">
-          The Ledgerful engine is released under the MIT License.
+          License terms are being finalized. See the repository for current
+          terms.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
-            <strong>MIT License:</strong> The Ledgerful engine (
+            The commercial license model for Ledgerful is under review. The{" "}
             <a
               href="https://github.com/Ryan-AI-Studios/ChangeGuard"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: "var(--accent)" }}
             >
-              Ryan-AI-Studios/ChangeGuard
+              repository LICENSE file
               <span className="sr-only"> (opens in new tab)</span>
-            </a>
-            ) is licensed under the{" "}
-            <a
-              href="https://github.com/Ryan-AI-Studios/ChangeGuard/blob/main/LICENSE"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "var(--accent)" }}
-            >
-              MIT License
-              <span className="sr-only"> (opens in new tab)</span>
-            </a>
-            . You may use, copy, modify, distribute, and sublicense the software
-            under the terms of that license. The license text is available in the
-            repository.
+            </a>{" "}
+            reflects the current state. Final terms — including any personal-use
+            or hobbyist provisions — will be published here before public launch.
           </p>
         </div>
       </section>

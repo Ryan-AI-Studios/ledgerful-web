@@ -31,10 +31,10 @@ export const launchFacts: LaunchFact[] = [
   },
   {
     label: "License wording",
-    status: "resolved",
-    value: "MIT License",
-    note: "LICENSE file confirmed 2026-06-27 in Ryan-AI-Studios/ChangeGuard: MIT License, copyright 2026 UnlikelyKiller.",
-    href: "https://github.com/Ryan-AI-Studios/ChangeGuard/blob/main/LICENSE",
+    status: "unresolved",
+    value: "License model under review",
+    note: "The LICENSE file in the repository currently reads MIT, but the commercial license model (free personal use vs. paid commercial) has not been finalized. Do not publish license terms on the public site until the model is decided.",
+    href: undefined,
   },
   {
     label: "MCP registry or npm package",

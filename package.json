@@ -10,7 +10,8 @@
     "lint": "eslint",
     "check:preview": "npm run build && node scripts/check-quiet-preview.mjs",
     "check:pricing": "npm run build && node scripts/check-pricing-truth.mjs",
-    "check:links": "cross-env NEXT_PUBLIC_SITE_URL=http://127.0.0.1:4173 npm run build && start-server-and-test start:links http://127.0.0.1:4173 \"linkinator http://127.0.0.1:4173 --recurse --skip ^mailto:\""
+    "check:links": "cross-env NEXT_PUBLIC_SITE_URL=http://127.0.0.1:4173 npm run build && start-server-and-test start:links http://127.0.0.1:4173 \"linkinator http://127.0.0.1:4173 --recurse --skip ^mailto:\"",
+    "check:trust": "npm run build && node scripts/check-trust-truth.mjs"
   },
   "dependencies": {
     "next": "16.2.9",

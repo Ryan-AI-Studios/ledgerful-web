@@ -325,7 +325,7 @@ code {
 
 .evidence-map h3,
 .boundary-grid h3,
-.trust-grid h2,
+.trust-grid h3,
 .doc-grid h2,
 .pricing-card h2,
 .timeline h2 {
@@ -751,4 +751,120 @@ code {
   content: "·";
   position: absolute;
   left: 0;
+}
+
+/* WEB-0003 Trust page */
+.trust-card-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.trust-dl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+}
+
+.trust-dl-grid h3 {
+  font-size: 1rem;
+  font-weight: 720;
+  margin-bottom: 12px;
+}
+
+.trust-dl-grid ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.trust-dl-grid li {
+  padding-left: 1.1em;
+  position: relative;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.trust-dl-grid li::before {
+  content: "·";
+  position: absolute;
+  left: 0;
+}
+
+.trust-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.trust-table th,
+.trust-table td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.trust-table thead th {
+  background: var(--surface);
+  font-size: 0.83rem;
+  font-weight: 720;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.trust-table tbody tr:last-child td,
+.trust-table tbody tr:last-child th {
+  border-bottom: none;
+}
+
+.disclosure-notice {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: clamp(16px, 2.5vw, 24px);
+  margin-bottom: 20px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.disclosure-notice strong {
+  color: var(--ink);
+}
+
+.disclosure-notice p {
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.network-inventory {
+  display: grid;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.network-inventory article {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  padding: clamp(16px, 2.5vw, 24px);
+}
+
+.network-inventory h3 {
+  font-size: 1rem;
+  font-weight: 720;
+  margin-bottom: 6px;
+}
+
+.network-inventory p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
 }

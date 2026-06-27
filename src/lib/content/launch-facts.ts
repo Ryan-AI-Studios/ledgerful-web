@@ -10,6 +10,13 @@ export type LaunchFact = {
 
 export const launchFacts: LaunchFact[] = [
   {
+    label: "Responsible disclosure channel",
+    status: "unresolved",
+    value: "Not yet published",
+    note: "A verified security contact and encrypted submission path (PGP key) will be published before public launch. Do not send vulnerability reports to general contact addresses until this is resolved.",
+    href: undefined,
+  },
+  {
     label: "Canonical GitHub repository",
     status: "unresolved",
     value: "Remote configured; public visibility not verified",

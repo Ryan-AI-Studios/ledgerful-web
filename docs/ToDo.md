@@ -6,7 +6,7 @@ web. `conductor/conductor.md` remains authoritative for track status, and
 When an item is completed, record its evidence in the owning track and remove
 it from this file instead of leaving overlapping status narratives.
 
-Last reviewed: 2026-06-26. WEB-0002 completed.
+Last reviewed: 2026-06-27. WEB-0003 completed.
 
 ## Exit The Quiet Preview
 
@@ -43,9 +43,6 @@ Owner: `WEB-0005-LaunchFactResolution`.
 
 ## Open Public-Web Tracks
 
-- [ ] `WEB-0003-TrustSecurityCenter`: complete local-first data-flow,
-  telemetry, sync, hosted-mode, responsible-disclosure, release-verification,
-  and future-subprocessor documentation.
 - [ ] `WEB-0004-InstallDocsReleaseVerification`: publish verified CLI, MCP,
   GitHub Action, dashboard, SOC2 export, sync, checksums, and support-bundle
   instructions.

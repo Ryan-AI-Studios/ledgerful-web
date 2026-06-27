@@ -1,4 +1,4 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 :root {
   color-scheme: light dark;
@@ -327,6 +327,7 @@ code {
 .boundary-grid h3,
 .trust-grid h3,
 .doc-grid h2,
+.doc-grid h3,
 .pricing-card h2,
 .timeline h2 {
   font-size: 1.1rem;
@@ -867,4 +868,44 @@ code {
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.65;
+}
+
+/* WEB-0004 Doc page navigation and step lists */
+.doc-nav {
+  display: flex;
+  gap: 24px;
+  padding: 32px 0 0;
+  border-top: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+
+.doc-nav a {
+  font-size: 0.9rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.doc-nav a:hover {
+  text-decoration: underline;
+}
+
+.doc-step-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-left: 1.4em;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.doc-caption {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 16px;
+  line-height: 1.65;
+}
+
+.table-scroll-wrapper {
+  overflow-x: auto;
 }

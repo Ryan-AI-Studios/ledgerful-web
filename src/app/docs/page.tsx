@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
-import { BookOpen, ExternalLink } from "lucide-react";
+﻿import type { Metadata } from "next";
+import { BookOpen, ArrowRight } from "lucide-react";
+import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
@@ -18,33 +19,58 @@ export default function DocsPage() {
   return (
     <PageShell>
       <section className="page-hero compact">
-        <p className="hero-kicker">Docs baseline</p>
-        <h1>Install and operate Ledgerful with launch facts in view.</h1>
+        <p className="hero-kicker">Documentation</p>
+        <h1>Install and operate Ledgerful.</h1>
         <p>
-          These starter docs separate the local product surface from future hosted
-          capabilities and mark unresolved release links before launch.
+          These docs cover the local product surface and explicitly mark hosted
+          or planned capabilities so you can tell what ships today.
         </p>
       </section>
       <section className="content-band">
-        <SectionHeading title="Starter documentation map">
-          Each topic has a state and a next action. Unresolved release/package
-          links are deliberately not rendered as live destinations.
+        <SectionHeading title="Documentation index">
+          Seven topics cover every product surface. Unresolved release and
+          package links are disclosed rather than presented as live destinations.
         </SectionHeading>
         <div className="doc-grid">
-          {docTopics.map((topic) => (
-            <article key={topic.title}>
-              <BookOpen size={22} aria-hidden="true" />
-              <div>
-                <h2>{topic.title}</h2>
-                <StatusPill status={topic.state === "unresolved" ? "unresolved" : topic.state} />
-              </div>
-              <p>{topic.summary}</p>
-              <p className="next-action">
-                <ExternalLink size={16} aria-hidden="true" />
-                {topic.nextAction}
-              </p>
-            </article>
-          ))}
+          {docTopics.map((topic) => {
+            const inner = (
+              <>
+                <BookOpen size={22} aria-hidden="true" />
+                <div>
+                  <h3>{topic.title}</h3>
+                  <StatusPill status={topic.state} />
+                </div>
+                <p>{topic.summary}</p>
+                {topic.href ? (
+                  <p className="next-action">
+                    <ArrowRight size={16} aria-hidden="true" />
+                    Read docs
+                  </p>
+                ) : (
+                  <p className="next-action" style={{ color: "var(--muted)", fontWeight: 400 }}>
+                    {topic.nextAction}
+                  </p>
+                )}
+              </>
+            );
+            return topic.href ? (
+              <article key={topic.title} style={{ position: "relative" }}>
+                <Link
+                  href={topic.href}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    borderRadius: "var(--radius)",
+                    zIndex: 0,
+                  }}
+                  aria-label={`Read docs: ${topic.title}`}
+                />
+                <div style={{ pointerEvents: "none" }}>{inner}</div>
+              </article>
+            ) : (
+              <article key={topic.title}>{inner}</article>
+            );
+          })}
         </div>
       </section>
     </PageShell>

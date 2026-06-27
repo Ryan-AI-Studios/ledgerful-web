@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Agent worktrees — contain build artifacts and foreign .next/ directories
+    ".agents/**",
+    ".claude/**",
   ]),
 ]);
 

@@ -18,9 +18,10 @@ export const launchFacts: LaunchFact[] = [
   },
   {
     label: "Canonical GitHub repository",
-    status: "unresolved",
-    value: "Remote configured; public visibility not verified",
-    note: "Do not link the repository as a public launch fact until anonymous access succeeds.",
+    status: "resolved",
+    value: "https://github.com/Ryan-AI-Studios/ChangeGuard",
+    note: "Anonymous access verified 2026-06-27: HTTP 200 and git ls-remote returned commit SHA ee702d481a3cb870f39b378170625a2bc054ba13.",
+    href: "https://github.com/Ryan-AI-Studios/ChangeGuard",
   },
   {
     label: "Status page",
@@ -30,9 +31,10 @@ export const launchFacts: LaunchFact[] = [
   },
   {
     label: "License wording",
-    status: "unresolved",
-    value: "Needs release/legal confirmation",
-    note: "Public pages must not claim OSS or commercial license terms until confirmed.",
+    status: "resolved",
+    value: "MIT License",
+    note: "LICENSE file confirmed 2026-06-27 in Ryan-AI-Studios/ChangeGuard: MIT License, copyright 2026 UnlikelyKiller.",
+    href: "https://github.com/Ryan-AI-Studios/ChangeGuard/blob/main/LICENSE",
   },
   {
     label: "MCP registry or npm package",

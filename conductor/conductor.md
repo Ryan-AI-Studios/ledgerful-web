@@ -76,7 +76,7 @@ Before any track can be marked **Completed**:
 | WEB-0002-TruthGatedMarketingPricing | Completed | manager | Add feature status matrix and pricing copy with available/beta/local-only/hosted-planned/enterprise-planned states. |
 | WEB-0003-TrustSecurityCenter | Completed | manager | Document local-first data flow, telemetry/sync/hosted modes, release verification, responsible disclosure, and subprocessors once hosted services exist. |
 | WEB-0004-InstallDocsReleaseVerification | Completed | manager | Public install docs for CLI, MCP, GitHub Action, checksums, release smoke, and support bundle guidance. |
-| WEB-0005-LaunchFactResolution | Planned | manager | Resolve canonical GitHub URL, status URL, license wording, registry/package links, and trust/social proof before public launch. |
+| WEB-0005-LaunchFactResolution | In Progress | manager | Resolve canonical GitHub URL, status URL, license wording, registry/package links, and trust/social proof before public launch. |
 | WEB-0006-DependencyBaseline | Completed | manager | Refresh current Next/React/Tailwind/TypeScript/ESLint/lucide pins from npm and official docs; record why selected dependencies are active and maintained. |
 | WEB-0007-QuietPreviewDeployment | Completed | manager | Record the live Vercel/domain baseline, block indexing during quiet preview, and maintain a durable deferred-work register. |
 

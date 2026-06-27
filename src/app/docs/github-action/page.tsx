@@ -53,14 +53,25 @@ export default function DocsGithubActionPage() {
       {/* ── Section 2: Version placeholder ───────────────────── */}
       <section className="content-band">
         <SectionHeading title="Version and release status">
-          The action is available as a beta. The release tag is pending — check
-          the repository for the latest published version before pinning.
+          The action exists in the source repository as a beta. No tagged release
+          has been published yet — when a version is tagged, pin to it using the
+          format shown below.
         </SectionHeading>
         <div className="disclosure-notice">
           <strong>Version pending:</strong> Replace{" "}
           <code>{"<version>"}</code> in the workflow YAML below with the latest
-          published release tag. Release URLs are a WEB-0005 launch fact and will be
-          linked once the repository is confirmed publicly accessible.
+          published release tag from{" "}
+          <a
+            href="https://github.com/Ryan-AI-Studios/ChangeGuard/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: "var(--accent)" }}
+          >
+            github.com/Ryan-AI-Studios/ChangeGuard/releases
+            <span className="sr-only"> (opens in new tab)</span>
+          </a>
+          . Tagged release artifacts are a WEB-0005 launch fact and are not yet
+          published.
         </div>
       </section>
 

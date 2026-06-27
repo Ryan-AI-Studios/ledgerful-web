@@ -396,10 +396,59 @@ export default function TrustPage() {
             encrypted submission path (PGP key) will be published before public
             launch. Check this page for the current disclosure channel status.
           </p>
+          <p style={{ marginTop: "12px" }}>
+            <strong>Source repository:</strong> The Ledgerful engine source is
+            publicly available at{" "}
+            <a
+              href="https://github.com/Ryan-AI-Studios/ChangeGuard"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--accent)" }}
+            >
+              github.com/Ryan-AI-Studios/ChangeGuard
+              <span className="sr-only"> (opens in new tab)</span>
+            </a>
+            . General (non-security) bugs may be reported via GitHub Issues once
+            the repository is confirmed publicly open for issues.
+          </p>
         </div>
       </section>
 
-      {/* ── Section 10: Subprocessors ─────────────────────────── */}
+      {/* ── Section 10: License ──────────────────────────────── */}
+      <section className="content-band">
+        <SectionHeading title="License">
+          The Ledgerful engine is released under the MIT License.
+        </SectionHeading>
+        <div className="disclosure-notice">
+          <p>
+            <strong>MIT License:</strong> The Ledgerful engine (
+            <a
+              href="https://github.com/Ryan-AI-Studios/ChangeGuard"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--accent)" }}
+            >
+              Ryan-AI-Studios/ChangeGuard
+              <span className="sr-only"> (opens in new tab)</span>
+            </a>
+            ) is licensed under the{" "}
+            <a
+              href="https://github.com/Ryan-AI-Studios/ChangeGuard/blob/main/LICENSE"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "var(--accent)" }}
+            >
+              MIT License
+              <span className="sr-only"> (opens in new tab)</span>
+            </a>
+            . You may use, copy, modify, distribute, and sublicense the software
+            under the terms of that license. The license text is available in the
+            repository.
+          </p>
+        </div>
+      </section>
+
+      {/* ── Section 11: Subprocessors ─────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="Subprocessors">
           Local mode uses no subprocessors by default. Opt-in telemetry sends

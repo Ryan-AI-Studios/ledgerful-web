@@ -4,7 +4,12 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { pageDescriptions } from "@/lib/content/navigation";
-import { editions } from "@/lib/content/pricing";
+import {
+  editions,
+  matrixGroups,
+  matrixEditionHeaders,
+  pricingFootnotes,
+} from "@/lib/content/pricing";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -25,34 +30,123 @@ export default function PricingPage() {
           enterprise capabilities that require future control-plane work.
         </p>
       </section>
+
       <section className="content-band">
         <SectionHeading title="Editions">
-          Every significant feature carries a visible state.
+          Available and beta editions are local-first. Hosted and enterprise
+          editions require a future control plane and have no announced prices or
+          timelines.
         </SectionHeading>
         <div className="pricing-grid">
-          {editions.map((edition) => (
-            <article key={edition.name} className="pricing-card">
-              <div className="pricing-card-head">
-                <div>
-                  <h2>{edition.name}</h2>
-                  <p>{edition.audience}</p>
+          {editions.map((edition) => {
+            const isPlanned =
+              edition.state === "hosted planned" ||
+              edition.state === "enterprise planned";
+            return (
+              <article
+                key={edition.name}
+                className={
+                  isPlanned ? "pricing-card pricing-card--planned" : "pricing-card"
+                }
+              >
+                <div className="pricing-card-head">
+                  <div>
+                    <h2>{edition.name}</h2>
+                    <p>{edition.audience}</p>
+                  </div>
+                  <StatusPill status={edition.state} />
                 </div>
-                <StatusPill status={edition.state} />
-              </div>
-              <p className="price">{edition.price}</p>
-              <p>{edition.description}</p>
-              <ul>
-                {edition.includes.map((item) => (
-                  <li key={item.label}>
-                    <CheckCircle2 size={18} aria-hidden="true" />
-                    <span>{item.label}</span>
-                    <StatusPill status={item.state} />
-                  </li>
-                ))}
-              </ul>
-            </article>
-          ))}
+                <p className="price">{edition.price}</p>
+                <p>{edition.description}</p>
+                <ul>
+                  {edition.includes.map((item) => (
+                    <li key={item.label}>
+                      <CheckCircle2 size={18} aria-hidden="true" />
+                      <span>
+                        {item.label}
+                        {item.caveat ? (
+                          <span className="item-caveat">{item.caveat}</span>
+                        ) : null}
+                      </span>
+                      <StatusPill status={item.state} />
+                    </li>
+                  ))}
+                </ul>
+              </article>
+            );
+          })}
         </div>
+      </section>
+
+      <section className="content-band">
+        <SectionHeading kicker="Comparison" title="Feature matrix">
+          Every row carries an explicit state. Planned features require a future
+          hosted control plane and have no announced timeline.
+        </SectionHeading>
+        <div
+          role="region"
+          aria-label="Feature comparison table"
+          className="matrix-scroll"
+          tabIndex={0}
+        >
+          <table className="matrix-table">
+            <caption className="sr-only">
+              Ledgerful feature comparison across Free / Local, Pro / Team
+              Local, Team Hosted, and Enterprise editions.
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Feature</th>
+                {matrixEditionHeaders.map((name) => (
+                  <th key={name} scope="col">
+                    {name}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            {matrixGroups.map((group) => (
+              <tbody key={group.label}>
+                <tr>
+                  <th
+                    scope="rowgroup"
+                    colSpan={matrixEditionHeaders.length + 1}
+                    className="matrix-group-label"
+                  >
+                    {group.label}
+                  </th>
+                </tr>
+                {group.rows.map((row) => (
+                  <tr key={row.feature}>
+                    <th scope="row">
+                      {row.feature}
+                      {row.caveat ? (
+                        <span className="item-caveat">{row.caveat}</span>
+                      ) : null}
+                    </th>
+                    {row.cells.map((cell, i) =>
+                      cell ? (
+                        <td key={matrixEditionHeaders[i]}>
+                          <StatusPill status={cell.state} />
+                        </td>
+                      ) : (
+                        <td key={matrixEditionHeaders[i]}>
+                          <span className="matrix-empty" aria-label="not included">
+                            —
+                          </span>
+                        </td>
+                      )
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            ))}
+          </table>
+        </div>
+        <ul className="pricing-footnotes">
+          {pricingFootnotes.map((note) => (
+            <li key={note}>{note}</li>
+          ))}
+        </ul>
       </section>
     </PageShell>
   );

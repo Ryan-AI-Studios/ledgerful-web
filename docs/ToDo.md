@@ -6,7 +6,7 @@ web. `conductor/conductor.md` remains authoritative for track status, and
 When an item is completed, record its evidence in the owning track and remove
 it from this file instead of leaving overlapping status narratives.
 
-Last reviewed: 2026-06-26.
+Last reviewed: 2026-06-26. WEB-0002 completed.
 
 ## Exit The Quiet Preview
 
@@ -43,9 +43,6 @@ Owner: `WEB-0005-LaunchFactResolution`.
 
 ## Open Public-Web Tracks
 
-- [ ] `WEB-0002-TruthGatedMarketingPricing` (Draft): finish the buyer-facing feature
-  matrix and pricing boundaries for available, beta, local-only, hosted
-  planned, and enterprise planned capabilities.
 - [ ] `WEB-0003-TrustSecurityCenter`: complete local-first data-flow,
   telemetry, sync, hosted-mode, responsible-disclosure, release-verification,
   and future-subprocessor documentation.

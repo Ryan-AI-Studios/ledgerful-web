@@ -23,7 +23,7 @@ export default function DocsPage() {
     const inner = (
       <>
         <BookOpen size={22} aria-hidden="true" />
-        <div>
+        <div className="doc-card-head">
           <h3>{topic.title}</h3>
           <StatusPill status={topic.state} />
         </div>

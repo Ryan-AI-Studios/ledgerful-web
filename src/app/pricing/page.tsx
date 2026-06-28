@@ -57,7 +57,9 @@ export default function PricingPage() {
                   </div>
                   <StatusPill status={edition.state} />
                 </div>
-                <p className="price">{edition.price}</p>
+                <p className={edition.price.startsWith("$") ? "price" : "price price--label"}>
+                  {edition.price}
+                </p>
                 <p>{edition.description}</p>
                 <ul>
                   {edition.includes.map((item) => (

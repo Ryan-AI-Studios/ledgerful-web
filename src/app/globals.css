@@ -233,6 +233,10 @@ h3 {
   padding-block: clamp(54px, 9vw, 112px);
 }
 
+.page-hero.compact h1 {
+  font-size: clamp(2.4rem, 5.5vw, 4rem);
+}
+
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -485,7 +489,7 @@ code {
   gap: 16px;
 }
 
-.doc-grid article > div {
+.doc-card-head {
   display: flex;
   align-items: start;
   justify-content: space-between;
@@ -697,6 +701,13 @@ code {
   *::after {
     scroll-behavior: auto !important;
   }
+}
+
+/* Non-dollar price strings (e.g. "Pricing not announced") render smaller */
+.price--label {
+  font-size: clamp(1.1rem, 2.2vw, 1.45rem) !important;
+  color: var(--muted) !important;
+  font-weight: 600;
 }
 
 /* Planned edition cards recede visually */

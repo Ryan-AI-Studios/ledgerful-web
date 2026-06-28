@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
@@ -51,7 +52,7 @@ export default function PricingPage() {
               >
                 <div className="pricing-card-head">
                   <div>
-                    <h2>{edition.name}</h2>
+                    <h3>{edition.name}</h3>
                     <p>{edition.audience}</p>
                   </div>
                   <StatusPill status={edition.state} />
@@ -148,6 +149,23 @@ export default function PricingPage() {
           ))}
         </ul>
       </section>
+
+      <div
+        className="content-band"
+        style={{
+          paddingTop: "clamp(32px, 5vw, 64px)",
+          paddingBottom: "clamp(48px, 8vw, 96px)",
+          textAlign: "center",
+        }}
+      >
+        <p style={{ color: "var(--muted)", marginBottom: "24px", fontSize: "1.05rem" }}>
+          Start with the free local edition. No account required.
+        </p>
+        <div className="hero-actions" style={{ justifyContent: "center" }}>
+          <Link href="/docs/cli" className="button-primary">Install the CLI</Link>
+          <Link href="/trust" className="button-secondary">Review trust posture</Link>
+        </div>
+      </div>
     </PageShell>
   );
 }

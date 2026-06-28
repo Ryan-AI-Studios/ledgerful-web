@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CircleDot, Network, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { EvidencePanel } from "@/components/evidence-panel";
 import { LaunchFacts } from "@/components/launch-facts";
 import { PageShell } from "@/components/page-shell";
@@ -13,11 +13,10 @@ export default function Home() {
       <section className="hero-section">
         <div className="hero-copy">
           <p className="hero-kicker">Local-first change intelligence</p>
-          <h1>Ledgerful keeps repo risk, signed history, and verification evidence inspectable.</h1>
+          <h1>Change intelligence that stays on your machine.</h1>
           <p>
-            A public web surface for programming teams evaluating Ledgerful
-            before adoption. The local engine is real; hosted control-plane,
-            identity, billing, and GitHub App capabilities stay labeled as planned.
+            Ledgerful runs on your machine, reads your repos, and produces signed
+            change history and audit evidence without sending source code anywhere.
           </p>
           <div className="hero-actions">
             <Link className="button-primary" href="/docs">
@@ -32,30 +31,49 @@ export default function Home() {
       </section>
 
       <section className="content-band">
-        <SectionHeading kicker="Boundary" title="Four surfaces, one honest adoption path">
-          The public site explains Ledgerful without importing dashboard clients
-          or pretending the localhost daemon is a SaaS backend.
+        <SectionHeading kicker="How it works" title="Scan, record, verify — locally.">
+          Every step runs on your machine. No source code leaves your environment.
         </SectionHeading>
-        <div className="boundary-grid">
+        <div className="timeline">
           <article>
-            <CircleDot size={24} aria-hidden="true" />
-            <h3>Local engine</h3>
-            <p>CLI, daemon APIs, signed ledger, local dashboard host, MCP, GitHub Action, sync, and evidence export.</p>
+            <div className="timeline-meta">1</div>
+            <div>
+              <h3>Install</h3>
+              <p>
+                <code>cargo install ledgerful</code> or download a pre-built binary.
+                Runs entirely on your machine.
+              </p>
+            </div>
           </article>
           <article>
-            <Network size={24} aria-hidden="true" />
-            <h3>Dashboard app</h3>
-            <p>Static embedded product UI backed by the local daemon and ephemeral token access.</p>
+            <div className="timeline-meta">2</div>
+            <div>
+              <h3>Scan</h3>
+              <p>
+                <code>ledgerful scan</code> analyzes change impact across one or many
+                repos. Impact and risk are assessed locally.
+              </p>
+            </div>
           </article>
           <article>
-            <ShieldCheck size={24} aria-hidden="true" />
-            <h3>Public web</h3>
-            <p>Marketing, docs, pricing, trust, changelog, SEO, launch facts, and Vercel deployment.</p>
+            <div className="timeline-meta">3</div>
+            <div>
+              <h3>Record</h3>
+              <p>
+                Each scan writes a signed ledger entry. History is tamper-evident and
+                stored in <code>.changeguard/</code>.
+              </p>
+            </div>
           </article>
           <article>
-            <ArrowRight size={24} aria-hidden="true" />
-            <h3>Hosted control plane</h3>
-            <p>Future accounts, GitHub App webhooks, billing, SSO, SCIM, RBAC, and hosted audit logs.</p>
+            <div className="timeline-meta">4</div>
+            <div>
+              <h3>Export</h3>
+              <p>
+                <code>ledgerful compliance export</code> produces a signed SOC2
+                evidence bundle. No upload required.
+              </p>
+            </div>
           </article>
         </div>
       </section>

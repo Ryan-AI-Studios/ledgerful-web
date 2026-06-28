@@ -17,7 +17,7 @@ export function SiteFooter() {
       </div>
       <div className="footer-grid">
         <div>
-          <h2>Pages</h2>
+          <p style={{ fontWeight: 720, fontSize: "0.96rem", marginBottom: "12px" }}>Pages</p>
           <ul>
             {mainNavigation.map((item) => (
               <li key={item.href}>
@@ -27,7 +27,7 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <h2>Launch facts</h2>
+          <p style={{ fontWeight: 720, fontSize: "0.96rem", marginBottom: "12px" }}>Launch facts</p>
           <ul>
             {launchFacts.slice(0, 4).map((fact) => (
               <li key={fact.label}>

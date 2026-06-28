@@ -13,7 +13,12 @@ export function LaunchFacts() {
           <div className="fact-meta">
             <StatusPill status={fact.status} />
             {fact.href ? (
-              <a href={fact.href} rel="noreferrer" target="_blank">
+              <a
+                href={fact.href}
+                rel="noreferrer"
+                target="_blank"
+                aria-label={fact.label}
+              >
                 {fact.value}
               </a>
             ) : (

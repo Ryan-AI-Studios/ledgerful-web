@@ -43,8 +43,69 @@ export default function TrustPage() {
         </p>
       </section>
 
+      {/* ── Table of contents ─────────────────────────────────── */}
+      <div className="content-band" style={{ paddingBlock: "0" }}>
+        <nav
+          aria-label="On this page"
+          style={{
+            border: "1px solid var(--line)",
+            borderRadius: "var(--radius)",
+            padding: "16px 20px",
+            background: "var(--surface)",
+            marginBottom: "40px",
+          }}
+        >
+          <p
+            style={{
+              fontSize: "0.82rem",
+              fontWeight: 720,
+              color: "var(--muted)",
+              marginBottom: "10px",
+            }}
+          >
+            On this page
+          </p>
+          <ol
+            style={{
+              listStyle: "none",
+              padding: 0,
+              margin: 0,
+              display: "grid",
+              gap: "6px",
+            }}
+          >
+            {[
+              { href: "#data-flow", label: "Data flow" },
+              { href: "#outbound-network", label: "Outbound network activity" },
+              { href: "#local-data", label: "What stays on your machine" },
+              { href: "#dashboard-security", label: "Dashboard and token security" },
+              { href: "#signing", label: "Signing and key management" },
+              { href: "#soc2-export", label: "Local evidence export" },
+              { href: "#release-verification", label: "Release verification" },
+              { href: "#telemetry", label: "Telemetry" },
+              { href: "#disclosure", label: "Responsible disclosure" },
+              { href: "#license", label: "License" },
+              { href: "#subprocessors", label: "Subprocessors" },
+            ].map(({ href, label }) => (
+              <li key={href}>
+                <a
+                  href={href}
+                  style={{
+                    fontSize: "0.9rem",
+                    color: "var(--primary-strong)",
+                    textDecoration: "none",
+                  }}
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      </div>
+
       {/* ── Section 1: Data flow ─────────────────────────────── */}
-      <section className="content-band">
+      <section id="data-flow" className="content-band">
         <SectionHeading title="Data flow">
           Four modes describe how data moves in Ledgerful. The default mode
           uploads nothing. Source code is never uploaded by default.
@@ -67,7 +128,7 @@ export default function TrustPage() {
       </section>
 
       {/* ── Section 2: Outbound network activity ─────────────── */}
-      <section className="content-band">
+      <section id="outbound-network" className="content-band">
         <SectionHeading title="Outbound network activity">
           A complete inventory of what the Ledgerful CLI sends over the network,
           and when. Security reviewers should find the answer to both common
@@ -86,7 +147,7 @@ export default function TrustPage() {
       </section>
 
       {/* ── Section 3: Reads and writes ──────────────────────── */}
-      <section className="content-band">
+      <section id="local-data" className="content-band">
         <SectionHeading title="What stays on your machine">
           All reads and writes are local. Source code is never uploaded as part
           of normal operation. The engine does not exfiltrate project data.
@@ -112,7 +173,7 @@ export default function TrustPage() {
       </section>
 
       {/* ── Section 4: Daemon access ──────────────────────────── */}
-      <section className="content-band">
+      <section id="dashboard-security" className="content-band">
         <SectionHeading title="Dashboard and token security">
           The local dashboard is loopback-only. It is not accessible from the
           internet or from other machines on your network.
@@ -150,7 +211,7 @@ export default function TrustPage() {
       </section>
 
       {/* ── Section 5: Cryptographic signing ─────────────────── */}
-      <section className="content-band">
+      <section id="signing" className="content-band">
         <SectionHeading title="Signing and key management">
           Ledgerful uses Ed25519 signing to provide tamper-evident ledger
           provenance and offline-verifiable SOC2 evidence.
@@ -203,7 +264,7 @@ export default function TrustPage() {
       </section>
 
       {/* ── Section 6: SOC2 evidence export ──────────────────── */}
-      <section className="content-band">
+      <section id="soc2-export" className="content-band">
         <SectionHeading title="Local evidence export">
           The SOC2 evidence export is a ZIP file generated entirely from local
           data. This is not a hosted SOC2 portal — no data leaves your machine
@@ -255,17 +316,7 @@ export default function TrustPage() {
         >
           Offline tamper verification
         </h3>
-        <ol
-          style={{
-            display: "grid",
-            gap: "10px",
-            margin: 0,
-            paddingLeft: "1.4em",
-            color: "var(--muted)",
-            fontSize: "0.9rem",
-            lineHeight: "1.65",
-          }}
-        >
+        <ol className="doc-step-list">
           <li>
             For each entry in <code>manifest.json</code>&apos;s{" "}
             <code>files</code> array, re-compute SHA-256 over the corresponding
@@ -288,28 +339,18 @@ export default function TrustPage() {
       </section>
 
       {/* ── Section 7: Release verification ──────────────────── */}
-      <section className="content-band">
+      <section id="release-verification" className="content-band">
         <SectionHeading title="Release verification">
           Every Ledgerful release ships SHA-256 checksum files alongside binary
           archives. Verify the checksum before running the binary.
         </SectionHeading>
         <div className="disclosure-notice" style={{ marginBottom: "24px" }}>
-          <strong>Note:</strong> Specific release download URLs are a WEB-0005
-          launch fact. They will be published when releases are smoke-tested and
-          publicly documented. The steps below describe the verification process
-          that will apply once URLs are available.
+          <strong>Note:</strong> Release download URLs will be published once a
+          smoke-tested tagged release is available. Check the changelog for
+          updates. The steps below describe the verification process that will
+          apply once URLs are available.
         </div>
-        <ol
-          style={{
-            display: "grid",
-            gap: "12px",
-            margin: 0,
-            paddingLeft: "1.4em",
-            color: "var(--muted)",
-            fontSize: "0.9rem",
-            lineHeight: "1.65",
-          }}
-        >
+        <ol className="doc-step-list">
           {releaseVerificationSteps.map((step, i) => (
             <li key={i}>{step}</li>
           ))}
@@ -324,7 +365,7 @@ export default function TrustPage() {
       </section>
 
       {/* ── Section 8: Telemetry ──────────────────────────────── */}
-      <section className="content-band">
+      <section id="telemetry" className="content-band">
         <SectionHeading title="Telemetry">
           Usage telemetry is opt-in. It is disabled by default and must be
           explicitly enabled.
@@ -376,7 +417,7 @@ export default function TrustPage() {
       </section>
 
       {/* ── Section 9: Responsible disclosure ────────────────── */}
-      <section className="content-band">
+      <section id="disclosure" className="content-band">
         <SectionHeading title="Responsible disclosure">
           A responsible disclosure channel will be published when the public
           launch infrastructure is in place. Disclosure details are an
@@ -415,7 +456,7 @@ export default function TrustPage() {
       </section>
 
       {/* ── Section 10: License ──────────────────────────────── */}
-      <section className="content-band">
+      <section id="license" className="content-band">
         <SectionHeading title="License">
           License terms are being finalized. See the repository for current
           terms.
@@ -439,7 +480,7 @@ export default function TrustPage() {
       </section>
 
       {/* ── Section 11: Subprocessors ─────────────────────────── */}
-      <section className="content-band">
+      <section id="subprocessors" className="content-band">
         <SectionHeading title="Subprocessors">
           Local mode uses no subprocessors by default. Opt-in telemetry sends
           usage events to Supabase only when explicitly enabled. Hosted mode is

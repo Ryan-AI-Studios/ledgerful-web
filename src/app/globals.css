@@ -19,6 +19,9 @@
   --shadow: 0 10px 24px oklch(0.2 0.03 216 / 0.09);
   --radius: 10px;
   --max: 1180px;
+  --terminal-bg: oklch(0.145 0.012 216);
+  --terminal-text: oklch(0.91 0.012 180);
+  --terminal-border: oklch(0.3 0.015 216);
 }
 
 @theme inline {
@@ -90,6 +93,32 @@ a:hover {
   margin-inline: auto;
 }
 
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.skip-to-content:focus {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  z-index: 999;
+  padding: 8px 16px;
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: var(--radius);
+  font-weight: 680;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
 .site-header {
   display: flex;
   align-items: center;
@@ -133,6 +162,11 @@ a:hover {
 
 .site-nav a:hover {
   background: var(--surface-strong);
+}
+
+.site-nav a.nav-link-active {
+  background: var(--surface-strong);
+  color: var(--ink);
 }
 
 .hero-section {
@@ -248,15 +282,15 @@ h3 {
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: oklch(0.145 0.012 216);
+  background: var(--terminal-bg);
   box-shadow: var(--shadow);
-  color: oklch(0.91 0.012 180);
+  color: var(--terminal-text);
 }
 
 .terminal-bar {
   display: flex;
   gap: 8px;
-  border-bottom: 1px solid oklch(0.3 0.015 216);
+  border-bottom: 1px solid var(--terminal-border);
   padding: 14px 16px;
 }
 
@@ -328,7 +362,7 @@ code {
 .trust-grid h3,
 .doc-grid h2,
 .doc-grid h3,
-.pricing-card h2,
+.pricing-card h3,
 .timeline h2 {
   font-size: 1.1rem;
   line-height: 1.25;
@@ -425,8 +459,8 @@ code {
 .status-hosted-planned,
 .status-enterprise-planned,
 .status-planned {
-  background: oklch(from var(--planned) 0.91 0.025 h);
-  color: oklch(0.28 0.04 250);
+  background: oklch(0.91 0.025 275);
+  color: oklch(0.28 0.04 275);
 }
 
 .status-unresolved {
@@ -566,23 +600,36 @@ code {
     color: var(--ink);
   }
 
+  /* Available / Resolved / Completed — dark green */
   .status-available,
   .status-resolved,
   .status-completed {
-    background: oklch(0.26 0.065 145);
-    color: oklch(0.9 0.04 145);
+    background: oklch(0.22 0.065 145);
+    color: oklch(0.88 0.08 145);
   }
 
+  /* Beta / In-progress — dark blue */
   .status-beta,
-  .status-in-progress,
-  .status-local-only,
+  .status-in-progress {
+    background: oklch(0.22 0.07 250);
+    color: oklch(0.88 0.08 250);
+  }
+
+  /* Local-only — dark teal/cyan (distinct from beta blue and planned indigo) */
+  .status-local-only {
+    background: oklch(0.20 0.055 200);
+    color: oklch(0.87 0.075 200);
+  }
+
+  /* Hosted planned / Enterprise planned / Planned — dark muted indigo */
   .status-hosted-planned,
   .status-enterprise-planned,
   .status-planned {
-    background: oklch(0.24 0.045 230);
-    color: oklch(0.9 0.025 230);
+    background: oklch(0.20 0.028 265);
+    color: oklch(0.82 0.028 265);
   }
 
+  /* Unresolved — dark amber */
   .status-unresolved {
     background: oklch(0.25 0.055 34);
     color: oklch(0.9 0.05 50);
@@ -627,7 +674,8 @@ code {
 
   .feature-row,
   .fact-row,
-  .pricing-card li {
+  .pricing-card li,
+  .timeline article {
     grid-template-columns: 1fr;
   }
 

@@ -37,7 +37,7 @@ export default function ChangelogPage() {
                   <span>{entry.area}</span>
                   <StatusPill status={entry.state} />
                 </div>
-                <h2>{entry.title}</h2>
+                <h3>{entry.title}</h3>
                 <p>{entry.details}</p>
               </div>
             </article>

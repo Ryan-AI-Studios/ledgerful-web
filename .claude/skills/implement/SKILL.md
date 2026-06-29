@@ -135,6 +135,8 @@ finalize{
     - manual evidence recorded for UI changes
     - public claims audited against roadmap/current product state
     - unresolved launch facts are visibly marked or documented
+  deferred_register:"log residual risks + low findings to C:\dev\coordinated\conductor\deferred.md (date | repo | track | sev | finding | why deferred | follow-up). Do NOT leave residual risks only in review.md - the deferred register is the cross-repo durable backlog."
+  track_format:"use the conductor track id (e.g. 0003-HomepageComprehension) when one exists; for repo-local WEB-#### tracks use that id; for a review-only pass with no track, use the date (YYYY-MM-DD) as the track field and note 'review-only' in the finding. Every entry must have a value in the track column - never blank. Review-only evidence still lives in conductor/<track>/review.md when a track exists, else in .agents/plan.md or the final report."
   final_report:
     - track/slice completed
     - files changed
@@ -142,7 +144,7 @@ finalize{
     - manual evidence
     - claim audit
     - deployment status
-    - residual risks
+    - residual risks (also logged to deferred.md)
 }
 
 stop_before:

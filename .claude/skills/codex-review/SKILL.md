@@ -18,7 +18,9 @@ review_targets:
   - SEO metadata gaps
 
 command{
-  powershell:"cmd /c \"codex exec -C \"\"C:\dev\ledgerful-web\"\" -s read-only -m gpt-5.4 -o output\\review.md \"\"Review the current diff for public-web regressions, unsupported claims, accessibility issues, and missing verification. Do not modify files.\"\" < NUL\""
+  powershell:"cmd /c \"codex exec --dangerously-bypass-approvals-and-sandbox -C \"\"C:\dev\ledgerful-web\"\" -s read-only -m gpt-5.4 -o output\review-codex.md \"\"Review the current git diff against the base branch. Identify bugs, regressions, missing tests, risky patterns, and unclear assumptions. Do not modify files. Give findings ordered by severity (critical/high/medium/low), then list the most important follow-up checks.\"\" < NUL\""
+  output:"output/review-codex.md (gitignored - not committed; copy findings into conductor/<track>/review.md for durable evidence)"
+  non_interactive_note:"--dangerously-bypass-approvals-and-sandbox skips interactive approval prompts that hang headless runs. `< NUL` prevents stdin blocking. The review artifact is scratch; the durable record is conductor/<track>/review.md."
 }
 
 rules:

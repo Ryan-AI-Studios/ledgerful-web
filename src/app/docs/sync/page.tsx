@@ -78,7 +78,7 @@ ledgerful sync init`}
         <p className="doc-caption">
           The init command creates or updates the sync configuration in{" "}
           <code>config.toml</code> and prepares the local{" "}
-          <code>.changeguard/sync/</code> directory for bundle output.
+          <code>.ledgerful/sync/</code> directory for bundle output.
         </p>
       </section>
 
@@ -151,7 +151,7 @@ ledgerful sync log`}
                 <th scope="row">Signing</th>
                 <td>
                   Ed25519 signature over bundle contents, using the project
-                  signing key at <code>~/.changeguard/keys/private.pem</code>.
+                  signing key at <code>~/.ledgerful/keys/private.pem</code>.
                 </td>
               </tr>
               <tr>

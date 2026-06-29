@@ -221,9 +221,9 @@ export default function TrustPage() {
             <strong>Key generation:</strong> An Ed25519 key pair is generated on
             first use via <code>OsRng</code> (OS-level entropy). The signing
             key and verifying key are stored as hex-encoded files at{" "}
-            <code>~/.changeguard/keys/private.pem</code> and{" "}
-            <code>~/.changeguard/keys/public.pem</code> (Windows:{" "}
-            <code>%USERPROFILE%\.changeguard\keys\</code>). No remote key
+            <code>~/.ledgerful/keys/private.pem</code> and{" "}
+            <code>~/.ledgerful/keys/public.pem</code> (Windows:{" "}
+            <code>%USERPROFILE%\.ledgerful\keys\</code>). No remote key
             management is required by default.
           </p>
           <p style={{ marginTop: "12px" }}>
@@ -441,12 +441,12 @@ export default function TrustPage() {
             <strong>Source repository:</strong> The Ledgerful engine source is
             publicly available at{" "}
             <a
-              href="https://github.com/Ryan-AI-Studios/ChangeGuard"
+              href="https://github.com/Ryan-AI-Studios/Ledgerful"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: "var(--accent)" }}
             >
-              github.com/Ryan-AI-Studios/ChangeGuard
+              github.com/Ryan-AI-Studios/Ledgerful
               <span className="sr-only"> (opens in new tab)</span>
             </a>
             . General (non-security) bugs may be reported via GitHub Issues once
@@ -465,7 +465,7 @@ export default function TrustPage() {
           <p>
             The commercial license model for Ledgerful is under review. The{" "}
             <a
-              href="https://github.com/Ryan-AI-Studios/ChangeGuard"
+              href="https://github.com/Ryan-AI-Studios/Ledgerful"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: "var(--accent)" }}

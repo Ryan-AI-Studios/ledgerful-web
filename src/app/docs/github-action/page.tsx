@@ -62,12 +62,12 @@ export default function DocsGithubActionPage() {
           <code>{"<version>"}</code> in the workflow YAML below with the latest
           published release tag from{" "}
           <a
-            href="https://github.com/Ryan-AI-Studios/ChangeGuard/releases"
+            href="https://github.com/Ryan-AI-Studios/Ledgerful/releases"
             target="_blank"
             rel="noopener noreferrer"
             style={{ color: "var(--accent)" }}
           >
-            github.com/Ryan-AI-Studios/ChangeGuard/releases
+            github.com/Ryan-AI-Studios/Ledgerful/releases
             <span className="sr-only"> (opens in new tab)</span>
           </a>
           . Tagged release artifacts are a WEB-0005 launch fact and are not yet
@@ -111,7 +111,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: Ryan-AI-Studios/ChangeGuard@`}
+      - uses: Ryan-AI-Studios/Ledgerful@`}
               {"<version>"}
               {`    # pending — replace with latest tag
         with:

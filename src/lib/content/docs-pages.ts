@@ -1,6 +1,6 @@
 /**
  * Shared content model for WEB-0004 doc pages.
- * Verified against ChangeGuard source: mcp/manifest.rs, action/action.yml,
+ * Verified against Ledgerful source: mcp/manifest.rs, action/action.yml,
  * conductor/conductor.md, and WebStartArgs.
  */
 
@@ -90,7 +90,7 @@ export const githubActionInputs: GithubActionInput[] = [
     description: "Set to LOW, MEDIUM, or HIGH to fail the job when risk meets or exceeds this level.",
   },
   {
-    name: "changeguard-version",
+    name: "ledgerful-version",
     required: false,
     description: "Git tag to install. Defaults to the latest published release.",
   },

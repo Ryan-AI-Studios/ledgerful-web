@@ -31,14 +31,14 @@ export default function DocsCompliancePage() {
       <section className="content-band">
         <SectionHeading title="Scope of the local export">
           The compliance export is a local operation. It reads your{" "}
-          <code>.changeguard/</code> directory and produces a ZIP you can share
+          <code>.ledgerful/</code> directory and produces a ZIP you can share
           with auditors or archive for your own records.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
             <strong>Local only:</strong> The SOC2 evidence export is a local ZIP
             generated entirely from your machine&apos;s{" "}
-            <code>.changeguard/</code> data. No data leaves your machine during
+            <code>.ledgerful/</code> data. No data leaves your machine during
             export. There is no hosted SOC2 portal — continuous monitoring,
             auditor access controls, and live attestation are enterprise-planned
             and require a future hosted control plane.

@@ -61,7 +61,7 @@ export default function Home() {
               <h3>Record</h3>
               <p>
                 Each scan writes a signed ledger entry. History is tamper-evident and
-                stored in <code>.changeguard/</code>.
+                stored in <code>.ledgerful/</code>.
               </p>
             </div>
           </article>

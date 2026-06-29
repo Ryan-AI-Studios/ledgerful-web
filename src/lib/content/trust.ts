@@ -27,7 +27,7 @@ export const trustDataFlows: TrustDataFlow[] = [
   {
     iconName: "Shield",
     title: "Local default",
-    body: "Ledgerful reads git state and project structure locally, writes evidence to .changeguard/, and never uploads source code by default. Nothing leaves your machine during normal operation.",
+    body: "Ledgerful reads git state and project structure locally, writes evidence to .ledgerful/, and never uploads source code by default. Nothing leaves your machine during normal operation.",
     state: "available",
   },
   {
@@ -53,10 +53,10 @@ export const trustDataFlows: TrustDataFlow[] = [
 export const readsLocally: string[] = [
   "Git repository state — commits, diffs, file history, and blame",
   "Project file structure and symbol graph (via local index)",
-  ".changeguard/ledger.db — local SQLite ledger state",
+  ".ledgerful/ledger.db — local SQLite ledger state",
   "config.toml — user configuration and feature flags",
-  "~/.changeguard/keys/ — Ed25519 signing key pair (read/write on first use)",
-  "Environment variables for configuration overrides only (e.g., CHANGEGUARD_CONFIG for a custom config path)",
+  "~/.ledgerful/keys/ — Ed25519 signing key pair (read/write on first use)",
+  "Environment variables for configuration overrides only (e.g., LEDGERFUL_CONFIG for a custom config path)",
   "Does not read .env files, AWS_* keys, or general system environment variables as part of normal operation",
 ];
 
@@ -68,13 +68,13 @@ export const networkOutbound = {
 } as const;
 
 export const writesLocally: string[] = [
-  ".changeguard/ledger.db — ledger transactions and verification history (project-local)",
-  ".changeguard/reports/ — impact and verify reports in JSON format (project-local)",
-  ".changeguard/index/ — local full-text search index (project-local)",
-  ".changeguard/sync/ — signed and encrypted sync bundles when sync is enabled (project-local)",
-  "~/.changeguard/keys/private.pem and public.pem — Ed25519 key pair, generated on first use",
+  ".ledgerful/ledger.db — ledger transactions and verification history (project-local)",
+  ".ledgerful/reports/ — impact and verify reports in JSON format (project-local)",
+  ".ledgerful/index/ — local full-text search index (project-local)",
+  ".ledgerful/sync/ — signed and encrypted sync bundles when sync is enabled (project-local)",
+  "~/.ledgerful/keys/private.pem and public.pem — Ed25519 key pair, generated on first use",
   "SOC2 evidence ZIP — written to a local path of your choice on demand via the dashboard",
-  "Platform paths: Windows uses %USERPROFILE%\\.changeguard\\keys\\; Linux and macOS use ~/.changeguard/keys/ resolved from $HOME. Project-local .changeguard/ directories are always relative to your repository root.",
+  "Platform paths: Windows uses %USERPROFILE%\\.ledgerful\\keys\\; Linux and macOS use ~/.ledgerful/keys/ resolved from $HOME. Project-local .ledgerful/ directories are always relative to your repository root.",
 ];
 
 export const telemetrySchema: TelemetryField[] = [
@@ -114,7 +114,7 @@ export const soc2ExportLayout: SocExportFile[] = [
   {
     filename: "manifest.pub",
     description:
-      "Raw 32-byte Ed25519 verifying key (the public half of ~/.changeguard/keys/). Used to verify manifest.sig offline without trusting a remote key server.",
+      "Raw 32-byte Ed25519 verifying key (the public half of ~/.ledgerful/keys/). Used to verify manifest.sig offline without trusting a remote key server.",
   },
   {
     filename: "ledger.csv",

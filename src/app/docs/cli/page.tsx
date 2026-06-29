@@ -71,7 +71,7 @@ export default function DocsCliPage() {
           </div>
           <pre>
             <code>
-              {`cargo install --git https://github.com/Ryan-AI-Studios/ChangeGuard --bin ledgerful`}
+              {`cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful`}
             </code>
           </pre>
         </div>
@@ -161,14 +161,14 @@ ledgerful web start`}
                 <th scope="row">Linux / macOS</th>
                 <td>
                   <code>~/.cargo/bin</code> on PATH. Key storage at{" "}
-                  <code>~/.changeguard/keys/</code>. Shell: bash or zsh.
+                  <code>~/.ledgerful/keys/</code>. Shell: bash or zsh.
                 </td>
               </tr>
               <tr>
                 <th scope="row">Windows</th>
                 <td>
                   <code>%USERPROFILE%\.cargo\bin</code> on PATH. Key storage at{" "}
-                  <code>%USERPROFILE%\.changeguard\keys\</code>. Use PowerShell
+                  <code>%USERPROFILE%\.ledgerful\keys\</code>. Use PowerShell
                   or Git Bash. Windows Authenticode signing is not yet
                   implemented — you may see a SmartScreen prompt on first run.
                 </td>

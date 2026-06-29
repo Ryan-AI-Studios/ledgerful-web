@@ -19,9 +19,9 @@ export const launchFacts: LaunchFact[] = [
   {
     label: "Canonical GitHub repository",
     status: "resolved",
-    value: "https://github.com/Ryan-AI-Studios/ChangeGuard",
+    value: "https://github.com/Ryan-AI-Studios/Ledgerful",
     note: "Anonymous access verified 2026-06-27: HTTP 200 and git ls-remote returned commit SHA ee702d481a3cb870f39b378170625a2bc054ba13.",
-    href: "https://github.com/Ryan-AI-Studios/ChangeGuard",
+    href: "https://github.com/Ryan-AI-Studios/Ledgerful",
   },
   {
     label: "Status page",

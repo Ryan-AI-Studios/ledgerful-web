@@ -3,6 +3,8 @@ export const siteUrl =
 
 export const mainNavigation = [
   { href: "/", label: "Home" },
+  { href: "/install", label: "Install" },
+  { href: "/architecture", label: "Architecture" },
   { href: "/docs", label: "Docs" },
   { href: "/pricing", label: "Pricing" },
   { href: "/trust", label: "Trust" },
@@ -10,7 +12,11 @@ export const mainNavigation = [
 ];
 
 export const pageDescriptions = {
-  home: "Ledgerful is local-first change intelligence and provenance for programming teams.",
+  home: "Ledgerful runs on your machine to analyze repo changes, record signed provenance, plan verification, and export audit evidence — without uploading source code by default.",
+  install:
+    "Install the Ledgerful CLI from source, verify the binary, and run your first scan. Pre-built release binaries are a launch fact and are not yet available.",
+  architecture:
+    "The three Ledgerful surfaces — local engine and CLI, embedded loopback dashboard, public web — and the planned hosted control plane. Local-first data flow, opt-in telemetry.",
   docs: "Install, verify, and operate Ledgerful without confusing local tooling with hosted features.",
   pricing: "Ledgerful editions with explicit available, beta, local-only, hosted planned, and enterprise planned states.",
   trust: "Local-first data flow, telemetry, sync, SOC2 export, and future hosted boundaries.",

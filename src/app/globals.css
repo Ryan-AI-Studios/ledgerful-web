@@ -968,3 +968,448 @@ code {
 .table-scroll-wrapper {
   overflow-x: auto;
 }
+
+/* WEB-0003 — Homepage comprehension, install page, architecture page */
+
+/* Release-state chip: small inline note next to hero/install CTA */
+.release-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 0 0 22px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 11px 6px 8px;
+  background: var(--bg);
+  color: var(--muted);
+  font-size: 0.83rem;
+  font-weight: 640;
+  letter-spacing: 0;
+}
+
+.release-chip-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--available);
+  flex-shrink: 0;
+}
+
+.release-chip-dot--unresolved {
+  background: var(--unresolved);
+}
+
+/* Private preview / early access indicator: shown next to install CTA */
+.private-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 560;
+}
+
+.private-preview svg {
+  color: var(--unresolved);
+  flex-shrink: 0;
+}
+
+.private-preview strong {
+  color: var(--ink);
+  font-weight: 720;
+}
+
+/* Step blocks used on install + architecture pages */
+.step-block {
+  display: grid;
+  gap: 14px;
+  margin-block: 24px 8px;
+}
+
+.step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.step-head .step-index {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 720;
+  letter-spacing: 0.04em;
+}
+
+.step-head h2 {
+  font-size: clamp(1.45rem, 2.4vw, 1.85rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.step-head .step-tag {
+  margin-left: auto;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.step-body {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.65;
+  max-width: 70ch;
+  text-wrap: pretty;
+}
+
+.step-body code {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.92em;
+  color: var(--ink);
+}
+
+.step-body strong {
+  color: var(--ink);
+  font-weight: 720;
+}
+
+.step-body a {
+  color: var(--primary-strong);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+}
+
+.step-body a:hover {
+  text-decoration-color: var(--primary-strong);
+}
+
+/* Terminal block (reused) with optional annotation row */
+.terminal-window.annotated {
+  display: grid;
+}
+
+.terminal-annotation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px clamp(16px, 3vw, 22px);
+  border-top: 1px solid var(--terminal-border);
+  color: oklch(0.78 0.01 216);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.01em;
+}
+
+.terminal-annotation .terminal-caption {
+  color: oklch(0.72 0.012 180);
+}
+
+.terminal-annotation .terminal-meta {
+  color: oklch(0.62 0.012 216);
+}
+
+/* Platform comparison table used on /install */
+.platform-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.93rem;
+  margin-top: 12px;
+}
+
+.platform-table th,
+.platform-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.platform-table thead th {
+  background: var(--surface);
+  font-size: 0.84rem;
+  font-weight: 720;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.platform-table tbody tr:last-child th,
+.platform-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.platform-table td code {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.9em;
+  color: var(--ink);
+}
+
+/* Architecture diagram: 3-surface local-first SVG diagram */
+.arch-diagram {
+  display: grid;
+  gap: 14px;
+  margin-block: 12px 4px;
+  padding: clamp(20px, 3.5vw, 32px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.arch-diagram .arch-diagram-frame {
+  width: 100%;
+  height: auto;
+  color: var(--ink);
+}
+
+.arch-diagram .arch-diagram-caption {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  max-width: 70ch;
+  text-wrap: pretty;
+}
+
+/* 3-surface strip */
+.surface-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-block: 8px 0;
+}
+
+.surface-card {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  padding: clamp(20px, 2.8vw, 26px);
+}
+
+.surface-card .surface-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.surface-card h3 {
+  font-size: 1.08rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.surface-card .surface-role {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 680;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.surface-card p {
+  color: var(--muted);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.surface-card .surface-meta {
+  display: grid;
+  gap: 4px;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.surface-card .surface-meta code {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.92em;
+  color: var(--ink);
+}
+
+.surface-card--planned {
+  background: var(--surface);
+}
+
+/* Architecture state table */
+.arch-state-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.93rem;
+}
+
+.arch-state-table th,
+.arch-state-table td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+  vertical-align: top;
+}
+
+.arch-state-table thead th {
+  background: var(--surface);
+  font-size: 0.83rem;
+  font-weight: 720;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.arch-state-table tbody tr:last-child th,
+.arch-state-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.arch-state-table .arch-state-scope {
+  color: var(--ink);
+  font-weight: 680;
+}
+
+.arch-state-table td code {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.9em;
+  color: var(--ink);
+}
+
+/* Workflow strip on homepage (Scan → Record → Verify → Export) */
+.workflow-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-block: 8px;
+}
+
+.workflow-step {
+  display: grid;
+  gap: 10px;
+  padding: clamp(20px, 3vw, 30px) clamp(18px, 2.6vw, 26px);
+  border-right: 1px solid var(--line);
+}
+
+.workflow-step:last-child {
+  border-right: none;
+}
+
+@media (max-width: 720px) {
+  .workflow-step {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .workflow-step:last-child {
+    border-bottom: none;
+  }
+}
+
+.workflow-step .workflow-step-index {
+  color: var(--muted);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 680;
+  letter-spacing: 0.06em;
+}
+
+.workflow-step h3 {
+  font-size: 1.05rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.workflow-step p {
+  color: var(--muted);
+  font-size: 0.93rem;
+  line-height: 1.55;
+}
+
+.workflow-step p code {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1px 6px;
+  font-size: 0.92em;
+  color: var(--ink);
+}
+
+/* Evidence panel: terminal block + provenance caption */
+.evidence-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.evidence-caption strong {
+  color: var(--ink);
+  font-weight: 720;
+}
+
+/* Inline launch-fact note on homepage (small, demoted) */
+.launch-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.launch-inline strong {
+  color: var(--ink);
+  font-weight: 720;
+}
+
+.launch-inline a {
+  color: var(--primary-strong);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+  font-weight: 600;
+}
+
+.launch-inline a:hover {
+  text-decoration-color: var(--primary-strong);
+}
+
+/* Accessibility — visually hidden (used for sr-only context if needed) */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

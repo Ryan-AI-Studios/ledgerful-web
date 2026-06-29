@@ -1,5 +1,6 @@
 # Local Ledgerful/agent state
-.changeguard/
+.ledgerful/
+.codex/
 .env
 .env.*
 !.env.example
@@ -43,7 +44,7 @@ Thumbs.db
 
 # Local generated scratch output
 output/
-.impeccable/live/
+.impeccable/
 
 # Agent configuration
 agents.md

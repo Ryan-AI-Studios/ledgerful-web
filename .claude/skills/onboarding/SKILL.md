@@ -9,7 +9,7 @@ identity{
   product:"Ledgerful"
   repo:"C:\dev\ledgerful-web"
   role:"public marketing, docs, pricing, changelog, trust/security, launch, SEO"
-  backend_repo:"C:\dev\ChangeGuard"
+  backend_repo:"C:\dev\ledgerful"
   dashboard_repo:"C:\dev\ledgerful-frontend"
   roadmap:"C:\dev\Roadmap.md"
   hosted_platform:"Vercel"
@@ -33,10 +33,9 @@ source_order:
   - conductor/conductor.md
   - docs/ToDo.md
   - current repo files
-  - C:\dev\ChangeGuard\conductor\conductor.md
+  - C:\dev\coordinated\conductor\conductor.md
   - C:\dev\ledgerful-frontend\conductor\conductor.md
-  - C:\dev\ChangeGuard\docs\Frontend-Notes.md
-  - C:\dev\ledgerful-frontend\docs\Backend-Notes.md
+  - C:\dev\coordinated\coordination.md
   - official docs for current package/framework behavior
 
 session_start{
@@ -49,8 +48,8 @@ session_start{
     - C:\dev\Roadmap.md
   optional_commands:
     - ai-brains preflight --summary
-    - changeguard doctor
-    - changeguard ledger status --compact
+    - ledgerful doctor
+    - ledgerful ledger status --compact
   then:
     - identify the active WEB track or create the smallest track note needed
     - reconcile the active track with docs/ToDo.md and remove completed deferred items once evidence is recorded

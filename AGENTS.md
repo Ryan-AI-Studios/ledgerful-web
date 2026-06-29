@@ -1,7 +1,7 @@
 # Ledgerful Web Agent Rules
 
 This repo is the public web surface for Ledgerful. It should stay separate from
-the local Rust engine in `C:\dev\ChangeGuard` and the embedded dashboard app in
+the local Rust engine in `C:\dev\ledgerful` and the embedded dashboard app in
 `C:\dev\ledgerful-frontend`.
 
 repo{
@@ -24,7 +24,7 @@ boundary{
     - local daemon API client code
     - hosted app authenticated internals
     - webhook ingest, billing webhooks, tenant APIs, or GitHub App callbacks
-    - backend `.changeguard/` state
+    - backend `.ledgerful/` state
 }
 
 truth_gate{
@@ -35,10 +35,10 @@ truth_gate{
     - this AGENTS.md
     - .agents/skills/onboarding/SKILL.md
     - .agents/skills/implement/SKILL.md
-    - C:\dev\ChangeGuard\conductor\conductor.md
+    - C:\dev\coordinated\conductor\conductor.md
     - C:\dev\ledgerful-frontend\conductor\conductor.md
-    - C:\dev\ChangeGuard\docs\Frontend-Notes.md
-    - C:\dev\ledgerful-frontend\docs\Backend-Notes.md
+    - C:\dev\coordinated\coordination.md
+    - C:\dev\coordinated\coordination.md
     - current product code and release evidence
   feature_states:
     - available
@@ -149,8 +149,8 @@ contracts{
     - frontend/back-end behavior changes what public docs promise
     - feature matrix changes shipped/beta/planned state
   cross_repo_sources:
-    - C:\dev\ChangeGuard\docs\Frontend-Notes.md
-    - C:\dev\ledgerful-frontend\docs\Backend-Notes.md
+    - C:\dev\coordinated\coordination.md
+    - C:\dev\coordinated\coordination.md
     - C:\dev\Roadmap.md
 }
 
@@ -174,19 +174,19 @@ aibrains{
     - before risky public claim changes
 }
 
-changeguard{
-  role:"cross-repo truth and release evidence, mostly in C:\dev\ChangeGuard"
+ledgerful{
+  role:"cross-repo truth and release evidence, mostly in C:\dev\ledgerful"
   use_when:
     - public docs mention backend/CLI/MCP/GitHub Action behavior
     - verifying release, SOC2 export, MCP package, or GitHub Action claims
     - checking ledger/conductor status for shipped capability
   commands:
-    - changeguard doctor
-    - changeguard audit
-    - changeguard ledger status --compact
-    - changeguard ledger search "<topic>"
-    - changeguard verify --scope full
-  fail:"if unavailable, continue with native web checks and report missing ChangeGuard evidence"
+    - ledgerful doctor
+    - ledgerful audit
+    - ledgerful ledger status --compact
+    - ledgerful ledger search "<topic>"
+    - ledgerful verify --scope full
+  fail:"if unavailable, continue with native web checks and report missing Ledgerful evidence"
 }
 
 git{

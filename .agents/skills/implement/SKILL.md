@@ -26,7 +26,7 @@ plan{
     - read AGENTS.md
     - read .agents/plan.md
     - read C:\dev\Roadmap.md
-    - read C:\dev\ledgerful-frontend\docs\Backend-Notes.md and C:\dev\ChangeGuard\docs\Frontend-Notes.md when copy/docs mention dashboard, daemon APIs, telemetry, compliance, or local auth
+    - read C:\dev\coordinated\coordination.md and C:\dev\coordinated\coordination.md when copy/docs mention dashboard, daemon APIs, telemetry, compliance, or local auth
     - identify whether the work affects claims, pricing, trust, docs, SEO, or deployment
   output:
     - target pages/components/docs

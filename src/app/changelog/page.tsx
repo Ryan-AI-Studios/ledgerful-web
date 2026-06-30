@@ -7,7 +7,7 @@ import { changelogEntries } from "@/lib/content/changelog";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Changelog",
+  title: "Changelog — Ledgerful release and surface milestones",
   description: pageDescriptions.changelog,
   alternates: {
     canonical: "/changelog",

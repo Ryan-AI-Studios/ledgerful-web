@@ -7,7 +7,7 @@ import { StatusPill } from "@/components/status-pill";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Architecture",
+  title: "Architecture — local engine, dashboard, and web surfaces",
   description: pageDescriptions.architecture,
   alternates: { canonical: "/architecture" },
 };

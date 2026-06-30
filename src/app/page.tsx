@@ -6,11 +6,23 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { featureStates } from "@/lib/content/features";
-import { pageDescriptions } from "@/lib/content/navigation";
+import { pageDescriptions, siteUrl } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
   description: pageDescriptions.home,
   alternates: { canonical: "/" },
+};
+
+const softwareApplicationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Ledgerful",
+  applicationCategory: "DeveloperTool",
+  operatingSystem: "Linux, macOS, Windows",
+  url: siteUrl,
+  description:
+    "Local-first change intelligence and signed provenance for repo risk and verification evidence.",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
 
 const workflow = [
@@ -95,6 +107,14 @@ export default function Home() {
               Trust posture
             </Link>
           </div>
+          <div className="hero-actions" style={{ marginTop: "12px" }}>
+            <Link className="button-tertiary" href="/docs">
+              Read the docs
+            </Link>
+            <Link className="button-tertiary" href="/pricing">
+              See editions
+            </Link>
+          </div>
           <p className="private-preview" aria-label="Repository access state">
             <ShieldAlert size={15} aria-hidden="true" />
             <span>
@@ -172,6 +192,12 @@ export default function Home() {
           ))}
         </div>
       </section>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(softwareApplicationJsonLd),
+        }}
+      />
     </PageShell>
   );
 }

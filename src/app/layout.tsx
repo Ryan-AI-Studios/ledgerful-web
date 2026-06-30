@@ -16,7 +16,8 @@ const jetBrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Ledgerful | Local-first change intelligence",
+    default:
+      "Ledgerful — local-first change intelligence for repo risk and signed provenance",
     template: "%s | Ledgerful",
   },
   description:
@@ -58,6 +59,16 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Ledgerful",
+  url: siteUrl,
+  description:
+    "Local-first change intelligence and signed provenance for programming teams.",
+  founder: { "@type": "Organization", name: "Ryan AI Studios" },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -68,6 +79,14 @@ export default function RootLayout({
       lang="en"
       className={`${archivo.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

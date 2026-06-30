@@ -8,7 +8,7 @@ import { docTopics } from "@/lib/content/docs";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Docs",
+  title: "Docs — CLI, dashboard, MCP, GitHub Action, compliance, sync",
   description: pageDescriptions.docs,
   alternates: {
     canonical: "/docs",
@@ -41,21 +41,16 @@ export default function DocsPage() {
       </>
     );
     return topic.href ? (
-      <article key={topic.title} style={{ position: "relative" }}>
-        <Link
-          href={topic.href}
-          style={{
-            position: "absolute",
-            inset: 0,
-            borderRadius: "var(--radius)",
-            zIndex: 0,
-          }}
-          aria-label={`Read docs: ${topic.title}`}
-        />
-        <div style={{ pointerEvents: "none" }}>{inner}</div>
-      </article>
+      <Link
+        key={topic.title}
+        href={topic.href}
+        className="doc-card-link"
+        aria-label={`Read docs: ${topic.title}`}
+      >
+        <article>{inner}</article>
+      </Link>
     ) : (
-      <article key={topic.title}>{inner}</article>
+      <article key={topic.title} className="doc-card-static">{inner}</article>
     );
   };
 

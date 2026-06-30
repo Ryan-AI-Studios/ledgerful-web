@@ -22,6 +22,10 @@ const nextConfig: NextConfig = {
             value:
               "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=()",
           },
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=300",
+          },
         ],
       },
     ];

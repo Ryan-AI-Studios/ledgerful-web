@@ -13,7 +13,8 @@
     "check:links": "cross-env NEXT_PUBLIC_SITE_URL=http://127.0.0.1:4173 npm run build && start-server-and-test start:links http://127.0.0.1:4173 \"linkinator http://127.0.0.1:4173 --recurse --skip ^mailto: --skip github.com/Ryan-AI-Studios/Ledgerful\"",
     "check:trust": "npm run build && node scripts/check-trust-truth.mjs",
     "check:docs": "npm run build && node scripts/check-docs-truth.mjs",
-    "check:provenance": "node scripts/provenance-check.mjs"
+    "check:provenance": "node scripts/provenance-check.mjs",
+    "check:jsonld": "node scripts/check-jsonld.mjs"
   },
   "dependencies": {
     "next": "16.2.9",

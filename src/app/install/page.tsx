@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Install",
+  title: "Install the Ledgerful CLI",
   description: pageDescriptions.install,
   alternates: { canonical: "/install" },
 };
@@ -325,21 +325,36 @@ ledgerful compliance export`}
                 The three Ledgerful surfaces and the planned control plane.
               </li>
               <li>
-                <Link
-                  href="/trust"
-                  style={{
-                    color: "var(--primary-strong)",
-                    fontWeight: 680,
-                    textDecoration: "underline",
-                    textUnderlineOffset: "3px",
-                    textDecorationColor: "var(--line)",
-                  }}
-                >
-                  Trust & security →
-                </Link>{" "}
-                Local-first data flow, signing model, SOC2 export layout,
-                telemetry, and disclosure.
-              </li>
+              <Link
+                href="/trust"
+                style={{
+                  color: "var(--primary-strong)",
+                  fontWeight: 680,
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                  textDecorationColor: "var(--line)",
+                }}
+              >
+                Trust & security →
+              </Link>{" "}
+              Local-first data flow, signing model, SOC2 export layout,
+              telemetry, and disclosure.
+            </li>
+            <li>
+              <Link
+                href="/pricing"
+                style={{
+                  color: "var(--primary-strong)",
+                  fontWeight: 680,
+                  textDecoration: "underline",
+                  textUnderlineOffset: "3px",
+                  textDecorationColor: "var(--line)",
+                }}
+              >
+                Pricing →
+              </Link>{" "}
+              Free/local edition and feature-state matrix.
+            </li>
             </ul>
           </div>
         </div>

@@ -144,8 +144,8 @@ export const plannedSubprocessors: Subprocessor[] = [
   {
     name: "Vercel",
     purpose:
-      "Static site hosting for this public website (ledgerful.io). Does not process project source code or ledger data.",
-    state: "hosted planned",
+      "Static site hosting for this public marketing website. Does not process project source code, ledger data, or user data.",
+    state: "available",
   },
   {
     name: "Supabase (telemetry)",

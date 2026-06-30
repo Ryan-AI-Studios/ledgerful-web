@@ -5,7 +5,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "CLI Install — Ledgerful Docs",
+  title: "CLI install and first scan — Ledgerful Docs",
   description: pageDescriptions.docsCli,
   alternates: { canonical: "/docs/cli" },
 };

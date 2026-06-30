@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CheckCircle2 } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { pageDescriptions } from "@/lib/content/navigation";
+import { stateLabels, type FeatureState } from "@/lib/content/features";
 import {
   editions,
   matrixGroups,
@@ -13,12 +14,26 @@ import {
 } from "@/lib/content/pricing";
 
 export const metadata: Metadata = {
-  title: "Pricing",
+  title: "Pricing — editions and feature states",
   description: pageDescriptions.pricing,
   alternates: {
     canonical: "/pricing",
   },
 };
+
+type AvailableItem = {
+  label: string;
+  state: FeatureState;
+};
+
+const availableToday: AvailableItem[] = [
+  { label: "Local CLI and engine", state: "available" },
+  { label: "Local dashboard", state: "local-only" },
+  { label: "Signed ledger provenance", state: "available" },
+  { label: "SOC2 evidence ZIP export", state: "local-only" },
+  { label: "MCP stdio tools", state: "beta" },
+  { label: "GitHub Action setup path", state: "beta" },
+];
 
 export default function PricingPage() {
   return (
@@ -38,6 +53,46 @@ export default function PricingPage() {
           editions require a future control plane and have no announced prices or
           timelines.
         </SectionHeading>
+
+        <aside
+          className="available-today"
+          aria-labelledby="available-today-heading"
+        >
+          <div className="available-today-head">
+            <StatusPill status="available" />
+            <h2 id="available-today-heading">Available today</h2>
+            <p className="available-today-price">$0</p>
+          </div>
+          <p>
+            The Free / Local edition is the only edition with announced pricing.
+            It runs entirely on your machine and ships every capability that is
+            available or in beta right now.
+          </p>
+          <ul className="available-today-list">
+            {availableToday.map((item) => (
+              <li key={item.label}>
+                <CheckCircle2 size={18} aria-hidden="true" />
+                <span>
+                  <span className="available-today-label">{item.label}</span>
+                  <span className="available-today-state">
+                    <StatusPill status={item.state} />
+                    <span className="visually-hidden">
+                      {stateLabels[item.state]}
+                    </span>
+                  </span>
+                </span>
+              </li>
+            ))}
+          </ul>
+          <div className="available-today-actions">
+            <Link href="/install" className="button-primary">
+              Install Ledgerful <ArrowRight size={16} aria-hidden="true" />
+            </Link>
+            <span className="available-today-hint">
+              No account, no source upload, no subscription.
+            </span>
+          </div>
+        </aside>
         <div className="pricing-grid">
           {editions.map((edition) => {
             const isPlanned =
@@ -86,6 +141,9 @@ export default function PricingPage() {
           Every row carries an explicit state. Planned features require a future
           hosted control plane and have no announced timeline.
         </SectionHeading>
+        <p className="matrix-scroll-hint" aria-hidden="true">
+          Scroll the table →
+        </p>
         <div
           role="region"
           aria-label="Feature comparison table"
@@ -152,18 +210,9 @@ export default function PricingPage() {
         </ul>
       </section>
 
-      <div
-        className="content-band"
-        style={{
-          paddingTop: "clamp(32px, 5vw, 64px)",
-          paddingBottom: "clamp(48px, 8vw, 96px)",
-          textAlign: "center",
-        }}
-      >
-        <p style={{ color: "var(--muted)", marginBottom: "24px", fontSize: "1.05rem" }}>
-          Start with the free local edition. No account required.
-        </p>
-        <div className="hero-actions" style={{ justifyContent: "center" }}>
+      <div className="content-band pricing-cta-band">
+        <p>Start with the free local edition. No account required.</p>
+        <div className="hero-actions">
           <Link href="/docs/cli" className="button-primary">Install the CLI</Link>
           <Link href="/trust" className="button-secondary">Review trust posture</Link>
         </div>

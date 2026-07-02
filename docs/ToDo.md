@@ -49,8 +49,6 @@ Owner: `WEB-0005-LaunchFactResolution`.
 
 - [ ] Prove Git-driven Preview deployment on a non-production branch and record
   the resulting Vercel URL.
-- [ ] Add CI that runs build, lint, quiet-preview policy, and link checks for
-  pull requests.
 - [ ] Decide and document Vercel Preview deployment protection policy.
 - [ ] Before public launch, decide whether Preview should receive an explicit
   `NEXT_PUBLIC_SITE_URL`; it currently uses the correct source fallback while
@@ -61,9 +59,6 @@ Owner: `WEB-0005-LaunchFactResolution`.
 
 ## Quality And Maintenance
 
-- [ ] Add a repository-owned browser/e2e suite; the initial route smoke used a
-  system Chrome/Playwright installation without a committed test harness.
-- [ ] Run and record Lighthouse/accessibility evidence for production pages.
 - [ ] Create `DESIGN.md` from the implemented visual system so future tracks do
   not rely on provisional design decisions in review notes.
 

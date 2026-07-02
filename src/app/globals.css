@@ -60,10 +60,11 @@ html {
 }
 
 body {
+  margin: 0;
   min-width: 320px;
-  background:
-    linear-gradient(180deg, var(--surface) 0, var(--bg) 440px),
-    var(--bg);
+  background-color: var(--bg);
+  background-image: linear-gradient(180deg, var(--surface) 0, var(--bg) 440px);
+  background-repeat: no-repeat;
   color: var(--ink);
   font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
   text-rendering: optimizeLegibility;
@@ -76,6 +77,19 @@ a {
 
 a:hover {
   color: var(--primary-strong);
+}
+
+main {
+  width: 100%;
+  min-width: 0;
+}
+
+.inline-link {
+  color: var(--primary-strong);
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 :focus-visible {
@@ -173,9 +187,22 @@ a:hover {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
   gap: clamp(38px, 6vw, 82px);
-  align-items: center;
+  align-items: start;
   min-height: min(760px, calc(100vh - 82px));
   padding-block: clamp(44px, 8vw, 96px);
+}
+
+.technical-token {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.table-scroll {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
 }
 
 .hero-copy,
@@ -210,7 +237,13 @@ h3 {
   text-wrap: balance;
 }
 
-.hero-copy h1,
+.hero-copy h1 {
+  max-width: 880px;
+  font-size: clamp(3rem, 5vw, 4.8rem);
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+
 .page-hero h1 {
   max-width: 880px;
   font-size: clamp(3rem, 7.5vw, 5.85rem);
@@ -324,6 +357,8 @@ pre {
 code {
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: clamp(0.86rem, 1.6vw, 1rem);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .evidence-map,
@@ -1119,7 +1154,11 @@ code {
 }
 
 .table-scroll-wrapper {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   overflow-x: auto;
+  overscroll-behavior-inline: contain;
 }
 
 /* WEB-0003 — Homepage comprehension, install page, architecture page */

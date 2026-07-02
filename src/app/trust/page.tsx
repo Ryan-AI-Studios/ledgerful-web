@@ -1008,7 +1008,13 @@ export default function TrustPage() {
         >
           ZIP layout
         </h3>
-        <div style={{ overflowX: "auto", marginBottom: "28px" }}>
+        <div
+          className="table-scroll"
+          role="region"
+          aria-label="SOC2 export ZIP file layout, horizontally scrollable"
+          tabIndex={0}
+          style={{ marginBottom: "28px" }}
+        >
           <table className="trust-table" aria-label="SOC2 export ZIP file layout">
             <thead>
               <tr>
@@ -1103,7 +1109,12 @@ export default function TrustPage() {
 (raw binary; not human-readable; placeholder shown)`}</code>
           </pre>
           <h4>ledger.csv (SAMPLE — first 3 rows)</h4>
-          <div style={{ overflowX: "auto" }}>
+          <div
+            className="table-scroll"
+            role="region"
+            aria-label="Sample ledger CSV rows, horizontally scrollable"
+            tabIndex={0}
+          >
             <table className="sample-csv-table" aria-label="Sample ledger CSV rows">
               <thead>
                 <tr>
@@ -1198,11 +1209,16 @@ export default function TrustPage() {
           }}
         >
           Ingest endpoint:{" "}
-          <code>
+          <code className="technical-token">
             https://scmxtnjqqklvcwyeouvj.supabase.co/functions/v1/telemetry-ingest
           </code>
         </p>
-        <div style={{ overflowX: "auto" }}>
+        <div
+          className="table-scroll"
+          role="region"
+          aria-label="Telemetry fields, horizontally scrollable"
+          tabIndex={0}
+        >
           <table className="trust-table" aria-label="Telemetry fields sent when opt-in is enabled">
             <thead>
               <tr>
@@ -1277,7 +1293,7 @@ export default function TrustPage() {
               href="https://github.com/Ryan-AI-Studios/Ledgerful"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "var(--accent)" }}
+              className="inline-link"
             >
               github.com/Ryan-AI-Studios/Ledgerful
               <span className="sr-only"> (opens in new tab)</span>
@@ -1301,7 +1317,7 @@ export default function TrustPage() {
               href="https://github.com/Ryan-AI-Studios/Ledgerful"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "var(--accent)" }}
+              className="inline-link"
             >
               repository LICENSE file
               <span className="sr-only"> (opens in new tab)</span>
@@ -1338,7 +1354,12 @@ export default function TrustPage() {
         >
           Subprocessors by scope and status:
         </p>
-        <div style={{ overflowX: "auto" }}>
+        <div
+          className="table-scroll"
+          role="region"
+          aria-label="Subprocessors, horizontally scrollable"
+          tabIndex={0}
+        >
           <table
             className="trust-table"
             aria-label="Planned subprocessors for hosted mode"

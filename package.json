@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/build-with-csp.mjs",
+    "build:next": "next build --webpack",
     "start": "next start",
     "start:links": "next start --port 4173",
     "lint": "eslint",
@@ -14,22 +15,25 @@
     "check:trust": "npm run build && node scripts/check-trust-truth.mjs",
     "check:docs": "npm run build && node scripts/check-docs-truth.mjs",
     "check:provenance": "node scripts/provenance-check.mjs",
-    "check:jsonld": "node scripts/check-jsonld.mjs"
+    "check:jsonld": "node scripts/check-jsonld.mjs",
+    "test:e2e": "npm run build && playwright test",
+    "test:e2e:run": "playwright test"
   },
   "dependencies": {
+    "lucide-react": "1.21.0",
     "next": "16.2.9",
     "react": "19.2.7",
-    "react-dom": "19.2.7",
-    "lucide-react": "1.21.0"
+    "react-dom": "19.2.7"
   },
   "devDependencies": {
+    "@playwright/test": "1.61.1",
     "@tailwindcss/postcss": "4.3.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cross-env": "10.1.0",
     "eslint": "9.39.4",
     "eslint-config-next": "16.2.9",
-    "cross-env": "10.1.0",
     "linkinator": "7.6.1",
     "start-server-and-test": "3.0.11",
     "tailwindcss": "4.3.1",

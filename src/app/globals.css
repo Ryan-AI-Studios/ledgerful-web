@@ -1161,6 +1161,15 @@ code {
   overscroll-behavior-inline: contain;
 }
 
+.telemetry-table {
+  table-layout: fixed;
+}
+
+.telemetry-table th,
+.telemetry-table td {
+  overflow-wrap: anywhere;
+}
+
 /* WEB-0003 — Homepage comprehension, install page, architecture page */
 
 /* Release-state chip: small inline note next to hero/install CTA */

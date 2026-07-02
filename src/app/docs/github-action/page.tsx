@@ -65,7 +65,7 @@ export default function DocsGithubActionPage() {
             href="https://github.com/Ryan-AI-Studios/Ledgerful/releases"
             target="_blank"
             rel="noopener noreferrer"
-            style={{ color: "var(--accent)" }}
+            className="inline-link"
           >
             github.com/Ryan-AI-Studios/Ledgerful/releases
             <span className="sr-only"> (opens in new tab)</span>

@@ -1,4 +1,5 @@
 import { expect, test, type ConsoleMessage, type Page } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 import { primaryNavigation, publicRoutes } from "./routes";
 
 const viewportWidths = [320, 375, 768, 1280, 1440] as const;
@@ -45,6 +46,22 @@ for (const route of publicRoutes) {
     expect(csp).toContain("base-uri 'self'");
     expect(csp).toContain("form-action 'self'");
     expect(errors).toEqual([]);
+  });
+}
+
+for (const route of publicRoutes) {
+  test(`${route} has no detectable WCAG A or AA violations`, async ({ page }) => {
+    await page.goto(route);
+    const results = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+      .analyze();
+    expect(
+      results.violations.map(({ id, impact, nodes }) => ({
+        id,
+        impact,
+        targets: nodes.map((node) => node.target),
+      })),
+    ).toEqual([]);
   });
 }
 
@@ -178,6 +195,44 @@ test("trust text links are visually distinguishable without color alone", async 
     );
   }
 });
+
+for (const width of [320, 375]) {
+  test(`trust only exposes necessary keyboard scroll regions at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 812 });
+    await page.goto("/trust");
+    const wrappers = page.locator(".table-scroll");
+    await expect(wrappers).toHaveCount(4);
+    let scrollableCount = 0;
+
+    for (const wrapper of await wrappers.all()) {
+      const disclosure = wrapper.locator("xpath=ancestor::details[1]");
+      if ((await disclosure.count()) > 0 && !(await disclosure.getAttribute("open"))) {
+        await disclosure.locator("summary").click();
+      }
+      const before = await wrapper.evaluate((element) => ({
+        clientWidth: element.clientWidth,
+        scrollWidth: element.scrollWidth,
+        scrollLeft: element.scrollLeft,
+      }));
+
+      if (before.scrollWidth > before.clientWidth) {
+        scrollableCount += 1;
+        await expect(wrapper).toHaveAttribute("role", "region");
+        await expect(wrapper).toHaveAttribute("aria-label", /horizontally scrollable/);
+        await expect(wrapper).toHaveAttribute("tabindex", "0");
+        await wrapper.focus();
+        await page.keyboard.press("ArrowRight");
+        await expect
+          .poll(() => wrapper.evaluate((element) => element.scrollLeft))
+          .toBeGreaterThan(before.scrollLeft);
+      } else {
+        await expect(wrapper).not.toHaveAttribute("tabindex", "0");
+      }
+    }
+
+    expect(scrollableCount).toBe(2);
+  });
+}
 
 test("dark mode and reduced motion retain readable deterministic rendering", async ({
   browser,

@@ -1,7 +1,15 @@
 import type { NextConfig } from "next";
-import generatedRouteScriptHashes from "./src/generated/csp-script-hashes.json";
+import { readFileSync } from "node:fs";
 
-const routeScriptHashes = generatedRouteScriptHashes as Record<string, string[]>;
+const routeScriptHashes = (() => {
+  try {
+    return JSON.parse(
+      readFileSync(new URL("./.csp/csp-script-hashes.json", import.meta.url), "utf8"),
+    ) as Record<string, string[]>;
+  } catch {
+    return {};
+  }
+})();
 
 const cspFor = (hashes: string[]) => {
   const scriptSource = [

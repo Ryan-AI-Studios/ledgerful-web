@@ -35,6 +35,15 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Check quiet preview and public truth
+        run: npm run check:truth
+
+      - name: Check dependency provenance
+        run: npm run check:provenance
+
+      - name: Verify build leaves tracked sources clean
+        run: git diff --exit-code
+
   test-links:
     runs-on: ubuntu-latest
     steps:

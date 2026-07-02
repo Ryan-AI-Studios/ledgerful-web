@@ -43,7 +43,7 @@ export default function DocsMcpPage() {
           <p style={{ marginTop: "12px" }}>
             A future release will allow starting the server with:
             <br />
-            <code style={{ opacity: 0.7 }}>
+            <code>
               npx @ledgerful/mcp-server
             </code>{" "}
             (pending release — not yet available)

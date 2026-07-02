@@ -33,6 +33,7 @@ blob-report/
 # Local caches
 .cache/
 .turbo/
+.csp/
 .eslintcache
 *.tsbuildinfo
 

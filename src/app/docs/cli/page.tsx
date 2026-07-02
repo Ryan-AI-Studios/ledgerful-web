@@ -37,7 +37,7 @@ export default function DocsCliPage() {
               href="https://rustup.rs"
               target="_blank"
               rel="noopener noreferrer"
-              style={{ color: "var(--accent)" }}
+              className="inline-link"
             >
               rustup.rs<span className="sr-only"> (opens in new tab)</span>
             </a>{" "}
@@ -48,7 +48,7 @@ export default function DocsCliPage() {
             <strong>Release binaries:</strong> Pre-built release artifacts for
             Linux, macOS, and Windows are a WEB-0005 launch fact. When available,
             they will not require Rust. Check the{" "}
-            <Link href="/docs/releases" style={{ color: "var(--accent)" }}>
+            <Link href="/docs/releases" className="inline-link">
               release verification page
             </Link>{" "}
             for status.

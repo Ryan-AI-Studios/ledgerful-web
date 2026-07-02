@@ -42,7 +42,7 @@ export default function DocsReleasesPage() {
           <p style={{ marginTop: "12px" }}>
             <strong>Install today:</strong> The only supported install path is
             building from source. See the{" "}
-            <Link href="/docs/cli" style={{ color: "var(--accent)" }}>
+            <Link href="/docs/cli" className="inline-link">
               CLI install page
             </Link>{" "}
             for instructions using <code>cargo install --git</code>.
@@ -146,7 +146,7 @@ ledgerful doctor`}
             <strong>Reporting issues:</strong> A formal support and issue
             reporting channel will be published alongside the public release.
             Until then, refer to the{" "}
-            <Link href="/trust" style={{ color: "var(--accent)" }}>
+            <Link href="/trust" className="inline-link">
               trust and security page
             </Link>{" "}
             for the responsible disclosure status.

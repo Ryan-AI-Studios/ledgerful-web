@@ -1,13 +1,14 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { readdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { parse } from "parse5";
 
 const root = process.cwd();
 const appOutput = path.join(root, ".next", "server", "app");
-const hashFile = path.join(root, "src", "generated", "csp-script-hashes.json");
-const inlineScriptPattern = /<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi;
+const hashDirectory = path.join(root, ".csp");
+const hashFile = path.join(hashDirectory, "csp-script-hashes.json");
 
 function runNextBuild() {
   const nextBin = path.join(root, "node_modules", "next", "dist", "bin", "next");
@@ -37,14 +38,28 @@ function routeFor(file) {
   return route === "/index" ? "/" : route;
 }
 
+function inlineScripts(html) {
+  const scripts = [];
+  const nodes = [parse(html)];
+  while (nodes.length > 0) {
+    const node = nodes.pop();
+    if (node.childNodes) nodes.push(...node.childNodes);
+    if (node.tagName !== "script" || node.attrs?.some((attr) => attr.name === "src")) continue;
+    const script = (node.childNodes ?? [])
+      .filter((child) => child.nodeName === "#text")
+      .map((child) => child.value)
+      .join("");
+    if (script) scripts.push(script);
+  }
+  return scripts;
+}
+
 async function emittedInlineScriptHashes() {
   const routes = {};
   for (const file of await htmlFiles(appOutput)) {
     const hashes = new Set();
     const html = await readFile(file, "utf8");
-    for (const match of html.matchAll(inlineScriptPattern)) {
-      const script = match[1];
-      if (!script) continue;
+    for (const script of inlineScripts(html)) {
       const digest = createHash("sha256").update(script).digest("base64");
       hashes.add(`sha256-${digest}`);
     }
@@ -61,6 +76,7 @@ async function currentHashes() {
   }
 }
 
+await mkdir(hashDirectory, { recursive: true });
 runNextBuild();
 
 const previous = await currentHashes();

@@ -1010,9 +1010,6 @@ export default function TrustPage() {
         </h3>
         <div
           className="table-scroll"
-          role="region"
-          aria-label="SOC2 export ZIP file layout, horizontally scrollable"
-          tabIndex={0}
           style={{ marginBottom: "28px" }}
         >
           <table className="trust-table" aria-label="SOC2 export ZIP file layout">
@@ -1215,11 +1212,11 @@ export default function TrustPage() {
         </p>
         <div
           className="table-scroll"
-          role="region"
-          aria-label="Telemetry fields, horizontally scrollable"
-          tabIndex={0}
         >
-          <table className="trust-table" aria-label="Telemetry fields sent when opt-in is enabled">
+          <table
+            className="trust-table telemetry-table"
+            aria-label="Telemetry fields sent when opt-in is enabled"
+          >
             <thead>
               <tr>
                 <th scope="col">Field</th>

@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const pricing = await readFile(".next/server/app/pricing.html", "utf8");
+const [pricing, install] = await Promise.all([
+  readFile(".next/server/app/pricing.html", "utf8"),
+  readFile(".next/server/app/install.html", "utf8"),
+]);
 
 // Edition names must not imply a live hosted beta or unverified contact path
 assert.doesNotMatch(
@@ -20,6 +23,21 @@ assert.doesNotMatch(
   pricing,
   /\b(free trial|start trial|contact sales|subscribe now|checkout)\b/i,
   "Pricing must not contain unverified checkout, trial, or sales CTAs",
+);
+assert.doesNotMatch(
+  pricing,
+  /\bfree\s*\/\s*local\b/i,
+  "Pricing must not describe PolyForm-qualified local use as generally free",
+);
+assert.doesNotMatch(
+  install,
+  /\bfree\s*\/\s*local\b/i,
+  "Install must not describe PolyForm-qualified local use as generally free",
+);
+assert.match(
+  install,
+  /license-qualified local edition/i,
+  "Install must preserve the license-qualified local-edition wording",
 );
 
 // All five approved feature state labels must appear

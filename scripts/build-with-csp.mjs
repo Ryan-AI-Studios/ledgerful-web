@@ -12,6 +12,9 @@ const hashFile = path.join(hashDirectory, "csp-script-hashes.json");
 
 function runNextBuild() {
   const nextBin = path.join(root, "node_modules", "next", "dist", "bin", "next");
+  // --webpack is pinned because vercel build fails with Turbopack output ("Unable to find lambda
+  // for route"). The parse5-based CSP extractor is Turbopack-compatible, but Vercel's build
+  // adapter is not. Revisit when Vercel supports Turbopack output for this Next.js version.
   const result = spawnSync(process.execPath, [nextBin, "build", "--webpack"], {
     cwd: root,
     env: process.env,

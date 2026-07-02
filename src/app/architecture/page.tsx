@@ -81,6 +81,11 @@ const stateRows: StateRow[] = [
     status: "available",
   },
   {
+    scope: "Configured cloud model",
+    body: "The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when that provider is configured and selected. Local-model operation does not use this path.",
+    status: "available",
+  },
+  {
     scope: "Hosted control plane",
     body: "A future hosted mode will add tenancy, hosted audit log, GitHub App callbacks, billing, and SSO/SCIM/RBAC. None of this is shipped today — see /pricing for explicit state labels.",
     status: "hosted planned",
@@ -493,9 +498,9 @@ export default function ArchitecturePage() {
       {/* ── Mode state table ───────────────────────────────── */}
       <section className="content-band" id="modes">
         <SectionHeading title="Operating modes and their data flow">
-          Four modes describe what crosses the local-first boundary. The
-          default mode uploads nothing. Source code never leaves the host in
-          any local mode.
+          Five modes describe what crosses the local-first boundary. Scan,
+          ledger, audit, verify, sync, dashboard, and export stay local; cloud
+          model context and aggregate telemetry are separate configured paths.
         </SectionHeading>
         <div className="table-scroll-wrapper">
           <table
@@ -528,9 +533,9 @@ export default function ArchitecturePage() {
           className="doc-caption"
           style={{ marginTop: "16px" }}
         >
-          Telemetry, when enabled, sends only structured usage events to the
-          documented Supabase ingest endpoint. Source code, file content, diff
-          text, and commit messages are never transmitted. See{" "}
+          Telemetry, when enabled, sends the aggregate schema documented on the
+          trust page. Separately, configured cloud-model ask workflows can send
+          sanitized, truncated context to the selected provider. See{" "}
           <Link
             href="/trust"
             style={{
@@ -573,7 +578,7 @@ export default function ArchitecturePage() {
             <p>
               An Ed25519 key pair is generated on first use via OS entropy.
               The signing key and verifying key are stored as hex-encoded
-              files at <code>~/.ledgerful/keys/private.pem</code> and{" "}
+              files at <code>~/.ledgerful/keys/private.key</code> and{" "}
               <code>~/.ledgerful/keys/public.pem</code> (Windows:{" "}
               <code>%USERPROFILE%\.ledgerful\keys\</code>). The SOC2 evidence
               ZIP is generated entirely from local data; the manifest,

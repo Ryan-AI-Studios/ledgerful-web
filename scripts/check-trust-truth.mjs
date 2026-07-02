@@ -76,6 +76,48 @@ if (!lower.includes("crash")) {
   failures.push('Assert 8 FAIL: crash reporting not addressed — add explicit statement about crash reports');
 }
 
+// Assert 9: telemetry schema matches the engine UsagePayload.
+for (const field of [
+  "schema_version",
+  "anonymous_id",
+  "client_version",
+  "platform",
+  "sent_at",
+  "window_start",
+  "window_end",
+  "command_counts",
+  "features_enabled",
+  "active_days_in_window",
+]) {
+  if (!lower.includes(field)) {
+    failures.push(`Assert 9 FAIL: telemetry field "${field}" is missing`);
+  }
+}
+for (const staleField of ["subcommand / action", "duration / timing"]) {
+  if (lower.includes(staleField)) {
+    failures.push(`Assert 9 FAIL: stale telemetry field "${staleField}" is still published`);
+  }
+}
+
+// Assert 10: configured cloud-model egress and selected .env reads are disclosed.
+for (const phrase of [
+  "configured cloud model",
+  "sanitized, truncated",
+  "gemini",
+  "ollama cloud",
+  "openrouter",
+  "repository-local .env",
+]) {
+  if (!lower.includes(phrase)) {
+    failures.push(`Assert 10 FAIL: trust disclosure is missing "${phrase}"`);
+  }
+}
+
+// Assert 11: current signing-key filename is documented.
+if (!lower.includes("private.key")) {
+  failures.push('Assert 11 FAIL: current private.key signing-key path is missing');
+}
+
 if (failures.length > 0) {
   console.error("\ncheck-trust-truth: FAILED\n");
   failures.forEach((f) => console.error(" ", f));

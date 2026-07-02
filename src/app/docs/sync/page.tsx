@@ -151,7 +151,7 @@ ledgerful sync log`}
                 <th scope="row">Signing</th>
                 <td>
                   Ed25519 signature over bundle contents, using the project
-                  signing key at <code>~/.ledgerful/keys/private.pem</code>.
+                  signing key at <code>~/.ledgerful/keys/private.key</code>.
                 </td>
               </tr>
               <tr>

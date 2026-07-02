@@ -8,3 +8,5 @@
 .claude
 .impeccable
 output
+playwright-report
+test-results

@@ -294,6 +294,46 @@ for (const slug of slugs) {
   }
 }
 
+// ── Assert 13: Windows release checksum covers the emitted ZIP archive ───────
+
+{
+  const lower = pages["releases"].toLowerCase();
+  if (!lower.includes("ledgerful-x86_64-pc-windows-msvc.zip")) {
+    failures.push(
+      "Assert 13 FAIL [docs/releases]: Windows ZIP archive name is missing",
+    );
+  }
+  if (lower.includes("get-filehash ledgerful.exe")) {
+    failures.push(
+      "Assert 13 FAIL [docs/releases]: checksum incorrectly hashes ledgerful.exe instead of the ZIP",
+    );
+  }
+}
+
+// ── Assert 14: action example points at the action subdirectory ───────────────
+
+if (!pages["github-action"].includes("Ryan-AI-Studios/Ledgerful/action@")) {
+  failures.push(
+    "Assert 14 FAIL [docs/github-action]: uses reference must include /action",
+  );
+}
+
+// ── Assert 15: doctor is a report, not a generated bundle ────────────────────
+
+{
+  const lower = pages["releases"].toLowerCase();
+  if (lower.includes("support bundle") || lower.includes("generate a support")) {
+    failures.push(
+      "Assert 15 FAIL [docs/releases]: ledgerful doctor must not be described as generating a bundle",
+    );
+  }
+  if (!lower.includes("health report")) {
+    failures.push(
+      "Assert 15 FAIL [docs/releases]: ledgerful doctor health-report wording is missing",
+    );
+  }
+}
+
 // ── Results ───────────────────────────────────────────────────────────────────
 
 if (failures.length > 0) {
@@ -301,5 +341,5 @@ if (failures.length > 0) {
   failures.forEach((f) => console.error(" ", f));
   process.exit(1);
 } else {
-  console.log("check-docs-truth: all 12 assertions passed ✓");
+  console.log("check-docs-truth: all 15 assertions passed ✓");
 }

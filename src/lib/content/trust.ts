@@ -1,4 +1,5 @@
 import type { FeatureState } from "./features";
+import { launchTruth } from "./launch-facts";
 
 export type TrustDataFlow = {
   iconName: "Shield" | "HardDrive" | "RadioTower" | "Cloud";
@@ -27,7 +28,7 @@ export const trustDataFlows: TrustDataFlow[] = [
   {
     iconName: "Shield",
     title: "Local default",
-    body: "Ledgerful reads git state and project structure locally, writes evidence to .ledgerful/, and never uploads source code by default. Nothing leaves your machine during normal operation.",
+    body: "Ledgerful reads git state and project structure locally and writes evidence to .ledgerful/. Scan, ledger, audit, verify, sync, dashboard, and export stay on the machine by default.",
     state: "available",
   },
   {
@@ -39,7 +40,13 @@ export const trustDataFlows: TrustDataFlow[] = [
   {
     iconName: "RadioTower",
     title: "Telemetry (opt-in)",
-    body: "Usage telemetry is strictly opt-in via config.toml or the ledgerful usage command. When enabled, only structured usage events are sent — command names, timing, and feature flags. Source code, file content, diff text, and commit messages are never transmitted.",
+    body: `Usage metrics are excluded from the default build. A build with ${launchTruth.facts.telemetry.feature} must still be enabled with ${launchTruth.facts.telemetry.enableCommand} before aggregate command counts, platform/version metadata, enabled features, and an anonymous ID are sent.`,
+    state: "available",
+  },
+  {
+    iconName: "Cloud",
+    title: "Configured cloud model",
+    body: "The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when a user configures and selects one of those providers. Local-model operation does not use this cloud path.",
     state: "available",
   },
   {
@@ -56,8 +63,8 @@ export const readsLocally: string[] = [
   ".ledgerful/ledger.db — local SQLite ledger state",
   "config.toml — user configuration and feature flags",
   "~/.ledgerful/keys/ — Ed25519 signing key pair (read/write on first use)",
-  "Environment variables for configuration overrides only (e.g., LEDGERFUL_CONFIG for a custom config path)",
-  "Does not read .env files, AWS_* keys, or general system environment variables as part of normal operation",
+  "Selected configuration variables from the process environment, including model endpoints, model names, dimensions, and provider API keys",
+  "A repository-local .env file for those same named model settings and credentials when they are not already configured; Ledgerful does not sweep arbitrary environment variables",
 ];
 
 export const networkOutbound = {
@@ -65,6 +72,8 @@ export const networkOutbound = {
     "None. The CLI does not check for updates automatically. No outbound HTTP requests are made to GitHub or any external server for version checking.",
   crashReporting:
     "None. Ledgerful does not integrate a crash reporter. Panics are handled by Rust's default behavior (stderr output) and are not transmitted anywhere. No crash data is ever sent to a remote service.",
+  cloudModels:
+    "Configured only. The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when that provider is configured and selected. API credentials may be read from the process environment or repository-local .env file.",
 } as const;
 
 export const writesLocally: string[] = [
@@ -72,33 +81,36 @@ export const writesLocally: string[] = [
   ".ledgerful/reports/ — impact and verify reports in JSON format (project-local)",
   ".ledgerful/index/ — local full-text search index (project-local)",
   ".ledgerful/sync/ — signed and encrypted sync bundles when sync is enabled (project-local)",
-  "~/.ledgerful/keys/private.pem and public.pem — Ed25519 key pair, generated on first use",
+  "~/.ledgerful/keys/private.key and public.pem — Ed25519 key pair, generated on first use (legacy private.pem is migrated)",
   "SOC2 evidence ZIP — written to a local path of your choice on demand via the dashboard",
   "Platform paths: Windows uses %USERPROFILE%\\.ledgerful\\keys\\; Linux and macOS use ~/.ledgerful/keys/ resolved from $HOME. Project-local .ledgerful/ directories are always relative to your repository root.",
 ];
 
-export const telemetrySchema: TelemetryField[] = [
-  {
-    name: "Command name",
-    description:
-      "The top-level command invoked (e.g., audit, verify, web). Does not include arguments that could contain file paths or source content.",
-  },
-  {
-    name: "Subcommand / action",
-    description:
-      "The subcommand variant where applicable. Anonymized — does not include user-provided values such as file paths, entity names, or query strings.",
-  },
-  {
-    name: "Feature flags enabled",
-    description:
-      "Which config.toml features are enabled (e.g., coverage.enabled, intent.require_signing). No source-content or diff-text values are included.",
-  },
-  {
-    name: "Duration / timing",
-    description:
-      "Wall-clock time for the command in milliseconds. No content-derived fields.",
-  },
-];
+type TelemetryFieldName =
+  (typeof launchTruth.facts.telemetry.payloadFields)[number];
+
+const telemetryDescriptions: Record<TelemetryFieldName, string> = {
+  schema_version: "Payload schema version used by the ingest validator.",
+  anonymous_id:
+    "Random UUID generated when usage metrics are enabled; stable across repositories on the same machine and not an account identity.",
+  client_version: "Installed Ledgerful version.",
+  platform: "Operating-system family: Windows, macOS, Linux, or unknown.",
+  sent_at: "UTC timestamp for the send attempt.",
+  window_start: "Start of the aggregated reporting window.",
+  window_end: "End of the aggregated reporting window.",
+  command_counts:
+    "Aggregate top-level command-name counts since the previous successful flush. Arguments, paths, entity names, and query text are not included.",
+  features_enabled:
+    "Compiled-in Ledgerful feature names such as web, mcp, sync, daemon, and viz-server.",
+  active_days_in_window:
+    "Count of distinct UTC days with at least one recorded command during the reporting window.",
+};
+
+export const telemetrySchema: TelemetryField[] =
+  launchTruth.facts.telemetry.payloadFields.map((name) => ({
+    name,
+    description: telemetryDescriptions[name],
+  }));
 
 export const soc2ExportLayout: SocExportFile[] = [
   {
@@ -135,7 +147,7 @@ export const soc2ExportLayout: SocExportFile[] = [
 
 export const releaseVerificationSteps: string[] = [
   "Download the binary archive and its companion .sha256 checksum file from the GitHub Release page for your platform (Linux, macOS, or Windows).",
-  "Run sha256sum -c ledgerful-<platform>.tar.gz.sha256 (Linux/macOS) or compare the SHA-256 hash manually on Windows using Get-FileHash -Algorithm SHA256. A passing verification prints OK.",
+  "Run sha256sum -c ledgerful-<platform>.tar.gz.sha256 on Linux/macOS. On Windows, hash ledgerful-x86_64-pc-windows-msvc.zip with Get-FileHash -Algorithm SHA256 and compare it with the companion .zip.sha256 file.",
   "A successful verification prints `filename: OK` for each file. Any `FAILED` output means the download is corrupt or tampered — do not use the binary.",
   "Note: specific download URLs are a WEB-0005 launch fact and will be published when the release is smoke-tested and publicly documented. Windows Authenticode signing and macOS Developer ID / Gatekeeper notarization are not yet implemented — binaries may trigger OS security prompts on first launch. Both code-signing capabilities and SLSA provenance attestations are planned enhancements.",
 ];
@@ -151,6 +163,12 @@ export const plannedSubprocessors: Subprocessor[] = [
     name: "Supabase (telemetry)",
     purpose:
       "Opt-in usage telemetry ingest only. No source code or project data is sent. Disabled by default.",
+    state: "available",
+  },
+  {
+    name: "Configured model provider",
+    purpose:
+      "Gemini, Ollama Cloud, or OpenRouter receives sanitized, truncated context only when a user configures and selects that cloud-backed ask workflow.",
     state: "available",
   },
   {

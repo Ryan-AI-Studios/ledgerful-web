@@ -1,4 +1,5 @@
 import type { FeatureState } from "./features";
+import { launchTruth } from "./launch-facts";
 
 export type DocTopic = {
   title: string;
@@ -13,7 +14,7 @@ export const docTopics: DocTopic[] = [
     title: "CLI install and smoke test",
     state: "unresolved",
     summary:
-      "The install path should point at real release artifacts once release downloads and checksums are smoke-tested.",
+      launchTruth.facts.release.note,
     nextAction: "Track release artifacts before publishing one-line install docs.",
     href: "/docs/cli",
   },
@@ -29,7 +30,7 @@ export const docTopics: DocTopic[] = [
     title: "MCP setup",
     state: "beta",
     summary:
-      "MCP stdio server and package path exist, but public package links need release proof.",
+      launchTruth.facts.mcpPackage.note,
     nextAction: "Add registry/package links after live package smoke.",
     href: "/docs/mcp",
   },
@@ -37,7 +38,7 @@ export const docTopics: DocTopic[] = [
     title: "GitHub Action setup",
     state: "beta",
     summary:
-      "Action path exists; public docs should distinguish self-managed Action from future hosted GitHub App.",
+      launchTruth.facts.githubAction.note,
     nextAction: "Publish install YAML after action release hygiene is complete.",
     href: "/docs/github-action",
   },
@@ -61,7 +62,7 @@ export const docTopics: DocTopic[] = [
     title: "Release verification",
     state: "unresolved",
     summary:
-      "Checksums and provenance should be public once tagged release artifacts exist.",
+      launchTruth.facts.release.note,
     nextAction: "Resolve release download and checksum URLs before launch.",
     href: "/docs/releases",
   },

@@ -46,6 +46,9 @@ Thumbs.db
 # Local generated scratch output
 output/
 .impeccable/
+GLM-review.md
+review-codex.md
+review.md
 
 # Agent configuration
 agents.md

@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { mcpTools } from "@/lib/content/docs-pages";
 import { StatusPill } from "@/components/status-pill";
 import { pageDescriptions } from "@/lib/content/navigation";
+import { launchTruth } from "@/lib/content/launch-facts";
 
 export const metadata: Metadata = {
   title: "MCP Setup — Ledgerful Docs",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default function DocsMcpPage() {
+  const { mcpPackage } = launchTruth.facts;
   return (
     <PageShell>
       {/* ── Hero ─────────────────────────────────────────────── */}
@@ -29,22 +31,19 @@ export default function DocsMcpPage() {
       {/* ── Section 1: Package status ─────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="Package status">
-          The MCP server ships as part of the Ledgerful CLI. A standalone npm
-          package for use with <code>npx</code> is not yet published.
+          The MCP server ships as part of the Ledgerful CLI. The standalone{" "}
+          <code>{mcpPackage.name}</code> package is {mcpPackage.value.toLowerCase()}.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
-            <strong>npm package pending release:</strong> The{" "}
-            <code>@ledgerful/mcp-server</code> npm package is not yet published
-            to the public registry. This install path is a forward reference — it
-            will be available when the package is publicly released. Until then,
-            use the CLI-based setup below.
+            <strong>npm package pending release:</strong> {mcpPackage.note} Until
+            then, use the CLI-based setup below.
           </p>
           <p style={{ marginTop: "12px" }}>
             A future release will allow starting the server with:
             <br />
             <code>
-              npx @ledgerful/mcp-server
+              npx {mcpPackage.name}
             </code>{" "}
             (pending release — not yet available)
           </p>

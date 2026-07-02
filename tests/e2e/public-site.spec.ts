@@ -12,8 +12,22 @@ function collectRuntimeErrors(page: Page) {
   page.on("console", onConsole);
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("requestfailed", (request) => {
-    if (request.resourceType() === "document" || request.resourceType() === "script") {
-      errors.push(`${request.resourceType()} request failed: ${request.url()}`);
+    const pageOrigin = page.url() === "about:blank" ? null : new URL(page.url()).origin;
+    const isFirstParty =
+      request.resourceType() === "document" ||
+      (pageOrigin !== null && new URL(request.url()).origin === pageOrigin);
+    if (!isFirstParty) return;
+    errors.push(
+      `${request.resourceType()} request failed: ${request.url()} (${request.failure()?.errorText ?? "unknown error"})`,
+    );
+  });
+  page.on("response", (response) => {
+    if (response.status() < 400) return;
+    const pageOrigin = page.url() === "about:blank" ? null : new URL(page.url()).origin;
+    if (pageOrigin !== null && new URL(response.url()).origin === pageOrigin) {
+      errors.push(
+        `${response.request().resourceType()} response failed: ${response.url()} (HTTP ${response.status()})`,
+      );
     }
   });
   return errors;
@@ -45,6 +59,7 @@ for (const route of publicRoutes) {
     expect(csp).toContain("frame-ancestors 'none'");
     expect(csp).toContain("base-uri 'self'");
     expect(csp).toContain("form-action 'self'");
+    await expect(page.locator("script[src][integrity]")).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 }
@@ -185,10 +200,19 @@ test("skip link and native disclosure are keyboard operable", async ({ page }) =
   await expect(summary.locator("xpath=..")).toHaveAttribute("open", "");
 });
 
-test("trust text links are visually distinguishable without color alone", async ({ page }) => {
+test("trust launch blockers do not expose unavailable public links", async ({ page }) => {
   await page.goto("/trust");
-  const links = page.locator("#disclosure a, #license a");
-  await expect(links).toHaveCount(2);
+  await expect(page.locator("#disclosure a, #license a")).toHaveCount(0);
+  await expect(page.locator("#disclosure")).toContainText("pending activation");
+  await expect(page.locator("#license")).toContainText("PolyForm Noncommercial");
+  await expect(page.locator("#license")).toContainText("Legal launch review");
+});
+
+test("trust inline links are distinguishable without color alone", async ({ page }) => {
+  await page.goto("/trust");
+  const links = page.locator("a.inline-link:visible");
+  const count = await links.count();
+  if (count === 0) return; // inline links are conditional on repository access state
   for (const link of await links.all()) {
     expect(await link.evaluate((element) => getComputedStyle(element).textDecorationLine)).toContain(
       "underline",

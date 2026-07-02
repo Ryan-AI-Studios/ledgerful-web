@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, ShieldAlert } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
+import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
@@ -56,6 +57,8 @@ const platformRows = [
 ];
 
 export default function InstallPage() {
+  const { release, repository } = launchTruth.facts;
+
   return (
     <PageShell>
       {/* ── Hero ───────────────────────────────────────────── */}
@@ -71,15 +74,21 @@ export default function InstallPage() {
           className="hero-actions"
           style={{ marginTop: "28px" }}
         >
-          <a
-            className="button-primary"
-            href="https://github.com/Ryan-AI-Studios/Ledgerful"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            View source repository{" "}
-            <ArrowRight size={18} aria-hidden="true" />
-          </a>
+          {repository.anonymousAccess ? (
+            <a
+              className="button-primary"
+              href={repository.href}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              View source repository{" "}
+              <ArrowRight size={18} aria-hidden="true" />
+            </a>
+          ) : (
+            <span className="button-primary" aria-disabled="true">
+              Repository access required
+            </span>
+          )}
           <Link className="button-secondary" href="/architecture">
             See the architecture
           </Link>
@@ -87,11 +96,8 @@ export default function InstallPage() {
         <p className="private-preview">
           <ShieldAlert size={15} aria-hidden="true" />
           <span>
-            <strong>Private preview / early access.</strong> The Ledgerful
-            source repository is private until the legal launch gates clear.
-            Running <code>cargo install</code> against the GitHub URL requires
-            authorized access today; this is expected, not a bug. Pre-built
-            release binaries will be published alongside the launch.
+            <strong>{repository.value}.</strong> {repository.note}{" "}
+            {release.note}
           </span>
         </p>
       </section>
@@ -353,7 +359,7 @@ ledgerful compliance export`}
               >
                 Pricing →
               </Link>{" "}
-              Free/local edition and feature-state matrix.
+              License-qualified local edition and feature-state matrix.
             </li>
             </ul>
           </div>

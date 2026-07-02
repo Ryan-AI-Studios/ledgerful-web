@@ -4,6 +4,7 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { pageDescriptions } from "@/lib/content/navigation";
+import { launchTruth } from "@/lib/content/launch-facts";
 
 export const metadata: Metadata = {
   title: "Release Verification — Ledgerful Docs",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default function DocsReleasesPage() {
+  const { release } = launchTruth.facts;
   return (
     <PageShell>
       {/* ── Hero ─────────────────────────────────────────────── */}
@@ -20,24 +22,21 @@ export default function DocsReleasesPage() {
         <h1>Release verification.</h1>
         <StatusPill status="unresolved" />
         <p>
-          Every Ledgerful release ships SHA-256 checksums alongside binary
-          archives. Verify before running any downloaded binary.
+          The release workflow requires SHA-256 checksums alongside every binary
+          archive. {release.value}.
         </p>
       </section>
 
       {/* ── Section 1: Release status ─────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="Release artifact status">
-          Pre-built binary releases are a WEB-0005 launch fact. Download URLs
-          are not yet publicly available.
+          {release.value}. Download URLs are not yet publicly available.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
-            <strong>Release artifacts pending:</strong> Pre-built binary
-            downloads for Linux, macOS, and Windows are a WEB-0005 launch fact.
-            Release download URLs are not yet available. The verification
-            process documented below describes what will apply when releases are
-            published — it is not currently actionable.
+            <strong>Release artifacts pending:</strong> {release.note} The
+            verification process documented below describes what will apply
+            after publication — it is not currently actionable.
           </p>
           <p style={{ marginTop: "12px" }}>
             <strong>Install today:</strong> The only supported install path is
@@ -99,10 +98,10 @@ sha256sum -c ledgerful-<platform>.tar.gz.sha256
           </div>
           <pre>
             <code>
-              {`# Compute the SHA-256 hash of the downloaded binary
-(Get-FileHash ledgerful.exe -Algorithm SHA256).Hash
+              {`# Compute the SHA-256 hash of the downloaded Windows archive
+(Get-FileHash ledgerful-x86_64-pc-windows-msvc.zip -Algorithm SHA256).Hash
 
-# Compare the output to the hash in the companion .sha256 file.
+# Compare the output to ledgerful-x86_64-pc-windows-msvc.zip.sha256.
 # They must match exactly (case-insensitive).`}
             </code>
           </pre>
@@ -115,12 +114,12 @@ sha256sum -c ledgerful-<platform>.tar.gz.sha256
         </div>
       </section>
 
-      {/* ── Section 3: Support bundle ─────────────────────────── */}
+      {/* ── Section 3: Health report ───────────────────────────── */}
       <section className="content-band">
-        <SectionHeading title="Support bundle">
-          If you encounter an issue with Ledgerful, you can generate a support
-          bundle using the <code>ledgerful doctor</code> command. The bundle
-          collects diagnostic information from your local environment.
+        <SectionHeading title="Health report">
+          If you encounter an issue with Ledgerful, run{" "}
+          <code>ledgerful doctor</code> to print a local environment and
+          dependency health report. It does not create a bundle or archive.
         </SectionHeading>
         <div className="terminal-window">
           <div className="terminal-bar">
@@ -130,7 +129,7 @@ sha256sum -c ledgerful-<platform>.tar.gz.sha256
           </div>
           <pre>
             <code>
-              {`# Run the health check and generate a support report
+              {`# Print the environment and dependency health report
 ledgerful doctor`}
             </code>
           </pre>

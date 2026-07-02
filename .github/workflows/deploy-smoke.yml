@@ -1,0 +1,58 @@
+name: Deployed runtime smoke
+
+on:
+  deployment_status:
+    types: [success]
+  workflow_dispatch:
+    inputs:
+      deployment_url:
+        description: Vercel Preview or production URL
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deployed-runtime-${{ github.event.deployment.id || inputs.deployment_url }}
+  cancel-in-progress: true
+
+jobs:
+  runtime:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.deployment_status.state == 'success'
+    runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_BASE_URL: >-
+        ${{ github.event.deployment_status.environment_url || inputs.deployment_url }}
+      VERCEL_AUTOMATION_BYPASS_SECRET: >-
+        ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
+    steps:
+      - name: Checkout deployed revision
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.deployment.sha || github.sha }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.0.1
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Check deployed scripts and browser runtime
+        run: npm run check:deploy
+
+      - name: Upload Playwright report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: deployed-runtime-playwright-report
+          path: playwright-report/
+          retention-days: 14

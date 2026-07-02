@@ -27,5 +27,5 @@ export const pageDescriptions = {
   docsGithubAction: "Add Ledgerful risk comments to GitHub pull requests with the GitHub Action.",
   docsCompliance: "Export local SOC2 evidence as a signed ZIP from the Ledgerful dashboard.",
   docsSync: "Set up local team sync with signed, encrypted bundles over a dir:// transport.",
-  docsReleases: "Verify Ledgerful release checksums and generate a support bundle.",
+  docsReleases: "Verify Ledgerful release checksums and run the local health report.",
 };

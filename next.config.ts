@@ -44,11 +44,9 @@ const fallbackHashes = [
 const nextConfig: NextConfig = {
   outputFileTracingRoot: process.cwd(),
   generateBuildId: async () => buildId(),
-  experimental: {
-    sri: {
-      algorithm: "sha256",
-    },
-  },
+  // Do not re-enable experimental SRI without a real Vercel deploy proving CDN parity.
+  // Vercel can serve transformed chunk bytes that fail browser validation:
+  // https://github.com/vercel/next.js/issues/91633
   async headers() {
     return [
       {

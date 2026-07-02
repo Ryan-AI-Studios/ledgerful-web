@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { githubActionInputs } from "@/lib/content/docs-pages";
 import { pageDescriptions } from "@/lib/content/navigation";
+import { launchTruth } from "@/lib/content/launch-facts";
 
 export const metadata: Metadata = {
   title: "GitHub Action — Ledgerful Docs",
@@ -13,6 +14,8 @@ export const metadata: Metadata = {
 };
 
 export default function DocsGithubActionPage() {
+  const { githubAction, release } = launchTruth.facts;
+
   return (
     <PageShell>
       {/* ── Hero ─────────────────────────────────────────────── */}
@@ -37,8 +40,8 @@ export default function DocsGithubActionPage() {
           <p>
             <strong>GitHub Action (this page):</strong> A reusable workflow step
             that runs inside your own GitHub Actions CI environment. You control
-            the workflow YAML, the permissions, and the token. Available today in
-            beta.
+            the workflow YAML, the permissions, and the token. It is implemented
+            in source as a beta, but is not publicly installable yet.
           </p>
           <p style={{ marginTop: "12px" }}>
             <strong>Hosted GitHub App:</strong>{" "}
@@ -53,25 +56,27 @@ export default function DocsGithubActionPage() {
       {/* ── Section 2: Version placeholder ───────────────────── */}
       <section className="content-band">
         <SectionHeading title="Version and release status">
-          The action exists in the source repository as a beta. No tagged release
-          has been published yet — when a version is tagged, pin to it using the
-          format shown below.
+          {githubAction.value}. When a public version is verified, pin to it
+          using the format shown below.
         </SectionHeading>
         <div className="disclosure-notice">
           <strong>Version pending:</strong> Replace{" "}
           <code>{"<version>"}</code> in the workflow YAML below with the latest
           published release tag from{" "}
-          <a
-            href="https://github.com/Ryan-AI-Studios/Ledgerful/releases"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-link"
-          >
-            github.com/Ryan-AI-Studios/Ledgerful/releases
-            <span className="sr-only"> (opens in new tab)</span>
-          </a>
-          . Tagged release artifacts are a WEB-0005 launch fact and are not yet
-          published.
+          {release.publiclyAvailable ? (
+            <a
+              href="https://github.com/Ryan-AI-Studios/Ledgerful/releases"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-link"
+            >
+              github.com/Ryan-AI-Studios/Ledgerful/releases
+              <span className="sr-only"> (opens in new tab)</span>
+            </a>
+          ) : (
+            <code>github.com/Ryan-AI-Studios/Ledgerful/releases</code>
+          )}
+          . {release.note}
         </div>
       </section>
 
@@ -111,7 +116,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: Ryan-AI-Studios/Ledgerful@`}
+      - uses: Ryan-AI-Studios/Ledgerful/action@`}
               {"<version>"}
               {`    # pending — replace with latest tag
         with:

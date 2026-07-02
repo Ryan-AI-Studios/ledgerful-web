@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { pageDescriptions } from "@/lib/content/navigation";
+import { launchTruth } from "@/lib/content/launch-facts";
 
 export const metadata: Metadata = {
   title: "CLI install and first scan — Ledgerful Docs",
@@ -11,6 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default function DocsCliPage() {
+  const { release, repository } = launchTruth.facts;
+
   return (
     <PageShell>
       {/* ── Hero ─────────────────────────────────────────────── */}
@@ -45,8 +48,7 @@ export default function DocsCliPage() {
             Windows). The stable toolchain is sufficient.
           </p>
           <p style={{ marginTop: "12px" }}>
-            <strong>Release binaries:</strong> Pre-built release artifacts for
-            Linux, macOS, and Windows are a WEB-0005 launch fact. When available,
+            <strong>Release binaries:</strong> {release.note} When available,
             they will not require Rust. Check the{" "}
             <Link href="/docs/releases" className="inline-link">
               release verification page
@@ -60,8 +62,7 @@ export default function DocsCliPage() {
       <section className="content-band">
         <SectionHeading title="Install from source">
           Install the <code>ledgerful</code> binary directly from the GitHub
-          repository using Cargo. Crates.io is not used — only the git source
-          path is supported.
+          repository using Cargo. {repository.note}
         </SectionHeading>
         <div className="terminal-window">
           <div className="terminal-bar">

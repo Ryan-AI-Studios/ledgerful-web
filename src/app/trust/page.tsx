@@ -5,6 +5,7 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { pageDescriptions } from "@/lib/content/navigation";
+import { launchTruth } from "@/lib/content/launch-facts";
 import {
   networkOutbound,
   plannedSubprocessors,
@@ -31,10 +32,10 @@ function DataFlowDiagram() {
         Two zones. Left zone &quot;Your machine&quot; contains the git repository,
         the .ledgerful/ project directory, the ~/.ledgerful/keys/ signing key
         directory, and config.toml. Arrows show local reads and writes between
-        the engine and these paths. Right zone &quot;External&quot; shows the
-        only optional outbound destination, the opt-in Supabase telemetry
-        ingest endpoint, drawn as a dashed opt-in edge. Everything else stays
-        on the local machine.
+        the engine and these paths. Right zone &quot;External&quot; shows two
+        explicit outbound paths: opt-in aggregate telemetry to Supabase and
+        sanitized, truncated context sent by the ask workflow when a cloud
+        model provider is configured and selected.
       </desc>
 
       {/* ── Your machine box ─────────────────────────────── */}
@@ -381,9 +382,9 @@ function DataFlowDiagram() {
 
       <rect
         x="556"
-        y="158"
+        y="74"
         width="168"
-        height="60"
+        height="72"
         rx="8"
         ry="8"
         fill="none"
@@ -393,7 +394,51 @@ function DataFlowDiagram() {
       />
       <text
         x="568"
-        y="180"
+        y="96"
+        fontFamily="var(--font-jetbrains-mono), monospace"
+        fontSize="11"
+        fill="currentColor"
+        opacity="0.7"
+        letterSpacing="0.04em"
+      >
+        CONFIGURED MODEL
+      </text>
+      <text
+        x="568"
+        y="114"
+        fontFamily="var(--font-archivo), sans-serif"
+        fontSize="12"
+        fontWeight="600"
+        fill="currentColor"
+      >
+        Gemini / cloud provider
+      </text>
+      <text
+        x="568"
+        y="130"
+        fontFamily="var(--font-jetbrains-mono), monospace"
+        fontSize="10"
+        fill="currentColor"
+        opacity="0.6"
+      >
+        sanitized context via ask
+      </text>
+
+      <rect
+        x="556"
+        y="220"
+        width="168"
+        height="72"
+        rx="8"
+        ry="8"
+        fill="none"
+        stroke="currentColor"
+        strokeOpacity="0.7"
+        strokeWidth="1"
+      />
+      <text
+        x="568"
+        y="242"
         fontFamily="var(--font-jetbrains-mono), monospace"
         fontSize="11"
         fill="currentColor"
@@ -404,7 +449,7 @@ function DataFlowDiagram() {
       </text>
       <text
         x="568"
-        y="198"
+        y="260"
         fontFamily="var(--font-archivo), sans-serif"
         fontSize="12"
         fontWeight="600"
@@ -414,47 +459,13 @@ function DataFlowDiagram() {
       </text>
       <text
         x="568"
-        y="212"
+        y="276"
         fontFamily="var(--font-jetbrains-mono), monospace"
         fontSize="10"
         fill="currentColor"
         opacity="0.6"
       >
         disabled by default
-      </text>
-
-      <text
-        x="556"
-        y="262"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.55"
-        fontStyle="italic"
-      >
-        No other outbound traffic.
-      </text>
-      <text
-        x="556"
-        y="278"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.55"
-        fontStyle="italic"
-      >
-        No update checks. No crash
-      </text>
-      <text
-        x="556"
-        y="294"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.55"
-        fontStyle="italic"
-      >
-        reports. No source upload.
       </text>
 
       {/* ── Boundary line between zones ───────────────────── */}
@@ -483,9 +494,9 @@ function DataFlowDiagram() {
       {/* ── Single outbound arrow (telemetry, dashed) ─────── */}
       <line
         x1="338"
-        y1="180"
+        y1="160"
         x2="556"
-        y2="188"
+        y2="110"
         stroke="currentColor"
         strokeOpacity="0.7"
         strokeWidth="1.2"
@@ -494,13 +505,34 @@ function DataFlowDiagram() {
       />
       <text
         x="394"
-        y="170"
+        y="126"
         fontFamily="var(--font-jetbrains-mono), monospace"
         fontSize="10"
         fill="currentColor"
         opacity="0.7"
       >
-        opt-in only
+        configured ask
+      </text>
+      <line
+        x1="338"
+        y1="190"
+        x2="556"
+        y2="256"
+        stroke="currentColor"
+        strokeOpacity="0.7"
+        strokeWidth="1.2"
+        strokeDasharray="5 4"
+        markerEnd="url(#trust-df-arrow)"
+      />
+      <text
+        x="394"
+        y="232"
+        fontFamily="var(--font-jetbrains-mono), monospace"
+        fontSize="10"
+        fill="currentColor"
+        opacity="0.7"
+      >
+        opt-in metrics
       </text>
 
       {/* ── Arrowhead marker ─────────────────────────────── */}
@@ -729,6 +761,14 @@ const iconMap = {
 } as const;
 
 export default function TrustPage() {
+  const {
+    disclosure,
+    license,
+    release,
+    repository,
+    telemetry,
+  } = launchTruth.facts;
+
   return (
     <PageShell>
       {/* ── Hero ─────────────────────────────────────────────── */}
@@ -805,7 +845,7 @@ export default function TrustPage() {
       {/* ── Section 1: Data flow ─────────────────────────────── */}
       <section id="data-flow" className="content-band">
         <SectionHeading title="Data flow">
-          Four modes describe how data moves in Ledgerful. The default mode
+          Five modes describe how data moves in Ledgerful. The default mode
           uploads nothing. Source code is never uploaded by default.
         </SectionHeading>
         <div className="trust-grid">
@@ -824,16 +864,16 @@ export default function TrustPage() {
           })}
         </div>
         <figure
-          aria-label="Data flow diagram: local reads/writes and the single opt-in telemetry egress"
+          aria-label="Data flow diagram: local reads and writes, opt-in telemetry, and configured cloud-model egress"
           style={{ marginBlock: "20px 0" }}
         >
           <DataFlowDiagram />
           <figcaption className="diagram-caption">
             Every arrow inside the <strong>Your machine</strong> box is local.
-            The single arrow crossing the boundary is the opt-in telemetry
-            path to Supabase; it is disabled by default. Source code, file
-            content, diff text, and commit messages are never transmitted on
-            any path.
+            Two configured paths can cross the boundary: opt-in aggregate
+            telemetry to Supabase, and sanitized, truncated context from the
+            <code> ask</code> workflow to a selected cloud model. Neither path
+            is active in the default local-only workflow.
           </figcaption>
         </figure>
       </section>
@@ -841,9 +881,8 @@ export default function TrustPage() {
       {/* ── Section 2: Outbound network activity ─────────────── */}
       <section id="outbound-network" className="content-band">
         <SectionHeading title="Outbound network activity">
-          A complete inventory of what the Ledgerful CLI sends over the network,
-          and when. Security reviewers should find the answer to both common
-          questions here.
+          The known outbound paths and their activation conditions. Default
+          local analysis does not contact these services.
         </SectionHeading>
         <div className="network-inventory">
           <article>
@@ -854,14 +893,19 @@ export default function TrustPage() {
             <h3>Crash reporting</h3>
             <p>{networkOutbound.crashReporting}</p>
           </article>
+          <article>
+            <h3>Configured cloud models</h3>
+            <p>{networkOutbound.cloudModels}</p>
+          </article>
         </div>
       </section>
 
       {/* ── Section 3: Reads and writes ──────────────────────── */}
       <section id="local-data" className="content-band">
         <SectionHeading title="What stays on your machine">
-          All reads and writes are local. Source code is never uploaded as part
-          of normal operation. The engine does not exfiltrate project data.
+          Project state and evidence stay local by default. A configured cloud
+          model can receive sanitized, truncated context only when its command
+          path is selected.
         </SectionHeading>
         <div className="trust-dl-grid">
           <div>
@@ -943,7 +987,7 @@ export default function TrustPage() {
             <strong>Key generation:</strong> An Ed25519 key pair is generated on
             first use via <code>OsRng</code> (OS-level entropy). The signing
             key and verifying key are stored as hex-encoded files at{" "}
-            <code>~/.ledgerful/keys/private.pem</code> and{" "}
+            <code>~/.ledgerful/keys/private.key</code> and{" "}
             <code>~/.ledgerful/keys/public.pem</code> (Windows:{" "}
             <code>%USERPROFILE%\.ledgerful\keys\</code>). No remote key
             management is required by default.
@@ -1161,14 +1205,13 @@ export default function TrustPage() {
       {/* ── Section 7: Release verification ──────────────────── */}
       <section id="release-verification" className="content-band">
         <SectionHeading title="Release verification">
-          Every Ledgerful release ships SHA-256 checksum files alongside binary
-          archives. Verify the checksum before running the binary.
+          {release.value}. The release workflow requires SHA-256 companion
+          files for every binary archive.
         </SectionHeading>
         <div className="disclosure-notice" style={{ marginBottom: "24px" }}>
-          <strong>Note:</strong> Release download URLs will be published once a
-          smoke-tested tagged release is available. Check the changelog for
-          updates. The steps below describe the verification process that will
-          apply once URLs are available.
+          <strong>Current baseline:</strong> {release.note} The steps below
+          describe the verification process that will apply once URLs are
+          available.
         </div>
         <ol className="doc-step-list">
           {releaseVerificationSteps.map((step, i) => (
@@ -1187,16 +1230,16 @@ export default function TrustPage() {
       {/* ── Section 8: Telemetry ──────────────────────────────── */}
       <section id="telemetry" className="content-band">
         <SectionHeading title="Telemetry">
-          Usage telemetry is opt-in. It is disabled by default and must be
-          explicitly enabled.
+          {telemetry.value}. It must be explicitly enabled.
         </SectionHeading>
         <div className="disclosure-notice" style={{ marginBottom: "24px" }}>
-          <strong>Opt-in only:</strong> Enable via{" "}
-          <code>ledgerful usage</code> or by setting{" "}
-          <code>[telemetry].enabled = true</code> in{" "}
-          <code>config.toml</code>. Telemetry is never activated without
-          explicit user action. Source code, file content, diff text, and commit
-          messages are never sent — only structured usage events are transmitted.
+          <strong>Opt-in only:</strong> The default binary does not include the{" "}
+          <code>{telemetry.feature}</code> feature. In a build that does, enable
+          collection with <code>{telemetry.enableCommand}</code>; its state is
+          stored in <code>{telemetry.configPath}</code>. Telemetry is never
+          activated without explicit user action. The payload contains the
+          documented aggregate fields below; it does not include command
+          arguments, source code, file paths, diff text, or query text.
         </div>
         <p
           style={{
@@ -1207,7 +1250,7 @@ export default function TrustPage() {
         >
           Ingest endpoint:{" "}
           <code className="technical-token">
-            https://scmxtnjqqklvcwyeouvj.supabase.co/functions/v1/telemetry-ingest
+            {telemetry.endpoint}
           </code>
         </p>
         <div
@@ -1236,27 +1279,33 @@ export default function TrustPage() {
           </table>
         </div>
         <p className="item-caveat" style={{ marginTop: "12px" }}>
-          Source code, file content, diff text, commit messages, and author
-          identities are never sent.
+          Command arguments, source code, file paths, diff text, query text,
+          commit messages, and author identities are not part of this payload.
         </p>
         <details className="sample-export">
           <summary>View example telemetry payload (JSON)</summary>
           <p>
             <span className="sample-label">EXAMPLE</span> The payload below
-            shows the four fields documented above. No source content or diff
-            text is ever sent. The endpoint is the Supabase Edge Function
-            documented on this page and is only contacted when{" "}
-            <code>[telemetry].enabled = true</code>.
+            shows the complete payload shape documented above. The endpoint is
+            the Supabase Edge Function
+            documented on this page and is only contacted after{" "}
+            <code>{telemetry.enableCommand}</code>.
           </p>
           <pre>
             <code>{`{
-  "command": "verify",
-  "subcommand": "full",
-  "feature_flags": [
-    "coverage.enabled",
-    "intent.require_signing"
-  ],
-  "duration_ms": 4128
+  "schema_version": 1,
+  "anonymous_id": "00000000-0000-4000-8000-000000000000",
+  "client_version": "0.1.7",
+  "platform": "windows",
+  "sent_at": "2026-07-02T14:00:00Z",
+  "window_start": "2026-06-25T14:00:00Z",
+  "window_end": "2026-07-02T14:00:00Z",
+  "command_counts": {
+    "verify": 4,
+    "scan": 2
+  },
+  "features_enabled": ["web", "mcp", "sync"],
+  "active_days_in_window": 3
 }`}</code>
           </pre>
         </details>
@@ -1265,36 +1314,32 @@ export default function TrustPage() {
       {/* ── Section 9: Responsible disclosure ────────────────── */}
       <section id="disclosure" className="content-band">
         <SectionHeading title="Responsible disclosure">
-          A responsible disclosure channel will be published when the public
-          launch infrastructure is in place. Disclosure details are an
-          unresolved launch fact.
+          {disclosure.value}. Disclosure remains an unresolved launch fact.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
-            <strong>Channel status:</strong> The responsible disclosure channel
-            is not yet published. Do not send vulnerability reports to general
-            contact addresses or public issue trackers. When the channel is
-            published, an encrypted submission path (PGP public key) will be
-            provided so vulnerability researchers can submit reports
-            confidentially.
+            <strong>Channel status:</strong> {disclosure.note}
           </p>
           <p style={{ marginTop: "12px" }}>
-            <strong>Forward note:</strong> A verified security contact and
-            encrypted submission path (PGP key) will be published before public
-            launch. Check this page for the current disclosure channel status.
+            <strong>Forward note:</strong> Do not send vulnerability details to
+            a public issue. Check this page for the current verified channel
+            status.
           </p>
           <p style={{ marginTop: "12px" }}>
-            <strong>Source repository:</strong> The Ledgerful engine source is
-            publicly available at{" "}
-            <a
-              href="https://github.com/Ryan-AI-Studios/Ledgerful"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-link"
-            >
-              github.com/Ryan-AI-Studios/Ledgerful
-              <span className="sr-only"> (opens in new tab)</span>
-            </a>
+            <strong>Source repository:</strong> {repository.note} Canonical URL:{" "}
+            {repository.anonymousAccess ? (
+              <a
+                href={repository.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-link"
+              >
+                github.com/Ryan-AI-Studios/Ledgerful
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+            ) : (
+              <code>github.com/Ryan-AI-Studios/Ledgerful</code>
+            )}
             . General (non-security) bugs may be reported via GitHub Issues once
             the repository is confirmed publicly open for issues.
           </p>
@@ -1304,23 +1349,30 @@ export default function TrustPage() {
       {/* ── Section 10: License ──────────────────────────────── */}
       <section id="license" className="content-band">
         <SectionHeading title="License">
-          License terms are being finalized. See the repository for current
-          terms.
+          Current source terms are {license.base} plus the small-entity
+          exception. Legal launch review is still open.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
-            The commercial license model for Ledgerful is under review. The{" "}
-            <a
-              href="https://github.com/Ryan-AI-Studios/Ledgerful"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-link"
-            >
-              repository LICENSE file
-              <span className="sr-only"> (opens in new tab)</span>
-            </a>{" "}
-            reflects the current state. Final terms — including any personal-use
-            or hobbyist provisions — will be published here before public launch.
+            Ledgerful is currently distributed under{" "}
+            <strong>{license.base}</strong> with the{" "}
+            <strong>{license.exception}</strong>. The{" "}
+            {repository.anonymousAccess ? (
+              <a
+                href={repository.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-link"
+              >
+                repository LICENSE file
+                <span className="sr-only"> (opens in new tab)</span>
+              </a>
+            ) : (
+              "reviewed local LICENSE file"
+            )}{" "}
+            reflects the operative source terms. Legal launch review remains
+            unresolved and any later change must update the reviewed truth
+            baseline before it reaches public copy.
           </p>
         </div>
       </section>
@@ -1328,19 +1380,20 @@ export default function TrustPage() {
       {/* ── Section 11: Subprocessors ─────────────────────────── */}
       <section id="subprocessors" className="content-band">
         <SectionHeading title="Subprocessors">
-          Local mode uses no subprocessors for project data. The public
-          marketing website is hosted on Vercel and the opt-in telemetry
-          endpoint runs on Supabase. Hosted mode is planned and will introduce
-          additional subprocessors.
+          Default local analysis uses no subprocessors for project data. The
+          public website is hosted on Vercel; opt-in telemetry uses Supabase;
+          configured cloud-model commands use the provider selected by the
+          user. Hosted mode is planned.
         </SectionHeading>
         <div className="disclosure-notice" style={{ marginBottom: "24px" }}>
           <strong>Local mode:</strong> Zero subprocessors for project source
           code, ledger data, or user data. The Ledgerful engine, ledger,
           dashboard, and SOC2 export all operate on your machine without
-          sending data to any third-party service. The opt-in telemetry
-          endpoint (Supabase) is the only exception, and only when you
-          explicitly enable telemetry. The public marketing website is a
-          static site hosted on Vercel and does not process any project data.
+          sending data to any third-party service by default. Opt-in telemetry
+          sends aggregate usage data to Supabase. Separately, a configured
+          cloud-model <code>ask</code> workflow can send sanitized, truncated
+          context to the selected provider. The public marketing website is a
+          static site hosted on Vercel and does not process project data.
         </div>
         <p
           style={{

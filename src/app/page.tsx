@@ -6,6 +6,7 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { featureStates } from "@/lib/content/features";
+import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions, siteUrl } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
@@ -22,7 +23,6 @@ const softwareApplicationJsonLd = {
   url: siteUrl,
   description:
     "Local-first change intelligence and signed provenance for repo risk and verification evidence.",
-  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
 };
 
 const workflow = [
@@ -69,13 +69,15 @@ const workflow = [
 ];
 
 export default function Home() {
+  const { release, repository } = launchTruth.facts;
+
   return (
     <PageShell>
       <section className="hero-section">
         <div className="hero-copy">
           <p className="release-chip">
             <span className="release-chip-dot" aria-hidden="true" />
-            Current release: source install available; pre-built binaries pending.{" "}
+            Release status: {release.value}.{" "}
             <Link
               href="/docs/releases"
               style={{
@@ -118,10 +120,7 @@ export default function Home() {
           <p className="private-preview" aria-label="Repository access state">
             <ShieldAlert size={15} aria-hidden="true" />
             <span>
-              <strong>Private preview / early access.</strong> The source
-              repository is private until the legal launch gates clear. Running{" "}
-              <code>cargo install</code> against the GitHub URL requires
-              authorized access today; this is expected, not a bug.
+              <strong>{repository.value}.</strong> {repository.note}
             </span>
           </p>
         </div>

@@ -5,6 +5,7 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { docTopics } from "@/lib/content/docs";
+import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
@@ -16,6 +17,7 @@ export const metadata: Metadata = {
 };
 
 export default function DocsPage() {
+  const { release } = launchTruth.facts;
   const liveTopics = docTopics.filter((t) => t.state !== "unresolved");
   const pendingTopics = docTopics.filter((t) => t.state === "unresolved");
 
@@ -80,8 +82,9 @@ export default function DocsPage() {
                 marginBottom: "16px",
               }}
             >
-              More documentation topics are being finalized as release artifacts
-              become available.
+              {release.value}. Documentation remains visibly pending until the
+              anonymous publication check passes and a human claim audit updates
+              this baseline.
             </p>
             <div className="doc-grid">{pendingTopics.map(renderCard)}</div>
           </>

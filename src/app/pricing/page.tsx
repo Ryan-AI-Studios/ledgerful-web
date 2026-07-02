@@ -42,8 +42,9 @@ export default function PricingPage() {
         <p className="hero-kicker">Edition boundaries</p>
         <h1>Pricing copy that does not outrun implementation.</h1>
         <p>
-          Free/local and team-local paths are separated from hosted and
-          enterprise capabilities that require future control-plane work.
+          Qualifying small-entity local use and team-local paths are separated
+          from hosted and enterprise capabilities that require future
+          control-plane work.
         </p>
       </section>
 
@@ -61,12 +62,13 @@ export default function PricingPage() {
           <div className="available-today-head">
             <StatusPill status="available" />
             <h2 id="available-today-heading">Available today</h2>
-            <p className="available-today-price">$0</p>
+            <p className="available-today-price">License-qualified</p>
           </div>
           <p>
-            The Free / Local edition is the only edition with announced pricing.
-            It runs entirely on your machine and ships every capability that is
-            available or in beta right now.
+            The current source license permits noncommercial use and royalty-free
+            internal business use by qualified small entities. No paid commercial
+            price is announced. Local capabilities still run entirely on your
+            machine.
           </p>
           <ul className="available-today-list">
             {availableToday.map((item) => (
@@ -152,8 +154,8 @@ export default function PricingPage() {
         >
           <table className="matrix-table">
             <caption className="sr-only">
-              Ledgerful feature comparison across Free / Local, Pro / Team
-              Local, Team Hosted, and Enterprise editions.
+              Ledgerful feature comparison across license-qualified Local, Pro /
+              Team Local, Team Hosted, and Enterprise editions.
             </caption>
             <thead>
               <tr>
@@ -211,7 +213,7 @@ export default function PricingPage() {
       </section>
 
       <div className="content-band pricing-cta-band">
-        <p>Start with the free local edition. No account required.</p>
+        <p>Review the current source terms, then run locally. No account required.</p>
         <div className="hero-actions">
           <Link href="/docs/cli" className="button-primary">Install the CLI</Link>
           <Link href="/trust" className="button-secondary">Review trust posture</Link>

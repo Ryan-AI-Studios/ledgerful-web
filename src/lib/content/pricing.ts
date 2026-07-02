@@ -1,4 +1,5 @@
 import type { FeatureState } from "./features";
+import { launchTruth } from "./launch-facts";
 
 export type EditionItem = {
   label: string;
@@ -19,7 +20,7 @@ export type MatrixCell = {
   state: FeatureState;
 } | null;
 
-// cells order: [Free / Local, Pro / Team Local, Team Hosted, Enterprise]
+// cells order: [License-qualified Local, Pro / Team Local, Team Hosted, Enterprise]
 export type MatrixRow = {
   feature: string;
   caveat?: string;
@@ -33,9 +34,9 @@ export type MatrixGroup = {
 
 export const editions: Edition[] = [
   {
-    name: "Free / Local",
-    audience: "Individual developers and open-source maintainers",
-    price: "$0",
+    name: "License-qualified Local",
+    audience: "Noncommercial users and qualified small entities",
+    price: "Royalty-free for qualifying use",
     state: "available",
     description:
       "Run Ledgerful locally with CLI analysis, local dashboard, signed ledger, and manual evidence export.",
@@ -99,7 +100,7 @@ export const editions: Edition[] = [
 ];
 
 export const matrixEditionHeaders = [
-  "Free / Local",
+  "License-qualified Local",
   "Pro / Team Local",
   "Team Hosted",
   "Enterprise",
@@ -234,9 +235,10 @@ export const matrixGroups: MatrixGroup[] = [
 ];
 
 export const pricingFootnotes: string[] = [
+  `${launchTruth.facts.license.note} No paid commercial price is announced.`,
   "GitHub App, hosted portfolio, hosted audit log, and billing portal require a future hosted control plane. No timeline is announced.",
   "SAML / OIDC SSO, SCIM, and RBAC are enterprise planned and require a future hosted control plane with enterprise identity infrastructure. No timeline is announced.",
-  "MCP stdio tools and GitHub Action setup paths are beta. Public package release smoke and install documentation are unresolved launch facts.",
+  `MCP stdio tools and GitHub Action setup paths are beta. ${launchTruth.facts.mcpPackage.note} ${launchTruth.facts.githubAction.note}`,
   "Source upload is never required for local editions. The local daemon does not implement SSO, RBAC, or tenant isolation.",
   "No Pro, Team Hosted, or Enterprise pricing is announced.",
 ];

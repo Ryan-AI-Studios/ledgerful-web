@@ -806,7 +806,6 @@ code {
     width: min(var(--max), calc(100% - 28px));
   }
 
-  .hero-copy h1,
   .page-hero h1 {
     font-size: clamp(2.45rem, 15vw, 3.75rem);
   }
@@ -841,6 +840,45 @@ code {
   .theme-toggle button {
     flex: 1 1 0;
     min-height: 44px;
+  }
+
+  /* Mobile header (DoD-2 follow-up): the header was wrapping brand, five
+     primary nav links, the theme toggle, and Install across up to four
+     stacked rows (~247px tall at 320-375px), which alone ate roughly half
+     of a realistic phone viewport's height before any hero content
+     rendered. DESIGN.md still requires brand, primary evaluation paths,
+     explicit theme choice, and the accented Install action all present in
+     the header — none are removed here. Primary navigation becomes a single
+     horizontally scrollable row instead of wrapping across two lines, and
+     padding/gaps tighten, so the header collapses to three compact rows
+     (brand; nav; theme toggle + Install) instead of four wrapped ones. */
+  .site-header {
+    gap: 10px;
+    padding-block: 14px;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .site-nav {
+    flex: 1 1 100%;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 4px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .site-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-nav a {
+    flex-shrink: 0;
+    padding: 8px 10px;
+    font-size: 0.86rem;
   }
 }
 
@@ -2023,4 +2061,305 @@ code {
 .evidence-frame-url {
   color: var(--ink);
   font-weight: 620;
+}
+
+/* WEB-0022 — homepage narrative rebuild */
+
+/* Quiet "strip" sections (data-flow line, four-item proof strip) get less
+   vertical pause than a full narrative chapter — DESIGN.md reserves the
+   larger content-band rhythm for chapters with a visible SectionHeading. */
+.content-band--strip {
+  padding-block: clamp(20px, 3vw, 36px);
+}
+
+/* Hero: compact, quiet launch-state line. A <div>, not a <p>, so it never
+   inherits the `.hero-copy p` subhead sizing rule below it. */
+.hero-launch-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 16px 0 0;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  padding: 6px 12px 6px 9px;
+  background: var(--canvas);
+  color: var(--ink-muted);
+  font-size: 0.83rem;
+  font-weight: 620;
+}
+
+.hero-launch-line strong {
+  color: var(--ink-primary);
+  font-weight: 720;
+}
+
+.hero-launch-line a {
+  color: var(--brand-strong);
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 3px;
+}
+
+.hero-launch-line-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--state-available);
+  flex-shrink: 0;
+}
+
+/* Quiet tertiary CTA (existing class name used by the pre-WEB-0022 homepage,
+   never previously given a rule of its own). */
+.button-tertiary {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 2px;
+  color: var(--ink-muted);
+  font-weight: 640;
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 3px;
+}
+
+.button-tertiary:hover {
+  color: var(--ink-primary);
+  text-decoration-color: var(--ink-primary);
+}
+
+.hero-actions--primary {
+  align-items: flex-start;
+}
+
+/* Install CTA (install-command.tsx): compact icon-copy pairing in the hero,
+   full terminal block in the closing CTA. */
+.install-command {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.install-command--expanded {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.install-command-copy {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  background: transparent;
+  padding: 0 14px;
+  color: var(--ink-muted);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 640;
+  cursor: pointer;
+}
+
+.install-command-copy:hover {
+  background: var(--surface-strong);
+  color: var(--ink-primary);
+}
+
+.install-command-copy--icon {
+  width: 44px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* Keep the compact Install link at its natural width beside the icon copy
+   button even where the shared 640px rule below forces .button-primary to
+   100% width for other, single-button hero patterns on other pages. */
+.install-command--compact .button-primary {
+  width: auto;
+  flex: 1 1 auto;
+}
+
+.install-command--expanded .install-command-copy {
+  border-color: var(--terminal-border);
+  color: oklch(0.78 0.01 216);
+}
+
+.install-command--expanded .install-command-copy:hover {
+  color: var(--terminal-text);
+  background: oklch(1 0 0 / 0.06);
+}
+
+/* Problem-and-stakes cards join the existing shared card-grid language
+   (see .evidence-map/.boundary-grid/.trust-grid/.doc-grid/.pricing-grid
+   selector groups above) rather than inventing a new visual style. */
+.problem-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.problem-grid article {
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  background: var(--canvas);
+  padding: clamp(20px, 3vw, 28px);
+  display: grid;
+  gap: 10px;
+}
+
+.problem-grid h3 {
+  font-size: 1.1rem;
+  line-height: 1.25;
+}
+
+.problem-grid p {
+  color: var(--ink-muted);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+/* "What a scan produces" preview grid: a plain label above each real
+   artifact preview — never an extra card wrapper around the already-bordered
+   evidence-frame/terminal-window beneath it (no nested cards). */
+.produces-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+  align-items: start;
+}
+
+.produces-grid > article {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.produces-grid > article h3 {
+  font-size: 1.05rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+/* Audience routing: a ruled list (feature-row's visual language), not
+   repeated boxed cards. */
+.audience-routes {
+  display: grid;
+  gap: 8px;
+}
+
+.audience-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  border-top: 1px solid var(--rule);
+  padding-block: 20px;
+}
+
+.audience-row h3 {
+  margin-bottom: 6px;
+  font-size: 1.08rem;
+}
+
+.audience-row p {
+  color: var(--ink-muted);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+/* State legend (section 11): pill + one real sentence per state. */
+.state-legend {
+  display: grid;
+  gap: 16px;
+}
+
+.state-legend-item {
+  display: grid;
+  grid-template-columns: minmax(120px, auto) minmax(0, 1fr);
+  gap: 16px;
+  align-items: baseline;
+}
+
+.state-legend-item p {
+  color: var(--ink-muted);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 640px) {
+  .audience-row {
+    grid-template-columns: 1fr;
+  }
+
+  .audience-row .next-action {
+    margin-top: 4px;
+  }
+
+  .state-legend-item {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
+/* Mobile install-first hero order (DoD-2): the compact launch-state line,
+   Install, and "See how it works" already come before the action -> receipt
+   proof visual in document order (sections 2 and 3), and before the quiet
+   Docs link within the hero itself, in every viewport — this query only
+   trims the vertical footprint so Install stays inside the first screen at
+   320-375px. Implemented in CSS, not by rendering different DOM. */
+@media (max-width: 768px) {
+  .hero-section {
+    padding-block: clamp(16px, 4vw, 32px);
+  }
+
+  /* The homepage h1 carries the long adjudicated headline ("Understand code
+     change risk before it ships. Runs locally on your code.") — at the
+     shared .page-hero clamp this wrapped to 5-7 lines and ~274-320px tall
+     at 320-375px widths, alone accounting for most of the vertical space
+     that pushed the Install CTA off-screen. This tighter clamp keeps the
+     headline legible (never smaller than ~1.7rem/~27px) while cutting it to
+     3-4 lines on real phone widths. */
+  .hero-copy h1 {
+    font-size: clamp(1.7rem, 10vw, 2.75rem);
+    line-height: 1.05;
+  }
+
+  .hero-copy .hero-subhead {
+    margin-top: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .hero-launch-line {
+    margin-top: 10px;
+  }
+
+  .hero-actions--primary {
+    margin-top: 16px;
+  }
+
+  .hero-actions--quiet {
+    display: none;
+  }
+}
+
+/* Below 400px (the narrowest real phones, e.g. 320px-wide devices), trim the
+   h1 ceiling a little further — the 15-10vw scaling above still renders
+   close to its clamp ceiling at 375px but comfortably smaller at 320px, so
+   this only nudges the ceiling down for the narrowest tier rather than
+   re-deriving the whole clamp. */
+@media (max-width: 400px) {
+  .hero-copy h1 {
+    font-size: clamp(1.7rem, 11vw, 2.3rem);
+  }
 }

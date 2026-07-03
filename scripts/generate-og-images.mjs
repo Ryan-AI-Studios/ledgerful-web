@@ -137,20 +137,24 @@ const ROUTES = [
     slug: "home",
     routePath: "/",
     // src/app/page.tsx <h1> (home sets metadata.description only, not
-    // metadata.title — see report). Real, already-shipped copy.
-    title: "Understand what changed before it ships.",
+    // metadata.title — see report). Real, already-shipped copy. Updated for
+    // WEB-0022's homepage rebuild, which replaced the old h1 with the
+    // adjudicated headline (recommendation.md §4.1).
+    title: "Understand code change risk before it ships. Runs locally on your code.",
     // src/lib/content/navigation.ts pageDescriptions.home
     description:
       "Ledgerful runs on your machine to analyze repo changes, record signed provenance, plan verification, and export audit evidence — without uploading source code by default.",
-    // src/app/page.tsx workflow[0] ("01 · Scan") inline <code>
-    command: "ledgerful scan --base-ref main",
-    commandLabel: "Scan — real repo analysis, no upload",
+    // src/components/install-command.tsx INSTALL_COMMAND — the homepage's
+    // real primary-CTA command (WEB-0022 replaced the old "01 · Scan"
+    // workflow block this used to cite with the install-first hero).
+    command: "cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful",
+    commandLabel: "Install — real source-build command, no signup",
     // Structured mirror of the citation comments above, for provenance
     // (see writeOgProvenance) — kept in sync with the comments by hand.
     sources: {
       title: "src/app/page.tsx <h1> (home sets metadata.description only, not metadata.title)",
       description: "src/lib/content/navigation.ts pageDescriptions.home",
-      command: 'src/app/page.tsx workflow[0] ("01 · Scan") inline <code>',
+      command: "src/components/install-command.tsx INSTALL_COMMAND",
     },
   },
   {

@@ -186,12 +186,105 @@ for (const viewport of [
 
     for (const locator of [
       page.getByRole("heading", { level: 1 }),
-      page.getByText("without uploading source code by default", { exact: false }),
-      page.getByRole("link", { name: "Install Ledgerful" }),
-      page.locator(".evidence-panel"),
+      page.getByText("Your source code never leaves your machine by default", {
+        exact: false,
+      }),
+      page.locator("#hero").getByRole("link", { name: "Install Ledgerful" }),
+      page.locator(".hero-proof"),
     ]) {
       await expect(locator).toBeInViewport();
     }
+  });
+}
+
+test("homepage relocated evidence panel is visible in the 'how it stays local' section", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const panel = page.locator("#stays-local .evidence-panel");
+  await panel.scrollIntoViewIfNeeded();
+  await expect(panel).toBeVisible();
+});
+
+test("homepage install command copy button copies the real install command", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  const copyButton = page
+    .locator("#hero")
+    .getByRole("button", { name: "Copy install command" });
+  await copyButton.click();
+  await expect(
+    page.locator("#hero").getByRole("button", { name: "Install command copied" }),
+  ).toBeVisible();
+  const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+  expect(clipboardText).toBe(
+    "cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful",
+  );
+});
+
+// WEB-0022 — homepage narrative structure: one h1, then h2s in the exact
+// section order the rebuilt page is specified to render, plus the three
+// top-level landmarks.
+const homepageH2Order = [
+  "One scan. One receipt.",
+  "Where your data goes",
+  "Proof points, linked to evidence",
+  "The volume of change has outpaced the evidence for it.",
+  "What a scan actually produces",
+  "Every capability, in one flat list",
+  "How it stays local",
+  "Start where you sit",
+  "What each state label means",
+  "Install now, or read the docs first",
+];
+
+test("homepage heading and landmark structure matches the specified section order", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  await expect(page.getByRole("banner")).toBeVisible();
+  await expect(page.getByRole("main")).toBeVisible();
+  await expect(page.getByRole("contentinfo")).toBeVisible();
+
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+
+  const h2s = page.locator("main").getByRole("heading", { level: 2 });
+  await expect(h2s).toHaveText(homepageH2Order);
+});
+
+// Realistic phone width x height pairs, not just one height per width — a
+// prior pass only checked 812px-tall viewports for both 320 and 375px
+// widths, which happened to be the one height where the CTA was (barely)
+// clipped into view; shorter, equally-real phone heights had it fully
+// off-screen. `toBeInViewport()`'s default intersection ratio is 0, so any
+// nonzero overlap passed — this asserts full containment (ratio: 1) and
+// cross-checks the raw bounding box, matching how the regression was
+// actually caught (a real getBoundingClientRect() measurement, not the
+// test's own assertion).
+const dod2Viewports = [
+  { width: 320, height: 568 }, // iPhone SE (1st gen) / small older Android
+  { width: 320, height: 812 },
+  { width: 375, height: 667 }, // iPhone SE (2nd/3rd gen), iPhone 8
+  { width: 375, height: 812 }, // iPhone 13 mini / iPhone X
+];
+
+for (const { width, height } of dod2Viewports) {
+  test(`homepage install CTA is fully visible without scrolling at ${width}x${height} (DoD-2)`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height });
+    await page.goto("/");
+    const install = page.locator("#hero").getByRole("link", { name: "Install Ledgerful" });
+    await expect(install).toBeInViewport({ ratio: 1 });
+
+    const box = await install.boundingBox();
+    expect(box).not.toBeNull();
+    expect(box!.y).toBeGreaterThanOrEqual(0);
+    expect(box!.y + box!.height).toBeLessThanOrEqual(height);
   });
 }
 
@@ -351,6 +444,10 @@ test("theme controls expose visible keyboard focus", async ({ page }) => {
 test("mobile header visual order matches keyboard order", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await page.goto("/");
+  // ThemeToggle hydrates client-side (it renders a placeholder until mount);
+  // wait for the real control before reading DOM order so this assertion
+  // doesn't race the homepage's client-side hydration under load.
+  await page.waitForSelector('.theme-toggle button[data-theme-choice="system"]');
   const order = await page.evaluate(() => {
     const homeElement = document.querySelector<HTMLElement>('.site-nav a[href="/"]');
     const systemElement = document.querySelector<HTMLElement>(

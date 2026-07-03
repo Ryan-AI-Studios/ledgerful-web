@@ -1,8 +1,17 @@
 import { capturedEvidence, panelOrder } from "./captured-evidence";
 
+/**
+ * WEB-0022: relocated from the hero (where `HeroProof` now owns the
+ * action -> receipt slot) into the "How it stays local" section. The
+ * version/doctor/verify-health triptych is real captured CLI output that
+ * demonstrates the local engine, local health check, and local verification
+ * dependency check actually running on-machine — the same claim that
+ * section makes in prose, so the real data belongs there rather than
+ * becoming unused. See `capturedEvidence`/`panelOrder` in `captured-evidence.ts`.
+ */
 export function EvidencePanel() {
   return (
-    <div className="evidence-panel" aria-label="Ledgerful product evidence">
+    <div className="evidence-panel" aria-label="Real local CLI output: version, environment health, and verification dependencies">
       {panelOrder.map((id) => {
         const panel = capturedEvidence[id];
         return (

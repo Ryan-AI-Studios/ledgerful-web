@@ -78,7 +78,7 @@ export function HeroProof() {
             <Image
               unoptimized
               className="evidence-frame-media"
-              src="/product/dashboard-risk-summary.avif"
+              src="/product/dashboard-risk-summary.webp"
               alt="Ledgerful local dashboard showing Project Health and Recent Changes for a scanned sample repository, with per-file risk state"
               width={2560}
               height={1600}

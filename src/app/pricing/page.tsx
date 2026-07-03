@@ -4,13 +4,17 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
+import { LicenseExamples } from "@/components/license-examples";
 import { pageDescriptions } from "@/lib/content/navigation";
-import { stateLabels, type FeatureState } from "@/lib/content/features";
+import { stateLabels } from "@/lib/content/features";
 import {
   editions,
   matrixGroups,
   matrixEditionHeaders,
   pricingFootnotes,
+  pricingBoundaryStatement,
+  pricingFaq,
+  localCapabilities,
 } from "@/lib/content/pricing";
 
 export const metadata: Metadata = {
@@ -21,37 +25,24 @@ export const metadata: Metadata = {
   },
 };
 
-type AvailableItem = {
-  label: string;
-  state: FeatureState;
-};
-
-const availableToday: AvailableItem[] = [
-  { label: "Local CLI and engine", state: "available" },
-  { label: "Local dashboard", state: "local-only" },
-  { label: "Signed ledger provenance", state: "available" },
-  { label: "SOC2 evidence ZIP export", state: "local-only" },
-  { label: "MCP stdio tools", state: "beta" },
-  { label: "GitHub Action setup path", state: "beta" },
-];
+// Reuses the same Local capability list as the pricing card and matrix
+// (localCapabilities) so this summary can't drift out of sync with them.
+const availableToday = localCapabilities;
 
 export default function PricingPage() {
   return (
     <PageShell>
       <section className="page-hero compact">
         <p className="hero-kicker">Edition boundaries</p>
-        <h1>Pricing copy that does not outrun implementation.</h1>
-        <p>
-          Qualifying small-entity local use and team-local paths are separated
-          from hosted and enterprise capabilities that require future
-          control-plane work.
-        </p>
+        <h1>A plain boundary: free, paid, or a separate agreement.</h1>
+        <p>{pricingBoundaryStatement}</p>
       </section>
 
       <section className="content-band">
         <SectionHeading title="Editions">
-          Available and beta editions are local-first. Hosted and enterprise
-          editions require a future control plane and have no announced prices or
+          Local and Commercial License run the same software under different
+          license terms — available today. Hosted and Enterprise are planned
+          and require a future control plane, with no announced prices or
           timelines.
         </SectionHeading>
 
@@ -132,10 +123,36 @@ export default function PricingPage() {
                     </li>
                   ))}
                 </ul>
+                {edition.cta ? (
+                  <div className="pricing-card-cta">
+                    {edition.cta.href.startsWith("/") ? (
+                      <Link href={edition.cta.href} className="button-secondary">
+                        {edition.cta.label}
+                        <ArrowRight size={16} aria-hidden="true" />
+                      </Link>
+                    ) : (
+                      <a href={edition.cta.href} className="button-secondary">
+                        {edition.cta.label}
+                        <ArrowRight size={16} aria-hidden="true" />
+                      </a>
+                    )}
+                    {edition.cta.note ? (
+                      <span className="item-caveat">{edition.cta.note}</span>
+                    ) : null}
+                  </div>
+                ) : null}
               </article>
             );
           })}
         </div>
+      </section>
+
+      <section className="content-band">
+        <SectionHeading kicker="License boundary" title="Who qualifies for what">
+          A plain-English read of the free/paid boundary, plus concrete
+          examples matching the Small-Entity Commercial Exception text.
+        </SectionHeading>
+        <LicenseExamples />
       </section>
 
       <section className="content-band">
@@ -154,8 +171,8 @@ export default function PricingPage() {
         >
           <table className="matrix-table">
             <caption className="sr-only">
-              Ledgerful feature comparison across license-qualified Local, Pro /
-              Team Local, Team Hosted, and Enterprise editions.
+              Ledgerful feature comparison across Local, Commercial License,
+              Hosted, and Enterprise editions.
             </caption>
             <thead>
               <tr>
@@ -210,6 +227,22 @@ export default function PricingPage() {
             <li key={note}>{note}</li>
           ))}
         </ul>
+      </section>
+
+      <section className="content-band">
+        <SectionHeading kicker="FAQ" title="Common questions">
+          Threshold definition, contractors, hosting, and OEM — plain-English
+          answers pending the same counsel review as the license examples
+          above.
+        </SectionHeading>
+        <div className="pricing-faq">
+          {pricingFaq.map((item) => (
+            <details key={item.question} className="pricing-faq-item">
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
       </section>
 
       <div className="content-band pricing-cta-band">

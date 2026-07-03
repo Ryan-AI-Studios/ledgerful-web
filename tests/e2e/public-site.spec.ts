@@ -759,3 +759,50 @@ test("architecture diagram restacks vertically and stays legible at 320px", asyn
   expect(result!.clipped).toBe(false);
   expect(result!.scrollWidth).toBeLessThanOrEqual(result!.clientWidth);
 });
+
+// ── 0025-WebPricingReframe — plain-English boundary, planned-card CTAs, FAQ ──
+
+test("pricing planned-card CTAs point at labeled mailto destinations, not fake contact paths", async ({
+  page,
+}) => {
+  await page.goto("/pricing");
+
+  const waitlist = page.getByRole("link", { name: "Join the waitlist" });
+  await expect(waitlist).toBeVisible();
+  await expect(waitlist).toHaveAttribute("href", /^mailto:waitlist@ledgerful\.dev\?subject=/);
+
+  const contact = page.getByRole("link", { name: "Contact us" });
+  await expect(contact).toBeVisible();
+  await expect(contact).toHaveAttribute("href", /^mailto:hello@ledgerful\.dev\?subject=/);
+
+  const licenseTerms = page.getByRole("link", { name: "Review license terms" });
+  await expect(licenseTerms).toBeVisible();
+  await expect(licenseTerms).toHaveAttribute("href", "/trust#license");
+});
+
+test("pricing license examples render the pending-legal-review draft banner", async ({ page }) => {
+  await page.goto("/pricing");
+
+  await expect(page.getByText("DRAFT — PENDING LEGAL REVIEW.")).toBeVisible();
+  // Four personas from licensePersonas — spot-check first and last.
+  await expect(
+    page.getByText("A 3-person consultancy runs Ledgerful internally", { exact: false }),
+  ).toBeVisible();
+  await expect(
+    page.getByText("A vendor bundles Ledgerful into a product it sells to customers.", {
+      exact: false,
+    }),
+  ).toBeVisible();
+});
+
+test("pricing FAQ disclosures are keyboard operable", async ({ page }) => {
+  await page.goto("/pricing");
+
+  const item = page.locator(".pricing-faq-item").first();
+  await expect(item).not.toHaveAttribute("open", "");
+
+  const summary = item.locator("summary");
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(item).toHaveAttribute("open", "");
+});

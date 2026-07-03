@@ -2171,6 +2171,104 @@ code {
   justify-content: center;
 }
 
+/* Planned-card CTAs (Hosted waitlist / Enterprise contact) and the
+   Commercial License terms link — 0025-WebPricingReframe */
+.pricing-card-cta {
+  margin-top: 4px;
+}
+
+.pricing-card-cta .button-secondary {
+  width: 100%;
+}
+
+/* License examples — draft banner + boundary columns + personas.
+   0025-WebPricingReframe DoD-4: prominent draft state until counsel
+   sign-off + license-in-force (async 0027 gate). */
+.legal-draft-banner {
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  padding: clamp(16px, 2.5vw, 24px);
+  margin-bottom: 24px;
+  color: var(--ink);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.legal-draft-banner strong {
+  color: var(--ink);
+}
+
+.license-boundary-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.license-boundary-column {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  padding: clamp(18px, 2.6vw, 26px);
+}
+
+.license-boundary-column h3 {
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+}
+
+.license-boundary-column ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 1.2em;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.license-personas {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.license-personas li {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: clamp(14px, 2.2vw, 20px);
+}
+
+.license-persona-scenario {
+  color: var(--ink);
+  font-weight: 620;
+  margin-bottom: 6px;
+}
+
+.license-persona-outcome {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.license-persona-outcome strong {
+  color: var(--ink);
+}
+
+/* Pricing FAQ container — items share .pricing-faq-item chrome (see the
+   .sample-export block above) */
+.pricing-faq {
+  display: grid;
+}
+
+.pricing-faq .pricing-faq-item:first-child {
+  margin-top: 0;
+}
+
 /* WEB-0003 Trust page */
 .trust-card-head {
   display: flex;
@@ -2948,8 +3046,11 @@ code {
   color: var(--ink);
 }
 
-/* B4-TRUST — sample-export disclosure (matches .disclosure-notice pattern) */
-.sample-export {
+/* B4-TRUST — sample-export disclosure (matches .disclosure-notice pattern).
+   .pricing-faq-item shares the same disclosure chrome (border/marker/focus)
+   for the /pricing FAQ — see 0025-WebPricingReframe. */
+.sample-export,
+.pricing-faq-item {
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface);
@@ -2960,7 +3061,8 @@ code {
   line-height: 1.65;
 }
 
-.sample-export > summary {
+.sample-export > summary,
+.pricing-faq-item > summary {
   cursor: pointer;
   font-weight: 700;
   color: var(--ink);
@@ -2969,11 +3071,13 @@ code {
   outline-offset: 2px;
 }
 
-.sample-export > summary::-webkit-details-marker {
+.sample-export > summary::-webkit-details-marker,
+.pricing-faq-item > summary::-webkit-details-marker {
   display: none;
 }
 
-.sample-export > summary::before {
+.sample-export > summary::before,
+.pricing-faq-item > summary::before {
   content: "+";
   display: inline-block;
   width: 1.2em;
@@ -2983,17 +3087,20 @@ code {
   text-align: center;
 }
 
-.sample-export[open] > summary::before {
+.sample-export[open] > summary::before,
+.pricing-faq-item[open] > summary::before {
   content: "−";
 }
 
-.sample-export > summary:focus-visible {
+.sample-export > summary:focus-visible,
+.pricing-faq-item > summary:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
   border-radius: 4px;
 }
 
-.sample-export p {
+.sample-export p,
+.pricing-faq-item p {
   color: var(--muted);
   margin-top: 10px;
 }

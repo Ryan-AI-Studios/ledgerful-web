@@ -70,4 +70,50 @@ assert.match(
   "Pricing page must emit noindex metadata while quiet preview is active",
 );
 
+// 0025-WebPricingReframe: plain-English boundary sentence must lead the page
+assert.match(
+  pricing,
+  /Free for individuals, noncommercial use, and small companies/,
+  "Pricing must lead with the plain-English free/paid/agreement boundary sentence",
+);
+
+// New edition names must be present (Local / Commercial License / Hosted / Enterprise)
+assert.match(pricing, /Commercial License/, "Pricing must include the Commercial License edition");
+
+// Planned-card CTAs must be labeled mailto destinations, not fake contact/sales paths
+assert.match(
+  pricing,
+  /href="mailto:waitlist@ledgerful\.dev\?subject=[^"]*"[^>]*>\s*Join the waitlist/,
+  "Hosted (planned) card must wire 'Join the waitlist' to a mailto: destination",
+);
+assert.match(
+  pricing,
+  /href="mailto:hello@ledgerful\.dev\?subject=[^"]*"[^>]*>\s*Contact us/,
+  "Enterprise (planned) card must wire 'Contact us' to a mailto: destination",
+);
+
+// Planned-card mailto CTAs must not read as a guaranteed-live channel — the
+// destination inbox is unprovisioned until the pre-flip checklist closes
+// (see deferred.md "Waitlist / contact CTA destination")
+assert.match(
+  pricing,
+  /Inbox provisioning is in progress/,
+  "Planned-card CTAs must disclose that the destination inbox is not yet provisioned",
+);
+
+// License examples must stay visibly draft/gated until counsel sign-off (DoD-4)
+assert.match(
+  pricing,
+  /DRAFT\s*—\s*PENDING LEGAL REVIEW/,
+  "License examples must carry the DRAFT — PENDING LEGAL REVIEW banner until counsel sign-off",
+);
+
+// Do not advertise the prior-MIT arbitrage on the conversion surface (user directive,
+// overrides recommendation.md §4.4 — omission, not denial; see 0025 spec.md §2)
+assert.doesNotMatch(
+  pricing,
+  /prior (versions?|releases?|tags?).{0,40}(stay|remain|are)\s+MIT/i,
+  "Pricing must not advertise that prior versions stay MIT (omission, not denial)",
+);
+
 console.log("Pricing truth checks passed.");

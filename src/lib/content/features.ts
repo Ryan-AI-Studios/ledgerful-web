@@ -64,7 +64,7 @@ export const featureStates: FeatureItem[] = [
     evidence: "Roadmap separates Action implementation from public release docs.",
   },
   {
-    name: "Team Hosted control plane",
+    name: "Hosted control plane",
     state: "hosted planned",
     description:
       "Hosted portfolio, GitHub App, billing, and retained audit state belong to a future control plane.",

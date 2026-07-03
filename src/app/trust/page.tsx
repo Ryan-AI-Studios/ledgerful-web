@@ -896,6 +896,54 @@ export default function TrustPage() {
               style={{ marginBlock: "20px 0" }}
             >
               <DataFlowDiagram />
+              <div className="trust-dataflow-print" aria-hidden="true">
+                <div className="print-flow-zone">
+                  <p className="print-flow-kicker">Local inputs</p>
+                  <p className="print-flow-title">Your machine</p>
+                  <ul className="print-flow-list">
+                    <li>Git repository</li>
+                    <li><code>.ledgerful/</code> project directory</li>
+                    <li><code>~/.ledgerful/keys/</code> signing key directory</li>
+                    <li><code>config.toml</code></li>
+                  </ul>
+                </div>
+                <p className="print-flow-arrow" aria-hidden="true">▼</p>
+                <p className="print-flow-arrow print-flow-arrow--label" aria-hidden="true">reads · writes</p>
+                <div className="print-flow-zone">
+                  <p className="print-flow-kicker">Ledgerful engine</p>
+                  <p className="print-flow-title">Local surfaces</p>
+                  <ul className="print-flow-list">
+                    <li>CLI · daemon · dashboard</li>
+                    <li>audit · verify · sync · export</li>
+                  </ul>
+                </div>
+                <p className="print-flow-arrow" aria-hidden="true">▼</p>
+                <p className="print-flow-arrow print-flow-arrow--label" aria-hidden="true">local outputs</p>
+                <div className="print-flow-zone">
+                  <p className="print-flow-kicker">Local outputs</p>
+                  <ul className="print-flow-list">
+                    <li>Sync dir (<code>dir://</code>)</li>
+                    <li>SOC2 evidence ZIP (local)</li>
+                  </ul>
+                </div>
+                <div className="print-flow-zone print-flow-zone--optional" style={{ marginTop: "12px" }}>
+                  <p className="print-flow-kicker">Optional outbound paths</p>
+                  <ol className="print-flow-optional-list">
+                    <li>
+                      <code>ask</code> → configured cloud model
+                      (sanitized, truncated context only)
+                    </li>
+                    <li>
+                      <code>index --fast</code> → Gemini (code chunks for
+                      semantic extraction)
+                    </li>
+                    <li>
+                      opt-in telemetry → Supabase (aggregate metrics)
+                    </li>
+                  </ol>
+                  <p className="print-flow-note">None of these paths is active in the default local-only workflow.</p>
+                </div>
+              </div>
               <figcaption className="diagram-caption">
                 Every arrow inside the <strong>Your machine</strong> box is
                 local. Three configured paths can cross the boundary: opt-in
@@ -977,6 +1025,43 @@ export default function TrustPage() {
               style={{ marginBlock: "8px 24px" }}
             >
               <TokenModelDiagram />
+              <div className="trust-token-print" aria-hidden="true">
+                <div className="print-token-step">
+                  <p className="print-token-kicker">Step 1</p>
+                  <p className="print-token-title">Start daemon</p>
+                  <p className="print-token-body">ledgerful web start</p>
+                </div>
+                <p className="print-token-arrow" aria-hidden="true">▼</p>
+                <div className="print-token-step">
+                  <p className="print-token-kicker">Step 2</p>
+                  <p className="print-token-title">Generate token</p>
+                  <p className="print-token-body">256-bit in memory</p>
+                </div>
+                <p className="print-token-arrow" aria-hidden="true">▼</p>
+                <div className="print-token-step">
+                  <p className="print-token-kicker">Step 3</p>
+                  <p className="print-token-title">Open URL</p>
+                  <p className="print-token-body">127.0.0.1:52001/?token=…</p>
+                </div>
+                <p className="print-token-arrow" aria-hidden="true">▼</p>
+                <div className="print-token-step">
+                  <p className="print-token-kicker">Step 4</p>
+                  <p className="print-token-title">Validate</p>
+                  <p className="print-token-body">constant-time compare</p>
+                </div>
+                <p className="print-token-arrow" aria-hidden="true">▼</p>
+                <div className="print-token-step">
+                  <p className="print-token-kicker">Step 5</p>
+                  <p className="print-token-title">Session</p>
+                  <p className="print-token-body">loopback-only UI</p>
+                </div>
+                <div className="print-token-boundary">
+                  <strong>Loopback only</strong> — bound to
+                  <code> 127.0.0.1:52001</code>, not reachable from your
+                  network or the internet. Token is per-session, validated
+                  in memory, and never persisted to disk.
+                </div>
+              </div>
               <figcaption className="diagram-caption">
                 Five steps from <code>ledgerful web start</code> to an active
                 loopback dashboard. The token lives only in daemon memory, is
@@ -1612,17 +1697,7 @@ export default function TrustPage() {
                         <th scope="row">
                           <strong>{sp.name}</strong>
                         </th>
-                        <td>
-                          {sp.purpose}
-                          {sp.tier === "hosted-planned" ? (
-                            <>
-                              {" "}
-                              <span className="subprocessor-tier-tag">
-                                Hosted planned
-                              </span>
-                            </>
-                          ) : null}
-                        </td>
+                        <td>{sp.purpose}</td>
                         <td>
                           <StatusPill status={sp.state} />
                         </td>

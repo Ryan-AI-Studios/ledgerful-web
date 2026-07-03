@@ -445,8 +445,9 @@ test("trust page generates a printable PDF for human review", async ({ page }) =
   const buffer = await page.pdf({
     path: pdfPath,
     format: "A4",
+    landscape: true,
     printBackground: true,
-    margin: { top: "16mm", right: "14mm", bottom: "18mm", left: "14mm" },
+    margin: { top: "12mm", right: "14mm", bottom: "14mm", left: "14mm" },
   });
   expect(buffer.byteLength).toBeGreaterThan(8 * 1024);
   expect(buffer.subarray(0, 5).toString("utf8")).toBe("%PDF-");

@@ -917,15 +917,35 @@ code {
     scroll-behavior: auto;
   }
 
-  /* Issue 1 — clear the body's dark gradient + dark fallback color.
-     `body { background-image: linear-gradient(...); background-color: var(--bg) }`
-     in the screen stylesheet paints a dark gradient on every page when
-     the PDF is rendered. Force a flat white background for print. */
+  /* Issue 1 + 2 — clear the body's dark gradient + dark fallback color,
+     and paint every wrapper element white. The screen stylesheet
+     declares `body { background-image: linear-gradient(...);
+     background-color: var(--bg) }` which renders as a dark gradient
+     on every printed page unless the print media query explicitly
+     overrides it. The previous version only targeted `html, body` —
+     if a wrapper (e.g. `main`, `#root`, `.PageShell`) inherits a dark
+     `background-color` from a token alias the override never reaches
+     it. Force every common wrapper to flat white. */
   html,
-  body {
+  body,
+  #root,
+  main,
+  .PageShell,
+  .trust-layout,
+  .trust-content {
     background: #fff !important;
-    background-image: none !important;
     background-color: #fff !important;
+    background-image: none !important;
+  }
+  body::before,
+  body::after,
+  main::before,
+  main::after,
+  .PageShell::before,
+  .PageShell::after {
+    content: none !important;
+    display: none !important;
+    background: transparent !important;
   }
 
   /* Hide chrome / nav that has no place in the print artifact. */
@@ -961,6 +981,8 @@ code {
   .trust-section-nav--disclosure,
   .trust-dataflow-diagram,
   .trust-token-diagram,
+  .trust-dataflow-print,
+  .trust-token-print,
   .evidence-map article,
   .boundary-grid article,
   .doc-grid article,
@@ -991,9 +1013,8 @@ code {
   details,
   table,
   .trust-section,
-  .trust-summary,
-  .trust-dataflow-diagram,
-  .trust-token-diagram,
+  .trust-dataflow-print,
+  .trust-token-print,
   .threat-grid article,
   .subprocessor-list,
   .network-inventory article,
@@ -1005,8 +1026,18 @@ code {
   .non-goals,
   .non-goals li {
     box-shadow: none !important;
-    break-inside: avoid;
-    page-break-inside: avoid;
+  }
+
+  .trust-summary {
+    /* Issue 5 — allow the executive summary card to break naturally
+       if it would otherwise be pushed whole to the next page and
+       leave page 1 empty. The four other content surfaces still
+       request `break-inside: avoid` on the screen side; print
+       reproduces that as needed but lets the summary flow when
+       it would otherwise orphan an entire page. */
+    box-shadow: none !important;
+    break-inside: auto;
+    page-break-inside: auto;
   }
 
   .trust-section {
@@ -1040,8 +1071,7 @@ code {
   }
   .doc-step-list,
   .non-goals,
-  .trust-summary-list,
-  .trust-summary {
+  .trust-summary-list {
     break-inside: avoid;
     page-break-inside: avoid;
   }
@@ -1056,6 +1086,41 @@ code {
   #subprocessor-public-heading {
     break-after: avoid;
     page-break-after: avoid;
+  }
+
+  /* Issue 5 — sparse-page rebalance. Stack every trust grid into a
+     single column in print so cards flow naturally and the
+     `repeat(auto-fit, minmax(260px, 1fr))` screen layout doesn't
+     push a single orphaned card onto its own page in landscape. */
+  .trust-grid,
+  .threat-grid,
+  .network-inventory,
+  .trust-dl-grid,
+  .evidence-map,
+  .boundary-grid,
+  .doc-grid,
+  .pricing-grid {
+    display: block !important;
+  }
+  .trust-grid > article,
+  .threat-grid > article,
+  .network-inventory > article,
+  .trust-dl-grid > div,
+  .evidence-map > article,
+  .boundary-grid > article,
+  .doc-grid > article,
+  .pricing-card {
+    margin-bottom: 12px !important;
+  }
+  .trust-grid > article:last-child,
+  .threat-grid > article:last-child,
+  .network-inventory > article:last-child,
+  .trust-dl-grid > div:last-child,
+  .evidence-map > article:last-child,
+  .boundary-grid > article:last-child,
+  .doc-grid > article:last-child,
+  .pricing-card:last-child {
+    margin-bottom: 0 !important;
   }
 
   /* Issue 5 — boundary table headers / cells. The "Uploads / sends
@@ -1138,44 +1203,189 @@ code {
     word-break: normal;
   }
 
-  /* Issue 6 — SVG diagrams. The viewBox is fixed in the JSX, so
-     width-based scaling is the only knob. We use a 75%-of-container
-     width and `transform: scale(0.85)` together: the smaller box
-     gives the diagram visible margins on the page, and the scale
-     keeps the rendered text sized correctly for the box so the
-     longest labels (e.g. "audit · verify · sync · export",
-     "127.0.0.1:52001/?token=…", "constant-time compare",
-     "Loopback only — bound to 127.0.0.1:52001, not reachable
-     from your network or the internet.") all fit inside their
-     enclosing rectangles. */
+  /* Issue 4 — SVG diagrams. The horizontal SVG viewBoxes don't lay
+     out well in portrait; in landscape A4 we still hide the SVG
+     itself and let the print-only vertical HTML/CSS layouts (added
+     next to the SVGs in page.tsx) take over. The SVG element stays
+     in the DOM for screen readers but is `display: none` in print. */
   .trust-dataflow-diagram,
   .trust-token-diagram {
-    overflow: visible;
-    padding: 4px !important;
-  }
-  .trust-dataflow-diagram svg,
-  .trust-token-diagram svg {
-    display: block;
-    margin: 0 auto;
-    width: 65%;
-    max-width: 400px;
-    height: auto;
-    transform: scale(0.88);
-    transform-origin: top center;
+    display: none !important;
   }
 
-  /* Issue 2 — keep <details> sample-export blocks together. Hide the
+  /* The print-only vertical diagrams. Hidden on screen, shown in
+     print. The styles are kept simple: bordered boxes, monospace
+     labels, a CSS-drawn arrow between the three local zones and
+     dashed border on the optional outbound paths. */
+  .trust-dataflow-print,
+  .trust-token-print {
+    display: block !important;
+    margin: 0 0 16px;
+    padding: 0;
+    color: var(--ink);
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .trust-dataflow-print .print-flow-zone {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 10px 14px;
+    background: #fff !important;
+    margin: 0;
+  }
+  .trust-dataflow-print .print-flow-zone--optional {
+    border-style: dashed;
+    border-color: var(--ink-muted);
+  }
+  .trust-dataflow-print .print-flow-kicker {
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 0 0 4px;
+  }
+  .trust-dataflow-print .print-flow-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 4px;
+  }
+  .trust-dataflow-print .print-flow-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--ink);
+    font-size: 0.85rem;
+    line-height: 1.45;
+  }
+  .trust-dataflow-print .print-flow-list li {
+    margin: 0;
+    padding: 0;
+  }
+  .trust-dataflow-print .print-flow-list code {
+    font-size: 0.82rem;
+  }
+  .trust-dataflow-print .print-flow-arrow {
+    display: block;
+    text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: var(--ink);
+    margin: 4px 0;
+    padding: 0;
+    background: transparent !important;
+  }
+  .trust-dataflow-print .print-flow-arrow--label {
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+    font-size: 0.7rem;
+    color: var(--ink-muted);
+    margin-top: -2px;
+  }
+  .trust-dataflow-print .print-flow-optional-list {
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: print-flow-opt;
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+  .trust-dataflow-print .print-flow-optional-list li {
+    counter-increment: print-flow-opt;
+    margin: 0 0 4px;
+    padding: 0;
+  }
+  .trust-dataflow-print .print-flow-optional-list li::before {
+    content: counter(print-flow-opt) ".  ";
+    font-weight: 700;
+    color: var(--ink-muted);
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  }
+  .trust-dataflow-print .print-flow-note {
+    margin: 6px 0 0;
+    font-size: 0.8rem;
+    color: var(--ink-muted);
+    font-style: italic;
+  }
+
+  .trust-token-print .print-token-step {
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 10px 14px;
+    background: #fff !important;
+    margin: 0;
+  }
+  .trust-token-print .print-token-kicker {
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin: 0 0 4px;
+  }
+  .trust-token-print .print-token-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 2px;
+  }
+  .trust-token-print .print-token-body {
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+    font-size: 0.85rem;
+    color: var(--ink);
+    margin: 0;
+    line-height: 1.4;
+  }
+  .trust-token-print .print-token-arrow {
+    display: block;
+    text-align: center;
+    font-size: 1.1rem;
+    line-height: 1.4;
+    color: var(--ink);
+    margin: 4px 0;
+    padding: 0;
+    background: transparent !important;
+  }
+  .trust-token-print .print-token-boundary {
+    margin-top: 8px;
+    border: 1px dashed var(--rule);
+    border-radius: 4px;
+    padding: 8px 14px;
+    background: #fff !important;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .trust-token-print .print-token-boundary strong {
+    color: var(--ink);
+  }
+
+  /* Issue 3 — keep <details> sample-export blocks together. Hide the
      <summary> in print: the content is forced open below it, and the
      "View example..." button is a useless click affordance in a PDF.
      The e2e test at public-site.spec.ts:413 asserts that
      `:scope > *:not(summary)` is rendered (not display:none) — that
      check is unaffected by hiding the summary itself. */
   details.sample-export {
-    break-inside: avoid;
-    page-break-inside: avoid;
+    break-inside: auto;
+    page-break-inside: auto;
   }
   details.sample-export > summary {
     display: none !important;
+  }
+  /* Issue 3 — strip the <details> container's visual chrome in print
+     so the empty shell of the rounded box doesn't render around the
+     content. The content inside (pre, h4, p, table) renders as plain
+     block-level flow. */
+  details.sample-export {
+    border: none !important;
+    border-radius: 0 !important;
+    background: #fff !important;
+    background-color: #fff !important;
+    padding: 0 !important;
+    margin: 8px 0 !important;
   }
 
   /* Force sample-export evidence <details> content to render in the PDF
@@ -1190,6 +1400,17 @@ code {
   details.sample-export p,
   details.sample-export .table-scroll {
     display: block !important;
+  }
+  details.sample-export pre {
+    background: #fff !important;
+    background-color: #fff !important;
+    border: 1px solid var(--rule) !important;
+    padding: 8px 10px !important;
+    font-size: 0.78rem !important;
+    line-height: 1.4 !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+    white-space: pre-wrap !important;
   }
 
   /* Trust sections: avoid breaking right at the section heading so
@@ -2535,6 +2756,16 @@ code {
   padding: clamp(16px, 2.6vw, 24px);
   overflow-x: auto;
   color: var(--ink);
+}
+
+/* Print-only vertical layouts of the two diagrams. The screen
+   experience renders the SVG diagrams (above); the print media
+   query hides the SVGs and shows these instead. The screen-side
+   default keeps them hidden so the duplicate content never appears
+   in the live page. */
+.trust-dataflow-print,
+.trust-token-print {
+  display: none;
 }
 
 .diagram-caption {

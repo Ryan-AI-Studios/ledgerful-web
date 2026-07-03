@@ -301,6 +301,36 @@ test("skip link and native disclosure are keyboard operable", async ({ page }) =
   await expect(summary.locator("xpath=..")).toHaveAttribute("open", "");
 });
 
+test("mobile section-nav disclosure is keyboard operable at 375px", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/trust");
+
+  // The desktop rail is hidden at 375px; the mobile <details> disclosure shows.
+  const rail = page.locator(".trust-section-nav--rail");
+  await expect(rail).toHaveCSS("display", "none");
+  const disclosure = page.locator(".trust-section-nav--disclosure");
+  await expect(disclosure).toBeVisible();
+
+  // Open the disclosure via keyboard (Enter on summary).
+  const summary = disclosure.locator("summary");
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(disclosure).toHaveAttribute("open", "");
+
+  // Tab into the now-open list and confirm a real anchor is reachable + focused.
+  const firstLink = disclosure.locator("a").first();
+  await firstLink.focus();
+  await expect(firstLink).toBeFocused();
+  expect(await firstLink.getAttribute("href")).toMatch(/^#/);
+
+  // Anchor click lands the target heading clear of the top (scroll-margin-top).
+  const href = await firstLink.getAttribute("href");
+  const targetId = href!.slice(1);
+  await page.keyboard.press("Enter");
+  const target = page.locator(`#${targetId}`);
+  await expect(target).toBeInViewport();
+});
+
 test("trust launch blockers do not expose unavailable public links", async ({ page }) => {
   await page.goto("/trust");
   await expect(page.locator("#disclosure a, #license a")).toHaveCount(0);
@@ -376,6 +406,30 @@ for (const width of [320, 375]) {
 test("trust page generates a printable PDF for human review", async ({ page }) => {
   await page.goto("/trust");
   await page.emulateMedia({ media: "print" });
+
+  // Assert the print CSS actually applied before generating the PDF:
+  // the section nav + hero CTAs must be hidden, and the collapsible
+  // evidence samples must be forced open (so they render in the PDF).
+  const navRail = page.locator(".trust-section-nav--rail");
+  await expect(navRail).toHaveCSS("display", "none");
+
+  const heroActions = page.locator(".hero-actions");
+  await expect(heroActions).toHaveCSS("display", "none");
+
+  const sampleDetails = page.locator("details.sample-export");
+  const detailCount = await sampleDetails.count();
+  expect(detailCount).toBeGreaterThan(0);
+  for (const detail of await sampleDetails.all()) {
+    // print CSS forces details[open] content visible; assert the open
+    // attribute OR that the child content is rendered (not display:none).
+    const isOpen = await detail.getAttribute("open");
+    const contentVisible = await detail
+      .locator(":scope > *:not(summary)")
+      .first()
+      .evaluate((el) => getComputedStyle(el).display !== "none");
+    expect(isOpen !== null || contentVisible).toBe(true);
+  }
+
   const pdfPath = "test-results/trust-print.pdf";
   const buffer = await page.pdf({
     path: pdfPath,

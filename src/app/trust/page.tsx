@@ -874,11 +874,12 @@ export default function TrustPage() {
               <DataFlowDiagram />
               <figcaption className="diagram-caption">
                 Every arrow inside the <strong>Your machine</strong> box is
-                local. Two configured paths can cross the boundary: opt-in
-                aggregate telemetry to Supabase, and sanitized, truncated
-                context from the <code>ask</code> workflow to a selected cloud
-                model. Neither path is active in the default local-only
-                workflow.
+                local. Three configured paths can cross the boundary: opt-in
+                aggregate telemetry to Supabase, sanitized, truncated
+                context from the <code>ask</code> workflow to a selected
+                cloud model, and code chunks from <code>index --fast</code>{" "}
+                to a configured Gemini model for semantic extraction. None
+                of these paths is active in the default local-only workflow.
               </figcaption>
             </figure>
             <div className="network-inventory" style={{ marginTop: "32px" }}>
@@ -1496,8 +1497,12 @@ export default function TrustPage() {
                   margin: "0 0 16px",
                 }}
               >
-                Serves the static <code>ledgerful.io</code> site only. Does
-                not process project source code, ledger data, or user data.
+                Serves the static <code>ledgerful.io</code> site only and
+                never receives Ledgerful project source code, ledger data,
+                or product data. Visitor traffic to the public site (e.g.
+                IP addresses) is processed by Vercel as the hosting
+                provider for the marketing site, not as a product
+                subprocessor.
               </p>
               <div
                 className="table-scroll"

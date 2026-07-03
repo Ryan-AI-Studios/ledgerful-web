@@ -54,7 +54,7 @@ export const trustDataFlows: TrustDataFlow[] = [
   {
     iconName: "Cloud",
     title: "Configured cloud model",
-    body: "The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when a user configures and selects one of those providers. Local-model operation does not use this cloud path.",
+    body: "The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when a user configures and selects one of those providers. Separately, `ledgerful index --fast` can send code chunks to a configured Gemini model for semantic extraction instead of the local model. Neither path is active in the default local-only workflow.",
     state: "available",
   },
   {
@@ -91,7 +91,7 @@ export const networkOutbound = {
   crashReporting:
     "None. Ledgerful does not integrate a crash reporter. Panics are handled by Rust's default behavior (stderr output) and are not transmitted anywhere. No crash data is ever sent to a remote service.",
   cloudModels:
-    "Configured only. The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when that provider is configured and selected. API credentials may be read from the process environment or repository-local .env file.",
+    "Configured only. Two distinct workflows can send data to a configured cloud model. The `ask` command sends sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when that provider is configured and selected. The `index --fast` flag sends code chunks to a configured Gemini model for semantic extraction instead of the local model. API credentials may be read from the process environment or repository-local .env file. Neither path is active in the default local-only workflow.",
 } as const;
 
 /**
@@ -230,7 +230,7 @@ export const publicSiteInfra: Subprocessor[] = [
   {
     name: "Vercel",
     purpose:
-      "Static site hosting for this public marketing website. Does not process project source code, ledger data, or user data.",
+      "Static site hosting for this public marketing website. Hosts the public `ledgerful.io` site only and never receives Ledgerful project source code, ledger data, or product data. Visitor traffic to the public site (e.g. IP addresses) is processed by Vercel as the hosting provider for the marketing site, not as a product subprocessor.",
     state: "available",
   },
 ];
@@ -314,7 +314,7 @@ export const threatModel: { heading: string; body: string }[] = [
   },
   {
     heading: "External paths are opt-in and narrow",
-    body: "Opt-in telemetry sends a fixed aggregate JSON payload (no source, paths, query text, or commit messages). The configured cloud-model ask workflow sends only sanitized, truncated context. There is no third outbound path.",
+    body: "Opt-in telemetry sends a fixed aggregate JSON payload (no source, paths, query text, or commit messages). Two configured cloud-model workflows can send data: `ask` sends sanitized, truncated context, and `index --fast` sends code chunks to a configured Gemini model for semantic extraction. Both are opt-in (require a configured API key) and neither is active in the default local-only workflow.",
   },
 ];
 
@@ -322,7 +322,7 @@ export const nonGoals: string[] = [
   "Hosted-mode guarantees. The local-first engine does not promise the SLAs, RBAC, audit log retention, or team-scope guarantees of a hosted control plane. Hosted mode is planned and does not exist today.",
   "SOC2 certified / SOC2 compliant. Ledgerful generates a local SOC2-style evidence export from your ledger; we are not a certified audit firm and do not claim third-party SOC 2 attestation.",
   "FedRAMP, FIPS 140, or other government baselines. No claim is made about FedRAMP authorization, FIPS-validated cryptography, or comparable government certification.",
-  "Zero-network or zero-telemetry absolutes. The default build excludes telemetry; opt-in telemetry and a configured cloud-model ask workflow are the only outbound paths. Nothing here is a 'no network ever' guarantee.",
+  "Zero-network or zero-telemetry absolutes. The default build excludes telemetry; opt-in telemetry and the configured cloud-model `ask` and `index --fast` workflows are the only outbound paths. Nothing here is a 'no network ever' guarantee.",
   "Air-gap. The engine can run fully offline, but this page does not claim that every install configuration is air-gapped. Operators are responsible for their own network posture.",
   "SSO / SAML / OIDC / SCIM / RBAC in the local daemon. None of these are implemented locally. They are enterprise-planned for a future control plane.",
 ];

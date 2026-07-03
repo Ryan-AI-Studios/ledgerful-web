@@ -71,10 +71,12 @@ export function TrustSummary() {
         <div>
           <dt>Release verification</dt>
           <dd>
-            Each binary ships with a SHA-256 companion checksum. Code signing
-            (Windows Authenticode, macOS notarization) and SLSA provenance
-            attestations are planned. Current release status is published on
-            the changelog.
+            The release workflow is configured to generate SHA-256
+            companion checksums for each binary archive. No anonymous
+            public release is available yet while the repository is
+            private; the local source version is 0.1.7. Code signing
+            (Windows Authenticode, macOS notarization) and SLSA
+            provenance attestations are planned.
           </dd>
         </div>
         <div>

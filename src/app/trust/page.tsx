@@ -4,17 +4,21 @@ import { Cloud, HardDrive, RadioTower, Shield } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
+import { TrustSectionNav } from "@/components/trust-section-nav";
+import { TrustSummary } from "@/components/trust-summary";
 import { pageDescriptions } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
 import {
+  boundaryRows,
   networkOutbound,
-  plannedSubprocessors,
-  readsLocally,
+  nonGoals,
+  productSubprocessors,
+  publicSiteInfra,
   releaseVerificationSteps,
   soc2ExportLayout,
   telemetrySchema,
+  threatModel,
   trustDataFlows,
-  writesLocally,
 } from "@/lib/content/trust";
 
 function DataFlowDiagram() {
@@ -781,342 +785,484 @@ export default function TrustPage() {
         </p>
       </section>
 
-      {/* ── Table of contents ─────────────────────────────────── */}
-      <div className="content-band" style={{ paddingBlock: "0" }}>
-        <nav
-          aria-label="On this page"
-          style={{
-            border: "1px solid var(--line)",
-            borderRadius: "var(--radius)",
-            padding: "16px 20px",
-            background: "var(--surface)",
-            marginBottom: "40px",
-          }}
-        >
-          <p
-            style={{
-              fontSize: "0.82rem",
-              fontWeight: 720,
-              color: "var(--muted)",
-              marginBottom: "10px",
-            }}
-          >
-            On this page
-          </p>
-          <ol
-            style={{
-              listStyle: "none",
-              padding: 0,
-              margin: 0,
-              display: "grid",
-              gap: "6px",
-            }}
-          >
-            {[
-              { href: "#data-flow", label: "Data flow" },
-              { href: "#outbound-network", label: "Outbound network activity" },
-              { href: "#local-data", label: "What stays on your machine" },
-              { href: "#dashboard-security", label: "Dashboard and token security" },
-              { href: "#signing", label: "Signing and key management" },
-              { href: "#soc2-export", label: "Local evidence export" },
-              { href: "#release-verification", label: "Release verification" },
-              { href: "#telemetry", label: "Telemetry" },
-              { href: "#disclosure", label: "Responsible disclosure" },
-              { href: "#license", label: "License" },
-              { href: "#subprocessors", label: "Subprocessors" },
-            ].map(({ href, label }) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  style={{
-                    fontSize: "0.9rem",
-                    color: "var(--primary-strong)",
-                    textDecoration: "none",
-                  }}
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ol>
-        </nav>
-      </div>
+      <div className="trust-layout">
+        <TrustSectionNav />
 
-      {/* ── Section 1: Data flow ─────────────────────────────── */}
-      <section id="data-flow" className="content-band">
-        <SectionHeading title="Data flow">
-          Five modes describe how data moves in Ledgerful. The default mode
-          uploads nothing. Source code is never uploaded by default.
-        </SectionHeading>
-        <div className="trust-grid">
-          {trustDataFlows.map((flow) => {
-            const Icon = iconMap[flow.iconName];
-            return (
-              <article key={flow.title}>
-                <Icon size={24} aria-hidden="true" />
-                <div className="trust-card-head">
-                  <h3>{flow.title}</h3>
-                  <StatusPill status={flow.state} />
-                </div>
-                <p>{flow.body}</p>
+        <div className="trust-content">
+          {/* ── Section 1: Executive summary ──────────────────── */}
+          <section id="summary" className="content-band trust-section">
+            <TrustSummary />
+          </section>
+
+          {/* ── Section 2: Reads / writes / uploads boundary ── */}
+          <section id="boundary-table" className="content-band trust-section">
+            <SectionHeading title="Reads / writes / uploads">
+              Boundary answer in one table: what each surface reads, what it
+              writes, what can leave the machine, and what stays local. Every
+              row traces back to the sections below.
+            </SectionHeading>
+            <div
+              className="table-scroll"
+              role="region"
+              aria-label="Reads, writes, uploads, and what stays local, horizontally scrollable"
+              tabIndex={0}
+            >
+              <table
+                className="trust-table boundary-table"
+                aria-label="Reads, writes, uploads, and what stays local for each Ledgerful surface"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Surface</th>
+                    <th scope="col">Reads</th>
+                    <th scope="col">Writes</th>
+                    <th scope="col">Uploads / sends externally</th>
+                    <th scope="col">Stays local</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {boundaryRows.map((row) => (
+                    <tr key={row.surface}>
+                      <th scope="row">
+                        <strong>{row.surface}</strong>
+                      </th>
+                      <td>{row.reads}</td>
+                      <td>{row.writes}</td>
+                      <td>{row.uploads}</td>
+                      <td>{row.staysLocal}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p
+              className="item-caveat"
+              style={{ marginTop: "12px", color: "var(--muted)" }}
+            >
+              Detailed reads / writes are listed in the &ldquo;what stays on your
+              machine&rdquo; section below; the known outbound paths and their
+              activation conditions are listed in the data-flow and
+              release-verification sections.
+            </p>
+          </section>
+
+          {/* ── Section 3: Data flow diagram ────────────────── */}
+          <section id="data-flow" className="content-band trust-section">
+            <SectionHeading title="Data flow">
+              Five modes describe how data moves in Ledgerful. The default
+              mode uploads nothing. Source code is never uploaded by default.
+            </SectionHeading>
+            <div className="trust-grid">
+              {trustDataFlows.map((flow) => {
+                const Icon = iconMap[flow.iconName];
+                return (
+                  <article key={flow.title}>
+                    <Icon size={24} aria-hidden="true" />
+                    <div className="trust-card-head">
+                      <h3>{flow.title}</h3>
+                      <StatusPill status={flow.state} />
+                    </div>
+                    <p>{flow.body}</p>
+                  </article>
+                );
+              })}
+            </div>
+            <figure
+              aria-label="Data flow diagram: local reads and writes, opt-in telemetry, and configured cloud-model egress"
+              style={{ marginBlock: "20px 0" }}
+            >
+              <DataFlowDiagram />
+              <figcaption className="diagram-caption">
+                Every arrow inside the <strong>Your machine</strong> box is
+                local. Two configured paths can cross the boundary: opt-in
+                aggregate telemetry to Supabase, and sanitized, truncated
+                context from the <code>ask</code> workflow to a selected cloud
+                model. Neither path is active in the default local-only
+                workflow.
+              </figcaption>
+            </figure>
+            <div className="network-inventory" style={{ marginTop: "32px" }}>
+              <article>
+                <h3>Update checks</h3>
+                <p>{networkOutbound.updateChecks}</p>
               </article>
-            );
-          })}
-        </div>
-        <figure
-          aria-label="Data flow diagram: local reads and writes, opt-in telemetry, and configured cloud-model egress"
-          style={{ marginBlock: "20px 0" }}
-        >
-          <DataFlowDiagram />
-          <figcaption className="diagram-caption">
-            Every arrow inside the <strong>Your machine</strong> box is local.
-            Two configured paths can cross the boundary: opt-in aggregate
-            telemetry to Supabase, and sanitized, truncated context from the
-            <code> ask</code> workflow to a selected cloud model. Neither path
-            is active in the default local-only workflow.
-          </figcaption>
-        </figure>
-      </section>
+              <article>
+                <h3>Crash reporting</h3>
+                <p>{networkOutbound.crashReporting}</p>
+              </article>
+              <article>
+                <h3>Configured cloud models</h3>
+                <p>{networkOutbound.cloudModels}</p>
+              </article>
+            </div>
+          </section>
 
-      {/* ── Section 2: Outbound network activity ─────────────── */}
-      <section id="outbound-network" className="content-band">
-        <SectionHeading title="Outbound network activity">
-          The known outbound paths and their activation conditions. Default
-          local analysis does not contact these services.
-        </SectionHeading>
-        <div className="network-inventory">
-          <article>
-            <h3>Update checks</h3>
-            <p>{networkOutbound.updateChecks}</p>
-          </article>
-          <article>
-            <h3>Crash reporting</h3>
-            <p>{networkOutbound.crashReporting}</p>
-          </article>
-          <article>
-            <h3>Configured cloud models</h3>
-            <p>{networkOutbound.cloudModels}</p>
-          </article>
-        </div>
-      </section>
+          {/* ── Section 4: Three-surface boundary ───────────── */}
+          <section id="three-surface" className="content-band trust-section">
+            <SectionHeading title="Three-surface boundary">
+              Ledgerful is shipped as three local surfaces — CLI, daemon, and
+              dashboard — plus an optional configured cloud model. The
+              dashboard bind address is 127.0.0.1:52001; CORS is restricted to
+              loopback origins; the session token is 256-bit random, validated
+              in constant time, and never persisted to disk.
+            </SectionHeading>
+            <div className="trust-dl-grid">
+              <div>
+                <h3>CLI</h3>
+                <p>
+                  The <code>ledgerful</code> binary. It runs commands, reads
+                  project state, writes ledger entries and reports, and
+                  can launch the local dashboard. No network is required for
+                  scan, audit, ledger, verify, or the local evidence export.
+                </p>
+              </div>
+              <div>
+                <h3>Daemon</h3>
+                <p>
+                  The loopback HTTP server backing the dashboard. Bound to
+                  <code> 127.0.0.1:52001</code>. Auth via ephemeral session
+                  token in <code>?token=&lt;hex&gt;</code> or{" "}
+                  <code>Authorization: Bearer &lt;hex&gt;</code>. The token is
+                  generated in memory, validated constant-time, and never
+                  persisted to disk.
+                </p>
+              </div>
+              <div>
+                <h3>Dashboard</h3>
+                <p>
+                  A static SPA that opens against the daemon URL with the
+                  ephemeral token. Lives in your browser. It does not call any
+                  remote service; the bind address is loopback only.
+                </p>
+              </div>
+            </div>
+          </section>
 
-      {/* ── Section 3: Reads and writes ──────────────────────── */}
-      <section id="local-data" className="content-band">
-        <SectionHeading title="What stays on your machine">
-          Project state and evidence stay local by default. A configured cloud
-          model can receive sanitized, truncated context only when its command
-          path is selected.
-        </SectionHeading>
-        <div className="trust-dl-grid">
-          <div>
-            <h3>What Ledgerful reads</h3>
-            <ul>
-              {readsLocally.map((item, i) => (
-                <li key={i}>{item}</li>
+          {/* ── Section 5: Daemon access / token model ──────── */}
+          <section
+            id="dashboard-security"
+            className="content-band trust-section"
+          >
+            <SectionHeading title="Dashboard and token model">
+              The local dashboard is loopback-only. It is not accessible from
+              the internet or from other machines on your network.
+            </SectionHeading>
+            <figure
+              aria-label="Token model diagram: ephemeral local ?token= session on loopback"
+              style={{ marginBlock: "8px 24px" }}
+            >
+              <TokenModelDiagram />
+              <figcaption className="diagram-caption">
+                Five steps from <code>ledgerful web start</code> to an active
+                loopback dashboard. The token lives only in daemon memory, is
+                validated constant-time, and is never persisted to disk.
+              </figcaption>
+            </figure>
+            <div className="disclosure-notice">
+              <p>
+                <strong>Bind address:</strong> The daemon binds exclusively
+                to <code>http://127.0.0.1:52001</code>. CORS is restricted to{" "}
+                <code>localhost</code> and <code>127.0.0.1</code> on any port
+                — cross-origin requests from remote or hosted domains are
+                rejected.
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Token authentication:</strong> Every dashboard session
+                requires an ephemeral session token passed via{" "}
+                <code>?token=&lt;hex&gt;</code> in the query string or{" "}
+                <code>Authorization: Bearer &lt;hex&gt;</code> in the request
+                header. Tokens are validated using constant-time comparison
+                to prevent timing attacks.
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Token entropy:</strong> Tokens are 256-bit
+                cryptographically random values (32 bytes via{" "}
+                <code>rand::thread_rng().fill_bytes</code>, seeded from OS
+                entropy), hex-encoded to 64 characters. Entropy is sufficient
+                to make loopback brute-force attacks infeasible.
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Token safety rules:</strong> Tokens are per-session
+                and never persisted to disk by the daemon. Tokens must not
+                appear in browser logs, screenshot-based bug reports, or
+                documentation examples. If a token is accidentally exposed,
+                restart the daemon to generate a new one.
+              </p>
+            </div>
+          </section>
+
+          {/* ── Section 6: Cryptographic signing ─────────────── */}
+          <section id="signing" className="content-band trust-section">
+            <SectionHeading title="Signing and key management">
+              Ledgerful uses Ed25519 signing to provide tamper-evident ledger
+              provenance and offline-verifiable SOC2 evidence.
+            </SectionHeading>
+            <div className="disclosure-notice">
+              <p>
+                <strong>Key generation:</strong> An Ed25519 key pair is
+                generated on first use via <code>OsRng</code> (OS-level
+                entropy). The signing key and verifying key are stored as
+                hex-encoded files at{" "}
+                <code>~/.ledgerful/keys/private.key</code> and{" "}
+                <code>~/.ledgerful/keys/public.pem</code> (Windows:{" "}
+                <code>%USERPROFILE%\.ledgerful\keys\</code>). No remote key
+                management is required by default.
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Key storage at rest:</strong> Private keys are stored
+                as plain hex files protected only by filesystem permissions.
+                A local machine compromise — such as malware or a stolen
+                laptop without Full Disk Encryption — could allow an attacker
+                to extract the private key and forge signed ledger entries.{" "}
+                <strong>
+                  Full Disk Encryption (FDE) is the primary recommended
+                  mitigation for local key security.
+                </strong>{" "}
+                Hardware-backed key storage (TPM, Secure Enclave) and hosted
+                KMS are enterprise-planned features for a future control
+                plane.
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Sync bundles:</strong> When local sync is enabled,
+                Ledgerful signs and encrypts bundles before writing them to
+                the sync directory. Bundle contents are not readable without
+                the encryption key.
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>SOC2 export signing:</strong> Each SOC2 evidence ZIP
+                includes <code>manifest.sig</code> (64-byte Ed25519 signature
+                over <code>manifest.json</code>) and{" "}
+                <code>manifest.pub</code> (32-byte verifying key). This allows
+                offline tamper verification without trusting a remote key
+                server.
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Key rotation and enterprise features:</strong> Key
+                rotation is local and manual. Hardware-backed key storage,
+                hosted KMS, and device trust management are
+                enterprise-planned and require a future control plane. SSO /
+                SAML / OIDC, SCIM, and RBAC are also enterprise-planned —
+                none of these are implemented in the local daemon.
+              </p>
+            </div>
+          </section>
+
+          {/* ── Section 7: Release verification ──────────────── */}
+          <section
+            id="release-verification"
+            className="content-band trust-section"
+          >
+            <SectionHeading title="Release verification">
+              {release.value}. The release workflow requires SHA-256
+              companion files for every binary archive.
+            </SectionHeading>
+            <div
+              className="disclosure-notice"
+              style={{ marginBottom: "24px" }}
+            >
+              <strong>Current baseline:</strong> {release.note} The steps
+              below describe the verification process that will apply once
+              URLs are available.
+            </div>
+            <ol className="doc-step-list">
+              {releaseVerificationSteps.map((step, i) => (
+                <li key={i}>{step}</li>
               ))}
-            </ul>
-          </div>
-          <div>
-            <h3>What Ledgerful writes</h3>
-            <ul>
-              {writesLocally.map((item, i) => (
-                <li key={i}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
+            </ol>
+            <div
+              className="disclosure-notice"
+              style={{ marginTop: "24px" }}
+            >
+              <strong>OS code signing status:</strong> Windows Authenticode
+              signing and macOS Developer ID / Gatekeeper notarization are
+              not yet implemented. Binaries may trigger OS security prompts
+              on first launch. Code signing for both platforms and SLSA
+              provenance attestations are planned enhancements for a future
+              release.
+            </div>
+          </section>
 
-      {/* ── Section 4: Daemon access ──────────────────────────── */}
-      <section id="dashboard-security" className="content-band">
-        <SectionHeading title="Dashboard and token security">
-          The local dashboard is loopback-only. It is not accessible from the
-          internet or from other machines on your network.
-        </SectionHeading>
-        <figure
-          aria-label="Token model diagram: ephemeral local ?token= session on loopback"
-          style={{ marginBlock: "8px 24px" }}
-        >
-          <TokenModelDiagram />
-          <figcaption className="diagram-caption">
-            Five steps from <code>ledgerful web start</code> to an active
-            loopback dashboard. The token lives only in daemon memory, is
-            validated constant-time, and is never persisted to disk.
-          </figcaption>
-        </figure>
-        <div className="disclosure-notice">
-          <p>
-            <strong>Bind address:</strong> The daemon binds exclusively to{" "}
-            <code>http://127.0.0.1:52001</code>. CORS is restricted to{" "}
-            <code>localhost</code> and <code>127.0.0.1</code> on any port —
-            cross-origin requests from remote or hosted domains are rejected.
-          </p>
-          <p style={{ marginTop: "12px" }}>
-            <strong>Token authentication:</strong> Every dashboard session
-            requires an ephemeral session token passed via{" "}
-            <code>?token=&lt;hex&gt;</code> in the query string or{" "}
-            <code>Authorization: Bearer &lt;hex&gt;</code> in the request
-            header. Tokens are validated using constant-time comparison to
-            prevent timing attacks.
-          </p>
-          <p style={{ marginTop: "12px" }}>
-            <strong>Token entropy:</strong> Tokens are 256-bit cryptographically
-            random values (32 bytes via{" "}
-            <code>rand::thread_rng().fill_bytes</code>, seeded from OS entropy),
-            hex-encoded to 64 characters. Entropy is sufficient to make
-            loopback brute-force attacks infeasible.
-          </p>
-          <p style={{ marginTop: "12px" }}>
-            <strong>Token safety rules:</strong> Tokens are per-session and
-            never persisted to disk by the daemon. Tokens must not appear in
-            browser logs, screenshot-based bug reports, or documentation
-            examples. If a token is accidentally exposed, restart the daemon to
-            generate a new one.
-          </p>
-        </div>
-      </section>
+          {/* ── Section 8: Telemetry ─────────────────────────── */}
+          <section id="telemetry" className="content-band trust-section">
+            <SectionHeading title="Telemetry">
+              {telemetry.value}. It must be explicitly enabled.
+            </SectionHeading>
+            <div
+              className="disclosure-notice"
+              style={{ marginBottom: "24px" }}
+            >
+              <strong>Opt-in only:</strong> The default binary does not
+              include the <code>{telemetry.feature}</code> feature. In a
+              build that does, enable collection with{" "}
+              <code>{telemetry.enableCommand}</code>; its state is stored in{" "}
+              <code>{telemetry.configPath}</code>. Telemetry is never
+              activated without explicit user action. The payload contains
+              the documented aggregate fields below; it does not include
+              command arguments, source code, file paths, diff text, or
+              query text.
+            </div>
+            <p
+              style={{
+                color: "var(--muted)",
+                fontSize: "0.9rem",
+                marginBottom: "16px",
+              }}
+            >
+              Ingest endpoint:{" "}
+              <code className="technical-token">{telemetry.endpoint}</code>
+            </p>
+            <div className="table-scroll">
+              <table
+                className="trust-table telemetry-table"
+                aria-label="Telemetry fields sent when opt-in is enabled"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Field</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {telemetrySchema.map((field) => (
+                    <tr key={field.name}>
+                      <th scope="row">
+                        <strong>{field.name}</strong>
+                      </th>
+                      <td>{field.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="item-caveat" style={{ marginTop: "12px" }}>
+              Command arguments, source code, file paths, diff text, query
+              text, commit messages, and author identities are not part of
+              this payload.
+            </p>
+            <details className="sample-export">
+              <summary>View example telemetry payload (JSON)</summary>
+              <p>
+                <span className="sample-label">EXAMPLE</span> The payload
+                below shows the complete payload shape documented above. The
+                endpoint is the Supabase Edge Function documented on this
+                page and is only contacted after{" "}
+                <code>{telemetry.enableCommand}</code>.
+              </p>
+              <pre>
+                <code>{`{
+  "schema_version": 1,
+  "anonymous_id": "00000000-0000-4000-8000-000000000000",
+  "client_version": "0.1.7",
+  "platform": "windows",
+  "sent_at": "2026-07-02T14:00:00Z",
+  "window_start": "2026-06-25T14:00:00Z",
+  "window_end": "2026-07-02T14:00:00Z",
+  "command_counts": {
+    "verify": 4,
+    "scan": 2
+  },
+  "features_enabled": ["web", "mcp", "sync"],
+  "active_days_in_window": 3
+}`}</code>
+              </pre>
+            </details>
+          </section>
 
-      {/* ── Section 5: Cryptographic signing ─────────────────── */}
-      <section id="signing" className="content-band">
-        <SectionHeading title="Signing and key management">
-          Ledgerful uses Ed25519 signing to provide tamper-evident ledger
-          provenance and offline-verifiable SOC2 evidence.
-        </SectionHeading>
-        <div className="disclosure-notice">
-          <p>
-            <strong>Key generation:</strong> An Ed25519 key pair is generated on
-            first use via <code>OsRng</code> (OS-level entropy). The signing
-            key and verifying key are stored as hex-encoded files at{" "}
-            <code>~/.ledgerful/keys/private.key</code> and{" "}
-            <code>~/.ledgerful/keys/public.pem</code> (Windows:{" "}
-            <code>%USERPROFILE%\.ledgerful\keys\</code>). No remote key
-            management is required by default.
-          </p>
-          <p style={{ marginTop: "12px" }}>
-            <strong>Key storage at rest:</strong> Private keys are stored as
-            plain hex files protected only by filesystem permissions. A local
-            machine compromise — such as malware or a stolen laptop without Full
-            Disk Encryption — could allow an attacker to extract the private key
-            and forge signed ledger entries.{" "}
-            <strong>
-              Full Disk Encryption (FDE) is the primary recommended mitigation
-              for local key security.
-            </strong>{" "}
-            Hardware-backed key storage (TPM, Secure Enclave) and hosted KMS
-            are enterprise-planned features for a future control plane.
-          </p>
-          <p style={{ marginTop: "12px" }}>
-            <strong>Sync bundles:</strong> When local sync is enabled,
-            Ledgerful signs and encrypts bundles before writing them to the sync
-            directory. Bundle contents are not readable without the encryption
-            key.
-          </p>
-          <p style={{ marginTop: "12px" }}>
-            <strong>SOC2 export signing:</strong> Each SOC2 evidence ZIP
-            includes <code>manifest.sig</code> (64-byte Ed25519 signature over{" "}
-            <code>manifest.json</code>) and <code>manifest.pub</code> (32-byte
-            verifying key). This allows offline tamper verification without
-            trusting a remote key server.
-          </p>
-          <p style={{ marginTop: "12px" }}>
-            <strong>Key rotation and enterprise features:</strong> Key rotation
-            is local and manual. Hardware-backed key storage, hosted KMS, and
-            device trust management are enterprise-planned and require a future
-            control plane. SSO / SAML / OIDC, SCIM, and RBAC are also
-            enterprise-planned — none of these are implemented in the local
-            daemon.
-          </p>
-        </div>
-      </section>
-
-      {/* ── Section 6: SOC2 evidence export ──────────────────── */}
-      <section id="soc2-export" className="content-band">
-        <SectionHeading title="Local evidence export">
-          The SOC2 evidence export is a ZIP file generated entirely from local
-          data. This is not a hosted SOC2 portal — no data leaves your machine
-          during export.
-        </SectionHeading>
-        <div className="disclosure-notice" style={{ marginBottom: "24px" }}>
-          <strong>Scope:</strong> This is a local ZIP export only. A hosted
-          SOC2 portal (with continuous monitoring, auditor access controls, and
-          live attestation) is enterprise-planned and requires a future hosted
-          control plane.
-        </div>
-        <h3
-          style={{
-            fontSize: "1rem",
-            fontWeight: 720,
-            marginBottom: "12px",
-            color: "var(--ink)",
-          }}
-        >
-          ZIP layout
-        </h3>
-        <div
-          className="table-scroll"
-          style={{ marginBottom: "28px" }}
-        >
-          <table className="trust-table" aria-label="SOC2 export ZIP file layout">
-            <thead>
-              <tr>
-                <th scope="col">File</th>
-                <th scope="col">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {soc2ExportLayout.map((file) => (
-                <tr key={file.filename}>
-                  <th scope="row">
-                    <code>{file.filename}</code>
-                  </th>
-                  <td>{file.description}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <h3
-          style={{
-            fontSize: "1rem",
-            fontWeight: 720,
-            marginBottom: "12px",
-            color: "var(--ink)",
-          }}
-        >
-          Offline tamper verification
-        </h3>
-        <ol className="doc-step-list">
-          <li>
-            For each entry in <code>manifest.json</code>&apos;s{" "}
-            <code>files</code> array, re-compute SHA-256 over the corresponding
-            file&apos;s bytes from the ZIP and compare to the stored hash. A
-            mismatch means the file was altered after the manifest was
-            generated.
-          </li>
-          <li>
-            Read <code>manifest.sig</code> (64 raw bytes) and{" "}
-            <code>manifest.pub</code> (32 raw bytes). Verify the Ed25519
-            signature over <code>manifest.json</code> bytes. A mismatch means
-            the manifest itself was replaced.
-          </li>
-          <li>
-            Both checks must pass for the export to be considered unmodified. A
-            failure in step 1 indicates file tampering; a failure in step 2
-            indicates manifest replacement.
-          </li>
-        </ol>
-        <details className="sample-export">
-          <summary>View sample export manifest (illustrative — not real evidence)</summary>
-          <p>
-            The sample below shows the <code>manifest.json</code> structure and
-            a few rows of <code>ledger.csv</code> exactly as a local export
-            would render them. All values — timestamps, hashes, transaction
-            ids, and signatures — are fabricated for illustration. A real
-            export is regenerated on demand from your local ledger.
-          </p>
-          <h4>manifest.json (SAMPLE — not real evidence)</h4>
-          <pre>
-            <code>{`{
+          {/* ── Section 9: Redacted evidence export ─────────── */}
+          <section id="soc2-export" className="content-band trust-section">
+            <SectionHeading title="Redacted evidence export">
+              The SOC2 evidence export is a ZIP file generated entirely from
+              local data. This is not a hosted SOC2 portal — no data leaves
+              your machine during export.
+            </SectionHeading>
+            <div
+              className="disclosure-notice"
+              style={{ marginBottom: "24px" }}
+            >
+              <strong>Scope:</strong> This is a local ZIP export only. A
+              hosted SOC2 portal (with continuous monitoring, auditor access
+              controls, and live attestation) is enterprise-planned and
+              requires a future hosted control plane.
+            </div>
+            <h3
+              style={{
+                fontSize: "1rem",
+                fontWeight: 720,
+                marginBottom: "12px",
+                color: "var(--ink)",
+              }}
+            >
+              ZIP layout
+            </h3>
+            <div className="table-scroll" style={{ marginBottom: "28px" }}>
+              <table
+                className="trust-table"
+                aria-label="SOC2 export ZIP file layout"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">File</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {soc2ExportLayout.map((file) => (
+                    <tr key={file.filename}>
+                      <th scope="row">
+                        <code>{file.filename}</code>
+                      </th>
+                      <td>{file.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <h3
+              style={{
+                fontSize: "1rem",
+                fontWeight: 720,
+                marginBottom: "12px",
+                color: "var(--ink)",
+              }}
+            >
+              Offline tamper verification
+            </h3>
+            <ol className="doc-step-list">
+              <li>
+                For each entry in <code>manifest.json</code>&apos;s{" "}
+                <code>files</code> array, re-compute SHA-256 over the
+                corresponding file&apos;s bytes from the ZIP and compare to
+                the stored hash. A mismatch means the file was altered after
+                the manifest was generated.
+              </li>
+              <li>
+                Read <code>manifest.sig</code> (64 raw bytes) and{" "}
+                <code>manifest.pub</code> (32 raw bytes). Verify the Ed25519
+                signature over <code>manifest.json</code> bytes. A mismatch
+                means the manifest itself was replaced.
+              </li>
+              <li>
+                Both checks must pass for the export to be considered
+                unmodified. A failure in step 1 indicates file tampering; a
+                failure in step 2 indicates manifest replacement.
+              </li>
+            </ol>
+            <details className="sample-export">
+              <summary>
+                View sample export manifest (illustrative — not real
+                evidence)
+              </summary>
+              <p>
+                The sample below shows the <code>manifest.json</code>{" "}
+                structure and a few rows of <code>ledger.csv</code> exactly
+                as a local export would render them. All values —
+                timestamps, hashes, transaction ids, and signatures — are
+                fabricated for illustration. A real export is regenerated
+                on demand from your local ledger.
+              </p>
+              <h4>manifest.json (SAMPLE — not real evidence)</h4>
+              <pre>
+                <code>{`{
   "generatedAt": "2026-06-30T14:22:08.114Z",
   "toolVersion": "0.1.6",
   "entryCount": 3,
@@ -1138,331 +1284,359 @@ export default function TrustPage() {
     }
   ]
 }`}</code>
-          </pre>
-          <h4>manifest.sig (SAMPLE)</h4>
-          <pre>
-            <code>{`64-byte Ed25519 signature over manifest.json bytes
+              </pre>
+              <h4>manifest.sig (SAMPLE)</h4>
+              <pre>
+                <code>{`64-byte Ed25519 signature over manifest.json bytes
 (raw binary; not human-readable; placeholder shown)`}</code>
-          </pre>
-          <h4>manifest.pub (SAMPLE)</h4>
-          <pre>
-            <code>{`32-byte Ed25519 verifying key
+              </pre>
+              <h4>manifest.pub (SAMPLE)</h4>
+              <pre>
+                <code>{`32-byte Ed25519 verifying key
 (raw binary; not human-readable; placeholder shown)`}</code>
-          </pre>
-          <h4>ledger.csv (SAMPLE — first 3 rows)</h4>
-          <div
-            className="table-scroll"
-            role="region"
-            aria-label="Sample ledger CSV rows, horizontally scrollable"
-            tabIndex={0}
-          >
-            <table className="sample-csv-table" aria-label="Sample ledger CSV rows">
-              <thead>
-                <tr>
-                  <th scope="col">tx_id</th>
-                  <th scope="col">category</th>
-                  <th scope="col">entity</th>
-                  <th scope="col">change_type</th>
-                  <th scope="col">summary</th>
-                  <th scope="col">committed_at</th>
-                  <th scope="col">signed</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th scope="row">0001</th>
-                  <td>adr</td>
-                  <td>docs/adr/0001-record-ledger-entries.md</td>
-                  <td>create</td>
-                  <td>Record ledger entries as MADR-format files</td>
-                  <td>2026-06-12T09:14:02Z</td>
-                  <td>true</td>
-                </tr>
-                <tr>
-                  <th scope="row">0002</th>
-                  <td>config</td>
-                  <td>config.toml</td>
-                  <td>update</td>
-                  <td>Enable coverage report and signing requirements</td>
-                  <td>2026-06-18T17:02:51Z</td>
-                  <td>true</td>
-                </tr>
-                <tr>
-                  <th scope="row">0003</th>
-                  <td>refactor</td>
-                  <td>src/verify/manifest.rs</td>
-                  <td>update</td>
-                  <td>Sort manifest files array by name for determinism</td>
-                  <td>2026-06-25T11:38:44Z</td>
-                  <td>true</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </details>
-      </section>
-
-      {/* ── Section 7: Release verification ──────────────────── */}
-      <section id="release-verification" className="content-band">
-        <SectionHeading title="Release verification">
-          {release.value}. The release workflow requires SHA-256 companion
-          files for every binary archive.
-        </SectionHeading>
-        <div className="disclosure-notice" style={{ marginBottom: "24px" }}>
-          <strong>Current baseline:</strong> {release.note} The steps below
-          describe the verification process that will apply once URLs are
-          available.
-        </div>
-        <ol className="doc-step-list">
-          {releaseVerificationSteps.map((step, i) => (
-            <li key={i}>{step}</li>
-          ))}
-        </ol>
-        <div className="disclosure-notice" style={{ marginTop: "24px" }}>
-          <strong>OS code signing status:</strong> Windows Authenticode signing
-          and macOS Developer ID / Gatekeeper notarization are not yet
-          implemented. Binaries may trigger OS security prompts on first launch.
-          Code signing for both platforms and SLSA provenance attestations are
-          planned enhancements for a future release.
-        </div>
-      </section>
-
-      {/* ── Section 8: Telemetry ──────────────────────────────── */}
-      <section id="telemetry" className="content-band">
-        <SectionHeading title="Telemetry">
-          {telemetry.value}. It must be explicitly enabled.
-        </SectionHeading>
-        <div className="disclosure-notice" style={{ marginBottom: "24px" }}>
-          <strong>Opt-in only:</strong> The default binary does not include the{" "}
-          <code>{telemetry.feature}</code> feature. In a build that does, enable
-          collection with <code>{telemetry.enableCommand}</code>; its state is
-          stored in <code>{telemetry.configPath}</code>. Telemetry is never
-          activated without explicit user action. The payload contains the
-          documented aggregate fields below; it does not include command
-          arguments, source code, file paths, diff text, or query text.
-        </div>
-        <p
-          style={{
-            color: "var(--muted)",
-            fontSize: "0.9rem",
-            marginBottom: "16px",
-          }}
-        >
-          Ingest endpoint:{" "}
-          <code className="technical-token">
-            {telemetry.endpoint}
-          </code>
-        </p>
-        <div
-          className="table-scroll"
-        >
-          <table
-            className="trust-table telemetry-table"
-            aria-label="Telemetry fields sent when opt-in is enabled"
-          >
-            <thead>
-              <tr>
-                <th scope="col">Field</th>
-                <th scope="col">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {telemetrySchema.map((field) => (
-                <tr key={field.name}>
-                  <th scope="row">
-                    <strong>{field.name}</strong>
-                  </th>
-                  <td>{field.description}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="item-caveat" style={{ marginTop: "12px" }}>
-          Command arguments, source code, file paths, diff text, query text,
-          commit messages, and author identities are not part of this payload.
-        </p>
-        <details className="sample-export">
-          <summary>View example telemetry payload (JSON)</summary>
-          <p>
-            <span className="sample-label">EXAMPLE</span> The payload below
-            shows the complete payload shape documented above. The endpoint is
-            the Supabase Edge Function
-            documented on this page and is only contacted after{" "}
-            <code>{telemetry.enableCommand}</code>.
-          </p>
-          <pre>
-            <code>{`{
-  "schema_version": 1,
-  "anonymous_id": "00000000-0000-4000-8000-000000000000",
-  "client_version": "0.1.7",
-  "platform": "windows",
-  "sent_at": "2026-07-02T14:00:00Z",
-  "window_start": "2026-06-25T14:00:00Z",
-  "window_end": "2026-07-02T14:00:00Z",
-  "command_counts": {
-    "verify": 4,
-    "scan": 2
-  },
-  "features_enabled": ["web", "mcp", "sync"],
-  "active_days_in_window": 3
-}`}</code>
-          </pre>
-        </details>
-      </section>
-
-      {/* ── Section 9: Responsible disclosure ────────────────── */}
-      <section id="disclosure" className="content-band">
-        <SectionHeading title="Responsible disclosure">
-          {disclosure.value}. Disclosure remains an unresolved launch fact.
-        </SectionHeading>
-        <div className="disclosure-notice">
-          <p>
-            <strong>Channel status:</strong> {disclosure.note}
-          </p>
-          <p style={{ marginTop: "12px" }}>
-            <strong>Forward note:</strong> Do not send vulnerability details to
-            a public issue. Check this page for the current verified channel
-            status.
-          </p>
-          <p style={{ marginTop: "12px" }}>
-            <strong>Source repository:</strong> {repository.note} Canonical URL:{" "}
-            {repository.anonymousAccess ? (
-              <a
-                href={repository.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-link"
+              </pre>
+              <h4>ledger.csv (SAMPLE — first 3 rows)</h4>
+              <div
+                className="table-scroll"
+                role="region"
+                aria-label="Sample ledger CSV rows, horizontally scrollable"
+                tabIndex={0}
               >
-                github.com/Ryan-AI-Studios/Ledgerful
-                <span className="sr-only"> (opens in new tab)</span>
-              </a>
-            ) : (
-              <code>github.com/Ryan-AI-Studios/Ledgerful</code>
-            )}
-            . General (non-security) bugs may be reported via GitHub Issues once
-            the repository is confirmed publicly open for issues.
-          </p>
-        </div>
-      </section>
+                <table
+                  className="sample-csv-table"
+                  aria-label="Sample ledger CSV rows"
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">tx_id</th>
+                      <th scope="col">category</th>
+                      <th scope="col">entity</th>
+                      <th scope="col">change_type</th>
+                      <th scope="col">summary</th>
+                      <th scope="col">committed_at</th>
+                      <th scope="col">signed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">0001</th>
+                      <td>adr</td>
+                      <td>docs/adr/0001-record-ledger-entries.md</td>
+                      <td>create</td>
+                      <td>
+                        Record ledger entries as MADR-format files
+                      </td>
+                      <td>2026-06-12T09:14:02Z</td>
+                      <td>true</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">0002</th>
+                      <td>config</td>
+                      <td>config.toml</td>
+                      <td>update</td>
+                      <td>
+                        Enable coverage report and signing requirements
+                      </td>
+                      <td>2026-06-18T17:02:51Z</td>
+                      <td>true</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">0003</th>
+                      <td>refactor</td>
+                      <td>src/verify/manifest.rs</td>
+                      <td>update</td>
+                      <td>
+                        Sort manifest files array by name for determinism
+                      </td>
+                      <td>2026-06-25T11:38:44Z</td>
+                      <td>true</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          </section>
 
-      {/* ── Section 10: License ──────────────────────────────── */}
-      <section id="license" className="content-band">
-        <SectionHeading title="License">
-          Current source terms are {license.base} plus the small-entity
-          exception. Legal launch review is still open.
-        </SectionHeading>
-        <div className="disclosure-notice">
-          <p>
-            Ledgerful is currently distributed under{" "}
-            <strong>{license.base}</strong> with the{" "}
-            <strong>{license.exception}</strong>. The{" "}
-            {repository.anonymousAccess ? (
-              <a
-                href={repository.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-link"
-              >
-                repository LICENSE file
-                <span className="sr-only"> (opens in new tab)</span>
-              </a>
-            ) : (
-              "reviewed local LICENSE file"
-            )}{" "}
-            reflects the operative source terms. Legal launch review remains
-            unresolved and any later change must update the reviewed truth
-            baseline before it reaches public copy.
-          </p>
-        </div>
-      </section>
-
-      {/* ── Section 11: Subprocessors ─────────────────────────── */}
-      <section id="subprocessors" className="content-band">
-        <SectionHeading title="Subprocessors">
-          Default local analysis uses no subprocessors for project data. The
-          public website is hosted on Vercel; opt-in telemetry uses Supabase;
-          configured cloud-model commands use the provider selected by the
-          user. Hosted mode is planned.
-        </SectionHeading>
-        <div className="disclosure-notice" style={{ marginBottom: "24px" }}>
-          <strong>Local mode:</strong> Zero subprocessors for project source
-          code, ledger data, or user data. The Ledgerful engine, ledger,
-          dashboard, and SOC2 export all operate on your machine without
-          sending data to any third-party service by default. Opt-in telemetry
-          sends aggregate usage data to Supabase. Separately, a configured
-          cloud-model <code>ask</code> workflow can send sanitized, truncated
-          context to the selected provider. The public marketing website is a
-          static site hosted on Vercel and does not process project data.
-        </div>
-        <p
-          style={{
-            color: "var(--muted)",
-            fontSize: "0.9rem",
-            marginBottom: "16px",
-          }}
-        >
-          Subprocessors by scope and status:
-        </p>
-        <div
-          className="table-scroll"
-          role="region"
-          aria-label="Subprocessors, horizontally scrollable"
-          tabIndex={0}
-        >
-          <table
-            className="trust-table"
-            aria-label="Planned subprocessors for hosted mode"
-          >
-            <thead>
-              <tr>
-                <th scope="col">Subprocessor</th>
-                <th scope="col">Purpose</th>
-                <th scope="col">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {plannedSubprocessors.map((sp) => (
-                <tr key={sp.name}>
-                  <th scope="row">
-                    <strong>{sp.name}</strong>
-                  </th>
-                  <td>{sp.purpose}</td>
-                  <td>
-                    <StatusPill status={sp.state} />
-                  </td>
-                </tr>
+          {/* ── Section 10: Threat model + non-goals ────────── */}
+          <section id="threat-model" className="content-band trust-section">
+            <SectionHeading title="Threat model and non-goals">
+              Where Ledgerful provides protection today, and the categories of
+              guarantee it does not attempt to make.
+            </SectionHeading>
+            <div className="threat-grid">
+              {threatModel.map((item) => (
+                <article key={item.heading}>
+                  <h3>{item.heading}</h3>
+                  <p>{item.body}</p>
+                </article>
               ))}
-            </tbody>
-          </table>
-        </div>
-        <p
-          style={{
-            color: "var(--muted)",
-            fontSize: "0.85rem",
-            marginTop: "16px",
-          }}
-        >
-          Data deletion policies and data processing agreements will be defined
-          when hosted mode launches. No subprocessor contract applies to
-          local-only installs.
-        </p>
-      </section>
+            </div>
+            <h3
+              style={{
+                fontSize: "1.1rem",
+                fontWeight: 720,
+                margin: "32px 0 12px",
+                color: "var(--ink)",
+              }}
+            >
+              What Ledgerful does not claim
+            </h3>
+            <ul className="non-goals">
+              {nonGoals.map((item, i) => (
+                <li key={i}>{item}</li>
+              ))}
+            </ul>
+            <div
+              className="disclosure-notice"
+              style={{ marginTop: "24px" }}
+            >
+              <strong>Reading this section:</strong> The threat model and
+              non-goals are restated, not introduced. Each bullet traces back
+              to the data flow, signing, telemetry, or evidence-export
+              content above. If a future release changes the boundary (for
+              example, by shipping a hosted control plane), this section
+              will be updated in the same change.
+            </div>
+          </section>
 
-      <section className="content-band">
-        <SectionHeading title="Evaluate Ledgerful locally">
-          The trust posture above is verifiable on your own machine. Install
-          the CLI, run a scan, and inspect the local-first boundary.
-        </SectionHeading>
-        <div className="hero-actions">
-          <Link className="button-primary" href="/install">
-            Try Ledgerful locally
-          </Link>
-          <Link className="button-secondary" href="/pricing">
-            See editions and feature states
-          </Link>
+          {/* ── Section 11: Responsible disclosure ──────────── */}
+          <section id="disclosure" className="content-band trust-section">
+            <SectionHeading title="Responsible disclosure">
+              {disclosure.value}. Disclosure remains an unresolved launch
+              fact.
+            </SectionHeading>
+            <div className="disclosure-notice">
+              <p>
+                <strong>Channel status:</strong> {disclosure.note}
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Forward note:</strong> Do not send vulnerability
+                details to a public issue. Check this page for the current
+                verified channel status.
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Source repository:</strong> {repository.note}{" "}
+                Canonical URL:{" "}
+                {repository.anonymousAccess ? (
+                  <a
+                    href={repository.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-link"
+                  >
+                    github.com/Ryan-AI-Studios/Ledgerful
+                    <span className="sr-only"> (opens in new tab)</span>
+                  </a>
+                ) : (
+                  <code>github.com/Ryan-AI-Studios/Ledgerful</code>
+                )}
+                . General (non-security) bugs may be reported via GitHub
+                Issues once the repository is confirmed publicly open for
+                issues.
+              </p>
+            </div>
+          </section>
+
+          {/* ── Section 12: License ──────────────────────────── */}
+          <section id="license" className="content-band trust-section">
+            <SectionHeading title="License">
+              Current source terms are {license.base} plus the small-entity
+              exception. Legal launch review is still open.
+            </SectionHeading>
+            <div className="disclosure-notice">
+              <p>
+                Ledgerful is currently distributed under{" "}
+                <strong>{license.base}</strong> with the{" "}
+                <strong>{license.exception}</strong>. The{" "}
+                {repository.anonymousAccess ? (
+                  <a
+                    href={repository.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-link"
+                  >
+                    repository LICENSE file
+                    <span className="sr-only"> (opens in new tab)</span>
+                  </a>
+                ) : (
+                  "reviewed local LICENSE file"
+                )}{" "}
+                reflects the operative source terms. Legal launch review
+                remains unresolved and any later change must update the
+                reviewed truth baseline before it reaches public copy.
+              </p>
+            </div>
+          </section>
+
+          {/* ── Section 13: Subprocessors (TWO lists) ────────── */}
+          <section id="subprocessors" className="content-band trust-section">
+            <SectionHeading title="Subprocessors">
+              Default local analysis uses no subprocessors for project data.
+              The two lists below are kept clearly separated: public-site
+              hosting / docs infrastructure (which never touches user code)
+              and the product / future-hosted-control-plane subprocessors.
+            </SectionHeading>
+
+            <div className="subprocessor-list">
+              <h3
+                id="subprocessor-public-heading"
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: 720,
+                  margin: "8px 0 8px",
+                  color: "var(--ink)",
+                }}
+              >
+                Public-site hosting &amp; docs infrastructure
+              </h3>
+              <p
+                style={{
+                  color: "var(--muted)",
+                  fontSize: "0.9rem",
+                  margin: "0 0 16px",
+                }}
+              >
+                Serves the static <code>ledgerful.io</code> site only. Does
+                not process project source code, ledger data, or user data.
+              </p>
+              <div
+                className="table-scroll"
+                role="region"
+                aria-label="Public-site subprocessors, horizontally scrollable"
+                tabIndex={0}
+              >
+                <table
+                  className="trust-table"
+                  aria-labelledby="subprocessor-public-heading"
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">Subprocessor</th>
+                      <th scope="col">Purpose</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {publicSiteInfra.map((sp) => (
+                      <tr key={sp.name}>
+                        <th scope="row">
+                          <strong>{sp.name}</strong>
+                        </th>
+                        <td>{sp.purpose}</td>
+                        <td>
+                          <StatusPill status={sp.state} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div
+              className="subprocessor-list"
+              style={{ marginTop: "32px" }}
+            >
+              <h3
+                id="subprocessor-product-heading"
+                style={{
+                  fontSize: "1.1rem",
+                  fontWeight: 720,
+                  margin: "0 0 8px",
+                  color: "var(--ink)",
+                }}
+              >
+                Product &amp; future-hosted control plane
+              </h3>
+              <p
+                style={{
+                  color: "var(--muted)",
+                  fontSize: "0.9rem",
+                  margin: "0 0 16px",
+                }}
+              >
+                Subprocessors scoped to the Ledgerful product runtime.
+                &ldquo;Current&rdquo; rows handle data the user has explicitly chosen to
+                send today; &ldquo;planned&rdquo; rows are reserved for a future hosted
+                control plane and do not receive any data yet.
+              </p>
+              <div
+                className="table-scroll"
+                role="region"
+                aria-label="Product and future-hosted subprocessors, horizontally scrollable"
+                tabIndex={0}
+              >
+                <table
+                  className="trust-table"
+                  aria-labelledby="subprocessor-product-heading"
+                >
+                  <thead>
+                    <tr>
+                      <th scope="col">Subprocessor</th>
+                      <th scope="col">Purpose</th>
+                      <th scope="col">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {productSubprocessors.map((sp) => (
+                      <tr key={sp.name}>
+                        <th scope="row">
+                          <strong>{sp.name}</strong>
+                        </th>
+                        <td>
+                          {sp.purpose}
+                          {sp.tier === "hosted-planned" ? (
+                            <>
+                              {" "}
+                              <span className="subprocessor-tier-tag">
+                                Hosted planned
+                              </span>
+                            </>
+                          ) : null}
+                        </td>
+                        <td>
+                          <StatusPill status={sp.state} />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p
+              style={{
+                color: "var(--muted)",
+                fontSize: "0.85rem",
+                marginTop: "16px",
+              }}
+            >
+              Data deletion policies and data processing agreements will be
+              defined when hosted mode launches. No subprocessor contract
+              applies to local-only installs. Vercel is intentionally listed
+              only under public-site infra; it does not process project data
+              and is not part of the product / future-hosted subprocessor
+              list.
+            </p>
+          </section>
+
+          <section className="content-band">
+            <SectionHeading title="Evaluate Ledgerful locally">
+              The trust posture above is verifiable on your own machine.
+              Install the CLI, run a scan, and inspect the local-first
+              boundary.
+            </SectionHeading>
+            <div className="hero-actions">
+              <Link className="button-primary" href="/install">
+                Try Ledgerful locally
+              </Link>
+              <Link className="button-secondary" href="/pricing">
+                See editions and feature states
+              </Link>
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
     </PageShell>
   );
 }

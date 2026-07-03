@@ -24,6 +24,14 @@ export type Subprocessor = {
   state: FeatureState;
 };
 
+export type BoundaryRow = {
+  surface: string;
+  reads: string;
+  writes: string;
+  uploads: string;
+  staysLocal: string;
+};
+
 export const trustDataFlows: TrustDataFlow[] = [
   {
     iconName: "Shield",
@@ -67,6 +75,16 @@ export const readsLocally: string[] = [
   "A repository-local .env file for those same named model settings and credentials when they are not already configured; Ledgerful does not sweep arbitrary environment variables",
 ];
 
+export const writesLocally: string[] = [
+  ".ledgerful/ledger.db — ledger transactions and verification history (project-local)",
+  ".ledgerful/reports/ — impact and verify reports in JSON format (project-local)",
+  ".ledgerful/index/ — local full-text search index (project-local)",
+  ".ledgerful/sync/ — signed and encrypted sync bundles when sync is enabled (project-local)",
+  "~/.ledgerful/keys/private.key and public.pem — Ed25519 key pair, generated on first use (legacy private.pem is migrated)",
+  "SOC2 evidence ZIP — written to a local path of your choice on demand via the dashboard",
+  "Platform paths: Windows uses %USERPROFILE%\\.ledgerful\\keys\\; Linux and macOS use ~/.ledgerful/keys/ resolved from $HOME. Project-local .ledgerful/ directories are always relative to your repository root.",
+];
+
 export const networkOutbound = {
   updateChecks:
     "None. The CLI does not check for updates automatically. No outbound HTTP requests are made to GitHub or any external server for version checking.",
@@ -76,14 +94,63 @@ export const networkOutbound = {
     "Configured only. The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when that provider is configured and selected. API credentials may be read from the process environment or repository-local .env file.",
 } as const;
 
-export const writesLocally: string[] = [
-  ".ledgerful/ledger.db — ledger transactions and verification history (project-local)",
-  ".ledgerful/reports/ — impact and verify reports in JSON format (project-local)",
-  ".ledgerful/index/ — local full-text search index (project-local)",
-  ".ledgerful/sync/ — signed and encrypted sync bundles when sync is enabled (project-local)",
-  "~/.ledgerful/keys/private.key and public.pem — Ed25519 key pair, generated on first use (legacy private.pem is migrated)",
-  "SOC2 evidence ZIP — written to a local path of your choice on demand via the dashboard",
-  "Platform paths: Windows uses %USERPROFILE%\\.ledgerful\\keys\\; Linux and macOS use ~/.ledgerful/keys/ resolved from $HOME. Project-local .ledgerful/ directories are always relative to your repository root.",
+/**
+ * Single-source boundary table: each row states what a given surface reads,
+ * writes, what may leave the machine (uploads / sends externally), and what
+ * stays local. Synthesized from `readsLocally`, `writesLocally`,
+ * `networkOutbound`, and the launch-truth telemetry fact. No new claims —
+ * every value traces back to existing copy above and in launch-facts.
+ */
+export const boundaryRows: BoundaryRow[] = [
+  {
+    surface: "Local scan / audit / ledger / verify",
+    reads:
+      "Git repo state, project file structure, .ledgerful/ledger.db, config.toml",
+    writes:
+      ".ledgerful/ledger.db, .ledgerful/reports/, .ledgerful/index/ (project-local)",
+    uploads: "None by default",
+    staysLocal:
+      "Repo files, ledger, reports, signing keys, and verification history",
+  },
+  {
+    surface: "Local sync (dir://)",
+    reads:
+      "Local ledger transactions and verification history (when sync is enabled)",
+    writes:
+      "Signed, encrypted bundles to a local directory path you control",
+    uploads: "None — no cloud transport is involved",
+    staysLocal:
+      "Bundles and encryption keys remain on the local filesystem; transport is a directory path",
+  },
+  {
+    surface: "Opt-in telemetry (usage-metrics build)",
+    reads:
+      "Local aggregate top-level command-name counts, enabled features, and an anonymous UUID generated when enabled",
+    writes: "A single JSON payload to the configured Supabase ingest endpoint",
+    uploads:
+      "Aggregate command counts, platform/version metadata, enabled features, and an anonymous ID — only after explicit enable",
+    staysLocal:
+      "Source code, file paths, diff text, query text, commit messages, and author identities",
+  },
+  {
+    surface: "Configured cloud model (Gemini / Ollama Cloud / OpenRouter)",
+    reads:
+      "Local sanitized, truncated impact and retrieved codebase context (only when a provider is configured and selected)",
+    writes: "Nothing local beyond normal ledger entries",
+    uploads:
+      "Sanitized, truncated context to the selected provider; API credentials may be read from the process environment or repository-local .env file",
+    staysLocal:
+      "Raw source files beyond the sanitized retrieval window; secrets unrelated to the configured model provider",
+  },
+  {
+    surface: "Local dashboard (loopback)",
+    reads:
+      "Local daemon API at http://127.0.0.1:52001 with an ephemeral session token",
+    writes: "No persistent writes outside the local ledger / report paths",
+    uploads: "None — bind address is 127.0.0.1 only",
+    staysLocal:
+      "Dashboard session, ephemeral token (in-memory, never persisted to disk), and all served data",
+  },
 ];
 
 type TelemetryFieldName =
@@ -152,35 +219,110 @@ export const releaseVerificationSteps: string[] = [
   "Note: specific download URLs are a WEB-0005 launch fact and will be published when the release is smoke-tested and publicly documented. Windows Authenticode signing and macOS Developer ID / Gatekeeper notarization are not yet implemented — binaries may trigger OS security prompts on first launch. Both code-signing capabilities and SLSA provenance attestations are planned enhancements.",
 ];
 
-export const plannedSubprocessors: Subprocessor[] = [
+/**
+ * Public-site hosting & docs infrastructure — never touches user code.
+ * Vercel hosts the static marketing/docs site; it serves only the published
+ * public pages for `ledgerful.io`. It does not process project source code,
+ * ledger data, or user data. Reviewers should not confuse this surface with
+ * the product's local-first runtime or the planned hosted control plane.
+ */
+export const publicSiteInfra: Subprocessor[] = [
   {
     name: "Vercel",
     purpose:
       "Static site hosting for this public marketing website. Does not process project source code, ledger data, or user data.",
     state: "available",
   },
+];
+
+/**
+ * Product / future-hosted-control-plane subprocessors. Two clearly-separated
+ * groups are kept inside this single array, marked by the `tier` field on
+ * each row:
+ *   - "current-product" — sub-processors that already touch product surfaces
+ *     in the *current* local-first build (opt-in telemetry ingest; configured
+ *     cloud-model providers). They are scoped to data the user has explicitly
+ *     chosen to send.
+ *   - "hosted-planned" — subprocessors reserved for a future hosted control
+ *     plane. They are listed only so reviewers can see the planned surface;
+ *     they do not receive any data today.
+ *
+ * Vercel is **intentionally excluded** from this list — it is public-site
+ * infra only (see `publicSiteInfra`) and would mislead reviewers if it
+ * appeared here.
+ */
+export type ProductSubprocessorTier = "current-product" | "hosted-planned";
+
+export type ProductSubprocessor = Subprocessor & { tier: ProductSubprocessorTier };
+
+export const productSubprocessors: ProductSubprocessor[] = [
   {
     name: "Supabase (telemetry)",
     purpose:
       "Opt-in usage telemetry ingest only. No source code or project data is sent. Disabled by default.",
     state: "available",
+    tier: "current-product",
   },
   {
     name: "Configured model provider",
     purpose:
       "Gemini, Ollama Cloud, or OpenRouter receives sanitized, truncated context only when a user configures and selects that cloud-backed ask workflow.",
     state: "available",
+    tier: "current-product",
   },
   {
     name: "Supabase (hosted backend)",
     purpose:
       "Future control-plane database, auth, and Edge Functions for the hosted team service.",
     state: "hosted planned",
+    tier: "hosted-planned",
   },
   {
     name: "GitHub",
     purpose:
       "GitHub App webhooks and GitHub Actions integration for the future hosted CI workflow. Relevant only when hosted mode launches.",
     state: "hosted planned",
+    tier: "hosted-planned",
   },
+];
+
+/**
+ * Concise threat-model + non-goals bullets. Sources:
+ *   - coordination.md §6.2 (no SAML/OIDC/RBAC/SCIM in local daemon)
+ *   - the SOC2 export page (local-only ZIP export, not a hosted SOC2 portal)
+ *   - the signing section (private key at rest protected only by filesystem
+ *     permissions; FDE is the primary recommended mitigation)
+ *   - the data flow content above (no zero-network / zero-telemetry absolutes;
+ *     opt-in telemetry, configured cloud-model egress are the only external
+ *     paths and are off by default).
+ *
+ * No new security claims — every bullet restates something already implied by
+ * the rest of this page.
+ */
+export const threatModel: { heading: string; body: string }[] = [
+  {
+    heading: "Trusted local machine assumption",
+    body: "Ledgerful assumes the local machine is the trust boundary. Every claim on this page — ephemeral token, signing key, local sync transport, redacted evidence export — depends on the integrity of the local OS, filesystem, and the user running the CLI.",
+  },
+  {
+    heading: "Local compromise equals key compromise",
+    body: "Private keys are stored as plain hex files protected only by filesystem permissions. Malware or a stolen laptop without Full Disk Encryption (FDE) can extract the signing key and forge ledger entries. FDE is the primary recommended mitigation. Hardware-backed key storage (TPM, Secure Enclave) and hosted KMS are enterprise-planned and require a future control plane.",
+  },
+  {
+    heading: "Local dashboard is loopback-only",
+    body: "The dashboard bind address is 127.0.0.1:52001; CORS is restricted to loopback origins; the session token is 256-bit random, validated in constant time, and never persisted to disk. This is not an exposure surface for an external network — it is an exposure surface for a local attacker who can read process memory.",
+  },
+  {
+    heading: "External paths are opt-in and narrow",
+    body: "Opt-in telemetry sends a fixed aggregate JSON payload (no source, paths, query text, or commit messages). The configured cloud-model ask workflow sends only sanitized, truncated context. There is no third outbound path.",
+  },
+];
+
+export const nonGoals: string[] = [
+  "Hosted-mode guarantees. The local-first engine does not promise the SLAs, RBAC, audit log retention, or team-scope guarantees of a hosted control plane. Hosted mode is planned and does not exist today.",
+  "SOC2 certified / SOC2 compliant. Ledgerful generates a local SOC2-style evidence export from your ledger; we are not a certified audit firm and do not claim third-party SOC 2 attestation.",
+  "FedRAMP, FIPS 140, or other government baselines. No claim is made about FedRAMP authorization, FIPS-validated cryptography, or comparable government certification.",
+  "Zero-network or zero-telemetry absolutes. The default build excludes telemetry; opt-in telemetry and a configured cloud-model ask workflow are the only outbound paths. Nothing here is a 'no network ever' guarantee.",
+  "Air-gap. The engine can run fully offline, but this page does not claim that every install configuration is air-gapped. Operators are responsible for their own network posture.",
+  "SSO / SAML / OIDC / SCIM / RBAC in the local daemon. None of these are implemented locally. They are enterprise-planned for a future control plane.",
 ];

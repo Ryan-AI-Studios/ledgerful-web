@@ -321,12 +321,23 @@ test("trust inline links are distinguishable without color alone", async ({ page
   }
 });
 
+// WEB-0024 — recomposed /trust adds the reads/writes/uploads boundary
+// table and splits the subprocessor list into two. Six `.table-scroll`
+// wrappers in total: the boundary table, the SOC2 ZIP layout, the
+// telemetry schema, the sample ledger CSV (inside the redacted export
+// <details>), the public-site subprocessor list, and the product /
+// future-hosted subprocessor list. At 320/375px the boundary table
+// (5 columns of sentences), the sample ledger CSV (7 columns), the
+// public-site subprocessor table (1 row, but the purpose cell contains
+// a long sentence that wraps wider than the column), and the product
+// subprocessor table (3 columns with longer purpose text) actually
+// overflow. The SOC2 ZIP layout and the telemetry schema do not.
 for (const width of [320, 375]) {
   test(`trust only exposes necessary keyboard scroll regions at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 812 });
     await page.goto("/trust");
     const wrappers = page.locator(".table-scroll");
-    await expect(wrappers).toHaveCount(4);
+    await expect(wrappers).toHaveCount(6);
     let scrollableCount = 0;
 
     for (const wrapper of await wrappers.all()) {
@@ -355,9 +366,27 @@ for (const width of [320, 375]) {
       }
     }
 
-    expect(scrollableCount).toBe(2);
+    expect(scrollableCount).toBe(4);
   });
 }
+
+// WEB-0024 — automate the PDF generation step. This is a regression
+// guard that `@media print` doesn't silently break; a human still
+// eyeballs the artifact for cut tables/diagrams.
+test("trust page generates a printable PDF for human review", async ({ page }) => {
+  await page.goto("/trust");
+  await page.emulateMedia({ media: "print" });
+  const pdfPath = "test-results/trust-print.pdf";
+  const buffer = await page.pdf({
+    path: pdfPath,
+    format: "A4",
+    printBackground: true,
+    margin: { top: "16mm", right: "14mm", bottom: "18mm", left: "14mm" },
+  });
+  expect(buffer.byteLength).toBeGreaterThan(8 * 1024);
+  expect(buffer.subarray(0, 5).toString("utf8")).toBe("%PDF-");
+  expect(buffer.length).toBeGreaterThan(0);
+});
 
 test("dark mode and reduced motion retain readable deterministic rendering", async ({
   browser,

@@ -72,9 +72,9 @@ function DataFlowDiagram() {
 
       {/* ── Engine node (center) ─────────────────────────── */}
       <rect
-        x="170"
+        x="160"
         y="118"
-        width="168"
+        width="190"
         height="84"
         rx="8"
         ry="8"
@@ -83,7 +83,7 @@ function DataFlowDiagram() {
         strokeWidth="1.2"
       />
       <text
-        x="184"
+        x="174"
         y="142"
         fontFamily="var(--font-jetbrains-mono), monospace"
         fontSize="11"
@@ -94,20 +94,20 @@ function DataFlowDiagram() {
         LEDGERFUL ENGINE
       </text>
       <text
-        x="184"
+        x="174"
         y="168"
         fontFamily="var(--font-archivo), sans-serif"
-        fontSize="16"
+        fontSize="14"
         fontWeight="700"
         fill="currentColor"
       >
         CLI · daemon · dashboard
       </text>
       <text
-        x="184"
+        x="174"
         y="188"
         fontFamily="var(--font-jetbrains-mono), monospace"
-        fontSize="11"
+        fontSize="10"
         fill="currentColor"
         opacity="0.65"
       >
@@ -302,7 +302,7 @@ function DataFlowDiagram() {
       <line
         x1="152"
         y1="102"
-        x2="170"
+        x2="160"
         y2="138"
         stroke="currentColor"
         strokeOpacity="0.55"
@@ -323,7 +323,7 @@ function DataFlowDiagram() {
       <line
         x1="152"
         y1="238"
-        x2="170"
+        x2="160"
         y2="200"
         stroke="currentColor"
         strokeOpacity="0.55"
@@ -333,7 +333,7 @@ function DataFlowDiagram() {
       <line
         x1="152"
         y1="300"
-        x2="170"
+        x2="160"
         y2="200"
         stroke="currentColor"
         strokeOpacity="0.35"
@@ -341,7 +341,7 @@ function DataFlowDiagram() {
         strokeDasharray="3 3"
       />
       <line
-        x1="338"
+        x1="350"
         y1="160"
         x2="356"
         y2="102"
@@ -351,7 +351,7 @@ function DataFlowDiagram() {
         markerEnd="url(#trust-df-arrow)"
       />
       <line
-        x1="338"
+        x1="350"
         y1="180"
         x2="356"
         y2="300"
@@ -487,21 +487,21 @@ function DataFlowDiagram() {
         strokeDasharray="4 4"
       />
       <text
-        x="512"
-        y="40"
+        x="448"
+        y="36"
         fontFamily="var(--font-jetbrains-mono), monospace"
         fontSize="9"
         fill="currentColor"
         opacity="0.55"
-        letterSpacing="0.08em"
+        letterSpacing="0.06em"
       >
         LOCAL-FIRST BOUNDARY
       </text>
 
       {/* ── Outbound arrows (ask, index --fast, telemetry — all dashed) ── */}
       <line
-        x1="338"
-        y1="160"
+        x1="350"
+        y1="155"
         x2="556"
         y2="110"
         stroke="currentColor"
@@ -511,18 +511,18 @@ function DataFlowDiagram() {
         markerEnd="url(#trust-df-arrow)"
       />
       <text
-        x="394"
-        y="126"
+        x="360"
+        y="112"
         fontFamily="var(--font-jetbrains-mono), monospace"
         fontSize="10"
         fill="currentColor"
         opacity="0.7"
       >
-        configured ask
+        ask
       </text>
       <line
-        x1="338"
-        y1="178"
+        x1="350"
+        y1="175"
         x2="556"
         y2="150"
         stroke="currentColor"
@@ -532,8 +532,8 @@ function DataFlowDiagram() {
         markerEnd="url(#trust-df-arrow)"
       />
       <text
-        x="384"
-        y="172"
+        x="360"
+        y="165"
         fontFamily="var(--font-jetbrains-mono), monospace"
         fontSize="10"
         fill="currentColor"
@@ -542,8 +542,8 @@ function DataFlowDiagram() {
         index --fast
       </text>
       <line
-        x1="338"
-        y1="190"
+        x1="350"
+        y1="195"
         x2="556"
         y2="256"
         stroke="currentColor"
@@ -553,8 +553,8 @@ function DataFlowDiagram() {
         markerEnd="url(#trust-df-arrow)"
       />
       <text
-        x="394"
-        y="232"
+        x="360"
+        y="240"
         fontFamily="var(--font-jetbrains-mono), monospace"
         fontSize="10"
         fill="currentColor"

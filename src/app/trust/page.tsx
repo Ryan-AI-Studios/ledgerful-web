@@ -36,10 +36,13 @@ function DataFlowDiagram() {
         Two zones. Left zone &quot;Your machine&quot; contains the git repository,
         the .ledgerful/ project directory, the ~/.ledgerful/keys/ signing key
         directory, and config.toml. Arrows show local reads and writes between
-        the engine and these paths. Right zone &quot;External&quot; shows two
-        explicit outbound paths: opt-in aggregate telemetry to Supabase and
+        the engine and these paths. Right zone &quot;External&quot; shows three
+        explicit outbound paths: opt-in aggregate telemetry to Supabase,
         sanitized, truncated context sent by the ask workflow when a cloud
-        model provider is configured and selected.
+        model provider is configured and selected, and code chunks sent by
+        ledgerful index --fast to a configured Gemini model for semantic
+        extraction. None of these paths is active in the default local-only
+        workflow.
       </desc>
 
       {/* ── Your machine box ─────────────────────────────── */}
@@ -425,7 +428,7 @@ function DataFlowDiagram() {
         fill="currentColor"
         opacity="0.6"
       >
-        sanitized context via ask
+        ask + index --fast
       </text>
 
       <rect
@@ -495,7 +498,7 @@ function DataFlowDiagram() {
         LOCAL-FIRST BOUNDARY
       </text>
 
-      {/* ── Single outbound arrow (telemetry, dashed) ─────── */}
+      {/* ── Outbound arrows (ask, index --fast, telemetry — all dashed) ── */}
       <line
         x1="338"
         y1="160"
@@ -516,6 +519,27 @@ function DataFlowDiagram() {
         opacity="0.7"
       >
         configured ask
+      </text>
+      <line
+        x1="338"
+        y1="178"
+        x2="556"
+        y2="150"
+        stroke="currentColor"
+        strokeOpacity="0.7"
+        strokeWidth="1.2"
+        strokeDasharray="5 4"
+        markerEnd="url(#trust-df-arrow)"
+      />
+      <text
+        x="384"
+        y="172"
+        fontFamily="var(--font-jetbrains-mono), monospace"
+        fontSize="10"
+        fill="currentColor"
+        opacity="0.7"
+      >
+        index --fast
       </text>
       <line
         x1="338"

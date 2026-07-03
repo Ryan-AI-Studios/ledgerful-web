@@ -311,24 +311,31 @@ test("mobile section-nav disclosure is keyboard operable at 375px", async ({ pag
   const disclosure = page.locator(".trust-section-nav--disclosure");
   await expect(disclosure).toBeVisible();
 
-  // Open the disclosure via keyboard (Enter on summary).
+  // Open the disclosure via keyboard (Enter on summary, reached by Tab).
   const summary = disclosure.locator("summary");
   await summary.focus();
   await page.keyboard.press("Enter");
   await expect(disclosure).toHaveAttribute("open", "");
 
-  // Tab into the now-open list and confirm a real anchor is reachable + focused.
+  // Tab into the now-open list and confirm a real anchor is reached via
+  // keyboard (not programmatic focus) and is focused + activatable.
+  await page.keyboard.press("Tab");
   const firstLink = disclosure.locator("a").first();
-  await firstLink.focus();
   await expect(firstLink).toBeFocused();
   expect(await firstLink.getAttribute("href")).toMatch(/^#/);
 
-  // Anchor click lands the target heading clear of the top (scroll-margin-top).
-  const href = await firstLink.getAttribute("href");
+  // Activate a link that is below the fold so the scroll (and
+  // scroll-margin-top) is actually exercised. The last section nav
+  // anchor ("13. Subprocessors") is near the page bottom.
+  const lastLink = disclosure.locator("a").last();
+  await lastLink.focus();
+  await expect(lastLink).toBeFocused();
+  const href = await lastLink.getAttribute("href");
   const targetId = href!.slice(1);
   await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(new RegExp(`#${targetId}$`));
   const target = page.locator(`#${targetId}`);
-  await expect(target).toBeInViewport();
+  await expect(target).toBeInViewport({ ratio: 0.1 });
 });
 
 test("trust launch blockers do not expose unavailable public links", async ({ page }) => {

@@ -447,7 +447,7 @@ test("trust page generates a printable PDF for human review", async ({ page }) =
     format: "A4",
     landscape: true,
     printBackground: true,
-    margin: { top: "12mm", right: "14mm", bottom: "14mm", left: "14mm" },
+    margin: { top: "0.5in", right: "0.5in", bottom: "0.5in", left: "0.5in" },
   });
   expect(buffer.byteLength).toBeGreaterThan(8 * 1024);
   expect(buffer.subarray(0, 5).toString("utf8")).toBe("%PDF-");

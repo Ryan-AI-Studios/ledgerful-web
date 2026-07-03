@@ -894,6 +894,16 @@ code {
 }
 
 @media print {
+  /* Issue 6 — the page-margin gutter Playwright's page.pdf() reserves
+     (margin: 12mm/14mm) is painted by the UA using the `@page` box's
+     own background, which is separate from `html`/`body` and was left
+     unset — so with `printBackground: true` it fell back to a dark
+     default, showing as a black border around every page. Setting it
+     here (not just on html/body) paints the margin gutter white too. */
+  @page {
+    background: #fff;
+  }
+
   :root,
   [data-theme="dark"],
   [data-theme="light"] {
@@ -1038,10 +1048,113 @@ code {
     box-shadow: none !important;
     break-inside: auto;
     page-break-inside: auto;
+    /* Issue 10 — same fragmentation-border problem as the
+       `.disclosure-notice` boxes: without this, the card's rounded
+       border only closes on the very first and very last fragment,
+       so the page where it splits shows an "open" top/bottom edge.
+       Clone the border/background at each fragment so every page's
+       portion of the card reads as its own complete, closed box. */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
 
   .trust-section {
     scroll-margin-top: 0;
+  }
+
+  /* Issue 8 — `.content-band` gives every section ~102px of
+     `padding-block` for the screen's vertical rhythm. Originally this
+     was only zeroed for the very first section (every other section
+     boundary silently absorbed its own top padding as trailing space
+     on whichever page it happened to land on). Issue 10 below now
+     forces *every* section to start at the top of a fresh page, so
+     every section's top padding is exposed the same way the first
+     section's was — stacking on top of the page margin and showing
+     up as a much-larger-than-0.5in gap above every section heading.
+     Zero it for every section, not just the first. */
+  .trust-content > .trust-section {
+    padding-top: 0 !important;
+  }
+
+  /* Issue 10 — keeping just the heading + lead paragraph together
+     (below) wasn't enough: a section's *content* (its cards/table/
+     boxes) is a separate box after the heading, so the heading could
+     still start mid-page with its own content immediately overflowing
+     onto the next one anyway — "Data flow", "Signing and key
+     management", "Telemetry", etc. all opened mid-page with most of
+     their cards pushed to the following page regardless. Every major
+     section (all but the first, which is already at the top of page
+     1) now starts on a fresh page — trading a little trailing white
+     space on the previous page for every section reliably starting
+     together with its content. */
+  .trust-content > .trust-section:not(:first-child) {
+    break-before: page;
+    page-break-before: always;
+  }
+
+  /* Issue 8 — a section heading with its lead paragraph (rendered as
+     one `.section-heading` block) could previously land at the very
+     bottom of a page with the heading visible but the paragraph
+     truncated mid-sentence onto the next page. `break-after: avoid`
+     on the heading alone only stops a break immediately after it —
+     it doesn't keep it glued to the paragraph that follows. Treating
+     the whole heading+lead block as one unbreakable unit means it
+     either fits together on the current page or moves as a whole to
+     the next one — never split. */
+  .section-heading {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Issue 12 — the executive summary's "FIVE-MINUTE EXECUTIVE
+     SUMMARY" kicker is a deliberately small on-screen eyebrow label
+     (0.78rem, smaller than its own 0.94rem body copy by design), but
+     in print it reads as an odd, undersized section title sitting
+     above larger body text. Bump it clearly above body-text size for
+     print while keeping the bold/uppercase/letter-spaced kicker
+     styling. */
+  .trust-summary-kicker {
+    font-size: 1.1rem;
+  }
+
+  /* Issue 9 — some `.disclosure-notice`/`.sample-export` boxes are
+     long enough that they must still split across a page (e.g. the
+     "Reading this section" callout under Responsible disclosure);
+     by default a fragmented box only draws its border/background on
+     the outer edges of the whole run, so the top fragment is missing
+     its bottom border and the bottom fragment is missing its top —
+     it reads as one box torn in half. `box-decoration-break: clone`
+     redraws the full border + rounded corners + background on each
+     page's fragment independently, so each half looks like its own
+     complete, closed box instead of an open continuation. */
+  .disclosure-notice,
+  .sample-export {
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  /* Issue 13 — a short trailing `.disclosure-notice` (e.g. "OS code
+     signing status" after the release-verification steps) was being
+     pushed whole to the next page even with a large amount of unused
+     space still left on the current one — confirmed by direct pixel
+     measurement (~50mm free, box needs ~26mm). Neither the preceding
+     block's `break-inside: avoid` nor this box's own
+     `box-decoration-break: clone` was the cause (tested independently,
+     removing each changed nothing). `break-before: avoid` targets the
+     actual symptom directly — instructing the engine not to place a
+     page break immediately before the box, whereas `break-inside`
+     only governs breaks *within* it. */
+  .disclosure-notice {
+    break-before: avoid;
+    page-break-before: avoid;
+  }
+
+  /* Issue 6 — the repo URL was wrapping at the hyphen inside
+     "Ryan-AI-Studios" (a valid break opportunity for regular text),
+     which reads like a hyphenated word split rather than a URL
+     continuation. The print page is wide enough to keep it whole. */
+  .repo-url {
+    white-space: nowrap;
   }
 
   .table-scroll {
@@ -1070,8 +1183,7 @@ code {
     break-inside: avoid;
   }
   .doc-step-list,
-  .non-goals,
-  .trust-summary-list {
+  .non-goals {
     break-inside: avoid;
     page-break-inside: avoid;
   }
@@ -1091,36 +1203,64 @@ code {
   /* Issue 5 — sparse-page rebalance. Stack every trust grid into a
      single column in print so cards flow naturally and the
      `repeat(auto-fit, minmax(260px, 1fr))` screen layout doesn't
-     push a single orphaned card onto its own page in landscape. */
-  .trust-grid,
+     push a single orphaned card onto its own page in landscape.
+     `.trust-summary-list` is included here too — as a 2-column CSS
+     grid it was getting fragmented straight across both columns at
+     the page boundary (Chromium's print engine doesn't honor
+     `break-inside: avoid` on a grid *container*, only on the boxes
+     inside it), which cut sentences and even parentheticals in half
+     mid-page (e.g. "(Windows:" stranded from its closing paren).
+     Stacking to a single column and protecting each item below fixes
+     that at the source instead of leaving the container-level rule
+     that never worked. */
   .threat-grid,
   .network-inventory,
   .trust-dl-grid,
   .evidence-map,
   .boundary-grid,
   .doc-grid,
-  .pricing-grid {
+  .pricing-grid,
+  .trust-summary-list {
     display: block !important;
   }
-  .trust-grid > article,
   .threat-grid > article,
   .network-inventory > article,
   .trust-dl-grid > div,
   .evidence-map > article,
   .boundary-grid > article,
   .doc-grid > article,
-  .pricing-card {
+  .pricing-card,
+  .trust-summary-list > div {
     margin-bottom: 12px !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
-  .trust-grid > article:last-child,
   .threat-grid > article:last-child,
   .network-inventory > article:last-child,
   .trust-dl-grid > div:last-child,
   .evidence-map > article:last-child,
   .boundary-grid > article:last-child,
   .doc-grid > article:last-child,
-  .pricing-card:last-child {
+  .pricing-card:last-child,
+  .trust-summary-list > div:last-child {
     margin-bottom: 0 !important;
+  }
+
+  /* Issue 7 — the "Data flow" cards (`.trust-grid`, used only by the
+     Data flow section) read better as a 2-column grid in landscape
+     print than full-width stacked cards (which used a lot of vertical
+     space per card for 2-4 lines of text). Each card still gets
+     item-level `break-inside: avoid` so a card is never cut mid-
+     sentence; only whole cards move between columns/pages. */
+  .trust-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  .trust-grid > article {
+    margin-bottom: 0 !important;
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   /* Issue 5 — boundary table headers / cells. The "Uploads / sends
@@ -1232,6 +1372,8 @@ code {
     padding: 10px 14px;
     background: #fff !important;
     margin: 0;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
   .trust-dataflow-print .print-flow-zone--optional {
     border-style: dashed;
@@ -1315,6 +1457,8 @@ code {
     padding: 10px 14px;
     background: #fff !important;
     margin: 0;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
   .trust-token-print .print-token-kicker {
     font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
@@ -1357,6 +1501,8 @@ code {
     font-size: 0.82rem;
     line-height: 1.5;
     color: var(--ink);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
   }
   .trust-token-print .print-token-boundary strong {
     color: var(--ink);
@@ -1423,6 +1569,22 @@ code {
 
   .trust-layout {
     display: block !important;
+    width: 100% !important;
+  }
+
+  /* Issue 11 — `.content-band`/`.page-hero`/`.split-band` each carve
+     their own `calc(100% - clamp(32px, 6vw, 88px))` side inset for
+     the on-screen reading measure, and `.trust-layout` does the same
+     around them — two independent insets stacking on top of the
+     0.5in physical page margin already set by `page.pdf()`, so the
+     real side margin was closer to 1.25in than 0.5in. Print already
+     gets its gutter from the page margin; let content fill the full
+     printable width. */
+  .page-hero,
+  .content-band,
+  .split-band {
+    width: 100% !important;
+    margin-inline: 0 !important;
   }
 
   a {

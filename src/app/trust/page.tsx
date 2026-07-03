@@ -1532,13 +1532,13 @@ export default function TrustPage() {
                     href={repository.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-link"
+                    className="inline-link repo-url"
                   >
                     github.com/Ryan-AI-Studios/Ledgerful
                     <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 ) : (
-                  <code>github.com/Ryan-AI-Studios/Ledgerful</code>
+                  <code className="repo-url">github.com/Ryan-AI-Studios/Ledgerful</code>
                 )}
                 . General (non-security) bugs may be reported via GitHub
                 Issues once the repository is confirmed publicly open for

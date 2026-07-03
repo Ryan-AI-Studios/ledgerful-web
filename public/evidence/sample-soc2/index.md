@@ -1,0 +1,120 @@
+# Ledgerful SOC 2-style evidence export — sample
+
+**This is a SOC 2-style sample, not a certified SOC 2 audit report.** It is not attestation
+by any auditor, and downloading it does not imply Ledgerful (or any customer of Ledgerful)
+has completed a SOC 2 audit. It exists to show the exact shape and cryptographic
+tamper-evidence of the real `GET /api/compliance/export` output (the local dashboard's
+"Export SOC2 Evidence" button — **there is no CLI equivalent**), so you can inspect it
+before running it against your own repository.
+
+- **Source:** generated from a synthetic, fictional sample repository
+  (`invoice-service`, author "Sample Engineer <sample.engineer@example.com>") — **not** a real
+  customer, **not** real data. Nothing in this zip was hand-edited after export.
+- **Generating command:** `ledgerful web start` (daemon), then the local dashboard's
+  "Export SOC2 Evidence" button (Compliance page) — or, equivalently, `GET
+  /api/compliance/export` with `Authorization: Bearer <token>` directly (see
+  `coordination.md` §4.7 for the request shape). Same code path a real install uses —
+  this sample is not hand-constructed. **There is no separate `ledgerful` CLI subcommand for
+  this** — SOC2 export is a dashboard/API feature, not a CLI one.
+- **File:** [`ledgerful-soc2-evidence-sample.zip`](./ledgerful-soc2-evidence-sample.zip) (1.5 KB)
+
+## What's inside
+
+| File | Contents |
+| --- | --- |
+| `manifest.json` | SHA-256 hashes and byte sizes for every other file in the zip, plus `generatedAt` (RFC 3339) and `entryCount`. The `files` array is sorted by name for determinism. `manifest.json` itself is not listed in its own `files` array. |
+| `manifest.sig` | Raw 64-byte Ed25519 signature over the exact bytes of `manifest.json`. Proves the manifest was produced by the holder of the signing key — not reconstructed or edited after the fact. |
+| `manifest.pub` | Raw 32-byte Ed25519 verifying key (the public half of the sample repo's `~/.ledgerful/keys/`). Lets you check `manifest.sig` against `manifest.json` without a network call — but see the trust-model warning below before treating that check alone as proof of authenticity. |
+| `ledger.csv` | All committed ledger provenance records, RFC 4180 CSV. Columns: `tx_id, category, entity, change_type, summary, reason, committed_at, signed, signature`. Rows ordered by `committed_at` ascending. |
+| `verification_history.csv` | CI verification-run history. Columns: `run_timestamp, overall_pass, command, exit_code, duration_ms`. Header-only in this sample (no CI runs recorded for the sample repo). |
+| `adr/*.md` | One Markdown ADR per architecture/breaking-change ledger entry (MADR format, `NNNN-<slug>.md`). Not present in this sample — none of the sample repo's 3 ledger entries are architecture/breaking-flagged. |
+
+This sample was generated directly from the synthetic sample repo with **zero
+hand-redaction** — every identifier already in it (repo name, author, commit messages) is
+fictional, so nothing needed to be stripped. That matters because hand-editing a signed
+`manifest.json`/`ledger.csv` to redact a value would invalidate `manifest.sig` and this file
+would fail its own verification below. It doesn't — see the numbers.
+
+## Verify it yourself
+
+Don't take our word for it. Everything needed to independently confirm this zip is
+untampered is inside the zip itself. This is an **offline check on the exported zip's own
+manifest signature** — it's a different operation from `ledgerful verify --signatures`,
+which checks the *live ledger database* of whatever repository you run it in, not an
+extracted zip with no `.ledgerful/` state of its own.
+
+1. Unzip the archive and re-hash each file listed in `manifest.json`'s `files` array:
+
+   ```bash
+   unzip ledgerful-soc2-evidence-sample.zip -d sample-soc2-extracted
+   cd sample-soc2-extracted
+   sha256sum ledger.csv verification_history.csv
+   ```
+
+   Compare the printed hashes against the `sha256` values recorded for each file in
+   `manifest.json`. They must match exactly, and each file's byte length must match the
+   recorded `size`.
+
+2. Verify `manifest.sig` (a raw 64-byte Ed25519 signature) against the exact bytes of
+   `manifest.json`, using `manifest.pub` (a raw 32-byte Ed25519 verifying key) — both files
+   are included in the zip. With Node.js (`>=18`, no dependencies):
+
+   ```js
+   import { createHash, createPublicKey, verify } from "node:crypto";
+   import { readFileSync } from "node:fs";
+
+   const manifest = readFileSync("manifest.json");
+   const sig = readFileSync("manifest.sig");     // 64 raw bytes
+   const pub = readFileSync("manifest.pub");     // 32 raw bytes
+
+   // Node's crypto API wants an SPKI/DER-wrapped key, not raw bytes, so prepend
+   // the fixed 12-byte Ed25519 SPKI header (OID 1.3.101.112) to the raw key.
+   const spkiPrefix = Buffer.from("302a300506032b6570032100", "hex");
+   const key = createPublicKey({
+     key: Buffer.concat([spkiPrefix, pub]),
+     format: "der",
+     type: "spki",
+   });
+
+   console.log(verify(null, manifest, key, sig) ? "VALID" : "INVALID");
+   ```
+
+   A ready-to-run version of this check (with hash comparison included) is published right
+   next to this file as [`verify-soc2-sample.mjs`](./verify-soc2-sample.mjs) — download it
+   and point it at any exported zip (this sample or your own):
+
+   ```bash
+   node verify-soc2-sample.mjs ledgerful-soc2-evidence-sample.zip
+   ```
+
+Both checks — hash comparison and signature verification — must pass for the export to be
+considered untampered. This sample passes both as of the capture date below.
+
+**`manifest.pub` trust model — read this before treating the check above as final.** The
+`manifest.pub` in this zip contains the Ed25519 verifying key used to sign the manifest, but
+it originated from the same machine that generated the ZIP. A compromised machine (or an
+attacker redistributing a modified zip) could replace the ledger data, the signature, *and*
+the signing key together, producing a self-consistent but fraudulent export — the two checks
+above only prove internal consistency between the three files, not that the key itself is
+authentic. **Out-of-band verification is required to close that gap:** compare `manifest.pub`
+against a copy of the Ed25519 public key obtained independently of the zip itself — for
+example, a key fingerprint shared over a separate channel, or a copy stored somewhere other
+than the machine that generated the export. (See `/docs/compliance` for the same warning
+applied to a real, non-sample export.)
+
+## Provenance
+
+- **Captured:** 2026-07-03
+- **Engine version:** `ledgerful 0.1.7`
+- **Sample repo commit:** `f86c999339db705fdc1b1dcc85f68cb0350fdc73` (synthetic `invoice-service`
+  repo, fictional author "Sample Engineer")
+- **Export endpoint:** `GET /api/compliance/export` on `ledgerful web` (local daemon), token
+  auth via `Authorization: Bearer <token>`
+- **Verification result:** all file hashes matched, `manifest.sig` verified against
+  `manifest.pub` — VALID (not a hand-edited or stale-signature file)
+
+If you're evaluating Ledgerful for an actual SOC 2 program, generate this export against
+your own repository — from your own local dashboard's Compliance page ("Export SOC2
+Evidence" button), or `GET /api/compliance/export` directly — rather than relying on this
+sample. There is no CLI subcommand for this; it exists purely to demonstrate the format and
+verifiability of the real output.

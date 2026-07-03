@@ -514,3 +514,153 @@ test("the page background gradient does not tile", async ({ page }) => {
   const repeat = await page.evaluate(() => getComputedStyle(document.body).backgroundRepeat);
   expect(repeat.split(",").every((value) => value.trim() === "no-repeat")).toBe(true);
 });
+
+// ── WEB-0023 — install page: verified command leads, before the platform table ──
+
+test("install page leads with the install command before the platform table, with a smoke test in between (DoD-1)", async ({
+  page,
+}) => {
+  await page.goto("/install");
+
+  const order = await page.evaluate(() => {
+    const commandBlock = document.querySelector(".install-command--expanded");
+    const platformTable = document.querySelector(".platform-table");
+    const smokeHeading = Array.from(document.querySelectorAll(".step-index")).find((element) =>
+      element.textContent?.includes("SMOKE TEST"),
+    );
+    if (!commandBlock || !platformTable || !smokeHeading) {
+      return { found: false, commandBeforeTable: false, smokeBeforeTable: false };
+    }
+    return {
+      found: true,
+      commandBeforeTable: Boolean(
+        commandBlock.compareDocumentPosition(platformTable) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+      smokeBeforeTable: Boolean(
+        smokeHeading.compareDocumentPosition(platformTable) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+    };
+  });
+
+  expect(order.found).toBe(true);
+  expect(order.commandBeforeTable).toBe(true);
+  expect(order.smokeBeforeTable).toBe(true);
+});
+
+test("install page never renders the fake 'ledgerful compliance export' CLI command", async ({ page }) => {
+  await page.goto("/install");
+  const bodyText = (await page.locator("body").innerText()).toLowerCase();
+  expect(bodyText).not.toContain("ledgerful compliance export");
+});
+
+// The copy button's disabled-until-hydrated requirement (WEB-0023 DoD-1) has
+// two halves, tested two different ways because a live hydration race can't
+// be honestly asserted mid-flight in Playwright:
+//   1. Pre-hydration: block every JS bundle so hydration never happens at
+//      all, then read the server-rendered `disabled` attribute directly off
+//      the DOM — the same technique already used above for the theme-toggle
+//      placeholder tests (see "saved theme is applied by the CSP-hashed head
+//      script before hydration"). This proves the SSR output itself ships
+//      the button disabled, not just that it becomes enabled quickly.
+//   2. Post-hydration: normal JS-enabled load, assert the button is enabled
+//      and functional (mirrors the homepage copy-button test).
+
+test("install page copy button ships server-rendered disabled — no dead UI when JS never loads (DoD-1)", async ({
+  browser,
+}) => {
+  const context = await browser.newContext();
+  await context.route("**/_next/static/**/*.js", (route) => route.abort());
+  const page = await context.newPage();
+  await page.goto("/install", { waitUntil: "domcontentloaded" });
+
+  const copyButton = page
+    .locator(".install-command--expanded")
+    .getByRole("button", { name: /Copy install command/ });
+  await expect(copyButton).toBeVisible();
+  await expect(copyButton).toBeDisabled();
+
+  await context.close();
+});
+
+test("install page copy button becomes enabled after hydration and copies the real install command", async ({
+  page,
+  context,
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/install");
+
+  const copyButton = page
+    .locator(".install-command--expanded")
+    .getByRole("button", { name: "Copy install command" });
+  await expect(copyButton).toBeEnabled();
+  await copyButton.click();
+  await expect(
+    page.locator(".install-command--expanded").getByRole("button", { name: "Install command copied" }),
+  ).toBeVisible();
+
+  const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+  expect(clipboardText).toBe(
+    "cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful",
+  );
+});
+
+// ── WEB-0023 — architecture diagram: restacks vertically, legible at 320px (DoD-4) ──
+
+test("architecture diagram restacks vertically and stays legible at 320px", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 900 });
+  await page.goto("/architecture");
+
+  const diagram = page.locator(".arch-diagram-v2");
+  await expect(diagram).toBeVisible();
+
+  const result = await page.evaluate(() => {
+    const root = document.querySelector(".arch-diagram-v2");
+    if (!root) return null;
+
+    const hostNodes = Array.from(root.querySelectorAll(".arch-host-nodes .arch-node"));
+    const outsideNodes = Array.from(root.querySelectorAll(".arch-outside-nodes .arch-node"));
+
+    const isStackedGroup = (nodes: Element[]) =>
+      nodes.every((node, i) => {
+        if (i === 0) return true;
+        const prev = nodes[i - 1].getBoundingClientRect();
+        const cur = node.getBoundingClientRect();
+        // Restacked to one column means each node sits fully below the
+        // previous one, not beside it (a shrunk-but-still-side-by-side
+        // layout would instead show overlapping vertical ranges here).
+        return cur.top >= prev.bottom - 1;
+      });
+
+    const titleEls = Array.from(root.querySelectorAll<HTMLElement>(".arch-node-title"));
+    const viewportWidth = document.documentElement.clientWidth;
+
+    return {
+      hostStacked: isStackedGroup(hostNodes),
+      outsideStacked: isStackedGroup(outsideNodes),
+      labels: titleEls.map((el) => el.textContent?.trim()),
+      fontSizes: titleEls.map((el) => Number.parseFloat(getComputedStyle(el).fontSize)),
+      clipped: titleEls.some((el) => {
+        const rect = el.getBoundingClientRect();
+        return rect.left < 0 || rect.right > viewportWidth + 1;
+      }),
+      viewportWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: document.documentElement.clientWidth,
+    };
+  });
+
+  expect(result).not.toBeNull();
+  expect(result!.hostStacked).toBe(true);
+  expect(result!.outsideStacked).toBe(true);
+  expect(result!.labels).toEqual(
+    expect.arrayContaining(["ledgerful CLI", "Embedded UI", "ledgerful.dev", "Hosted control plane"]),
+  );
+  // Legible, not shrunk-to-fit: every node title stays at a real,
+  // comfortably readable size instead of being scaled down to cram a
+  // desktop layout into 320px.
+  for (const size of result!.fontSizes) {
+    expect(size).toBeGreaterThanOrEqual(14);
+  }
+  expect(result!.clipped).toBe(false);
+  expect(result!.scrollWidth).toBeLessThanOrEqual(result!.clientWidth);
+});

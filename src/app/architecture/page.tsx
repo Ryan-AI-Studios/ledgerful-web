@@ -4,10 +4,12 @@ import { Cloud, Globe, MonitorSmartphone } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
+import { ArtifactPreview } from "@/components/artifact-preview";
+import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Architecture — local engine, dashboard, and web surfaces",
+  title: "How Ledgerful works locally",
   description: pageDescriptions.architecture,
   alternates: { canonical: "/architecture" },
 };
@@ -92,355 +94,98 @@ const stateRows: StateRow[] = [
   },
 ];
 
-function ArchitectureDiagram() {
-  return (
-    <svg
-      viewBox="0 0 720 360"
-      role="img"
-      aria-labelledby="arch-diagram-title arch-diagram-desc"
-      className="arch-diagram-frame"
-    >
-      <title id="arch-diagram-title">
-        Three Ledgerful surfaces and the local-first boundary
-      </title>
-      <desc id="arch-diagram-desc">
-        A host machine box containing the local CLI / engine and the
-        loopback-bound embedded dashboard. The public marketing website sits
-        outside the host. A future hosted control plane is shown as a dashed,
-        planned node. The host and public web are separated by the local-first
-        boundary; no traffic crosses by default.
-      </desc>
-
-      {/* ── Host machine box ─────────────────────────────── */}
-      <rect
-        x="24"
-        y="28"
-        width="500"
-        height="304"
-        rx="10"
-        ry="10"
-        fill="none"
-        stroke="currentColor"
-        strokeOpacity="0.55"
-        strokeWidth="1.2"
-      />
-      <text
-        x="40"
-        y="50"
-        fontFamily="var(--font-jetbrains-mono), monospace"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.7"
-        letterSpacing="0.08em"
-      >
-        YOUR MACHINE
-      </text>
-
-      {/* ── Engine surface ───────────────────────────────── */}
-      <rect
-        x="44"
-        y="68"
-        width="220"
-        height="110"
-        rx="8"
-        ry="8"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <text
-        x="60"
-        y="92"
-        fontFamily="var(--font-jetbrains-mono), monospace"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.7"
-        letterSpacing="0.06em"
-      >
-        SURFACE 01 · ENGINE
-      </text>
-      <text
-        x="60"
-        y="118"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="18"
-        fontWeight="700"
-        fill="currentColor"
-      >
-        ledgerful CLI
-      </text>
-      <text
-        x="60"
-        y="142"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="12"
-        fill="currentColor"
-        opacity="0.78"
-      >
-        scan · ledger · audit · verify · sync · mcp
-      </text>
-      <text
-        x="60"
-        y="162"
-        fontFamily="var(--font-jetbrains-mono), monospace"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.65"
-      >
-        .ledgerful/  (keys, ledger, indexes)
-      </text>
-
-      {/* ── Dashboard surface ────────────────────────────── */}
-      <rect
-        x="284"
-        y="68"
-        width="220"
-        height="110"
-        rx="8"
-        ry="8"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <text
-        x="300"
-        y="92"
-        fontFamily="var(--font-jetbrains-mono), monospace"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.7"
-        letterSpacing="0.06em"
-      >
-        SURFACE 02 · DASHBOARD
-      </text>
-      <text
-        x="300"
-        y="118"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="18"
-        fontWeight="700"
-        fill="currentColor"
-      >
-        Embedded UI
-      </text>
-      <text
-        x="300"
-        y="142"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="12"
-        fill="currentColor"
-        opacity="0.78"
-      >
-        localhost:52001 · ?token= session
-      </text>
-      <text
-        x="300"
-        y="162"
-        fontFamily="var(--font-jetbrains-mono), monospace"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.65"
-      >
-        loopback only · no external bind
-      </text>
-
-      {/* ── Boundary line ────────────────────────────────── */}
-      <line
-        x1="154"
-        y1="178"
-        x2="154"
-        y2="218"
-        stroke="currentColor"
-        strokeOpacity="0.4"
-        strokeWidth="1"
-        strokeDasharray="3 3"
-      />
-      <line
-        x1="394"
-        y1="178"
-        x2="394"
-        y2="218"
-        stroke="currentColor"
-        strokeOpacity="0.4"
-        strokeWidth="1"
-        strokeDasharray="3 3"
-      />
-
-      {/* ── Local-first data flow band ───────────────────── */}
-      <rect
-        x="44"
-        y="218"
-        width="460"
-        height="64"
-        rx="8"
-        ry="8"
-        fill="none"
-        stroke="currentColor"
-        strokeOpacity="0.55"
-        strokeWidth="1"
-      />
-      <text
-        x="60"
-        y="242"
-        fontFamily="var(--font-jetbrains-mono), monospace"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.7"
-        letterSpacing="0.06em"
-      >
-        LOCAL-FIRST BOUNDARY
-      </text>
-      <text
-        x="60"
-        y="262"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="13"
-        fill="currentColor"
-      >
-        source code · diffs · keys · ledger · audit
-      </text>
-      <text
-        x="60"
-        y="276"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.65"
-      >
-        all on host · no upload by default · telemetry is opt-in
-      </text>
-
-      {/* ── Public web box (outside host) ────────────────── */}
-      <rect
-        x="560"
-        y="68"
-        width="136"
-        height="110"
-        rx="8"
-        ry="8"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <text
-        x="574"
-        y="92"
-        fontFamily="var(--font-jetbrains-mono), monospace"
-        fontSize="10"
-        fill="currentColor"
-        opacity="0.7"
-        letterSpacing="0.06em"
-      >
-        SURFACE 03 · PUBLIC WEB
-      </text>
-      <text
-        x="574"
-        y="120"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="15"
-        fontWeight="700"
-        fill="currentColor"
-      >
-        ledgerful.dev
-      </text>
-      <text
-        x="574"
-        y="140"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.78"
-      >
-        static · docs · pricing
-      </text>
-      <text
-        x="574"
-        y="156"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="11"
-        fill="currentColor"
-        opacity="0.78"
-      >
-        no hosted auth
-      </text>
-
-      {/* ── Boundary separator (gap between host and web) ── */}
-      <line
-        x1="524"
-        y1="40"
-        x2="524"
-        y2="320"
-        stroke="currentColor"
-        strokeOpacity="0.45"
-        strokeWidth="1"
-        strokeDasharray="2 4"
-      />
-
-      {/* ── Hosted control plane (planned) ───────────────── */}
-      <rect
-        x="560"
-        y="218"
-        width="136"
-        height="64"
-        rx="8"
-        ry="8"
-        fill="none"
-        stroke="currentColor"
-        strokeOpacity="0.5"
-        strokeWidth="1"
-        strokeDasharray="5 4"
-      />
-      <text
-        x="574"
-        y="240"
-        fontFamily="var(--font-jetbrains-mono), monospace"
-        fontSize="10"
-        fill="currentColor"
-        opacity="0.55"
-        letterSpacing="0.06em"
-      >
-        PLANNED · NOT LIVE
-      </text>
-      <text
-        x="574"
-        y="262"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="13"
-        fontWeight="700"
-        fill="currentColor"
-        opacity="0.75"
-      >
-        Hosted control plane
-      </text>
-      <text
-        x="574"
-        y="276"
-        fontFamily="var(--font-archivo), sans-serif"
-        fontSize="10"
-        fill="currentColor"
-        opacity="0.55"
-      >
-        tenancy · audit · identity
-      </text>
-    </svg>
-  );
-}
-
 export default function ArchitecturePage() {
   return (
     <PageShell>
-      {/* ── Hero ───────────────────────────────────────────── */}
+      {/* ── Hero — reframed around the workflow, not the topology
+          (WEB-0023). Route and canonical are unchanged. ────────────────── */}
       <section className="page-hero compact">
         <p className="hero-kicker">Architecture</p>
-        <h1>Three surfaces. One local-first boundary.</h1>
+        <h1>How Ledgerful works locally.</h1>
         <p>
-          Ledgerful separates the local engine, the loopback dashboard, and
-          the public web so the local-first promise stays verifiable on the
-          box. A hosted control plane is planned and explicitly marked.
+          Ledgerful reads your repo, analyzes it entirely on your machine, and
+          writes real evidence to disk. The local engine, the loopback
+          dashboard, and this public site are three distinct surfaces — a
+          future hosted control plane is planned and always marked as such,
+          never shown as already live.
         </p>
       </section>
 
-      {/* ── Diagram ────────────────────────────────────────── */}
+      {/* ── Workflow: input → local analysis → outputs, BEFORE the
+          component topology diagram (spec: lead with workflow). ───────── */}
+      <section className="content-band" id="workflow">
+        <SectionHeading title="What goes in, what runs locally, what comes out.">
+          Before the surfaces and the diagram below, here is the actual
+          workflow — with real, redacted evidence beside each output, not a
+          mockup.
+        </SectionHeading>
+
+        <div className="step-block">
+          <div className="step-head">
+            <span className="step-index">READS</span>
+            <h2>Your repo. Nothing more.</h2>
+          </div>
+          <div className="step-body">
+            <p>
+              Ledgerful reads your local git repository: the working tree,
+              diffs against a base ref, commit history, and its own local
+              config and state under <code>.ledgerful/</code>. It does not
+              read files outside the repo, and source code, diffs, and commit
+              messages are not uploaded anywhere by default.
+            </p>
+          </div>
+        </div>
+
+        <div className="step-block">
+          <div className="step-head">
+            <span className="step-index">ANALYZES</span>
+            <h2>A deterministic local engine.</h2>
+          </div>
+          <div className="step-body">
+            <p>
+              <code>scan</code>, <code>verify</code>, and <code>audit</code>{" "}
+              run entirely on your machine — deterministic checks against
+              repo state, no network calls by default. The <code>ask</code>{" "}
+              workflow is the one path that can leave the box, and only when
+              you configure and select a cloud model; it is a separate,
+              explicitly configured mode, not part of the default analysis.
+            </p>
+          </div>
+        </div>
+
+        <div className="step-block">
+          <div className="step-head">
+            <span className="step-index">PRODUCES</span>
+            <h2>Three real outputs, each with real evidence.</h2>
+          </div>
+          <div className="step-body">
+            <p>
+              A scan can produce a risk summary, a verification plan, and a
+              signed provenance record written to the ledger; the dashboard
+              can turn ledger history into a SOC2-style evidence export.
+              Below is real, redacted output captured from each — the same
+              artifacts shown on the homepage.
+            </p>
+          </div>
+        </div>
+
+        <div className="produces-grid" style={{ marginTop: "8px" }}>
+          <article>
+            <h3>Verification plan</h3>
+            <ArtifactPreview id="verificationPlan" />
+          </article>
+          <article>
+            <h3>Signed provenance record</h3>
+            <ArtifactPreview id="provenanceRecord" />
+          </article>
+          <article>
+            <h3>Evidence export manifest</h3>
+            <ArtifactPreview id="evidenceExport" />
+          </article>
+        </div>
+      </section>
+
+      {/* ── Diagram — component topology, after the workflow ───────────── */}
       <section className="content-band" id="diagram">
         <SectionHeading title="Surfaces and the local-first boundary">
           The host runs the engine and dashboard. The public web is static and
@@ -450,10 +195,13 @@ export default function ArchitecturePage() {
         <figure className="arch-diagram" aria-label="Three Ledgerful surfaces diagram">
           <ArchitectureDiagram />
           <figcaption className="arch-diagram-caption">
-            Nothing inside the host machine box uploads by default. The
-            dashboard binds to <code>127.0.0.1</code> only. Telemetry is
-            opt-in. The public web is a static site; the hosted control plane
-            shown dashed is planned, not live.
+            Your machine hosts the engine (CLI) and the embedded dashboard,
+            grouped inside the &ldquo;YOUR MACHINE&rdquo; boundary. Nothing in
+            that boundary uploads by default; the dashboard binds to{" "}
+            <code>127.0.0.1</code> only and telemetry is opt-in. Outside the
+            boundary, the public web is a static site with no hosted backend.
+            The hosted control plane, shown with a dashed border and labeled
+            &ldquo;planned · not live,&rdquo; does not exist yet.
           </figcaption>
         </figure>
       </section>

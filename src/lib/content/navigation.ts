@@ -19,7 +19,7 @@ export const pageDescriptions = {
   install:
     "Install the Ledgerful CLI from source, verify the binary, and run your first scan. Pre-built release binaries are a launch fact and are not yet available.",
   architecture:
-    "The three Ledgerful surfaces — local engine and CLI, embedded loopback dashboard, public web — and the planned hosted control plane. Local-first data flow, opt-in telemetry.",
+    "What Ledgerful reads, analyzes, and produces entirely on your machine, then the three Ledgerful surfaces — local engine and CLI, embedded loopback dashboard, public web — and the planned hosted control plane. Local-first data flow, opt-in telemetry.",
   docs: "Install, verify, and operate Ledgerful without confusing local tooling with hosted features.",
   pricing: "Ledgerful editions with explicit available, beta, local-only, hosted planned, and enterprise planned states.",
   trust: "Local-first data flow, telemetry, sync, SOC2 export, and future hosted boundaries.",

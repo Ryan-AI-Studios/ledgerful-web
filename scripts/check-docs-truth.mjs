@@ -34,7 +34,7 @@ function readHtml(slug) {
   );
 }
 
-// ── Load all 8 pages ──────────────────────────────────────────────────────────
+// ── Load all 8 docs pages ──────────────────────────────────────────────────────
 
 const pages = {};
 const slugs = ["index", "cli", "dashboard", "mcp", "github-action", "compliance", "sync", "releases"];
@@ -46,6 +46,35 @@ for (const slug of slugs) {
     console.error(`FAIL: ${err.message}`);
     process.exit(1);
   }
+}
+
+// ── Load /install (top-level route, not nested under /docs) ───────────────────
+// WEB-0023: the fake "ledgerful compliance export" CLI command lived on
+// /install, not under /docs — check-docs-truth never looked at it, which is
+// exactly how the bug survived Assert 12 (docs/compliance only). Assert 16
+// below closes that gap.
+
+function readTopLevelHtml(slug) {
+  const base = join(process.cwd(), ".next/server/app");
+  const candidates = [join(base, `${slug}.html`), join(base, slug, "index.html")];
+  for (const p of candidates) {
+    try {
+      return readFileSync(p, "utf8");
+    } catch {
+      // try next candidate
+    }
+  }
+  throw new Error(
+    `Could not read HTML for ${slug}. Tried:\n  ${candidates.join("\n  ")}\nRun npm run build first.`
+  );
+}
+
+let installHtml;
+try {
+  installHtml = readTopLevelHtml("install");
+} catch (err) {
+  console.error(`FAIL: ${err.message}`);
+  process.exit(1);
 }
 
 const failures = [];
@@ -334,6 +363,19 @@ if (!pages["github-action"].includes("Ryan-AI-Studios/Ledgerful/action@")) {
   }
 }
 
+// ── Assert 16: /install — no "ledgerful compliance export" fake CLI command ──
+// Same check as Assert 12, extended to /install — see the comment above
+// readTopLevelHtml() for why this page needed its own coverage.
+
+{
+  const lower = installHtml.toLowerCase();
+  if (lower.includes("ledgerful compliance export")) {
+    failures.push(
+      `Assert 16 FAIL [install]: "ledgerful compliance export" found — this CLI command does not exist; the export is dashboard-only`
+    );
+  }
+}
+
 // ── Results ───────────────────────────────────────────────────────────────────
 
 if (failures.length > 0) {
@@ -341,5 +383,5 @@ if (failures.length > 0) {
   failures.forEach((f) => console.error(" ", f));
   process.exit(1);
 } else {
-  console.log("check-docs-truth: all 15 assertions passed ✓");
+  console.log("check-docs-truth: all 16 assertions passed ✓");
 }

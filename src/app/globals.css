@@ -1560,7 +1560,9 @@ code {
   color: var(--ink);
 }
 
-/* Architecture diagram: 3-surface local-first SVG diagram */
+/* Architecture diagram: 3-surface local-first diagram (WEB-0023 — real
+   HTML/CSS nodes, restacks vertically instead of shrinking; see
+   architecture-diagram.tsx for why the SVG was replaced). */
 .arch-diagram {
   display: grid;
   gap: 14px;
@@ -1571,18 +1573,123 @@ code {
   background: var(--surface);
 }
 
-.arch-diagram .arch-diagram-frame {
-  width: 100%;
-  height: auto;
-  color: var(--ink);
-}
-
 .arch-diagram .arch-diagram-caption {
   color: var(--muted);
   font-size: 0.88rem;
   line-height: 1.6;
   max-width: 70ch;
   text-wrap: pretty;
+}
+
+.arch-diagram-v2 {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.arch-host {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  background: var(--canvas);
+  padding: clamp(16px, 2.6vw, 24px);
+}
+
+.arch-host-label {
+  width: fit-content;
+  color: var(--ink-muted);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 640;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.arch-host-nodes,
+.arch-outside-nodes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+  min-width: 0;
+}
+
+.arch-node {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  background: var(--surface-raised);
+  padding: clamp(16px, 2.4vw, 22px);
+}
+
+.arch-node--planned {
+  border-style: dashed;
+  background: var(--canvas);
+}
+
+.arch-node-kicker {
+  color: var(--ink-muted);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  font-weight: 640;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.arch-node--planned .arch-node-kicker {
+  opacity: 0.8;
+}
+
+.arch-node-title {
+  color: var(--ink-primary);
+  font-size: 1.05rem;
+  font-weight: 720;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.arch-node--planned .arch-node-title {
+  color: var(--ink-muted);
+}
+
+.arch-node-body {
+  color: var(--ink-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.arch-node-meta {
+  color: var(--ink-muted);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  opacity: 0.85;
+  overflow-wrap: anywhere;
+}
+
+.arch-boundary-strip {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  background: var(--surface-strong);
+  padding: clamp(16px, 2.4vw, 22px);
+}
+
+/* DoD-4: restack to a single vertical column at <=768px, not a shrunk
+   desktop layout — the auto-fit columns above already degrade gracefully,
+   but this makes the mobile contract explicit and verifiable. */
+@media (max-width: 768px) {
+  .arch-host-nodes,
+  .arch-outside-nodes {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* 3-surface strip */
@@ -2169,6 +2276,24 @@ code {
 .install-command-copy:hover {
   background: var(--surface-strong);
   color: var(--ink-primary);
+}
+
+/* Hidden/disabled-until-hydrated copy button (WEB-0023): no hover affordance,
+   reduced opacity, and the OS-level not-allowed cursor make the pre-hydration
+   state read as inert rather than as dead UI. */
+.install-command-copy:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.install-command-copy:disabled:hover {
+  background: transparent;
+  color: var(--ink-muted);
+}
+
+.install-command--expanded .install-command-copy:disabled:hover {
+  background: transparent;
+  color: oklch(0.78 0.01 216);
 }
 
 .install-command-copy--icon {

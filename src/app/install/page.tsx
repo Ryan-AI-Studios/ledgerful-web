@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ArrowRight, ShieldAlert } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
+import { InstallCommand, INSTALL_COMMAND } from "@/components/install-command";
+import { capturedEvidence } from "@/components/captured-evidence";
 import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions } from "@/lib/content/navigation";
 
@@ -28,6 +30,39 @@ function CodeBlock({ children, caption }: { children: string; caption?: string }
           <span className="terminal-caption">{caption}</span>
         </div>
       ) : null}
+    </div>
+  );
+}
+
+// Real captured `ledgerful doctor` output (see captured-evidence.ts) — the
+// same source already published on the homepage's evidence panel. Reused
+// here as the smoke test's representative output for the one smoke-test
+// command with an already-captured, reviewed sample; `init` and
+// `scan --summary` are described in prose only, since no capture exists for
+// them and the constraint is: never invent literal command output.
+function DoctorOutputPreview() {
+  const panel = capturedEvidence.doctor;
+  return (
+    <div
+      className="terminal-window annotated"
+      aria-label={`${panel.description} — ${panel.command}`}
+    >
+      <div className="terminal-bar" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+      <pre>
+        {panel.lines.map((line, i) => (
+          <code key={`doctor-${i}`}>{line}</code>
+        ))}
+      </pre>
+      <div className="terminal-annotation">
+        <span className="terminal-caption">
+          Representative output — captured from a real v0.1.6 run
+        </span>
+        <span className="terminal-meta">{panel.command}</span>
+      </div>
     </div>
   );
 }
@@ -61,7 +96,11 @@ export default function InstallPage() {
 
   return (
     <PageShell>
-      {/* ── Hero ───────────────────────────────────────────── */}
+      {/* ── Hero — the verified canonical command is the dominant first
+          action, not the repository link (WEB-0023 DoD-1). The command is
+          natively selectable text (<pre>/<code>) via InstallCommand's
+          "expanded" terminal block, and its copy button is hidden/disabled
+          until hydration at the shared-component level. ──────────────── */}
       <section className="page-hero compact">
         <p className="hero-kicker">Install</p>
         <h1>Install Ledgerful on your machine.</h1>
@@ -70,13 +109,16 @@ export default function InstallPage() {
           ledger, dashboard, and MCP server all run locally — no hosted account
           required.
         </p>
-        <div
-          className="hero-actions"
-          style={{ marginTop: "28px" }}
-        >
+        <div style={{ marginTop: "28px" }}>
+          <InstallCommand variant="expanded" showLink={false} />
+        </div>
+        <div className="hero-actions" style={{ marginTop: "20px" }}>
+          <Link className="button-secondary" href="/architecture">
+            See the architecture
+          </Link>
           {repository.anonymousAccess ? (
             <a
-              className="button-primary"
+              className="button-secondary"
               href={repository.href}
               rel="noopener noreferrer"
               target="_blank"
@@ -85,13 +127,10 @@ export default function InstallPage() {
               <ArrowRight size={18} aria-hidden="true" />
             </a>
           ) : (
-            <span className="button-primary" aria-disabled="true">
+            <span className="button-secondary" aria-disabled="true">
               Repository access required
             </span>
           )}
-          <Link className="button-secondary" href="/architecture">
-            See the architecture
-          </Link>
         </div>
         <p className="private-preview">
           <ShieldAlert size={15} aria-hidden="true" />
@@ -144,12 +183,12 @@ export default function InstallPage() {
             <p>
               Use Cargo to install directly from the Ledgerful GitHub
               repository. Crates.io is not used — only the git source path is
-              supported for v0.1.x.
+              supported for v0.1.x. This is the same command shown above.
             </p>
           </div>
         </div>
         <CodeBlock caption="install · source build · ~3–6 min on first run">
-          {`cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful`}
+          {INSTALL_COMMAND}
         </CodeBlock>
         <p className="doc-caption">
           The first build compiles the engine and links the{" "}
@@ -178,25 +217,63 @@ export default function InstallPage() {
           {`ledgerful --version
 ledgerful verify --health`}
         </CodeBlock>
-        <p className="doc-caption">
-          If <code>ledgerful</code> is not found, check that{" "}
-          <code>$HOME/.cargo/bin</code> (or{" "}
-          <code>%USERPROFILE%\.cargo\bin</code> on Windows) is on your PATH.
-          Pre-built release binaries with SHA-256 checksums are a launch fact —
-          once available, verification will mirror the procedure described on{" "}
-          <Link href="/docs/releases" style={{ color: "var(--accent)" }}>
-            the releases page
-          </Link>
-          .
-        </p>
+        <div className="disclosure-notice" style={{ marginTop: "20px" }}>
+          <strong>Verify checksums once release binaries ship:</strong>{" "}
+          Pre-built release binaries with SHA-256 checksums are a documented
+          launch fact and are not yet publicly available — today the only
+          supported install path is the source build above. Once binaries are
+          published, checksum verification becomes a required step before
+          running any downloaded binary — see{" "}
+          <Link href="/docs/releases" className="inline-link">
+            the exact checksum verification steps
+          </Link>{" "}
+          on the release verification page.
+        </div>
       </section>
 
-      {/* ── 4. First commands ──────────────────────────────── */}
+      {/* ── 4. Smoke test ──────────────────────────────────── */}
       <section className="content-band">
         <div className="step-block">
           <div className="step-head">
-            <span className="step-index">04 · FIRST COMMANDS</span>
-            <h2>Run these from inside a git repository root.</h2>
+            <span className="step-index">04 · SMOKE TEST</span>
+            <h2>Run a 30-second first pass.</h2>
+          </div>
+          <div className="step-body">
+            <p>
+              Four real commands, in order. On a warm build cache this takes
+              under 30 seconds. Run <code>scan --summary</code> from inside a
+              git repository root — the other three work from anywhere.
+            </p>
+          </div>
+        </div>
+        <CodeBlock caption="smoke test · ~30s · version → init → doctor → scan summary">
+          {`ledgerful --version
+ledgerful init
+ledgerful doctor
+ledgerful scan --summary`}
+        </CodeBlock>
+        <p className="doc-caption">
+          <code>--version</code> prints the installed binary version.{" "}
+          <code>init</code> sets up local Ledgerful state (
+          <code>.ledgerful/</code>) in the current directory.{" "}
+          <code>doctor</code> runs the environment and dependency health check
+          shown below. <code>scan --summary</code> prints a compact,
+          one-line-per-file risk summary for the working tree.
+        </p>
+        <div style={{ marginTop: "20px" }}>
+          <p className="doc-caption" style={{ marginBottom: "10px" }}>
+            Representative output for the <code>doctor</code> step:
+          </p>
+          <DoctorOutputPreview />
+        </div>
+      </section>
+
+      {/* ── 5. First commands (reference) ─────────────────── */}
+      <section className="content-band">
+        <div className="step-block">
+          <div className="step-head">
+            <span className="step-index">05 · FIRST COMMANDS</span>
+            <h2>A fuller reference, once the smoke test passes.</h2>
           </div>
           <div className="step-body">
             <p>
@@ -205,7 +282,7 @@ ledgerful verify --health`}
             </p>
           </div>
         </div>
-        <CodeBlock caption="first scan · audit · dashboard · compliance export">
+        <CodeBlock caption="reference · scan · audit · dashboard">
           {`# Environment health check (daemon, ledger, key state)
 ledgerful doctor
 
@@ -219,18 +296,107 @@ ledgerful scan --base-ref main --impact --json
 ledgerful audit
 
 # Start the loopback dashboard daemon (binds 127.0.0.1:52001)
-ledgerful web start
-
-# Export a signed SOC2 evidence bundle as a local ZIP
-ledgerful compliance export`}
+ledgerful web start`}
         </CodeBlock>
+        <p className="doc-caption">
+          SOC2-style evidence export is dashboard-only: after{" "}
+          <code>ledgerful web start</code>, open the dashboard and use its
+          Export action (served locally via the daemon&rsquo;s{" "}
+          <code>/api/compliance/export</code> route while the dashboard is
+          running). There is no standalone CLI subcommand for it — see{" "}
+          <Link href="/docs/compliance" className="inline-link">
+            the compliance export docs
+          </Link>{" "}
+          for the full walkthrough.
+        </p>
       </section>
 
-      {/* ── 5. Platform notes ──────────────────────────────── */}
+      {/* ── 6. Update & uninstall ─────────────────────────── */}
       <section className="content-band">
         <div className="step-block">
           <div className="step-head">
-            <span className="step-index">05 · PLATFORM NOTES</span>
+            <span className="step-index">06 · UPDATE &amp; UNINSTALL</span>
+            <h2>Update in place, or remove Ledgerful entirely.</h2>
+          </div>
+          <div className="step-body">
+            <p>
+              Ledgerful is an ordinary Cargo-installed binary — updating and
+              removing it use plain Cargo commands, not a custom updater or an
+              uninstall script.
+            </p>
+          </div>
+        </div>
+        <CodeBlock caption="update · re-run the same install command">
+          {INSTALL_COMMAND}
+        </CodeBlock>
+        <p className="doc-caption">
+          Re-running the install command rebuilds from the latest source at
+          that git ref and replaces the existing binary. There is no separate
+          update command.
+        </p>
+        <div style={{ marginTop: "20px" }}>
+          <CodeBlock caption="uninstall · cargo uninstall">
+            {`cargo uninstall ledgerful`}
+          </CodeBlock>
+        </div>
+        <p className="doc-caption">
+          This removes the installed binary from your Cargo bin directory.
+          Local state under <code>~/.ledgerful/</code> (keys, ledger, indexes)
+          is left in place — delete that directory yourself for a full clean
+          removal.
+        </p>
+      </section>
+
+      {/* ── 7. Troubleshooting ─────────────────────────────── */}
+      <section className="content-band">
+        <div className="step-block">
+          <div className="step-head">
+            <span className="step-index">07 · TROUBLESHOOTING</span>
+            <h2>If something doesn&rsquo;t work.</h2>
+          </div>
+          <div className="step-body">
+            <p>Three common first-run problems and the real fix for each.</p>
+          </div>
+        </div>
+        <div className="disclosure-notice">
+          <p>
+            <strong>
+              <code>ledgerful</code>: command not found.
+            </strong>{" "}
+            The Cargo bin directory isn&rsquo;t on your <code>PATH</code>.
+            Add <code>$HOME/.cargo/bin</code> (or{" "}
+            <code>%USERPROFILE%\.cargo\bin</code> on Windows) to your{" "}
+            <code>PATH</code> and open a new shell.
+          </p>
+          <p style={{ marginTop: "12px" }}>
+            <strong>Install seems stale after pulling new commits.</strong>{" "}
+            Cargo can reuse a cached build for the same git ref. Force a clean
+            rebuild with <code>--force</code>:
+          </p>
+        </div>
+        <div style={{ marginTop: "16px" }}>
+          <CodeBlock caption="troubleshooting · force a clean rebuild">
+            {`${INSTALL_COMMAND} --force`}
+          </CodeBlock>
+        </div>
+        <p className="doc-caption">
+          <code>--force</code> is a real Cargo flag — it rebuilds and
+          reinstalls even when Cargo believes the same version is already
+          installed.
+        </p>
+        <div className="disclosure-notice" style={{ marginTop: "20px" }}>
+          <strong>Windows SmartScreen prompt.</strong> Authenticode signing is
+          not yet implemented (see Platform notes below) — SmartScreen may
+          prompt on first run of a locally built binary. This is expected and
+          is not a sign of a corrupted build.
+        </div>
+      </section>
+
+      {/* ── 8. Platform notes ──────────────────────────────── */}
+      <section className="content-band">
+        <div className="step-block">
+          <div className="step-head">
+            <span className="step-index">08 · PLATFORM NOTES</span>
             <h2>Path and key locations by OS.</h2>
           </div>
           <div className="step-body">
@@ -280,11 +446,11 @@ ledgerful compliance export`}
         </div>
       </section>
 
-      {/* ── 6. Where next? ─────────────────────────────────── */}
+      {/* ── 9. Where next? ─────────────────────────────────── */}
       <section className="content-band">
         <div className="step-block">
           <div className="step-head">
-            <span className="step-index">06 · WHERE NEXT</span>
+            <span className="step-index">09 · WHERE NEXT</span>
             <h2>Continue the install → operate flow.</h2>
           </div>
           <div className="step-body">

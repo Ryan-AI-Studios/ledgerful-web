@@ -4,12 +4,15 @@ export const siteUrl =
 export const mainNavigation = [
   { href: "/", label: "Home" },
   { href: "/install", label: "Install" },
-  { href: "/architecture", label: "Architecture" },
+  { href: "/architecture", label: "How it works" },
   { href: "/docs", label: "Docs" },
   { href: "/pricing", label: "Pricing" },
   { href: "/trust", label: "Trust" },
-  { href: "/changelog", label: "Changelog" },
 ];
+
+export const footerNavigation = [{ href: "/changelog", label: "Changelog" }];
+
+export const publicNavigation = [...mainNavigation, ...footerNavigation];
 
 export const pageDescriptions = {
   home: "Ledgerful runs on your machine to analyze repo changes, record signed provenance, plan verification, and export audit evidence — without uploading source code by default.",

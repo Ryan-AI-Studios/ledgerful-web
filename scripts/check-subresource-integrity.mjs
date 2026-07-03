@@ -14,12 +14,20 @@ const browserHeaders = {
     : {}),
 };
 
-function scriptResources(html, documentUrl) {
-  const resources = [];
-  const nodes = [parse(html)];
+function walk(root) {
+  const nodes = [root];
+  const visited = [];
   while (nodes.length > 0) {
     const node = nodes.pop();
+    visited.push(node);
     if (node.childNodes) nodes.push(...node.childNodes);
+  }
+  return visited;
+}
+
+function scriptResources(root, documentUrl) {
+  const resources = [];
+  for (const node of walk(root)) {
     if (node.tagName !== "script") continue;
     const attributes = Object.fromEntries((node.attrs ?? []).map(({ name, value }) => [name, value]));
     if (!attributes.src) continue;
@@ -29,6 +37,17 @@ function scriptResources(html, documentUrl) {
     });
   }
   return resources;
+}
+
+function isLedgerfulDocument(root) {
+  return walk(root).some((node) => {
+    if (node.tagName !== "meta") return false;
+    const attributes = Object.fromEntries((node.attrs ?? []).map(({ name, value }) => [name, value]));
+    return (
+      attributes.name?.toLowerCase() === "application-name" &&
+      attributes.content === "Ledgerful"
+    );
+  });
 }
 
 function sha256(bytes) {
@@ -83,7 +102,15 @@ for (const target of targets) {
     continue;
   }
 
-  const resources = scriptResources(await documentResponse.text(), documentUrl);
+  const root = parse(await documentResponse.text());
+  if (!isLedgerfulDocument(root)) {
+    failures.push(
+      `${documentUrl}: response is not a Ledgerful document (possible deployment-protection shell)`,
+    );
+    continue;
+  }
+
+  const resources = scriptResources(root, documentUrl);
   const firstPartyResources = resources.filter(({ url }) => url.origin === documentUrl.origin);
   for (const resource of firstPartyResources) {
     const response = await fetch(resource.url, { headers: browserHeaders });

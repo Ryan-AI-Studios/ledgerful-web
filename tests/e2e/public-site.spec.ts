@@ -64,20 +64,28 @@ for (const route of publicRoutes) {
   });
 }
 
-for (const route of publicRoutes) {
-  test(`${route} has no detectable WCAG A or AA violations`, async ({ page }) => {
-    await page.goto(route);
-    const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
-      .analyze();
-    expect(
-      results.violations.map(({ id, impact, nodes }) => ({
-        id,
-        impact,
-        targets: nodes.map((node) => node.target),
-      })),
-    ).toEqual([]);
-  });
+for (const theme of ["dark", "light"] as const) {
+  for (const route of publicRoutes) {
+    test(`${route} has no detectable WCAG A or AA violations in ${theme} theme`, async ({
+      page,
+    }) => {
+      await page.addInitScript((selectedTheme) => {
+        localStorage.setItem("ledgerful-theme", selectedTheme);
+      }, theme);
+      await page.goto(route);
+      await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
+      const results = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
+        .analyze();
+      expect(
+        results.violations.map(({ id, impact, nodes }) => ({
+          id,
+          impact,
+          targets: nodes.map((node) => node.target),
+        })),
+      ).toEqual([]);
+    });
+  }
 }
 
 for (const width of viewportWidths) {
@@ -284,6 +292,123 @@ test("dark mode and reduced motion retain readable deterministic rendering", asy
   expect(styles.reducedMotion).toBe(true);
   expect(styles.backgroundColor).not.toBe(styles.color);
   expect(styles.scrollBehavior).toBe("auto");
+  await context.close();
+});
+
+test("dark is the no-preference default and the theme control persists light", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.getByRole("button", { name: "Light", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.getByRole("button", { name: "Light", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  expect(await page.evaluate(() => localStorage.getItem("ledgerful-theme"))).toBe("light");
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+});
+
+test("system theme follows the operating-system preference", async ({ browser }) => {
+  const context = await browser.newContext({ colorScheme: "light" });
+  await context.addInitScript(() => localStorage.setItem("ledgerful-theme", "system"));
+  const page = await context.newPage();
+  await page.goto("/");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await context.close();
+});
+
+test("saved theme is applied by the CSP-hashed head script before hydration", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: true });
+  await context.addInitScript(() => localStorage.setItem("ledgerful-theme", "light"));
+  await context.route("**/_next/static/**/*.js", (route) => route.abort());
+  const page = await context.newPage();
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.getByRole("group", { name: "Color theme" })).toHaveCount(0);
+  await expect(page.locator(".theme-toggle-placeholder")).toBeVisible();
+  await context.close();
+});
+
+test("theme controls expose visible keyboard focus", async ({ page }) => {
+  await page.goto("/");
+  const system = page.getByRole("button", { name: "System", exact: true });
+  await system.focus();
+  await expect(system).toBeFocused();
+  const outline = await system.evaluate((element) => {
+    const style = getComputedStyle(element);
+    return { style: style.outlineStyle, width: style.outlineWidth };
+  });
+  expect(outline.style).not.toBe("none");
+  expect(Number.parseFloat(outline.width)).toBeGreaterThanOrEqual(2);
+});
+
+test("mobile header visual order matches keyboard order", async ({ page }) => {
+  await page.setViewportSize({ width: 375, height: 812 });
+  await page.goto("/");
+  const order = await page.evaluate(() => {
+    const homeElement = document.querySelector<HTMLElement>('.site-nav a[href="/"]');
+    const systemElement = document.querySelector<HTMLElement>(
+      '.theme-toggle button[data-theme-choice="system"]',
+    );
+    const installElement = document.querySelector<HTMLElement>(".header-install");
+    if (!homeElement || !systemElement || !installElement) {
+      throw new Error("Expected mobile header controls were not rendered.");
+    }
+    return {
+      homeBeforeSystem: Boolean(
+        homeElement.compareDocumentPosition(systemElement) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+      systemBeforeInstall: Boolean(
+        systemElement.compareDocumentPosition(installElement) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+      vertical: [
+        homeElement.getBoundingClientRect().top,
+        systemElement.getBoundingClientRect().top,
+        installElement.getBoundingClientRect().top,
+      ],
+    };
+  });
+  expect(order.homeBeforeSystem).toBe(true);
+  expect(order.systemBeforeInstall).toBe(true);
+  expect(order.vertical[0]).toBeLessThanOrEqual(order.vertical[1]);
+  expect(order.vertical[1]).toBeLessThanOrEqual(order.vertical[2]);
+});
+
+test("theme switching still works when preference storage is blocked", async ({ page }) => {
+  await page.addInitScript(() => {
+    Storage.prototype.setItem = () => {
+      throw new DOMException("Storage disabled", "SecurityError");
+    };
+  });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Light", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
+  await expect(page.getByRole("button", { name: "Light", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+});
+
+test("head theme fallback keeps dark browser chrome when storage reads are blocked", async ({
+  browser,
+}) => {
+  const context = await browser.newContext();
+  await context.addInitScript(() => {
+    Storage.prototype.getItem = () => {
+      throw new DOMException("Storage disabled", "SecurityError");
+    };
+  });
+  await context.route("**/_next/static/**/*.js", (route) => route.abort());
+  const page = await context.newPage();
+  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  expect(await page.locator("html").evaluate((element) => element.style.colorScheme)).toBe("dark");
   await context.close();
 });
 

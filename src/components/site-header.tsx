@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ShieldCheck } from "lucide-react";
 import { mainNavigation } from "@/lib/content/navigation";
+import { ThemeToggle } from "./theme-toggle";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -15,24 +16,36 @@ export function SiteHeader() {
         </span>
         <span>Ledgerful</span>
       </Link>
-      <nav className="site-nav" aria-label="Primary navigation">
-        {mainNavigation.map((item) => {
-          const isActive =
-            item.href === "/"
-              ? pathname === "/"
-              : pathname === item.href || pathname.startsWith(item.href + "/");
-          return (
-            <Link
-              href={item.href}
-              key={item.href}
-              aria-current={isActive ? "page" : undefined}
-              className={isActive ? "nav-link-active" : undefined}
-            >
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+      <div className="header-actions">
+        <nav className="site-nav" aria-label="Primary navigation">
+          {mainNavigation
+            .filter((item) => item.href !== "/install")
+            .map((item) => {
+              const isActive =
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname === item.href || pathname.startsWith(item.href + "/");
+              return (
+                <Link
+                  href={item.href}
+                  key={item.href}
+                  aria-current={isActive ? "page" : undefined}
+                  className={isActive ? "nav-link-active" : undefined}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+        </nav>
+        <ThemeToggle />
+        <Link
+          href="/install"
+          className="header-install"
+          aria-current={pathname === "/install" ? "page" : undefined}
+        >
+          Install
+        </Link>
+      </div>
     </header>
   );
 }

@@ -71,6 +71,8 @@ const organizationJsonLd = {
   founder: { "@type": "Organization", name: "Ryan AI Studios" },
 };
 
+const themeScript = `(function(){var r=document.documentElement;try{var p=localStorage.getItem("ledgerful-theme")||"dark";if(!/^(system|dark|light)$/.test(p))p="dark";var t=p==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):p;r.dataset.theme=t;r.dataset.themePreference=p;r.style.colorScheme=t}catch(e){r.dataset.theme="dark";r.dataset.themePreference="dark";r.style.colorScheme="dark"}})();`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -79,9 +81,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-theme="dark"
+      data-theme-preference="dark"
+      suppressHydrationWarning
       className={`${archivo.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

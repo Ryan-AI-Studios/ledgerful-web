@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { mainNavigation, siteUrl } from "@/lib/content/navigation";
+import { publicNavigation, siteUrl } from "@/lib/content/navigation";
 
 const docRoutes = [
   "/docs/cli",
@@ -15,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date("2026-06-27");
 
   return [
-    ...mainNavigation.map((route) => ({
+    ...publicNavigation.map((route) => ({
       url: `${siteUrl}${route.href === "/" ? "" : route.href}`,
       lastModified: now,
       changeFrequency: (route.href === "/" ? "weekly" : "monthly") as MetadataRoute.Sitemap[number]["changeFrequency"],

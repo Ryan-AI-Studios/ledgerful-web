@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { mainNavigation } from "@/lib/content/navigation";
+import { footerNavigation, mainNavigation } from "@/lib/content/navigation";
 import { launchFacts } from "@/lib/content/launch-facts";
 import { StatusPill } from "./status-pill";
 
@@ -20,6 +20,11 @@ export function SiteFooter() {
           <p style={{ fontWeight: 720, fontSize: "0.96rem", marginBottom: "12px" }}>Pages</p>
           <ul>
             {mainNavigation.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href}>{item.label}</Link>
+              </li>
+            ))}
+            {footerNavigation.map((item) => (
               <li key={item.href}>
                 <Link href={item.href}>{item.label}</Link>
               </li>

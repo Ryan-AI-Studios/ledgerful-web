@@ -17,9 +17,8 @@ export const publicRoutes = [
 
 export const primaryNavigation = [
   { href: "/", label: "Home" },
-  { href: "/install", label: "Install" },
+  { href: "/architecture", label: "How it works" },
   { href: "/docs", label: "Docs" },
   { href: "/pricing", label: "Pricing" },
   { href: "/trust", label: "Trust" },
-  { href: "/changelog", label: "Changelog" },
 ] as const;

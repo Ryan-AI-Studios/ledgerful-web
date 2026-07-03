@@ -952,6 +952,81 @@ code {
     overflow: visible;
   }
 
+  /* Boundary table: allow header wrapping in print so the 5 columns
+     are more even (the "Uploads / sends externally" header wraps to
+     two lines instead of forcing one wide column). */
+  .boundary-table thead th {
+    white-space: normal !important;
+    word-break: break-word;
+  }
+
+  /* SVG diagrams: scale to fit the print page width and avoid
+     text overflowing boxes / arrows overlapping labels. The
+     viewBox is preserved; the SVG just renders at the page width. */
+  .trust-dataflow-diagram,
+  .trust-token-diagram {
+    overflow: visible;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .trust-dataflow-diagram svg,
+  .trust-token-diagram svg {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+  }
+
+  /* SVG diagrams in print: the viewBox text is positioned at fixed
+     coordinates that can overflow boxes or overlap arrows when the
+     SVG renders at full page width. Reduce the SVG to 88% of the
+     container so all text (and the boxes/arrows) scale down together,
+     preserving hierarchy and giving the longest labels room to fit. */
+  .trust-dataflow-diagram,
+  .trust-token-diagram {
+    padding: 8px !important;
+  }
+
+  .trust-dataflow-diagram svg,
+  .trust-token-diagram svg {
+    display: block;
+    margin: 0 auto;
+    width: 88%;
+  }
+
+  /* Keep <details> sample-export blocks together so the summary
+     doesn't orphan at the bottom of a page with the content on the
+     next page. */
+  details.sample-export {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  details.sample-export > summary {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Keep subprocessor tables + their heading/prose together so a
+     box doesn't get its top edge cut off across a page break. */
+  .subprocessor-list {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .subprocessor-list .table-scroll {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Trust sections: avoid breaking right at the section heading so
+     the top of a section isn't cut off. */
+  .trust-section > .section-heading,
+  .trust-section > :first-child {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
   /* Force sample-export evidence <details> content to render in the PDF
      whether or not the user expanded the disclosure before printing. The
      summary stays; the rest of the content is forced visible. */

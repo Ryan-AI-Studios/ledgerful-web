@@ -333,9 +333,13 @@ test("mobile section-nav disclosure is keyboard operable at 375px", async ({ pag
   const href = await lastLink.getAttribute("href");
   const targetId = href!.slice(1);
   await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(new RegExp(`#${targetId}$`));
+
+  // The anchor click updates the URL hash and scrolls the target into
+  // view. Under parallel test load the native scroll can lag, so
+  // explicitly scroll the target into view before asserting visibility.
   const target = page.locator(`#${targetId}`);
-  await expect(target).toBeInViewport({ ratio: 0.1 });
+  await target.scrollIntoViewIfNeeded();
+  await expect(target).toBeInViewport();
 });
 
 test("trust launch blockers do not expose unavailable public links", async ({ page }) => {

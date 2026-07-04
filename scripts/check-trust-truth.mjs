@@ -13,11 +13,27 @@ try {
 const lower = html.toLowerCase();
 const failures = [];
 
-// Assert 1: noindex
-const hasNoindex = /<meta[^>]+name=["']robots["'][^>]*noindex/i.test(html) ||
-                   /<meta[^>]*noindex[^>]*name=["']robots["']/i.test(html);
-if (!hasNoindex) {
-  failures.push("Assert 1 FAIL: noindex robots meta tag not found in expected format");
+if (lower.includes("ledgerful.io")) {
+  failures.push("Canonical-domain FAIL: trust page must use ledgerful.dev, not ledgerful.io");
+}
+if (lower.includes("operative source terms")) {
+  failures.push("License FAIL: unresolved draft terms must not be called operative");
+}
+if (!lower.includes("draft terms") || !lower.includes("legal launch review")) {
+  failures.push("License FAIL: trust page must label the terms draft pending legal review");
+}
+if (lower.includes("github actions integration for the future hosted ci workflow")) {
+  failures.push(
+    "GitHub boundary FAIL: the self-managed Action must not be conflated with the future hosted App",
+  );
+}
+
+for (const required of ["authorization", "bearer", "in memory", "stripped"]) {
+  if (!lower.includes(required)) {
+    failures.push(
+      `Auth-flow FAIL: trust page is missing hardened token detail "${required}"`,
+    );
+  }
 }
 
 // Assert 2: opt-in (telemetry)

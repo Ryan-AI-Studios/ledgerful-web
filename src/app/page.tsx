@@ -110,23 +110,22 @@ export default function Home() {
             code.
           </h1>
           <p className="hero-subhead">
-            Ledgerful analyzes your Git repositories on your own machine and
-            produces change-risk summaries, provenance records, verification
-            plans, and SOC 2-style evidence exports. Your source code never
-            leaves your machine by default.
+            Ledgerful analyzes Git repositories locally and produces risk,
+            provenance, verification, and SOC 2-style evidence without
+            uploading source code by default.
           </p>
+          <div className="hero-actions hero-actions--primary">
+            <InstallCommand />
+            <Link className="button-secondary" href="/architecture">
+              See how it works
+            </Link>
+          </div>
           <div className="hero-launch-line">
             <span className="hero-launch-line-dot" aria-hidden="true" />
             <span>
               <strong>{release.value}.</strong> {repository.value} — see{" "}
               <Link href="/docs/releases">release notes</Link>.
             </span>
-          </div>
-          <div className="hero-actions hero-actions--primary">
-            <InstallCommand />
-            <Link className="button-secondary" href="/architecture">
-              See how it works
-            </Link>
           </div>
           <div className="hero-actions hero-actions--quiet">
             <Link className="button-tertiary" href="/docs">

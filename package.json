@@ -4,17 +4,20 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/build-with-csp.mjs",
+    "build": "npm run check:positioning && npm run test:policy && node scripts/build-with-csp.mjs && npm run check:positioning:rendered",
     "build:next": "next build --webpack",
     "start": "next start",
     "start:links": "next start --port 4173",
     "lint": "eslint",
-    "check:preview": "npm run build && node scripts/check-quiet-preview.mjs",
+    "check:preview": "npm run build && npm run check:indexing",
     "check:pricing": "npm run build && node scripts/check-pricing-truth.mjs",
     "check:links": "cross-env NEXT_PUBLIC_SITE_URL=http://127.0.0.1:4173 npm run build && start-server-and-test start:links http://127.0.0.1:4173 \"linkinator http://127.0.0.1:4173 --recurse --skip ^mailto: --skip github.com/Ryan-AI-Studios/Ledgerful\"",
     "check:trust": "npm run build && node scripts/check-trust-truth.mjs",
     "check:docs": "npm run build && node scripts/check-docs-truth.mjs",
-    "check:truth": "node scripts/check-quiet-preview.mjs && node scripts/check-pricing-truth.mjs && node scripts/check-trust-truth.mjs && node scripts/check-docs-truth.mjs && node scripts/check-jsonld.mjs && node scripts/check-launch-truth.mjs && node scripts/check-proof-assets.mjs",
+    "check:truth": "npm run check:indexing && npm run check:positioning && node scripts/check-pricing-truth.mjs && node scripts/check-trust-truth.mjs && node scripts/check-docs-truth.mjs && node scripts/check-jsonld.mjs && node scripts/check-launch-truth.mjs && node scripts/check-proof-assets.mjs",
+    "check:indexing": "node scripts/check-indexing-policy.mjs",
+    "check:positioning": "node scripts/check-positioning-terms.mjs",
+    "check:positioning:rendered": "node scripts/check-positioning-rendered.mjs",
     "check:launch-truth": "node scripts/check-launch-truth.mjs",
     "check:proof-assets": "node scripts/check-proof-assets.mjs",
     "check:launch-truth:live": "cross-env LAUNCH_TRUTH_LIVE=1 node scripts/check-launch-truth.mjs",
@@ -23,7 +26,8 @@
     "check:jsonld": "node scripts/check-jsonld.mjs",
     "generate:og": "node scripts/generate-og-images.mjs",
     "test:e2e": "npm run build && playwright test",
-    "test:e2e:run": "playwright test"
+    "test:e2e:run": "playwright test",
+    "test:policy": "node --test tests/indexing-policy.test.mjs tests/positioning-terms.test.mjs"
   },
   "dependencies": {
     "lucide-react": "1.21.0",

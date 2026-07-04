@@ -3,6 +3,7 @@ import type { Organization, WithContext } from "schema-dts";
 import { Archivo, JetBrains_Mono } from "next/font/google";
 import { homeOgImage, siteUrl } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
+import { indexingAllowed } from "@/lib/indexing-policy.mjs";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -28,16 +29,25 @@ export const metadata: Metadata = {
     "Ledgerful analyzes your Git repositories locally to surface change risk, provenance, and SOC 2-style evidence — without uploading your source code. Install the CLI and run it on your machine.",
   applicationName: "Ledgerful",
   authors: [{ name: "Ryan AI Studios" }],
-  robots: {
-    index: false,
-    follow: false,
-    nocache: true,
-    googleBot: {
-      index: false,
-      follow: false,
-      noimageindex: true,
-    },
-  },
+  robots: indexingAllowed
+    ? {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+        },
+      }
+    : {
+        index: false,
+        follow: false,
+        nocache: true,
+        googleBot: {
+          index: false,
+          follow: false,
+          noimageindex: true,
+        },
+      },
   openGraph: {
     title: "Ledgerful",
     description:
@@ -73,7 +83,7 @@ const sameAs: string[] = launchTruth.facts.repository.anonymousAccess
 
 // Target-query topics from recommendation.md §4.6, adapted to what's
 // actually shipped today (see launch-facts.ts / pageDescriptions) — no
-// crypto/accounting-adjacent wording.
+// prohibited positioning or accounting-adjacent wording.
 const knowsAbout = [
   "Local-first code analysis",
   "Code change risk analysis",

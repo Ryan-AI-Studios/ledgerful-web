@@ -18,7 +18,7 @@ const proofItems = [
     href: "/trust",
   },
   {
-    label: "Releases are checksum-verified",
+    label: "Release workflow emits companion checksums",
     href: "/docs/releases",
   },
 ] as const;

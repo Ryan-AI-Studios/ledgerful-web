@@ -46,13 +46,13 @@ export function ArchitectureDiagram() {
           <ArchNode
             kicker="SURFACE 01 · ENGINE"
             title="ledgerful CLI"
-            body="scan · ledger · audit · verify · sync · mcp"
-            meta=".ledgerful/  (keys, ledger, indexes)"
+            body="scan · ledger · audit · verify · mcp"
+            meta="sync is feature-gated · --features sync"
           />
           <ArchNode
             kicker="SURFACE 02 · DASHBOARD"
             title="Embedded UI"
-            body="127.0.0.1:52001 · ?token= session"
+            body="launch token → in-memory Bearer auth"
             meta="loopback only · no external bind"
           />
         </div>

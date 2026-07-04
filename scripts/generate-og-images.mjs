@@ -234,7 +234,7 @@ const ROUTES = [
     // `meta` field), verbatim. NOT install/page.tsx's "First commands"
     // block — that block's own command text does not include this string.
     command: "ledgerful web start",
-    commandLabel: "Binds 127.0.0.1:52001 · ephemeral ?token= auth",
+    commandLabel: "Binds 127.0.0.1:52001 · launch token → Bearer auth",
     sources: {
       title: "src/app/architecture/page.tsx metadata.title",
       description: "src/lib/content/navigation.ts pageDescriptions.architecture",

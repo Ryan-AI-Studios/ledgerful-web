@@ -20,7 +20,7 @@ const repositoryUrl = "https://github.com/Ryan-AI-Studios/Ledgerful";
  */
 export const launchTruth = {
   schemaVersion: 1,
-  verifiedAt: "2026-07-02",
+  verifiedAt: "2026-07-03",
   sources: {
     engine: "C:\\dev\\ledgerful",
     anonymousGitHub: "https://api.github.com/repos/Ryan-AI-Studios/Ledgerful",
@@ -41,7 +41,7 @@ export const launchTruth = {
       label: "Canonical GitHub repository",
       status: "unresolved",
       value: "Private preview",
-      note: "The canonical repository exists locally, but anonymous HTTPS, GitHub API, and raw-file checks returned no public access on 2026-07-02. Source-install commands require authorized access.",
+      note: "The canonical repository exists locally, but anonymous HTTPS, GitHub API, and raw-file checks returned no public access on 2026-07-03. Source-install commands require authorized access.",
       href: repositoryUrl,
       apiUrl: "https://api.github.com/repos/Ryan-AI-Studios/Ledgerful",
       anonymousAccess: false,
@@ -53,10 +53,10 @@ export const launchTruth = {
       note: "Do not link status.ledgerful.dev until the status surface exists.",
     },
     license: {
-      label: "Current source license",
-      status: "resolved",
-      value: "PolyForm Noncommercial 1.0.0",
-      note: "The current source terms are PolyForm Noncommercial 1.0.0 plus the Ledgerful Small-Entity Commercial Exception v1.0. The exception permits qualifying entities under US$1M aggregated gross revenue to use Ledgerful internally. Legal launch review remains open.",
+      label: "Draft source-license terms",
+      status: "unresolved",
+      value: "Pending legal review and license-in-force",
+      note: "The repository contains draft PolyForm Noncommercial 1.0.0 terms plus the Ledgerful Small-Entity Commercial Exception v1.0. The intended exception would permit qualifying entities under US$1M aggregated gross revenue to use Ledgerful internally, but LLC formation, IP assignment, counsel review, and license-in-force remain open launch gates.",
       base: "PolyForm Noncommercial License 1.0.0",
       exception: "Ledgerful Small-Entity Commercial Exception v1.0",
       legalLaunchReviewComplete: false,
@@ -65,7 +65,7 @@ export const launchTruth = {
       label: "MCP npm package",
       status: "unresolved",
       value: "Not published",
-      note: "@ledgerful/mcp-server exists in source at version 0.1.6, but the anonymous npm registry returned 404 on 2026-07-02. npx and npm install instructions are not actionable yet.",
+      note: "@ledgerful/mcp-server exists in source at version 0.1.6, but the anonymous npm registry returned 404 on 2026-07-03. npx and npm install instructions are not actionable yet.",
       name: "@ledgerful/mcp-server",
       version: "0.1.6",
       registryUrl:

@@ -70,8 +70,12 @@ function readTopLevelHtml(slug) {
 }
 
 let installHtml;
+let architectureHtml;
+let homepageHtml;
 try {
   installHtml = readTopLevelHtml("install");
+  architectureHtml = readTopLevelHtml("architecture");
+  homepageHtml = readTopLevelHtml("index");
 } catch (err) {
   console.error(`FAIL: ${err.message}`);
   process.exit(1);
@@ -79,19 +83,75 @@ try {
 
 const failures = [];
 
-// ── Assert 1: Every doc page must have a noindex robots meta ─────────────────
-// The global layout.tsx sets robots: { index: false, follow: false } which
-// Next.js renders as <meta name="robots" content="noindex,nofollow,..."/>.
+// ── Assert 21: homepage checksum proof matches unresolved release status ─────
 
-const noindexPattern = /<meta[^>]+name=["']robots["'][^>]*noindex/i;
-const noindexPattern2 = /<meta[^>]*noindex[^>]*name=["']robots["']/i;
-
-for (const slug of slugs) {
-  const html = pages[slug];
-  if (!noindexPattern.test(html) && !noindexPattern2.test(html)) {
+{
+  const lower = homepageHtml.toLowerCase();
+  if (lower.includes("releases are checksum-verified")) {
     failures.push(
-      `Assert 1 FAIL [docs/${slug}]: noindex robots meta tag not found`
+      "Assert 21 FAIL [home]: no public release is verified; describe the workflow's companion checksums instead",
     );
+  }
+  if (!lower.includes("release workflow emits companion checksums")) {
+    failures.push(
+      "Assert 21 FAIL [home]: checksum proof must state what the current release workflow actually emits",
+    );
+  }
+}
+
+// ── Assert 17: sync docs disclose the non-default build feature ──────────────
+
+{
+  const lower = pages["sync"].toLowerCase();
+  if (!lower.includes("--features sync")) {
+    failures.push(
+      'Assert 17 FAIL [docs/sync]: "--features sync" install guidance is required because sync is not in the default build',
+    );
+  }
+  if (!lower.includes("not included in the default")) {
+    failures.push(
+      'Assert 17 FAIL [docs/sync]: the page must state that sync is not included in the default build',
+    );
+  }
+}
+
+// ── Assert 18: architecture does not present sync as a default CLI surface ───
+
+{
+  const lower = architectureHtml.toLowerCase();
+  if (
+    lower.includes("sync") &&
+    (!lower.includes("feature-gated") || !lower.includes("--features sync"))
+  ) {
+    failures.push(
+      "Assert 18 FAIL [architecture]: sync appears without a feature-gated or --features sync qualifier",
+    );
+  }
+}
+
+// ── Assert 19: dashboard auth docs match the hardened Bearer flow ────────────
+
+{
+  const lower = pages["dashboard"].toLowerCase();
+  for (const required of ["authorization", "bearer", "in memory", "strip"]) {
+    if (!lower.includes(required)) {
+      failures.push(
+        `Assert 19 FAIL [docs/dashboard]: hardened auth explanation is missing "${required}"`,
+      );
+    }
+  }
+}
+
+// ── Assert 20: architecture matches the one-time launch-token handoff ────────
+
+{
+  const lower = architectureHtml.toLowerCase();
+  for (const required of ["authorization", "bearer", "in memory", "strip"]) {
+    if (!lower.includes(required)) {
+      failures.push(
+        `Assert 20 FAIL [architecture]: hardened auth explanation is missing "${required}"`,
+      );
+    }
   }
 }
 
@@ -383,5 +443,5 @@ if (failures.length > 0) {
   failures.forEach((f) => console.error(" ", f));
   process.exit(1);
 } else {
-  console.log("check-docs-truth: all 16 assertions passed ✓");
+  console.log("check-docs-truth: all assertions passed ✓");
 }

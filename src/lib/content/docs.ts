@@ -22,7 +22,7 @@ export const docTopics: DocTopic[] = [
     title: "Local dashboard launch",
     state: "local-only",
     summary:
-      "Dashboard access is loopback daemon-backed and uses an ephemeral ?token= session model.",
+      "Dashboard access is loopback daemon-backed: a one-time launch token is stripped from the URL, held in memory, and sent as Authorization: Bearer.",
     nextAction: "Document token handling without exposing tokens in examples or logs.",
     href: "/docs/dashboard",
   },
@@ -52,7 +52,7 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "Local team sync",
-    state: "local-only",
+    state: "beta",
     summary:
       "Team sync foundation uses signed/encrypted local-first bundles and dir:// transport.",
     nextAction: "Document setup and recovery once the product workflow is finalized.",

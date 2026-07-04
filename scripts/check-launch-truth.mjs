@@ -81,6 +81,16 @@ function assertInternalBaseline() {
     false,
     "The default engine build must not imply compiled-in usage metrics",
   );
+  assert.equal(
+    launchTruth.facts.license.status,
+    "unresolved",
+    "The public license state must remain unresolved until legal launch review closes",
+  );
+  assert.equal(
+    launchTruth.facts.license.legalLaunchReviewComplete,
+    false,
+    "Legal launch review must remain explicitly incomplete until counsel signs off",
+  );
   assert.deepEqual(
     launchTruth.facts.telemetry.payloadFields,
     [

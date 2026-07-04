@@ -1,5 +1,8 @@
 # Ledgerful Web Conductor
 
+> **Legacy register:** current cross-repo governance and active track status live in
+> `C:\dev\coordinated\conductor\`. The `WEB-####` records below are retained only as historical context.
+
 The conductor system structures incremental delivery for the Ledgerful public
 web repo. This repo owns the public marketing/docs/trust/pricing surface, not
 the embedded dashboard or the future hosted control plane.

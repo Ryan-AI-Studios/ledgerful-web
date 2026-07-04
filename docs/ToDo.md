@@ -1,82 +1,61 @@
 # Ledgerful Web Deferred Work
 
-This is the durable register for work intentionally deferred from the public
-web. `conductor/conductor.md` remains authoritative for track status, and
-`C:\dev\Roadmap.md` remains authoritative for cross-repo product sequencing.
-When an item is completed, record its evidence in the owning track and remove
-it from this file instead of leaving overlapping status narratives.
+This is the durable public-web action register. Current track governance lives in
+`C:\dev\coordinated\conductor\`; the repo-local `conductor/` directory is a legacy historical register.
+Remove completed items instead of retaining overlapping status narratives.
 
-Last reviewed: 2026-06-27. WEB-0004 completed.
+Last reviewed: 2026-07-04. Track 0027 engineering is complete; public launch remains blocked.
 
 ## Exit The Quiet Preview
 
-Do not restore search indexing until every launch-blocking item below is either
-resolved with evidence or deliberately removed from launch scope.
+Production search indexing stays off until every launch-blocking item below closes with evidence and
+the explicit D1-GO decision is recorded.
 
-- [ ] Resolve the launch facts in `WEB-0005-LaunchFactResolution`.
-- [ ] Complete a final public-claim audit against the backend and frontend
-  conductor state.
-- [ ] Run desktop, mobile, keyboard, link, and accessibility/Lighthouse smokes
-  against the production domain.
-- [ ] Replace the quiet-preview policy with an explicit launch change that
-  restores crawl access and indexable metadata.
-- [ ] Verify the launched production domain, sitemap, canonical URLs, social
-  metadata, and search directives after that deployment.
+- [x] Complete the final public-claim audit against backend/frontend evidence.
+- [x] Add fail-safe env-driven indexing: exact `NEXT_PUBLIC_ALLOW_INDEXING=true` plus Vercel Production
+  context is required; Preview/development/unset configurations remain `noindex`.
+- [x] Verify the current CLI-deployed Vercel Preview across desktop/mobile/keyboard/themes/reduced
+  motion/print/console/network, automated WCAG, and Lighthouse lab CWV.
+- [ ] Complete the consolidated pre-flip checklist in
+  `C:\dev\coordinated\conductor\deferred.md`.
+- [ ] Run the external 5-second comprehension test with at least three independent testers.
+- [ ] Set `NEXT_PUBLIC_ALLOW_INDEXING=true` on the Vercel Production environment only after D1-GO.
+- [ ] Verify the launched Production domain, sitemap, canonical/social metadata, console, lab CWV, and
+  index/follow directives after the flip.
+- [ ] Around Day 28 post-launch, confirm CrUX field p75 and track any regression.
 
 ## Public Launch Facts
 
-Owner: `WEB-0005-LaunchFactResolution`.
+Owner: Track `0027-WebLaunchGate` plus the consolidated deferred checklist.
 
-- [ ] Verify anonymous access to the canonical public GitHub repository before
-  linking it from the site.
-- [ ] Decide whether a public status page will exist; publish and verify it
-  before adding a status link.
-- [ ] Confirm public license wording with release/legal evidence.
-- [ ] Verify the public MCP registry or npm package install path with a real
-  release smoke.
-- [ ] Publish a tagged release with downloadable assets and checksums, then
-  verify those links anonymously.
-- [ ] Publish and verify the GitHub Action installation path and public setup
-  documentation.
-- [ ] Add only source-backed trust or social proof; do not add placeholder
-  customers, logos, uptime, or adoption metrics.
+- [ ] Complete LLC formation, individual-to-LLC IP assignment, counsel review, and license-in-force.
+- [ ] Verify anonymous access to the canonical GitHub repository before exposing repository links.
+- [ ] Publish a tagged release with downloadable assets, companion checksums, SBOM/provenance, then
+  verify every link anonymously.
+- [ ] Verify the public MCP package decision/install path and GitHub Action setup against real releases.
+- [ ] Provision and receipt-test `security@ledgerful.dev`, `hello@ledgerful.dev`, and
+  `waitlist@ledgerful.dev` (or replace the latter two with a verified form).
+- [ ] Enable branch protection and require the `ai-reviewed` status check.
+- [ ] Complete telemetry-ingest hardening and reconcile any resulting Trust copy.
+- [ ] Decide whether a public status page will exist; do not add a status link before it does.
+- [ ] Add only source-backed trust or social proof; no placeholder customers, logos, uptime, or metrics.
 
-## Open Public-Web Tracks
-
-- [ ] `WEB-0005-LaunchFactResolution`: close every item in the launch-facts
-  section above.
 ## Deployment And Operations
 
-- [ ] Prove Git-driven Preview deployment on a non-production branch and record
-  the resulting Vercel URL.
-- [ ] Decide and document Vercel Preview deployment protection policy.
-- [ ] Before public launch, decide whether Preview should receive an explicit
-  `NEXT_PUBLIC_SITE_URL`; it currently uses the correct source fallback while
-  Production is explicitly set to `https://www.ledgerful.dev`.
-- [ ] Decide whether `@ledgerful.dev` will receive or send email. Until an
-  email provider is selected, do not invent MX or DKIM records. If email remains
-  unused, publish restrictive no-mail SPF and DMARC policy.
-
-## Quality And Maintenance
-
-- [ ] Create `DESIGN.md` from the implemented visual system so future tracks do
-  not rely on provisional design decisions in review notes.
+- [ ] Prove a Git-driven Preview deployment from a non-production branch and record its Vercel URL.
+  The verified Track 0027 deployment was CLI-driven and does not close this item.
+- [ ] Decide and document the long-term Vercel Preview protection policy.
+- [ ] Confirm Vercel spend-management/usage-alert posture and record the Attack Challenge Mode runbook.
+- [ ] Run a full git-history secret scan before any repository visibility change.
 
 ## Cross-Repo Dependencies
 
-These capabilities must remain visibly planned until their owning repositories
-ship and provide release evidence.
+These capabilities remain visibly planned until their owning repositories ship release evidence.
 
-- [ ] Backend release evidence for the MCP public package and GitHub Action
-  installation paths.
-- [ ] Frontend evidence for manager-grade multi-project portfolio and team/admin
-  surfaces before corresponding public claims are upgraded.
-- [ ] Future control-plane `CP-0`: hosted tenancy, signed-summary ingestion,
-  GitHub App webhooks, and hosted portfolio queries using the selected Vercel
-  and Supabase baseline.
-- [ ] Future control-plane `CP-1`: billing, subscriptions, entitlements, and
-  customer portal.
-- [ ] Future control-plane `CP-2`: SAML/OIDC, SCIM, RBAC, hosted audit logs,
-  retention controls, and enterprise audit export.
-- [ ] Hosted data-deletion, subprocessor, and source-upload documentation after
-  hosted services actually exist.
+- [ ] Frontend evidence for manager-grade multi-project portfolio and team/admin surfaces.
+- [ ] Future control-plane `CP-0`: hosted tenancy, signed-summary ingestion, GitHub App webhooks, and
+  hosted portfolio queries.
+- [ ] Future control-plane `CP-1`: billing, subscriptions, entitlements, and customer portal.
+- [ ] Future control-plane `CP-2`: SAML/OIDC, SCIM, RBAC, hosted audit logs, retention controls, and
+  enterprise audit export.
+- [ ] Hosted data-deletion, subprocessor, and source-upload documentation after hosted services exist.

@@ -21,11 +21,29 @@ export default function DocsSyncPage() {
       <section className="page-hero compact">
         <p className="hero-kicker">Docs · Sync</p>
         <h1>Local team sync.</h1>
-        <StatusPill status="local-only" />
+        <StatusPill status="beta" />
         <p>
           Ledgerful sync writes signed, encrypted bundles to a directory you
           control. No cloud transport is involved by default.
         </p>
+      </section>
+
+      <section className="content-band">
+        <div className="disclosure-notice">
+          <p>
+            <strong>Feature-gated build:</strong> Sync is not included in the
+            default Ledgerful build. The source repository is a private preview,
+            so this command requires authorized repository access. Authorized
+            testers can install a sync-enabled binary with{" "}
+            <code>
+              cargo install --git
+              https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful
+              --features sync
+            </code>
+            . The standard install command elsewhere on this site does not add
+            this optional feature.
+          </p>
+        </div>
       </section>
 
       {/* ── Section 1: How sync works ─────────────────────────── */}
@@ -61,8 +79,9 @@ export default function DocsSyncPage() {
       {/* ── Section 2: Initialize ─────────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="Initialize sync">
-          Run <code>ledgerful sync init</code> from the repository root to set
-          up the sync configuration and create a transport entry.
+          After installing a sync-enabled build, run{" "}
+          <code>ledgerful sync init</code> from the repository root to set up
+          the sync configuration and create a transport entry.
         </SectionHeading>
         <div className="terminal-window">
           <div className="terminal-bar">

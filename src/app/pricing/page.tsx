@@ -54,10 +54,10 @@ export default function PricingPage() {
 
       <section className="content-band">
         <SectionHeading title="Editions">
-          Local and Commercial License run the same software under different
-          license terms — available today. Hosted and Enterprise are planned
-          and require a future control plane, with no announced prices or
-          timelines.
+          Local and Commercial License describe the same current software under
+          draft terms pending legal review and license-in-force. Hosted and
+          Enterprise are planned and require a future control plane, with no
+          announced prices or timelines.
         </SectionHeading>
 
         <aside
@@ -65,15 +65,15 @@ export default function PricingPage() {
           aria-labelledby="available-today-heading"
         >
           <div className="available-today-head">
-            <StatusPill status="available" />
-            <h2 id="available-today-heading">Available today</h2>
-            <p className="available-today-price">License-qualified</p>
+            <StatusPill status="local-only" />
+            <h2 id="available-today-heading">Implemented in the current build</h2>
+            <p className="available-today-price">License terms unresolved</p>
           </div>
           <p>
-            The current source license permits noncommercial use and royalty-free
-            internal business use by qualified small entities. No paid commercial
-            price is announced. Local capabilities still run entirely on your
-            machine.
+            The local capabilities below are implemented. The intended
+            noncommercial and small-entity permissions remain draft until legal
+            review, LLC/IP assignment, and license-in-force close. No paid
+            commercial price is announced.
           </p>
           <ul className="available-today-list">
             {availableToday.map((item) => (
@@ -260,7 +260,7 @@ export default function PricingPage() {
       </section>
 
       <div className="content-band pricing-cta-band">
-        <p>Review the current source terms, then run locally. No account required.</p>
+        <p>Review the draft source terms, then run locally. No account required.</p>
         <div className="hero-actions">
           <Link href="/docs/cli" className="button-primary">Install the CLI</Link>
           <Link href="/trust" className="button-secondary">Review trust posture</Link>

@@ -36,8 +36,18 @@ assert.doesNotMatch(
 );
 assert.match(
   install,
-  /license-qualified local edition/i,
-  "Install must preserve the license-qualified local-edition wording",
+  /draft license terms/i,
+  "Install must preserve the unresolved draft-license wording",
+);
+assert.match(
+  pricing,
+  /draft terms[^<]*pending legal review/i,
+  "Pricing must identify the license boundary as draft terms pending legal review",
+);
+assert.doesNotMatch(
+  pricing,
+  /different license terms[^<]*available today/i,
+  "Pricing must not present unresolved license terms as available today",
 );
 
 // All five approved feature state labels must appear
@@ -63,17 +73,10 @@ assert.match(
   "Hosted and enterprise editions must display 'Pricing not announced'",
 );
 
-// Quiet-preview noindex must still be active
-assert.match(
-  pricing,
-  /<meta name="robots" content="[^"]*noindex[^"]*"/,
-  "Pricing page must emit noindex metadata while quiet preview is active",
-);
-
 // 0025-WebPricingReframe: plain-English boundary sentence must lead the page
 assert.match(
   pricing,
-  /Free for individuals, noncommercial use, and small companies/,
+  /free for individuals, noncommercial use, and small companies/i,
   "Pricing must lead with the plain-English free/paid/agreement boundary sentence",
 );
 

@@ -865,7 +865,7 @@ code {
     flex: 1 1 100%;
     flex-wrap: nowrap;
     justify-content: flex-start;
-    gap: 4px;
+    gap: 2px;
     overflow-x: auto;
     overscroll-behavior-inline: contain;
     scrollbar-width: none;
@@ -877,8 +877,8 @@ code {
 
   .site-nav a {
     flex-shrink: 0;
-    padding: 8px 10px;
-    font-size: 0.86rem;
+    padding: 8px 6px;
+    font-size: 0.82rem;
   }
 }
 
@@ -3004,7 +3004,7 @@ code {
   color: var(--ink);
 }
 
-/* B4-TRUST — token-model diagram (ephemeral loopback ?token=) */
+/* B4-TRUST — token-model diagram (one-time launch token to Bearer auth) */
 .trust-token-diagram {
   display: block;
   width: 100%;
@@ -3190,7 +3190,7 @@ code {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(20px, 3.5vw, 40px);
-  align-items: stretch;
+  align-items: start;
 }
 
 .hero-proof-action,
@@ -3540,11 +3540,6 @@ code {
 
   .hero-copy .hero-subhead {
     margin-top: 14px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .hero-launch-line {

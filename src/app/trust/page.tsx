@@ -601,17 +601,18 @@ function TokenModelDiagram() {
       className="trust-token-diagram"
     >
       <title id="trust-token-title">
-        Local dashboard token model: ephemeral ?token= session on loopback
+        Local dashboard token model: one-time launch token and Bearer requests
       </title>
       <desc id="trust-token-desc">
         Five steps in a horizontal flow. Step one, a developer runs
         &quot;ledgerful web start&quot; on their machine. Step two, the daemon
         generates a 256-bit random token in memory. Step three, the CLI opens
         a browser to http://127.0.0.1:52001 with the token appended as
-        &quot;?token=&lt;hex&gt;&quot;. Step four, the daemon validates the
-        token using constant-time comparison. Step five, the dashboard session
-        is established; the token is never persisted to disk and the bind
-        address stays on the loopback interface, not the network.
+        &quot;?token=&lt;hex&gt;&quot;. Step four, the dashboard captures the
+        token in memory and strips it from the URL. Step five, API requests use
+        an Authorization Bearer header and the daemon validates the token with
+        constant-time comparison. The token is never persisted to disk and the
+        bind address stays on the loopback interface, not the network.
       </desc>
 
       {/* ── Five nodes ─────────────────────────────────────── */}
@@ -637,14 +638,14 @@ function TokenModelDiagram() {
         {
           x: 466,
           kicker: "STEP 4",
-          title: "Validate",
-          body: "constant-time compare",
+          title: "Capture + strip",
+          body: "token held in memory",
         },
         {
           x: 612,
           kicker: "STEP 5",
-          title: "Session",
-          body: "loopback-only UI",
+          title: "Bearer request",
+          body: "constant-time validate",
         },
       ].map(({ x, kicker, title, body }) => (
         <g key={kicker}>
@@ -752,7 +753,7 @@ function TokenModelDiagram() {
         fill="currentColor"
         opacity="0.78"
       >
-        Token is per-session, validated in memory, and never persisted to disk.
+        URL is stripped; Bearer token is validated and never persisted to disk.
       </text>
 
       {/* ── Arrowhead marker ─────────────────────────────── */}
@@ -1007,11 +1008,12 @@ export default function TrustPage() {
                 <h3>Daemon</h3>
                 <p>
                   The loopback HTTP server backing the dashboard. Bound to
-                  <code> 127.0.0.1:52001</code>. Auth via ephemeral session
-                  token in <code>?token=&lt;hex&gt;</code> or{" "}
-                  <code>Authorization: Bearer &lt;hex&gt;</code>. The token is
-                  generated in memory, validated constant-time, and never
-                  persisted to disk.
+                  <code> 127.0.0.1:52001</code>. The launch URL hands the
+                  dashboard an ephemeral <code>?token=&lt;hex&gt;</code> once;
+                  the dashboard strips it, keeps it in memory, and authenticates
+                  API requests with{" "}
+                  <code>Authorization: Bearer &lt;hex&gt;</code>. The daemon
+                  validates it constant-time and never persists it to disk.
                 </p>
               </div>
               <div>
@@ -1035,7 +1037,7 @@ export default function TrustPage() {
               the internet or from other machines on your network.
             </SectionHeading>
             <figure
-              aria-label="Token model diagram: ephemeral local ?token= session on loopback"
+              aria-label="Token model diagram: one-time launch token becomes in-memory Bearer authentication on loopback"
               style={{ marginBlock: "8px 24px" }}
             >
               <TokenModelDiagram />
@@ -1060,26 +1062,27 @@ export default function TrustPage() {
                 <p className="print-token-arrow" aria-hidden="true">▼</p>
                 <div className="print-token-step">
                   <p className="print-token-kicker">Step 4</p>
-                  <p className="print-token-title">Validate</p>
-                  <p className="print-token-body">constant-time compare</p>
+                  <p className="print-token-title">Capture + strip</p>
+                  <p className="print-token-body">token held in memory</p>
                 </div>
                 <p className="print-token-arrow" aria-hidden="true">▼</p>
                 <div className="print-token-step">
                   <p className="print-token-kicker">Step 5</p>
-                  <p className="print-token-title">Session</p>
-                  <p className="print-token-body">loopback-only UI</p>
+                  <p className="print-token-title">Bearer request</p>
+                  <p className="print-token-body">constant-time validate</p>
                 </div>
                 <div className="print-token-boundary">
                   <strong>Loopback only</strong> — bound to
                   <code> 127.0.0.1:52001</code>, not reachable from your
-                  network or the internet. Token is per-session, validated
-                  in memory, and never persisted to disk.
+                  network or the internet. The launch URL is stripped; the
+                  in-memory Bearer token is never persisted to disk.
                 </div>
               </div>
               <figcaption className="diagram-caption">
                 Five steps from <code>ledgerful web start</code> to an active
-                loopback dashboard. The token lives only in daemon memory, is
-                validated constant-time, and is never persisted to disk.
+                loopback dashboard. The URL is stripped after the token is
+                captured in dashboard memory; Bearer requests are validated
+                constant-time and the token is never persisted to disk.
               </figcaption>
             </figure>
             <div className="disclosure-notice">
@@ -1092,11 +1095,12 @@ export default function TrustPage() {
               </p>
               <p style={{ marginTop: "12px" }}>
                 <strong>Token authentication:</strong> Every dashboard session
-                requires an ephemeral session token passed via{" "}
-                <code>?token=&lt;hex&gt;</code> in the query string or{" "}
-                <code>Authorization: Bearer &lt;hex&gt;</code> in the request
-                header. Tokens are validated using constant-time comparison
-                to prevent timing attacks.
+                starts from an ephemeral <code>?token=&lt;hex&gt;</code> launch
+                URL. The dashboard captures the token in memory, strips it from
+                the address bar, and sends subsequent requests with{" "}
+                <code>Authorization: Bearer &lt;hex&gt;</code>. The daemon
+                validates tokens using constant-time comparison to prevent
+                timing attacks.
               </p>
               <p style={{ marginTop: "12px" }}>
                 <strong>Token entropy:</strong> Tokens are 256-bit
@@ -1564,12 +1568,13 @@ export default function TrustPage() {
           {/* ── Section 12: License ──────────────────────────── */}
           <section id="license" className="content-band trust-section">
             <SectionHeading title="License">
-              Current source terms are {license.base} plus the small-entity
-              exception. Legal launch review is still open.
+              Draft source terms are {license.base} plus the small-entity
+              exception. Legal launch review and license-in-force are still
+              open.
             </SectionHeading>
             <div className="disclosure-notice">
               <p>
-                Ledgerful is currently distributed under{" "}
+                The repository currently contains draft{" "}
                 <strong>{license.base}</strong> with the{" "}
                 <strong>{license.exception}</strong>. The{" "}
                 {repository.anonymousAccess ? (
@@ -1585,9 +1590,11 @@ export default function TrustPage() {
                 ) : (
                   "reviewed local LICENSE file"
                 )}{" "}
-                reflects the operative source terms. Legal launch review
-                remains unresolved and any later change must update the
-                reviewed truth baseline before it reaches public copy.
+                reflects the draft terms under review, not a completed legal
+                launch position. LLC formation, IP assignment, counsel review,
+                and license-in-force remain unresolved; any later change must
+                update the reviewed truth baseline before it reaches public
+                copy.
               </p>
             </div>
           </section>
@@ -1620,7 +1627,7 @@ export default function TrustPage() {
                   margin: "0 0 16px",
                 }}
               >
-                Serves the static <code>ledgerful.io</code> site only and
+                Serves the static <code>www.ledgerful.dev</code> site only and
                 never receives Ledgerful project source code, ledger data,
                 or product data. Visitor traffic to the public site (e.g.
                 IP addresses) is processed by Vercel as the hosting

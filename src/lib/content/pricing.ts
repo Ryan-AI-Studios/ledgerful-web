@@ -1,5 +1,5 @@
 import type { FeatureState } from "./features";
-import { launchTruth } from "./launch-facts";
+import { launchTruth, type LaunchFactStatus } from "./launch-facts";
 
 export type EditionItem = {
   label: string;
@@ -17,7 +17,7 @@ export type Edition = {
   name: string;
   audience: string;
   price: string;
-  state: FeatureState;
+  state: FeatureState | Extract<LaunchFactStatus, "unresolved">;
   description: string;
   includes: EditionItem[];
   cta?: EditionCta;
@@ -50,7 +50,7 @@ export type PricingFaqItem = {
  * by recommendation.md §4.4.
  */
 export const pricingBoundaryStatement =
-  "Free for individuals, noncommercial use, and small companies (under $1M revenue, internal use). Paid for larger companies. Resale, hosting, or OEM requires a separate agreement.";
+  "Draft terms — pending legal review: intended to be free for individuals, noncommercial use, and small companies (under $1M revenue, internal use); paid for larger companies; resale, hosting, or OEM would require a separate agreement.";
 
 /**
  * Local capabilities are identical across the Local and Commercial License
@@ -73,7 +73,11 @@ export const localCapabilities: EditionItem[] = [
     state: "beta",
     caveat: "Public install docs and release smoke pending",
   },
-  { label: "Local team sync foundation", state: "beta" },
+  {
+    label: "Local team sync foundation",
+    state: "beta",
+    caveat: "Requires a build compiled with --features sync",
+  },
 ];
 
 export const editions: Edition[] = [
@@ -82,9 +86,9 @@ export const editions: Edition[] = [
     audience:
       "Individuals, noncommercial use, and small companies under $1M aggregate gross revenue (internal use)",
     price: "Free for qualifying use",
-    state: "available",
+    state: "unresolved",
     description:
-      "Run Ledgerful locally under the current source license: CLI analysis, local dashboard, signed ledger, and manual evidence export, entirely on your machine.",
+      "Run the current local build for evaluation; the intended small-entity permission remains draft until legal review and license-in-force close.",
     includes: localCapabilities,
   },
   {
@@ -92,9 +96,9 @@ export const editions: Edition[] = [
     audience:
       "Companies at or above $1M aggregate gross revenue running Ledgerful internally",
     price: "Commercial license required",
-    state: "available",
+    state: "unresolved",
     description:
-      "The same local-first CLI, dashboard, ledger, and evidence export as Local — licensed for continued internal use once your company crosses the small-entity revenue threshold.",
+      "The same local-first CLI, dashboard, ledger, and evidence export as Local, under commercial terms that remain unannounced and pending legal review.",
     includes: localCapabilities,
     cta: { label: "Review license terms", href: "/trust#license" },
   },
@@ -114,7 +118,7 @@ export const editions: Edition[] = [
     cta: {
       label: "Join the waitlist",
       href: "mailto:waitlist@ledgerful.dev?subject=Ledgerful%20Hosted%20waitlist",
-      note: "Inbox provisioning is in progress; response times aren't guaranteed yet.",
+      note: "Inbox provisioning is in progress; delivery is not yet verified. Do not rely on this channel before launch.",
     },
   },
   {
@@ -133,7 +137,7 @@ export const editions: Edition[] = [
     cta: {
       label: "Contact us",
       href: "mailto:hello@ledgerful.dev?subject=Ledgerful%20Enterprise%20inquiry",
-      note: "Inbox provisioning is in progress; response times aren't guaranteed yet.",
+      note: "Inbox provisioning is in progress; delivery is not yet verified. Do not rely on this channel before launch.",
     },
   },
 ];
@@ -191,7 +195,7 @@ export const matrixGroups: MatrixGroup[] = [
     label: "Collaboration",
     rows: [
       {
-        feature: "Local team sync",
+        feature: "Local team sync (sync-enabled build)",
         cells: [
           { state: "local-only" },
           { state: "local-only" },

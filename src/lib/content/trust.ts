@@ -222,7 +222,7 @@ export const releaseVerificationSteps: string[] = [
 /**
  * Public-site hosting & docs infrastructure — never touches user code.
  * Vercel hosts the static marketing/docs site; it serves only the published
- * public pages for `ledgerful.io`. It does not process project source code,
+ * public pages for `www.ledgerful.dev`. It does not process project source code,
  * ledger data, or user data. Reviewers should not confuse this surface with
  * the product's local-first runtime or the planned hosted control plane.
  */
@@ -230,7 +230,7 @@ export const publicSiteInfra: Subprocessor[] = [
   {
     name: "Vercel",
     purpose:
-      "Static site hosting for this public marketing website. Hosts the public ledgerful.io site only and never receives Ledgerful project source code, ledger data, or product data. Visitor traffic to the public site (e.g. IP addresses) is processed by Vercel as the hosting provider for the marketing site, not as a product subprocessor.",
+      "Static site hosting for this public marketing website. Hosts the public www.ledgerful.dev site only and never receives Ledgerful project source code, ledger data, or product data. Visitor traffic to the public site (e.g. IP addresses) is processed by Vercel as the hosting provider for the marketing site, not as a product subprocessor.",
     state: "available",
   },
 ];
@@ -280,7 +280,7 @@ export const productSubprocessors: ProductSubprocessor[] = [
   {
     name: "GitHub",
     purpose:
-      "GitHub App webhooks and GitHub Actions integration for the future hosted CI workflow. Relevant only when hosted mode launches.",
+      "Future GitHub App installation records and webhooks for the hosted control plane. The current self-managed GitHub Action is a separate beta path run in the customer's own repository.",
     state: "hosted planned",
     tier: "hosted-planned",
   },

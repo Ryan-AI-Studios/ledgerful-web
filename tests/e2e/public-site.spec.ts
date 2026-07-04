@@ -3,6 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { primaryNavigation, publicRoutes } from "./routes";
 
 const viewportWidths = [320, 375, 768, 1280, 1440] as const;
+const expectIndexing = process.env.EXPECT_INDEXING === "true";
 
 function collectRuntimeErrors(page: Page) {
   const errors: string[] = [];
@@ -44,7 +45,7 @@ for (const route of publicRoutes) {
     await expect(page.locator("h1")).toHaveCount(1);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       "content",
-      /noindex.*nofollow/,
+      expectIndexing ? /index.*follow/ : /noindex.*nofollow/,
     );
 
     const csp = response?.headers()["content-security-policy"] ?? "";
@@ -250,7 +251,17 @@ test("the production not-found boundary renders without runtime errors", async (
   const response = await page.goto("/route-that-does-not-exist", { waitUntil: "networkidle" });
   expect(response?.status()).toBe(404);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  expect(errors.filter((error) => !error.includes("status of 404 (Not Found)"))).toEqual([]);
+  const unexpectedErrors = errors.filter(
+    (error) =>
+      !/^Failed to load resource: the server responded with a status of 404\b/.test(
+        error,
+      ) &&
+      !(
+        error.includes("/route-that-does-not-exist") &&
+        error.includes("(HTTP 404)")
+      ),
+  );
+  expect(unexpectedErrors).toEqual([]);
 });
 
 for (const viewport of [
@@ -265,7 +276,7 @@ for (const viewport of [
 
     for (const locator of [
       page.getByRole("heading", { level: 1 }),
-      page.getByText("Your source code never leaves your machine by default", {
+      page.getByText("without uploading source code by default", {
         exact: false,
       }),
       page.locator("#hero").getByRole("link", { name: "Install Ledgerful" }),
@@ -649,6 +660,67 @@ test("mobile header visual order matches keyboard order", async ({ page }) => {
   expect(order.systemBeforeInstall).toBe(true);
   expect(order.vertical[0]).toBeLessThanOrEqual(order.vertical[1]);
   expect(order.vertical[1]).toBeLessThanOrEqual(order.vertical[2]);
+});
+
+test("every primary navigation link is visible at 320px", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/");
+
+  const visibility = await page.locator(".site-nav a").evaluateAll((links) =>
+    links.map((link) => {
+      const rect = link.getBoundingClientRect();
+      return {
+        label: link.textContent?.trim(),
+        left: rect.left,
+        right: rect.right,
+        viewportWidth: document.documentElement.clientWidth,
+      };
+    }),
+  );
+
+  expect(visibility.length).toBe(primaryNavigation.length);
+  for (const link of visibility) {
+    expect(link.left, `${link.label} starts outside the viewport`).toBeGreaterThanOrEqual(0);
+    expect(link.right, `${link.label} ends outside the viewport`).toBeLessThanOrEqual(
+      link.viewportWidth,
+    );
+  }
+});
+
+test("mobile hero explanation is not visually truncated", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/");
+
+  const dimensions = await page.locator(".hero-subhead").evaluate((element) => ({
+    clientHeight: element.clientHeight,
+    scrollHeight: element.scrollHeight,
+    lineClamp: getComputedStyle(element).webkitLineClamp,
+  }));
+
+  expect(dimensions.lineClamp).toBe("none");
+  expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
+});
+
+test("desktop hero receipt keeps its intrinsic height beside the terminal", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/");
+
+  const dimensions = await page.evaluate(() => {
+    const action = document.querySelector<HTMLElement>(".hero-proof-action");
+    const receipt = document.querySelector<HTMLElement>(".hero-proof-receipt");
+    const frame = document.querySelector<HTMLElement>(
+      ".hero-proof-receipt .evidence-frame",
+    );
+    if (!action || !receipt || !frame) throw new Error("Hero proof is incomplete");
+    return {
+      actionHeight: action.getBoundingClientRect().height,
+      receiptHeight: receipt.getBoundingClientRect().height,
+      frameHeight: frame.getBoundingClientRect().height,
+    };
+  });
+
+  expect(dimensions.receiptHeight).toBeLessThan(dimensions.actionHeight);
+  expect(dimensions.frameHeight).toBe(dimensions.receiptHeight);
 });
 
 test("theme switching still works when preference storage is blocked", async ({ page }) => {

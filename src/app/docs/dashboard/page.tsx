@@ -55,7 +55,8 @@ ledgerful web start --port 3001`}
         >
           At startup the daemon prints the dashboard URL including a session
           token. Copy the full URL — including the <code>?token=</code> query
-          parameter — and open it in your browser.
+          parameter — and open it in your browser. The dashboard immediately
+          captures the token in memory and strips it from the address bar.
         </p>
       </section>
 
@@ -63,8 +64,11 @@ ledgerful web start --port 3001`}
       <section className="content-band">
         <SectionHeading title="Opening the dashboard">
           The URL printed at startup includes the session token. Open this URL
-          in a browser on the same machine. The dashboard will not load without
-          a valid token.
+          in a browser on the same machine. The dashboard captures the token in
+          memory, strips the query string with <code>history.replaceState</code>,
+          and sends daemon API requests with an{" "}
+          <code>Authorization: Bearer &lt;token&gt;</code> header. The dashboard
+          will not load without a valid token.
         </SectionHeading>
         <div className="terminal-window">
           <div className="terminal-bar">

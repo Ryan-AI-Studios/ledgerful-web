@@ -539,7 +539,7 @@ ledgerful web start`}
               >
                 Pricing →
               </Link>{" "}
-              License-qualified local edition and feature-state matrix.
+              Draft license terms and feature-state matrix.
             </li>
             </ul>
           </div>

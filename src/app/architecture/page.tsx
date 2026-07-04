@@ -50,7 +50,7 @@ const surfaces: Surface[] = [
     role: "Engine",
     title: "Local CLI and engine",
     icon: "monitor",
-    body: "The Ledgerful binary runs entirely on your machine. It owns the ledger, scan, audit, verify, sync, web (daemon), and MCP command surfaces. No remote service is required for normal operation.",
+    body: "The Ledgerful binary runs entirely on your machine. The default build owns the ledger, scan, audit, verify, web (daemon), and MCP command surfaces. Local sync is feature-gated and requires a --features sync build. No remote service is required for normal operation.",
     meta: "Runs on host · no network calls by default",
     status: "available",
   },
@@ -60,7 +60,7 @@ const surfaces: Surface[] = [
     title: "Embedded loopback dashboard",
     icon: "globe",
     body: "The dashboard is a local web UI served by the Ledgerful daemon, bound to 127.0.0.1:52001 with an ephemeral session token. It is not accessible from the internet or other machines on your network.",
-    meta: "Binds 127.0.0.1:52001 · ephemeral ?token= auth",
+    meta: "Binds 127.0.0.1:52001 · one-time launch token → Bearer auth",
     status: "local-only",
   },
   {
@@ -88,7 +88,7 @@ const stateRows: StateRow[] = [
   },
   {
     scope: "Local team sync",
-    body: "Signed and encrypted sync bundles are written to a directory you choose. You control the transport (a shared drive, a USB stick, or any other dir://-compatible path). Nothing broadcasts.",
+    body: "With a sync-enabled build, signed and encrypted bundles are written to a directory you choose. You control the transport (a shared drive, a USB stick, or any other dir://-compatible path). Nothing broadcasts.",
     status: "beta",
   },
   {
@@ -261,8 +261,10 @@ export default function ArchitecturePage() {
       <section className="content-band" id="modes">
         <SectionHeading title="Operating modes and their data flow">
           Five modes describe what crosses the local-first boundary. Scan,
-          ledger, audit, verify, sync, dashboard, and export stay local; cloud
-          model context and aggregate telemetry are separate configured paths.
+          ledger, audit, verify, dashboard, and export stay local. Feature-gated
+          sync also stays local when compiled with <code>--features sync</code>;
+          cloud model context and aggregate telemetry are separate configured
+          paths.
         </SectionHeading>
         <div className="table-scroll-wrapper">
           <table
@@ -323,8 +325,10 @@ export default function ArchitecturePage() {
               <code>http://127.0.0.1:52001</code>. CORS is restricted to{" "}
               <code>localhost</code> and <code>127.0.0.1</code> on any port —
               cross-origin requests from remote or hosted domains are
-              rejected. Every dashboard session requires an ephemeral session
-              token passed via <code>?token=&lt;hex&gt;</code> or{" "}
+              rejected. The launch URL carries an ephemeral{" "}
+              <code>?token=&lt;hex&gt;</code> once. The dashboard captures it
+              in memory, strips it from the browser URL, and sends subsequent
+              API requests with{" "}
               <code>Authorization: Bearer &lt;hex&gt;</code>. Tokens are
               per-session and are never persisted to disk.
             </p>

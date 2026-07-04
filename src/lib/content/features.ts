@@ -25,15 +25,23 @@ export const featureStates: FeatureItem[] = [
     name: "Local CLI and engine",
     state: "available",
     description:
-      "Runs analysis, ledger, audit, verify, sync, web, and MCP workflows from the local Ledgerful binary.",
+      "Runs analysis, ledger, audit, verify, web, and MCP workflows from the default local Ledgerful binary.",
     evidence: "Roadmap confirms the local engine and CLI are real today.",
+  },
+  {
+    name: "Local team sync foundation",
+    state: "beta",
+    description:
+      "Signed, encrypted dir:// bundles are available in a feature-gated build compiled with --features sync; sync is not included in the default install.",
+    evidence: "The engine Cargo feature list keeps sync outside default features.",
   },
   {
     name: "Local dashboard",
     state: "local-only",
     description:
       "A loopback dashboard backed by the local daemon and ephemeral session token access.",
-    evidence: "Daemon default is http://127.0.0.1:52001 with ?token= access.",
+    evidence:
+      "The launch URL hands off a one-time token; the dashboard strips it and uses Authorization: Bearer for daemon requests.",
   },
   {
     name: "Signed ledger provenance",

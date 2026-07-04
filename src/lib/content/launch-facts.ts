@@ -125,6 +125,7 @@ export const launchTruth = {
         "features_enabled",
         "active_days_in_window",
       ],
+      ipRetention: "The connection IP is transiently visible to the ingestion endpoint but is scrubbed and never stored; stored telemetry contains no IP or PII.",
     },
     hostedControlPlane: {
       label: "Hosted control plane",

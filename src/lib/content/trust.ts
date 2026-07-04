@@ -128,9 +128,9 @@ export const boundaryRows: BoundaryRow[] = [
       "Local aggregate top-level command-name counts, enabled features, and an anonymous UUID generated when enabled",
     writes: "A single JSON payload to the configured Supabase ingest endpoint",
     uploads:
-      "Aggregate command counts, platform/version metadata, enabled features, and an anonymous ID — only after explicit enable",
+      "Aggregate command counts, platform/version metadata, enabled features, and an anonymous ID — only after explicit enable. " + launchTruth.facts.telemetry.ipRetention,
     staysLocal:
-      "Source code, file paths, diff text, query text, commit messages, and author identities",
+      "Source code, file paths, diff text, query text, commit messages, and author identities.",
   },
   {
     surface: "Configured cloud model (Gemini / Ollama Cloud / OpenRouter)",

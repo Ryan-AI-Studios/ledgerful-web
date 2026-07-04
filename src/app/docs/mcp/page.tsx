@@ -4,13 +4,15 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { mcpTools } from "@/lib/content/docs-pages";
 import { StatusPill } from "@/components/status-pill";
-import { pageDescriptions } from "@/lib/content/navigation";
+import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
 
 export const metadata: Metadata = {
-  title: "MCP Setup — Ledgerful Docs",
+  title: { absolute: "MCP Setup — Ledgerful Docs" },
   description: pageDescriptions.docsMcp,
   alternates: { canonical: "/docs/mcp" },
+  openGraph: { url: "/docs/mcp", images: [homeOgImage] },
+  twitter: { images: [homeOgImage.url] },
 };
 
 export default function DocsMcpPage() {

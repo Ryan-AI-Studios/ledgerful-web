@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import type { Organization, WithContext } from "schema-dts";
 import { Archivo, JetBrains_Mono } from "next/font/google";
-import { siteUrl } from "@/lib/content/navigation";
+import { homeOgImage, siteUrl } from "@/lib/content/navigation";
+import { launchTruth } from "@/lib/content/launch-facts";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -19,11 +21,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
     default:
-      "Ledgerful — local-first change intelligence for repo risk and signed provenance",
+      "Ledgerful — Local-First Code Change Risk Analysis for Developer Teams",
     template: "%s | Ledgerful",
   },
   description:
-    "Ledgerful is local-first change intelligence and signed provenance for programming teams evaluating repo risk and trust evidence.",
+    "Ledgerful analyzes your Git repositories locally to surface change risk, provenance, and SOC 2-style evidence — without uploading your source code. Install the CLI and run it on your machine.",
   applicationName: "Ledgerful",
   authors: [{ name: "Ryan AI Studios" }],
   robots: {
@@ -40,9 +42,9 @@ export const metadata: Metadata = {
     title: "Ledgerful",
     description:
       "Local-first change intelligence, signed history, and verification evidence for programming teams.",
-    url: siteUrl,
+    url: "/",
     siteName: "Ledgerful",
-    images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
+    images: [homeOgImage],
     type: "website",
   },
   alternates: {
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
     title: "Ledgerful",
     description:
       "Local-first change intelligence, signed history, and verification evidence for programming teams.",
-    images: ["/opengraph-image"],
+    images: [homeOgImage.url],
   },
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
@@ -61,7 +63,27 @@ export const metadata: Metadata = {
   },
 };
 
-const organizationJsonLd = {
+// sameAs must never link to a surface that isn't publicly reachable yet —
+// the canonical GitHub repository is still a private preview (see
+// launch-facts.ts), so it's only included here once anonymousAccess flips
+// to true. No other real, publicly-reachable Ledgerful profile exists today.
+const sameAs: string[] = launchTruth.facts.repository.anonymousAccess
+  ? [launchTruth.facts.repository.href]
+  : [];
+
+// Target-query topics from recommendation.md §4.6, adapted to what's
+// actually shipped today (see launch-facts.ts / pageDescriptions) — no
+// crypto/accounting-adjacent wording.
+const knowsAbout = [
+  "Local-first code analysis",
+  "Code change risk analysis",
+  "Deterministic code review",
+  "Software bill of materials and provenance",
+  "SOC 2-style evidence export for engineering teams",
+  "Multi-repository change impact",
+];
+
+const organizationJsonLd: WithContext<Organization> = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Ledgerful",
@@ -69,6 +91,8 @@ const organizationJsonLd = {
   description:
     "Local-first change intelligence and signed provenance for programming teams.",
   founder: { "@type": "Organization", name: "Ryan AI Studios" },
+  knowsAbout,
+  ...(sameAs.length > 0 ? { sameAs } : {}),
 };
 
 const themeScript = `(function(){var r=document.documentElement;try{var p=localStorage.getItem("ledgerful-theme")||"dark";if(!/^(system|dark|light)$/.test(p))p="dark";var t=p==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):p;r.dataset.theme=t;r.dataset.themePreference=p;r.style.colorScheme=t}catch(e){r.dataset.theme="dark";r.dataset.themePreference="dark";r.style.colorScheme="dark"}})();`;

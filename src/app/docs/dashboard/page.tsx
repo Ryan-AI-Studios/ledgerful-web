@@ -3,12 +3,14 @@ import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
-import { pageDescriptions } from "@/lib/content/navigation";
+import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Dashboard — Ledgerful Docs",
+  title: { absolute: "Dashboard — Ledgerful Docs" },
   description: pageDescriptions.docsDashboard,
   alternates: { canonical: "/docs/dashboard" },
+  openGraph: { url: "/docs/dashboard", images: [homeOgImage] },
+  twitter: { images: [homeOgImage.url] },
 };
 
 export default function DocsDashboardPage() {

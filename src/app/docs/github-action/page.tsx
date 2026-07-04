@@ -4,13 +4,15 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { githubActionInputs } from "@/lib/content/docs-pages";
-import { pageDescriptions } from "@/lib/content/navigation";
+import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
 
 export const metadata: Metadata = {
-  title: "GitHub Action — Ledgerful Docs",
+  title: { absolute: "GitHub Action — Ledgerful Docs" },
   description: pageDescriptions.docsGithubAction,
   alternates: { canonical: "/docs/github-action" },
+  openGraph: { url: "/docs/github-action", images: [homeOgImage] },
+  twitter: { images: [homeOgImage.url] },
 };
 
 export default function DocsGithubActionPage() {

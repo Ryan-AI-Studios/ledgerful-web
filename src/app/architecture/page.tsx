@@ -9,9 +9,23 @@ import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "How Ledgerful works locally",
+  title: { absolute: "How Ledgerful works locally" },
   description: pageDescriptions.architecture,
   alternates: { canonical: "/architecture" },
+  openGraph: {
+    url: "/architecture",
+    images: [
+      {
+        url: "/og/architecture.png",
+        width: 1200,
+        height: 630,
+        alt: "Architecture — local engine, dashboard, and web surfaces, with a real local dashboard receipt showing Project Health and Recent Changes.",
+      },
+    ],
+  },
+  twitter: {
+    images: ["/og/architecture.png"],
+  },
 };
 
 type Surface = {

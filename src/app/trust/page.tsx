@@ -779,6 +779,20 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/trust",
   },
+  openGraph: {
+    url: "/trust",
+    images: [
+      {
+        url: "/og/trust.png",
+        width: 1200,
+        height: 630,
+        alt: "Trust and security — local-first data flow and SOC2 evidence, with a real local dashboard receipt showing Project Health and Recent Changes.",
+      },
+    ],
+  },
+  twitter: {
+    images: ["/og/trust.png"],
+  },
 };
 
 const iconMap = {

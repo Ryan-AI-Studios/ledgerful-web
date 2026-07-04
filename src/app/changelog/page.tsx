@@ -4,13 +4,20 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { changelogEntries } from "@/lib/content/changelog";
-import { pageDescriptions } from "@/lib/content/navigation";
+import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Changelog — Ledgerful release and surface milestones",
+  title: { absolute: "Changelog — Ledgerful release and surface milestones" },
   description: pageDescriptions.changelog,
   alternates: {
     canonical: "/changelog",
+  },
+  openGraph: {
+    url: "/changelog",
+    images: [homeOgImage],
+  },
+  twitter: {
+    images: [homeOgImage.url],
   },
 };
 

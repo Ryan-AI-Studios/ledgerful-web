@@ -13,9 +13,9 @@
  * `opengraph-image.tsx` edge handler. This site is deliberately
  * static-first; runtime OG would add an edge-function boundary and
  * per-request compute for images that never change between requests.
- * `src/app/opengraph-image.tsx` (the existing generic runtime placeholder)
- * is intentionally left untouched — replacing it is 0026's job (OG
- * wiring/validation), not this track's.
+ * `src/app/opengraph-image.tsx` (the prior generic runtime placeholder) was
+ * removed and every route's metadata now points at these static PNGs
+ * directly — that wiring was completed in 0026.
  *
  * This script owns *generation from real proof* only:
  *   - Each card's title/description is copied verbatim from that route's
@@ -33,8 +33,9 @@
  *     `src/app/globals.css` `:root` (dark is the default/intentional
  *     theme per DESIGN.md).
  *
- * NOT YET WIRED: these PNGs are not referenced by any route's metadata or
- * `opengraph-image.tsx` yet. Wiring + crop validation at 1200x630 is 0026.
+ * WIRED (0026): every route's `openGraph.images`/`twitter.images` now
+ * points at these PNGs directly, validated at 1200x630 by
+ * `check-proof-assets.mjs`.
  *
  * Usage (run from ledgerful-web so `@playwright/test` resolves from this
  * repo's own node_modules — unlike `capture-dashboard.mjs`, this script

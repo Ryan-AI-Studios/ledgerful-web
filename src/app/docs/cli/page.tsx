@@ -2,13 +2,15 @@
 import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
-import { pageDescriptions } from "@/lib/content/navigation";
+import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
 
 export const metadata: Metadata = {
-  title: "CLI install and first scan — Ledgerful Docs",
+  title: { absolute: "CLI install and first scan — Ledgerful Docs" },
   description: pageDescriptions.docsCli,
   alternates: { canonical: "/docs/cli" },
+  openGraph: { url: "/docs/cli", images: [homeOgImage] },
+  twitter: { images: [homeOgImage.url] },
 };
 
 export default function DocsCliPage() {

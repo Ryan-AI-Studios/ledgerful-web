@@ -70,6 +70,77 @@ function validateBlock(block, sourceFile, index) {
       }
     }
   }
+
+  // Regression guard for the 0026 fix: schema.org has no "DeveloperTool"
+  // value — the correct enum member is "DeveloperApplication". Catch a
+  // future re-introduction of the non-standard value.
+  if (type === "SoftwareApplication" && parsed.applicationCategory === "DeveloperTool") {
+    errors.push(
+      `${prefix}: applicationCategory must never be "DeveloperTool" (non-standard) — use "DeveloperApplication"`,
+    );
+  }
+}
+
+// Content-drift check (0026 DoD-2/DoD-3): each HTML file's og:url meta tag
+// must point at the same path as that file's own canonical link. This is
+// the exact regression class the 0026 track fixed (every route's og:url
+// silently defaulted to the homepage instead of its own URL) — catch it if
+// it ever comes back.
+// Attribute-order-independent: finds the whole tag by one attribute, then
+// pulls a different attribute out of that tag string. A regex anchored to
+// a fixed attribute order (e.g. `rel="..." href="..."`) would silently stop
+// matching if Next or its HTML serializer ever reorders attributes.
+function extractTagAttr(html, tagRegex, attrName) {
+  const tagMatch = html.match(tagRegex);
+  if (!tagMatch) return null;
+  const attrMatch = tagMatch[0].match(new RegExp(`${attrName}="([^"]+)"`, "i"));
+  return attrMatch ? attrMatch[1] : null;
+}
+
+function pathOf(url) {
+  if (!url) return null;
+  try {
+    return new URL(url).pathname.replace(/\/$/, "") || "/";
+  } catch {
+    return null;
+  }
+}
+
+function validateOgUrlDrift(content, sourceFile) {
+  const canonicalHref = extractTagAttr(
+    content,
+    /<link\s+[^>]*rel="canonical"[^>]*>/i,
+    "href",
+  );
+  const ogUrlContent = extractTagAttr(
+    content,
+    /<meta\s+[^>]*property="og:url"[^>]*>/i,
+    "content",
+  );
+
+  if (!ogUrlContent) return; // No og:url on this page — nothing to drift-check.
+  if (!canonicalHref) {
+    errors.push(
+      `${sourceFile}: has og:url ("${ogUrlContent}") but no canonical <link> to compare against`,
+    );
+    return;
+  }
+
+  const canonicalPath = pathOf(canonicalHref);
+  const ogUrlPath = pathOf(ogUrlContent);
+
+  if (canonicalPath === null || ogUrlPath === null) {
+    errors.push(
+      `${sourceFile}: could not parse canonical ("${canonicalHref}") or og:url ("${ogUrlContent}") as a URL`,
+    );
+    return;
+  }
+
+  if (canonicalPath !== ogUrlPath) {
+    errors.push(
+      `${sourceFile}: og:url path "${ogUrlPath}" does not match canonical path "${canonicalPath}"`,
+    );
+  }
 }
 
 const htmlFiles = await collectHtmlFiles(serverAppDir);
@@ -82,6 +153,7 @@ for (const file of htmlFiles) {
     validateBlock(match[1].trim(), file, count);
     count++;
   }
+  validateOgUrlDrift(content, file);
 }
 
 console.log(`Checked JSON-LD in ${filesChecked.length} HTML file(s).`);

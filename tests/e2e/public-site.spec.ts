@@ -64,6 +64,85 @@ for (const route of publicRoutes) {
   });
 }
 
+// 0026-WebMetadataShareSurfaces: og:url must be absolute and match the
+// page's own canonical path (regression guard for the bug where every
+// route's og:url silently defaulted to the homepage instead of its own
+// URL), and any SoftwareApplication JSON-LD's applicationCategory must be
+// the schema-valid "DeveloperApplication", never the non-standard
+// "DeveloperTool".
+for (const route of publicRoutes) {
+  test(`${route} og:url is absolute and matches canonical, applicationCategory is schema-valid`, async ({
+    page,
+  }) => {
+    await page.goto(route);
+
+    const canonicalHref = await page
+      .locator('link[rel="canonical"]')
+      .getAttribute("href");
+    expect(canonicalHref).toBeTruthy();
+    const canonicalUrl = new URL(canonicalHref!);
+
+    const ogUrlContent = await page
+      .locator('meta[property="og:url"]')
+      .getAttribute("content");
+    expect(ogUrlContent).toBeTruthy();
+    const ogUrl = new URL(ogUrlContent!); // throws if not absolute
+
+    expect(ogUrl.pathname.replace(/\/$/, "") || "/").toBe(
+      canonicalUrl.pathname.replace(/\/$/, "") || "/",
+    );
+
+    const jsonLdBlocks = await page
+      .locator('script[type="application/ld+json"]')
+      .allTextContents();
+    for (const block of jsonLdBlocks) {
+      const parsed = JSON.parse(block);
+      if (parsed["@type"] === "SoftwareApplication") {
+        expect(parsed.applicationCategory).not.toBe("DeveloperTool");
+        expect(parsed.applicationCategory).toBe("DeveloperApplication");
+      }
+    }
+  });
+}
+
+// 0026-WebMetadataShareSurfaces: routes with a dedicated OG card must serve
+// that exact image (never a silent fallback to the homepage card), and the
+// image URL must actually resolve — a wrong path or accidental fallback
+// would otherwise pass every other check in this file.
+const dedicatedOgImage: Partial<Record<(typeof publicRoutes)[number], string>> = {
+  "/architecture": "/og/architecture.png",
+  "/install": "/og/install.png",
+  "/pricing": "/og/pricing.png",
+  "/trust": "/og/trust.png",
+};
+
+for (const route of publicRoutes) {
+  test(`${route} og:image and twitter:image are absolute, fetchable, and route-correct`, async ({
+    page,
+  }) => {
+    await page.goto(route);
+
+    const ogImageContent = await page
+      .locator('meta[property="og:image"]')
+      .getAttribute("content");
+    expect(ogImageContent).toBeTruthy();
+    const ogImageUrl = new URL(ogImageContent!); // throws if not absolute
+
+    const twitterImageContent = await page
+      .locator('meta[name="twitter:image"]')
+      .getAttribute("content");
+    expect(twitterImageContent).toBeTruthy();
+    expect(new URL(twitterImageContent!).pathname).toBe(ogImageUrl.pathname);
+
+    const expectedPath = dedicatedOgImage[route] ?? "/og/home.png";
+    expect(ogImageUrl.pathname).toBe(expectedPath);
+
+    const response = await page.request.get(ogImageUrl.toString());
+    expect(response.ok()).toBe(true);
+    expect(response.headers()["content-type"]).toContain("image/png");
+  });
+}
+
 for (const theme of ["dark", "light"] as const) {
   for (const route of publicRoutes) {
     test(`${route} has no detectable WCAG A or AA violations in ${theme} theme`, async ({

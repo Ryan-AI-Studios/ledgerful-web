@@ -6,13 +6,20 @@ import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { docTopics } from "@/lib/content/docs";
 import { launchTruth } from "@/lib/content/launch-facts";
-import { pageDescriptions } from "@/lib/content/navigation";
+import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
   title: "Docs — CLI, dashboard, MCP, GitHub Action, compliance, sync",
   description: pageDescriptions.docs,
   alternates: {
     canonical: "/docs",
+  },
+  openGraph: {
+    url: "/docs",
+    images: [homeOgImage],
+  },
+  twitter: {
+    images: [homeOgImage.url],
   },
 };
 

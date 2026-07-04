@@ -4,12 +4,14 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { syncCommands } from "@/lib/content/docs-pages";
 import { StatusPill } from "@/components/status-pill";
-import { pageDescriptions } from "@/lib/content/navigation";
+import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Local Team Sync — Ledgerful Docs",
+  title: { absolute: "Local Team Sync — Ledgerful Docs" },
   description: pageDescriptions.docsSync,
   alternates: { canonical: "/docs/sync" },
+  openGraph: { url: "/docs/sync", images: [homeOgImage] },
+  twitter: { images: [homeOgImage.url] },
 };
 
 export default function DocsSyncPage() {

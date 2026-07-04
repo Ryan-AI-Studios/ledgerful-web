@@ -3,13 +3,15 @@ import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
-import { pageDescriptions } from "@/lib/content/navigation";
+import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
 
 export const metadata: Metadata = {
-  title: "Release Verification — Ledgerful Docs",
+  title: { absolute: "Release Verification — Ledgerful Docs" },
   description: pageDescriptions.docsReleases,
   alternates: { canonical: "/docs/releases" },
+  openGraph: { url: "/docs/releases", images: [homeOgImage] },
+  twitter: { images: [homeOgImage.url] },
 };
 
 export default function DocsReleasesPage() {

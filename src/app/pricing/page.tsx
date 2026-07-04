@@ -23,6 +23,20 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/pricing",
   },
+  openGraph: {
+    url: "/pricing",
+    images: [
+      {
+        url: "/og/pricing.png",
+        width: 1200,
+        height: 630,
+        alt: "Pricing — editions and feature states, with a real local dashboard receipt showing Project Health and Recent Changes.",
+      },
+    ],
+  },
+  twitter: {
+    images: ["/og/pricing.png"],
+  },
 };
 
 // Reuses the same Local capability list as the pricing card and matrix

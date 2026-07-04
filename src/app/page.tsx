@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import type { SoftwareApplication, WithContext } from "schema-dts";
 import Image from "next/image";
 import Link from "next/link";
 import { HeroProof } from "@/components/hero-proof";
@@ -22,11 +23,11 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const softwareApplicationJsonLd = {
+const softwareApplicationJsonLd: WithContext<SoftwareApplication> = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   name: "Ledgerful",
-  applicationCategory: "DeveloperTool",
+  applicationCategory: "DeveloperApplication",
   operatingSystem: "Linux, macOS, Windows",
   url: siteUrl,
   description:

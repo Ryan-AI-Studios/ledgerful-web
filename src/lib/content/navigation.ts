@@ -1,6 +1,20 @@
 export const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://www.ledgerful.dev";
 
+// Shared fallback OG/Twitter image for routes with no dedicated static OG
+// asset of their own (changelog, docs index, docs/*). Next.js metadata
+// merging *replaces* (does not deep-merge) a route's own `openGraph` object
+// against its parent's — so any route that declares `openGraph` at all must
+// repeat `images` explicitly to keep showing this real, already-generated
+// static PNG instead of silently dropping the image. See
+// src/app/layout.tsx's default `openGraph.images` for the same asset.
+export const homeOgImage = {
+  url: "/og/home.png",
+  width: 1200,
+  height: 630,
+  alt: "Ledgerful — understand code change risk before it ships, runs locally on your code. Real local dashboard showing Project Health and Recent Changes beside the source-install command.",
+};
+
 export const mainNavigation = [
   { href: "/", label: "Home" },
   { href: "/install", label: "Install" },

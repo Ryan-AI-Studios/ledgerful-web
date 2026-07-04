@@ -4,12 +4,14 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { soc2ExportLayout } from "@/lib/content/trust";
-import { pageDescriptions } from "@/lib/content/navigation";
+import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Compliance Export — Ledgerful Docs",
+  title: { absolute: "Compliance Export — Ledgerful Docs" },
   description: pageDescriptions.docsCompliance,
   alternates: { canonical: "/docs/compliance" },
+  openGraph: { url: "/docs/compliance", images: [homeOgImage] },
+  twitter: { images: [homeOgImage.url] },
 };
 
 export default function DocsCompliancePage() {

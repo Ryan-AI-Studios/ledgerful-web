@@ -9,9 +9,23 @@ import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Install the Ledgerful CLI",
+  title: { absolute: "Install the Ledgerful CLI" },
   description: pageDescriptions.install,
   alternates: { canonical: "/install" },
+  openGraph: {
+    url: "/install",
+    images: [
+      {
+        url: "/og/install.png",
+        width: 1200,
+        height: 630,
+        alt: "Install the Ledgerful CLI — the real source-build install command beside a real local dashboard receipt showing Project Health and Recent Changes.",
+      },
+    ],
+  },
+  twitter: {
+    images: ["/og/install.png"],
+  },
 };
 
 function CodeBlock({ children, caption }: { children: string; caption?: string }) {

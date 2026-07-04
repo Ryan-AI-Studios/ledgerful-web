@@ -2,6 +2,7 @@
   "name": "ledgerful-web",
   "version": "0.1.0",
   "private": true,
+  "license": "UNLICENSED",
   "scripts": {
     "dev": "next dev",
     "build": "npm run check:positioning && npm run test:policy && node scripts/build-with-csp.mjs && npm run check:positioning:rendered",

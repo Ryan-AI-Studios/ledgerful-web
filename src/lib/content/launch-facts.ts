@@ -56,7 +56,7 @@ export const launchTruth = {
       label: "Draft source-license terms",
       status: "unresolved",
       value: "Pending legal review and license-in-force",
-      note: "The repository contains draft PolyForm Noncommercial 1.0.0 terms plus the Ledgerful Small-Entity Commercial Exception v1.0. The intended exception would permit qualifying entities under US$1M aggregated gross revenue to use Ledgerful internally, but LLC formation, IP assignment, counsel review, and license-in-force remain open launch gates.",
+      note: "The Ledgerful source repository (not this web repo) contains draft PolyForm Noncommercial 1.0.0 terms plus the Ledgerful Small-Entity Commercial Exception v1.0. The intended exception would permit qualifying entities under US$1M aggregated gross revenue to use Ledgerful internally, but LLC formation, IP assignment, counsel review, and license-in-force remain open launch gates.",
       base: "PolyForm Noncommercial License 1.0.0",
       exception: "Ledgerful Small-Entity Commercial Exception v1.0",
       legalLaunchReviewComplete: false,

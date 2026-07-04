@@ -1585,27 +1585,28 @@ export default function TrustPage() {
             </SectionHeading>
             <div className="disclosure-notice">
               <p>
-                The repository currently contains draft{" "}
+                The <em>Ledgerful source repository</em> contains draft{" "}
                 <strong>{license.base}</strong> with the{" "}
                 <strong>{license.exception}</strong>. The{" "}
                 {repository.anonymousAccess ? (
                   <a
-                    href={repository.href}
+                    href={`${repository.href}/blob/main/LICENSE`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-link"
                   >
-                    repository LICENSE file
+                    source repository LICENSE file
                     <span className="sr-only"> (opens in new tab)</span>
                   </a>
                 ) : (
-                  "reviewed local LICENSE file"
+                  "reviewed Ledgerful source repo LICENSE file"
                 )}{" "}
                 reflects the draft terms under review, not a completed legal
                 launch position. LLC formation, IP assignment, counsel review,
                 and license-in-force remain unresolved; any later change must
                 update the reviewed truth baseline before it reaches public
-                copy.
+                copy. (This website&rsquo;s own repository is proprietary and
+                separately licensed.)
               </p>
             </div>
           </section>

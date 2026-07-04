@@ -7,6 +7,7 @@
 
 import { readFileSync } from "fs";
 import { join } from "path";
+import { parse } from "parse5";
 
 // ── HTML loader ────────────────────────────────────────────────────────────────
 // Next.js App Router emits static pages at one of two paths depending on the
@@ -34,10 +35,10 @@ function readHtml(slug) {
   );
 }
 
-// ── Load all 8 docs pages ──────────────────────────────────────────────────────
+// ── Load the docs pages that this script actually asserts on ──────────────────
 
 const pages = {};
-const slugs = ["index", "cli", "dashboard", "mcp", "github-action", "compliance", "sync", "releases"];
+const slugs = ["cli", "dashboard", "mcp", "github-action", "compliance", "sync", "releases"];
 
 for (const slug of slugs) {
   try {
@@ -83,6 +84,48 @@ try {
 
 const failures = [];
 
+function parseHtml(html) {
+  const document = parse(html);
+  attachParents(document, null);
+  return document;
+}
+
+function attachParents(node, parent) {
+  if (!node || typeof node !== "object") return;
+  node.parentNode = parent;
+  for (const child of node.childNodes ?? []) {
+    attachParents(child, node);
+  }
+}
+
+function getAttr(node, name) {
+  return node.attrs?.find((attr) => attr.name === name)?.value ?? null;
+}
+
+function getText(node) {
+  if (!node || typeof node !== "object") return "";
+  if (node.nodeName === "#text") return node.value ?? "";
+  return (node.childNodes ?? []).map(getText).join("");
+}
+
+function collectElements(node, predicate, results = []) {
+  if (!node || typeof node !== "object") return results;
+  if (predicate(node)) results.push(node);
+  for (const child of node.childNodes ?? []) {
+    collectElements(child, predicate, results);
+  }
+  return results;
+}
+
+function hasAncestor(node, predicate) {
+  let current = node.parentNode;
+  while (current) {
+    if (predicate(current)) return true;
+    current = current.parentNode;
+  }
+  return false;
+}
+
 // ── Assert 21: homepage checksum proof matches unresolved release status ─────
 
 {
@@ -102,15 +145,64 @@ const failures = [];
 // ── Assert 17: sync docs disclose the non-default build feature ──────────────
 
 {
-  const lower = pages["sync"].toLowerCase();
-  if (!lower.includes("--features sync")) {
+  const syncDoc = parseHtml(pages["sync"]);
+  const syncSurfaceNodes = collectElements(
+    syncDoc,
+    (node) => getAttr(node, "data-feature") === "sync",
+  );
+
+  if (syncSurfaceNodes.length === 0) {
     failures.push(
-      'Assert 17 FAIL [docs/sync]: "--features sync" install guidance is required because sync is not in the default build',
+      'Assert 17 FAIL [docs/sync]: expected at least one semantic sync surface node tagged with data-feature="sync"',
     );
   }
-  if (!lower.includes("not included in the default")) {
+
+  const missingBuildRequirement = syncSurfaceNodes.filter(
+    (node) => getAttr(node, "data-build-required") !== "--features sync",
+  );
+  if (missingBuildRequirement.length > 0) {
     failures.push(
-      'Assert 17 FAIL [docs/sync]: the page must state that sync is not included in the default build',
+      'Assert 17 FAIL [docs/sync]: every semantic sync surface node must carry data-build-required="--features sync"',
+    );
+  }
+
+  const syncCaveatNode = syncSurfaceNodes.find((node) => {
+    const lower = getText(node).toLowerCase();
+    return (
+      lower.includes("--features sync") &&
+      (lower.includes("not included in the default") ||
+        lower.includes("feature-gated build") ||
+        lower.includes("standard install command"))
+    );
+  });
+  if (!syncCaveatNode) {
+    failures.push(
+      'Assert 17 FAIL [docs/sync]: a semantic sync surface node must state that sync is not included in the default build and requires "--features sync"',
+    );
+  }
+
+  const syncCommandNodes = collectElements(
+    syncDoc,
+    (node) => node.nodeName === "code" && /\bledgerful sync\b/i.test(getText(node)),
+  );
+  if (syncCommandNodes.length === 0) {
+    failures.push(
+      'Assert 17 FAIL [docs/sync]: expected at least one code node showing a "ledgerful sync" command',
+    );
+  }
+
+  const unscopedCommands = syncCommandNodes.filter(
+    (node) =>
+      !hasAncestor(
+        node,
+        (ancestor) =>
+          getAttr(ancestor, "data-feature") === "sync" &&
+          getAttr(ancestor, "data-build-required") === "--features sync",
+      ),
+  );
+  if (unscopedCommands.length > 0) {
+    failures.push(
+      'Assert 17 FAIL [docs/sync]: every "ledgerful sync" code example must live inside a semantic sync surface node with the build requirement hook',
     );
   }
 }
@@ -118,13 +210,29 @@ const failures = [];
 // ── Assert 18: architecture does not present sync as a default CLI surface ───
 
 {
-  const lower = architectureHtml.toLowerCase();
-  if (
-    lower.includes("sync") &&
-    (!lower.includes("feature-gated") || !lower.includes("--features sync"))
-  ) {
+  const architectureDoc = parseHtml(architectureHtml);
+  const syncSurfaceNodes = collectElements(
+    architectureDoc,
+    (node) => getAttr(node, "data-feature") === "sync",
+  );
+
+  if (syncSurfaceNodes.length === 0) {
     failures.push(
-      "Assert 18 FAIL [architecture]: sync appears without a feature-gated or --features sync qualifier",
+      'Assert 18 FAIL [architecture]: expected a semantic sync surface node tagged with data-feature="sync"',
+    );
+  }
+
+  const missingQualifier = syncSurfaceNodes.filter((node) => {
+    const lower = getText(node).toLowerCase();
+    return (
+      getAttr(node, "data-build-required") !== "--features sync" ||
+      !lower.includes("feature-gated") ||
+      !lower.includes("--features sync")
+    );
+  });
+  if (missingQualifier.length > 0) {
+    failures.push(
+      'Assert 18 FAIL [architecture]: the sync surface must carry data-build-required="--features sync" and visible feature-gated copy',
     );
   }
 }

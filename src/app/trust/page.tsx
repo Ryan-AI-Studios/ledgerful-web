@@ -111,7 +111,17 @@ function DataFlowDiagram() {
         fill="currentColor"
         opacity="0.65"
       >
-        audit · verify · sync · export
+        audit · verify · export
+      </text>
+      <text
+        x="174"
+        y="202"
+        fontFamily="var(--font-jetbrains-mono), monospace"
+        fontSize="10"
+        fill="currentColor"
+        opacity="0.65"
+      >
+        sync requires --features sync
       </text>
 
       {/* ── Local resources (left of engine) ─────────────── */}
@@ -929,7 +939,8 @@ export default function TrustPage() {
                   <p className="print-flow-title">Local surfaces</p>
                   <ul className="print-flow-list">
                     <li>CLI · daemon · dashboard</li>
-                    <li>audit · verify · sync · export</li>
+                    <li>audit · verify · export</li>
+                    <li>sync only in a --features sync build</li>
                   </ul>
                 </div>
                 <p className="print-flow-arrow" aria-hidden="true">▼</p>

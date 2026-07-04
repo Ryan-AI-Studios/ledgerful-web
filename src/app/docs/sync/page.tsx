@@ -29,7 +29,12 @@ export default function DocsSyncPage() {
       </section>
 
       <section className="content-band">
-        <div className="disclosure-notice">
+        <div
+          className="disclosure-notice"
+          data-feature="sync"
+          data-build-required="--features sync"
+          data-feature-state="feature-gated"
+        >
           <p>
             <strong>Feature-gated build:</strong> Sync is not included in the
             default Ledgerful build. The source repository is a private preview,
@@ -77,7 +82,12 @@ export default function DocsSyncPage() {
       </section>
 
       {/* ── Section 2: Initialize ─────────────────────────────── */}
-      <section className="content-band">
+      <section
+        className="content-band"
+        data-feature="sync"
+        data-build-required="--features sync"
+        data-feature-state="feature-gated"
+      >
         <SectionHeading title="Initialize sync">
           After installing a sync-enabled build, run{" "}
           <code>ledgerful sync init</code> from the repository root to set up
@@ -104,7 +114,12 @@ ledgerful sync init`}
       </section>
 
       {/* ── Section 3: Sync commands ──────────────────────────── */}
-      <section className="content-band">
+      <section
+        className="content-band"
+        data-feature="sync"
+        data-build-required="--features sync"
+        data-feature-state="feature-gated"
+      >
         <SectionHeading title="Sync commands">
           All sync subcommands run from the repository root.
         </SectionHeading>
@@ -153,7 +168,12 @@ ledgerful sync log`}
       </section>
 
       {/* ── Section 4: Security model ─────────────────────────── */}
-      <section className="content-band">
+      <section
+        className="content-band"
+        data-feature="sync"
+        data-build-required="--features sync"
+        data-feature-state="feature-gated"
+      >
         <SectionHeading title="Sync security model">
           Bundles are signed and encrypted before being written to the transport
           directory. A receiver without the encryption key cannot read bundle

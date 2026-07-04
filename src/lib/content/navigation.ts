@@ -3,16 +3,14 @@ export const siteUrl =
 
 // Shared fallback OG/Twitter image for routes with no dedicated static OG
 // asset of their own (changelog, docs index, docs/*). Next.js metadata
-// merging *replaces* (does not deep-merge) a route's own `openGraph` object
-// against its parent's — so any route that declares `openGraph` at all must
-// repeat `images` explicitly to keep showing this real, already-generated
-// static PNG instead of silently dropping the image. See
-// src/app/layout.tsx's default `openGraph.images` for the same asset.
+// merging replaces, rather than deep-merges, a route's own `openGraph`
+// object against its parent, so any route that declares `openGraph` at all
+// must repeat `images` explicitly to keep this shared image in place.
 export const homeOgImage = {
   url: "/og/home.png",
   width: 1200,
   height: 630,
-  alt: "Ledgerful — understand code change risk before it ships, runs locally on your code. Real local dashboard showing Project Health and Recent Changes beside the source-install command.",
+  alt: "Ledgerful - understand code change risk before it ships, runs locally on your code. Real local dashboard showing Project Health and Recent Changes beside the source-install command.",
 };
 
 export const mainNavigation = [
@@ -29,11 +27,11 @@ export const footerNavigation = [{ href: "/changelog", label: "Changelog" }];
 export const publicNavigation = [...mainNavigation, ...footerNavigation];
 
 export const pageDescriptions = {
-  home: "Ledgerful runs on your machine to analyze repo changes, record signed provenance, plan verification, and export audit evidence — without uploading source code by default.",
+  home: "Ledgerful runs on your machine to analyze repo changes, record signed provenance, plan verification, and export audit evidence without uploading source code by default.",
   install:
     "Install the Ledgerful CLI from source, verify the binary, and run your first scan. Pre-built release binaries are a launch fact and are not yet available.",
   architecture:
-    "What Ledgerful reads, analyzes, and produces entirely on your machine, then the three Ledgerful surfaces — local engine and CLI, embedded loopback dashboard, public web — and the planned hosted control plane. Local-first data flow, opt-in telemetry.",
+    "What Ledgerful reads, analyzes, and produces entirely on your machine, then the three Ledgerful surfaces: local engine and CLI, embedded loopback dashboard, public web, and the planned hosted control plane. Local-first data flow, opt-in telemetry.",
   docs: "Install, verify, and operate Ledgerful without confusing local tooling with hosted features.",
   pricing: "Ledgerful editions with explicit available, beta, local-only, hosted planned, and enterprise planned states.",
   trust: "Local-first data flow, telemetry, sync, SOC2 export, and future hosted boundaries.",

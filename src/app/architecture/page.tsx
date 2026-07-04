@@ -19,7 +19,7 @@ export const metadata: Metadata = {
         url: "/og/architecture.png",
         width: 1200,
         height: 630,
-        alt: "Architecture — local engine, dashboard, and web surfaces, with a real local dashboard receipt showing Project Health and Recent Changes.",
+        alt: "How Ledgerful works locally — what the local engine reads, analyzes, and produces, with a real local dashboard receipt showing Project Health and Recent Changes.",
       },
     ],
   },

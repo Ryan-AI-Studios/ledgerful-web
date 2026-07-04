@@ -226,7 +226,7 @@ const ROUTES = [
     slug: "architecture",
     routePath: "/architecture",
     // src/app/architecture/page.tsx metadata.title
-    title: "Architecture — local engine, dashboard, and web surfaces",
+    title: "How Ledgerful works locally",
     // src/lib/content/navigation.ts pageDescriptions.architecture
     description:
       "The three Ledgerful surfaces — local engine and CLI, embedded loopback dashboard, public web — and the planned hosted control plane. Local-first data flow, opt-in telemetry.",

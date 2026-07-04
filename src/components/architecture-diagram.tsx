@@ -23,11 +23,25 @@ type ArchNodeProps = {
   body?: string;
   meta?: string;
   planned?: boolean;
+  feature?: string;
+  buildRequired?: string;
 };
 
-function ArchNode({ kicker, title, body, meta, planned = false }: ArchNodeProps) {
+function ArchNode({
+  kicker,
+  title,
+  body,
+  meta,
+  planned = false,
+  feature,
+  buildRequired,
+}: ArchNodeProps) {
   return (
-    <div className={`arch-node${planned ? " arch-node--planned" : ""}`}>
+    <div
+      className={`arch-node${planned ? " arch-node--planned" : ""}`}
+      data-feature={feature}
+      data-build-required={buildRequired}
+    >
       <span className="arch-node-kicker">{kicker}</span>
       <span className="arch-node-title">{title}</span>
       {body ? <span className="arch-node-body">{body}</span> : null}
@@ -48,6 +62,8 @@ export function ArchitectureDiagram() {
             title="ledgerful CLI"
             body="scan · ledger · audit · verify · mcp"
             meta="sync is feature-gated · --features sync"
+            feature="sync"
+            buildRequired="--features sync"
           />
           <ArchNode
             kicker="SURFACE 02 · DASHBOARD"

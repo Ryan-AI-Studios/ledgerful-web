@@ -42,8 +42,9 @@ Owner: Track `0027-WebLaunchGate` plus the consolidated deferred checklist.
 
 ## Deployment And Operations
 
-- [ ] Prove a Git-driven Preview deployment from a non-production branch and record its Vercel URL.
-  The verified Track 0027 deployment was CLI-driven and does not close this item.
+- [x] Prove a Git-driven Preview deployment from a non-production branch. Branch
+  `track-0027-web-launch-gate` deployed READY at
+  `https://ledgerful-qy3bw98uv-ryan-bourgoin-s-projects.vercel.app`; 178/178 deployed checks passed.
 - [ ] Decide and document the long-term Vercel Preview protection policy.
 - [ ] Confirm Vercel spend-management/usage-alert posture and record the Attack Challenge Mode runbook.
 - [ ] Run a full git-history secret scan before any repository visibility change.

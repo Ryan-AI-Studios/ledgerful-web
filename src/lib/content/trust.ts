@@ -233,6 +233,12 @@ export const publicSiteInfra: Subprocessor[] = [
       "Static site hosting for this public marketing website. Hosts the public www.ledgerful.dev site only and never receives Ledgerful project source code, ledger data, or product data. Visitor traffic to the public site (e.g. IP addresses) is processed by Vercel as the hosting provider for the marketing site, not as a product subprocessor.",
     state: "available",
   },
+  {
+    name: "Kit (waitlist)",
+    purpose:
+      "Email capture for the /waitlist interest form. Receives the email address, an opt-in timestamp, and a design_partner custom field (set to \"true\" only if the design-partner checkbox is checked) via a first-party server relay. No source code, project data, or product data is sent. Double opt-in is mandatory: adding a subscriber to a double opt-in form triggers a confirmation email that must be acted on. The Kit API key stays server-side and never ships to the browser. To request deletion of your email from the waitlist, contact hello@ledgerful.dev with the subject \"Waitlist deletion request\" — your email and associated data will be removed from Kit within 5 business days.",
+    state: "available",
+  },
 ];
 
 /**

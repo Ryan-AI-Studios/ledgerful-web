@@ -36,6 +36,7 @@ export const pageDescriptions = {
   pricing: "Ledgerful editions with explicit available, beta, local-only, hosted planned, and enterprise planned states.",
   trust: "Local-first data flow, telemetry, sync, SOC2 export, and future hosted boundaries.",
   changelog: "Public web, local engine, dashboard, and hosted-control-plane milestones.",
+  waitlist: "Register interest in Ledgerful. We are in quiet preview — leave your email and we will let you know when it is ready to install. No commitment, no timeline, no purchase.",
   docsCli: "Install the Ledgerful CLI from source and run your first scan.",
   docsDashboard: "Launch the local daemon, open the dashboard, and understand token security.",
   docsMcp: "Configure the Ledgerful MCP stdio server for AI assistant integration.",

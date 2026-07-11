@@ -1755,6 +1755,21 @@ export default function TrustPage() {
               and is not part of the product / future-hosted subprocessor
               list.
             </p>
+            <p
+              style={{
+                color: "var(--muted)",
+                fontSize: "0.85rem",
+                marginTop: "12px",
+              }}
+            >
+              <strong>Email capture is separate from telemetry.</strong> The /waitlist
+              form sends your email address to Kit (listed above under public-site
+              infrastructure) for the sole purpose of notifying you when Ledgerful
+              launches. It is not the same as the opt-in usage telemetry documented in
+              the telemetry section above, which sends aggregate command counts and
+              platform metadata — never email addresses. Email capture requires its own
+              double opt-in; telemetry requires its own explicit enable command.
+            </p>
           </section>
 
           <section className="content-band">

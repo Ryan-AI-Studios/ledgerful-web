@@ -3565,3 +3565,115 @@ code {
     font-size: clamp(1.7rem, 11vw, 2.3rem);
   }
 }
+
+/* ── 0041 — Waitlist form ────────────────────────────────── */
+
+.waitlist-form {
+  display: grid;
+  gap: 18px;
+  max-width: 520px;
+}
+
+.waitlist-field {
+  display: grid;
+  gap: 6px;
+}
+
+.waitlist-field label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.waitlist-field input[type="email"] {
+  min-height: 46px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  padding: 12px 14px;
+  background: var(--surface-raised);
+  color: var(--ink);
+  font: inherit;
+  font-size: 1rem;
+}
+
+.waitlist-field input[type="email"]:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.waitlist-checkbox {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.waitlist-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--brand);
+}
+
+.waitlist-checkbox label {
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.waitlist-submit {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: fit-content;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 24px;
+  background: var(--brand-strong);
+  color: var(--on-brand);
+  font: inherit;
+  font-weight: 720;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.waitlist-submit:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.waitlist-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.waitlist-submit:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.waitlist-message {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.waitlist-caveat {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .waitlist-submit {
+    width: 100%;
+  }
+}

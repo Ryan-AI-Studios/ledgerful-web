@@ -134,6 +134,20 @@ if (!lower.includes("private.key")) {
   failures.push('Assert 11 FAIL: current private.key signing-key path is missing');
 }
 
+// Assert 12: waitlist ESP subprocessor is disclosed
+if (!lower.includes("kit (waitlist)") && !lower.includes("kit (formerly convertkit)")) {
+  failures.push('Assert 12 FAIL: Kit waitlist ESP subprocessor not disclosed on trust page');
+}
+if (!lower.includes("double opt-in")) {
+  failures.push('Assert 12 FAIL: "double opt-in" not found — waitlist consent model not documented');
+}
+if (!lower.includes("email capture is separate from telemetry")) {
+  failures.push('Assert 12 FAIL: email-capture ≠ telemetry reconciliation missing');
+}
+if (!lower.includes("waitlist deletion request")) {
+  failures.push('Assert 12 FAIL: waitlist deletion path not disclosed');
+}
+
 if (failures.length > 0) {
   console.error("\ncheck-trust-truth: FAILED\n");
   failures.forEach((f) => console.error(" ", f));

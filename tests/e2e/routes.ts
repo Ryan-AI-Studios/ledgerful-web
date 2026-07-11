@@ -13,6 +13,7 @@ export const publicRoutes = [
   "/install",
   "/pricing",
   "/trust",
+  "/waitlist",
 ] as const;
 
 export const primaryNavigation = [

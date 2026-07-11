@@ -13,6 +13,7 @@ import { PageShell } from "@/components/page-shell";
 import { ProofStrip } from "@/components/proof-strip";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
+import { WaitlistForm } from "@/components/waitlist-form";
 import { capturedEvidence } from "@/components/captured-evidence";
 import type { FeatureState } from "@/lib/content/features";
 import { launchTruth } from "@/lib/content/launch-facts";
@@ -292,6 +293,19 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* 11.5. Waitlist / early access */}
+      <section className="content-band" id="waitlist">
+        <SectionHeading title="Register interest">
+          We are in quiet preview. Leave your email and we will let you know when
+          Ledgerful is ready to install. No commitment, no timeline, no purchase.{" "}
+          <Link href="/waitlist" className="inline-link">
+            Open the full form
+          </Link>
+          .
+        </SectionHeading>
+        <WaitlistForm />
       </section>
 
       {/* 12. Final install CTA */}

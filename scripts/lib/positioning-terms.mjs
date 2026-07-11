@@ -7,6 +7,8 @@ export const bannedPositioningTerms = Object.freeze([
   "on-chain",
   "tokenomics",
   "crypto",
+  "immutable",
+  "tamper-proof",
 ]);
 
 const termPatterns = bannedPositioningTerms.map((term) => ({

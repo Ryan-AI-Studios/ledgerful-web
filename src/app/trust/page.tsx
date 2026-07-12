@@ -1206,8 +1206,8 @@ export default function TrustPage() {
               style={{ marginBottom: "24px" }}
             >
               <strong>Current baseline:</strong> {release.note} The steps
-              below describe the verification process that will apply once
-              URLs are available.
+              below describe the verification process for the published
+              release.
             </div>
             <ol className="doc-step-list">
               {releaseVerificationSteps.map((step, i) => (
@@ -1223,7 +1223,8 @@ export default function TrustPage() {
               not yet implemented. Binaries may trigger OS security prompts
               on first launch. Code signing for both platforms is a
               separate planned enhancement. Supply chain attestation
-              (SBOM, cosign signing, SLSA provenance) is planned in{" "}
+              (SBOM, cosign signing, SLSA provenance) shipped with v0.1.8 —
+              see{" "}
               <a
                 href="#supply-chain-attestation"
                 className="inline-link"
@@ -1248,19 +1249,18 @@ export default function TrustPage() {
               className="disclosure-notice"
               style={{ marginBottom: "24px" }}
             >
-              <strong>Planned (track 0053):</strong>{" "}
-              {supplyChainAttestation.note} The SBOM and cosign
-              verification commands below will be actionable once the
-              pipeline ships. The <code>gh attestation verify</code>{" "}
-              commands additionally require the repository to be public
-              or on GitHub Enterprise Cloud.
+              <strong>Shipped with v0.1.8:</strong>{" "}
+              {supplyChainAttestation.note} The verification commands below
+              are actionable for the v0.1.8 release. The{" "}
+              <code>gh attestation verify</code> commands require the
+              repository to be public (it is) or on GitHub Enterprise Cloud.
             </div>
 
             <h3
               className="trust-subheading"
               style={{ marginTop: "32px", marginBottom: "16px" }}
             >
-              What each release will carry
+              What each release carries
             </h3>
             <div
               className="table-scroll"
@@ -1271,7 +1271,7 @@ export default function TrustPage() {
               <table
                 className="trust-table"
                 style={{ minWidth: "420px" }}
-                aria-label="Supply chain attestation components planned for each release"
+                aria-label="Supply chain attestation components shipped with each release"
               >
                 <thead>
                   <tr>
@@ -1300,7 +1300,7 @@ export default function TrustPage() {
               className="trust-subheading"
               style={{ marginTop: "32px", marginBottom: "16px" }}
             >
-              How to verify (once shipped)
+              How to verify
             </h3>
             {supplyChainVerifyCommands.map((cmd) => (
               <div key={cmd.label} style={{ marginBottom: "24px" }}>
@@ -1734,8 +1734,8 @@ export default function TrustPage() {
           {/* ── Section 13: Responsible disclosure ──────────── */}
           <section id="disclosure" className="content-band trust-section">
             <SectionHeading title="Responsible disclosure">
-              {disclosure.value}. Disclosure remains an unresolved launch
-              fact.
+              {disclosure.value}. The disclosure channel is verified and
+              active.
             </SectionHeading>
             <div className="disclosure-notice">
               <p>
@@ -1763,8 +1763,7 @@ export default function TrustPage() {
                   <code className="repo-url">github.com/Ryan-AI-Studios/Ledgerful</code>
                 )}
                 . General (non-security) bugs may be reported via GitHub
-                Issues once the repository is confirmed publicly open for
-                issues.
+                Issues on the public repository.
               </p>
             </div>
           </section>
@@ -1772,13 +1771,12 @@ export default function TrustPage() {
           {/* ── Section 14: License ──────────────────────────── */}
           <section id="license" className="content-band trust-section">
             <SectionHeading title="License">
-              Draft source terms are {license.base} plus the small-entity
-              exception. Legal launch review and license-in-force are still
-              open.
+              The source terms are {license.base} plus the small-entity
+              exception. The license is in force.
             </SectionHeading>
             <div className="disclosure-notice">
               <p>
-                The <em>Ledgerful source repository</em> contains draft{" "}
+                The <em>Ledgerful source repository</em> is licensed under{" "}
                 <strong>{license.base}</strong> with the{" "}
                 <strong>{license.exception}</strong>. The{" "}
                 {repository.anonymousAccess ? (
@@ -1794,12 +1792,14 @@ export default function TrustPage() {
                 ) : (
                   "reviewed Ledgerful source repo LICENSE file"
                 )}{" "}
-                reflects the draft terms under review, not a completed legal
-                launch position. LLC formation, IP assignment, counsel review,
-                and license-in-force remain unresolved; any later change must
-                update the reviewed truth baseline before it reaches public
-                copy. (This website&rsquo;s own repository is proprietary and
-                separately licensed.)
+                reflects the in-force terms. Ledgerful, LLC is formed (FL,
+                effective 2026-07-01); individual→LLC IP assignment is
+                executed; the Small-Entity Commercial Exception is
+                counsel-reviewed; FL + USPTO trademark searches are clear.
+                Any later change must update the reviewed truth baseline
+                before it reaches public copy. (This website&rsquo;s own
+                repository is proprietary and separately licensed — all
+                rights reserved, no license granted.)
               </p>
             </div>
           </section>

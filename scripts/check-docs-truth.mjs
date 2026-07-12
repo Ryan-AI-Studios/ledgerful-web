@@ -126,13 +126,13 @@ function hasAncestor(node, predicate) {
   return false;
 }
 
-// ── Assert 21: homepage checksum proof matches unresolved release status ─────
+// ── Assert 21: homepage checksum proof reflects published release ─────────────
 
 {
   const lower = homepageHtml.toLowerCase();
   if (lower.includes("releases are checksum-verified")) {
     failures.push(
-      "Assert 21 FAIL [home]: no public release is verified; describe the workflow's companion checksums instead",
+      "Assert 21 FAIL [home]: do not claim 'releases are checksum-verified' as a blanket statement",
     );
   }
   if (!lower.includes("release workflow emits companion checksums")) {
@@ -263,7 +263,7 @@ function hasAncestor(node, predicate) {
   }
 }
 
-// ── Assert 2: /docs/mcp — "release" or "pending" near @ledgerful/mcp-server ──
+// ── Assert 2: /docs/mcp — package status near @ledgerful/mcp-server ─────────
 
 {
   const html = pages["mcp"];
@@ -276,24 +276,17 @@ function hasAncestor(node, predicate) {
     );
   } else {
     const window = lower.slice(Math.max(0, idx - 300), idx + mcpPkg.length + 300);
-    if (!window.includes("release") && !window.includes("pending")) {
+    if (!window.includes("published") && !window.includes("release") && !window.includes("npm")) {
       failures.push(
-        `Assert 2 FAIL [docs/mcp]: "@ledgerful/mcp-server" found but "release" or "pending" not found within 300 chars`
+        `Assert 2 FAIL [docs/mcp]: "@ledgerful/mcp-server" found but "published", "release", or "npm" not found within 300 chars`
       );
     }
   }
 }
 
-// ── Assert 3: /docs/mcp — no live link to npmjs.com or registry.npmjs.org ────
-
-{
-  const lower = pages["mcp"].toLowerCase();
-  if (lower.includes("npmjs.com") || lower.includes("registry.npmjs.org")) {
-    failures.push(
-      `Assert 3 FAIL [docs/mcp]: live npmjs.com or registry.npmjs.org link found — package is not yet published`
-    );
-  }
-}
+// ── Assert 3: /docs/mcp — no premature npmjs.com link before package is live ──
+// (Package is now published on npm; a link to npmjs.com is acceptable)
+// Removed — no assertion needed.
 
 // ── Assert 4: /docs/github-action — "GitHub App" absent OR near "planned" ────
 // Check every occurrence, same approach as trust check for enterprise terms.
@@ -365,10 +358,11 @@ function hasAncestor(node, predicate) {
   const hasReleaseBinary =
     lower.includes("release artifact") ||
     lower.includes("release binary") ||
-    lower.includes("release artifacts");
+    lower.includes("release artifacts") ||
+    lower.includes("pre-built release");
   if (!hasReleaseBinary) {
     failures.push(
-      `Assert 6 FAIL [docs/cli]: "release artifact" or "release binary" not found — must document that release binaries are not yet available`
+      `Assert 6 FAIL [docs/cli]: "release artifact", "release binary", or "pre-built release" not found`
     );
   }
 }
@@ -438,8 +432,7 @@ function hasAncestor(node, predicate) {
   }
 }
 
-// ── Assert 10: /docs/releases — no raw release download URLs ─────────────────
-// Check that no href points to a GitHub release download without a pending notice.
+// ── Assert 10: /docs/releases — no raw release download URLs; status disclosed ─
 
 {
   const lower = pages["releases"].toLowerCase();
@@ -452,18 +445,18 @@ function hasAncestor(node, predicate) {
 
   for (const pattern of downloadUrlPatterns) {
     if (pattern.test(pages["releases"])) {
-      // It's OK if there's a "pending" notice nearby — but a raw href is a fail
+      // A raw href to a download is a fail — link to the releases page instead
       failures.push(
-        `Assert 10 FAIL [docs/releases]: live release download URL found in href — these are WEB-0005 launch facts and must not be live links`
+        `Assert 10 FAIL [docs/releases]: live release download URL found in href — link to the releases page, not direct asset downloads`
       );
       break;
     }
   }
 
-  // Also require that the page explicitly states downloads are pending or not yet available
-  if (!lower.includes("pending") && !lower.includes("not yet available") && !lower.includes("web-0005")) {
+  // The page must disclose the release status — either available or pending
+  if (!lower.includes("pending") && !lower.includes("available") && !lower.includes("v0.1.8")) {
     failures.push(
-      `Assert 10 FAIL [docs/releases]: no "pending", "not yet available", or "web-0005" notice found — must disclose that release artifacts are not yet available`
+      `Assert 10 FAIL [docs/releases]: no "available", "pending", or version notice found — must disclose release status`
     );
   }
 }

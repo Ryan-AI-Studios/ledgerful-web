@@ -1,5 +1,9 @@
 Copyright 2026 Ledgerful, LLC. All rights reserved.
 
-Prior MIT releases stay MIT.
+This repository is published for transparency only. No license to use, copy,
+modify, or distribute its contents is granted.
 
-(Note: This proprietary license applies to the ledgerful-web website repository itself. The Ledgerful product, distributed separately, is licensed under the PolyForm Noncommercial License 1.0.0 with a Small-Entity Commercial Exception, as described on the website.)
+(Note: this applies to the ledgerful-web website repository itself. The
+Ledgerful product, distributed separately, is source-available under the
+PolyForm Noncommercial License 1.0.0 with the Ledgerful Small-Entity
+Commercial Exception, as described on the website.)

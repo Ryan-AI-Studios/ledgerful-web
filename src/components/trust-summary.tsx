@@ -72,14 +72,11 @@ export function TrustSummary() {
         <div>
           <dt>Release verification</dt>
           <dd>
-            The release workflow is configured to generate SHA-256
-            companion checksums for each binary archive. No anonymous
-            public release is available yet while the repository is
-            private; the local source version is 0.1.7. Code signing
-            (Windows Authenticode, macOS notarization) is planned.
-            Supply chain attestation (SBOM, cosign, SLSA) is planned
-            in track 0053 — see the supply chain attestation section
-            below.
+            The v0.1.8 release is publicly available with SHA-256 checksums
+            for each binary archive. Supply chain attestation (SBOM, cosign
+            signing, SLSA provenance) shipped with v0.1.8 — see the supply
+            chain attestation section below. OS code signing (Windows
+            Authenticode, macOS notarization) is planned.
           </dd>
         </div>
         <div>

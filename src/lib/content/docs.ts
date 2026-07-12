@@ -12,10 +12,10 @@ export type DocTopic = {
 export const docTopics: DocTopic[] = [
   {
     title: "CLI install and smoke test",
-    state: "unresolved",
+    state: "available",
     summary:
       launchTruth.facts.release.note,
-    nextAction: "Track release artifacts before publishing one-line install docs.",
+    nextAction: "Build from source or download a release binary; verify the SHA-256 checksum.",
     href: "/docs/cli",
   },
   {
@@ -31,7 +31,7 @@ export const docTopics: DocTopic[] = [
     state: "beta",
     summary:
       launchTruth.facts.mcpPackage.note,
-    nextAction: "Add registry/package links after live package smoke.",
+    nextAction: "Install via npx or npm install; configure your MCP client.",
     href: "/docs/mcp",
   },
   {
@@ -60,10 +60,10 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "Release verification",
-    state: "unresolved",
+    state: "available",
     summary:
       launchTruth.facts.release.note,
-    nextAction: "Resolve release download and checksum URLs before launch.",
+    nextAction: "Download the v0.1.8 release and verify the SHA-256 checksum.",
     href: "/docs/releases",
   },
 ];

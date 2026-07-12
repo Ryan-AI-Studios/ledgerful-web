@@ -433,12 +433,13 @@ test("mobile section-nav disclosure is keyboard operable at 375px", async ({ pag
   await expect(target).toBeInViewport();
 });
 
-test("trust launch blockers do not expose unavailable public links", async ({ page }) => {
+test("trust disclosure and license sections reflect resolved state", async ({ page }) => {
   await page.goto("/trust");
-  await expect(page.locator("#disclosure a, #license a")).toHaveCount(0);
-  await expect(page.locator("#disclosure")).toContainText("pending activation");
+  // Repo is now public — the disclosure and license sections contain links to the repo
+  await expect(page.locator("#disclosure")).toContainText("security@ledgerful.dev");
+  await expect(page.locator("#disclosure")).toContainText("active");
   await expect(page.locator("#license")).toContainText("PolyForm Noncommercial");
-  await expect(page.locator("#license")).toContainText("Legal launch review");
+  await expect(page.locator("#license")).toContainText("in force");
 });
 
 test("trust inline links are distinguishable without color alone", async ({ page }) => {
@@ -453,14 +454,15 @@ test("trust inline links are distinguishable without color alone", async ({ page
   }
 });
 
-test("trust supply chain attestation section uses planned language", async ({ page }) => {
+test("trust supply chain attestation section reflects shipped state", async ({ page }) => {
   await page.goto("/trust");
   const section = page.locator("#supply-chain-attestation");
   await expect(section).toBeVisible();
   const sectionText = await section.textContent();
-  // Must use "planned" language — at least 3 occurrences for the 5 planned components
-  const plannedCount = (sectionText?.toLowerCase().match(/planned/g) || []).length;
-  expect(plannedCount).toBeGreaterThanOrEqual(3);
+  // Must not still say "Planned (track 0053)" — v0.1.8 shipped these
+  expect(sectionText?.toLowerCase()).not.toContain("planned (track 0053)");
+  // Must not say "will be actionable once the pipeline ships"
+  expect(sectionText?.toLowerCase()).not.toContain("will be actionable once the pipeline ships");
   await expect(section).toContainText("SBOM");
   await expect(section).toContainText("cosign");
   await expect(section).toContainText("SLSA");
@@ -468,25 +470,20 @@ test("trust supply chain attestation section uses planned language", async ({ pa
   await expect(section).toContainText("cozo");
   await expect(section).toContainText("native SQLite");
   await expect(section).toContainText("not a product feature");
-  // Combined positive + negative check on each component description cell
+  // Component descriptions must not use unshipped future tense
   const tableRows = section.locator("table tbody tr");
   const rowCount = await tableRows.count();
-  const presentTenseVerbs = [
-    "are signed", "carries", "are built", "are wired",
-    "are designed to run", "generates", "includes", "embeds",
-    "releases include",
+  const unshippedVerbs = [
+    "to be generated", "will be signed", "will carry",
+    "will be built with", "will embed", "will be attached",
   ];
   for (let i = 0; i < rowCount; i++) {
     const descriptionCell = tableRows.nth(i).locator("td").last();
     const descText = (await descriptionCell.textContent())?.toLowerCase() ?? "";
     if (descText.length < 10) continue;
-    const hasFuture = descText.includes("will ") || descText.includes("to be ") || descText.includes("planned");
-    if (!hasFuture) {
-      throw new Error(`Supply chain component ${i} description lacks future/conditional language: "${descText.substring(0, 80)}..."`);
-    }
-    for (const verb of presentTenseVerbs) {
+    for (const verb of unshippedVerbs) {
       if (descText.includes(verb)) {
-        throw new Error(`Present-tense claim "${verb}" in supply chain component ${i} description: "${descText.substring(0, 80)}..."`);
+        throw new Error(`Unshipped future-tense claim "${verb}" in supply chain component ${i} description: "${descText.substring(0, 80)}..."`);
       }
     }
   }
@@ -977,10 +974,10 @@ test("pricing planned-card CTAs point at labeled mailto destinations, not fake c
   await expect(licenseTerms).toHaveAttribute("href", "/trust#license");
 });
 
-test("pricing license examples render the pending-legal-review draft banner", async ({ page }) => {
+test("pricing license examples render the not-legal-advice disclaimer", async ({ page }) => {
   await page.goto("/pricing");
 
-  await expect(page.getByText("DRAFT — PENDING LEGAL REVIEW.")).toBeVisible();
+  await expect(page.getByText("not legal advice", { exact: false })).toBeVisible();
   // Four personas from licensePersonas — spot-check first and last.
   await expect(
     page.getByText("A 3-person consultancy runs Ledgerful internally", { exact: false }),

@@ -106,7 +106,7 @@ const platformRows = [
 ];
 
 export default function InstallPage() {
-  const { release, repository } = launchTruth.facts;
+  const { repository } = launchTruth.facts;
 
   return (
     <PageShell>
@@ -149,8 +149,7 @@ export default function InstallPage() {
         <p className="private-preview">
           <ShieldAlert size={15} aria-hidden="true" />
           <span>
-            <strong>{repository.value}.</strong> {repository.note}{" "}
-            {release.note}
+            <strong>{repository.value}.</strong> {repository.note}
           </span>
         </p>
       </section>
@@ -232,12 +231,10 @@ export default function InstallPage() {
 ledgerful verify --health`}
         </CodeBlock>
         <div className="disclosure-notice" style={{ marginTop: "20px" }}>
-          <strong>Verify checksums once release binaries ship:</strong>{" "}
-          Pre-built release binaries with SHA-256 checksums are a documented
-          launch fact and are not yet publicly available — today the only
-          supported install path is the source build above. Once binaries are
-          published, checksum verification becomes a required step before
-          running any downloaded binary — see{" "}
+          <strong>Verify checksums for release binaries:</strong>{" "}
+          Pre-built release binaries with SHA-256 checksums are available on
+          the v0.1.8 GitHub Release page. Checksum verification is a required
+          step before running any downloaded binary — see{" "}
           <Link href="/docs/releases" className="inline-link">
             the exact checksum verification steps
           </Link>{" "}
@@ -539,7 +536,7 @@ ledgerful web start`}
               >
                 Pricing →
               </Link>{" "}
-              Draft license terms and feature-state matrix.
+              License terms and feature-state matrix.
             </li>
             </ul>
           </div>

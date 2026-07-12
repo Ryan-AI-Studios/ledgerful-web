@@ -83,13 +83,13 @@ function assertInternalBaseline() {
   );
   assert.equal(
     launchTruth.facts.license.status,
-    "unresolved",
-    "The public license state must remain unresolved until legal launch review closes",
+    "resolved",
+    "The public license state must be resolved (license is in force)",
   );
   assert.equal(
     launchTruth.facts.license.legalLaunchReviewComplete,
-    false,
-    "Legal launch review must remain explicitly incomplete until counsel signs off",
+    true,
+    "Legal launch review must be complete (LLC formed, IP assigned, counsel-reviewed)",
   );
   assert.deepEqual(
     launchTruth.facts.telemetry.payloadFields,

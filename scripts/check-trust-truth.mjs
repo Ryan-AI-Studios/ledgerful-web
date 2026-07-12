@@ -17,10 +17,10 @@ if (lower.includes("ledgerful.io")) {
   failures.push("Canonical-domain FAIL: trust page must use ledgerful.dev, not ledgerful.io");
 }
 if (lower.includes("operative source terms")) {
-  failures.push("License FAIL: unresolved draft terms must not be called operative");
+  failures.push("License FAIL: resolved terms must not be called operative");
 }
-if (!lower.includes("draft terms") || !lower.includes("legal launch review")) {
-  failures.push("License FAIL: trust page must label the terms draft pending legal review");
+if (!lower.includes("in force") && !lower.includes("license is in force")) {
+  failures.push("License FAIL: trust page must state the license is in force");
 }
 if (lower.includes("github actions integration for the future hosted ci workflow")) {
   failures.push(
@@ -64,6 +64,10 @@ if (!lower.includes("responsible disclosure")) {
 // Assert 7: enterprise identity terms must not appear without "planned"
 // Uses word-boundary regex to avoid false positives from HTML attribute values
 // such as "crossorigin" which contains "sso" as a substring.
+// Excludes OIDC occurrences in the supply chain attestation section where
+// "OIDC" refers to the cosign/Sigstore signing identity (GitHub Actions OIDC),
+// not enterprise SSO. The RSC flight payload duplicates the section content so
+// we also check for cosign/sigstore/fulcio as supply-chain context markers.
 const enterpriseTerms = ["sso", "saml", "oidc", "scim", "rbac"];
 for (const term of enterpriseTerms) {
   // Require a non-identifier boundary on both sides so "oidc-issuer" flags
@@ -74,10 +78,15 @@ for (const term of enterpriseTerms) {
     const idx = match.index;
     // Check within 120 chars in either direction for "planned"
     const window = lower.slice(Math.max(0, idx - 120), idx + term.length + 120);
-    if (!window.includes("planned")) {
-      failures.push(`Assert 7 FAIL: "${term.toUpperCase()}" appears without a "planned" qualifier nearby`);
-      break; // one failure per term is enough
+    if (window.includes("planned")) {
+      continue;
     }
+    // Allow OIDC in supply-chain attestation context (cosign/Sigstore/Fulcio/release-workflow)
+    if (term === "oidc" && (window.includes("cosign") || window.includes("sigstore") || window.includes("fulcio") || window.includes("release workflow"))) {
+      continue;
+    }
+    failures.push(`Assert 7 FAIL: "${term.toUpperCase()}" appears without a "planned" qualifier nearby`);
+    break; // one failure per term is enough
   }
 }
 // Also check "audit log" without planned
@@ -150,7 +159,7 @@ if (!lower.includes("waitlist deletion request")) {
   failures.push('Assert 12 FAIL: waitlist deletion path not disclosed');
 }
 
-// Assert 13: supply chain attestation — planned language + caveats
+// Assert 13: supply chain attestation — shipped language + caveats
 if (!lower.includes("supply chain attestation")) {
   failures.push('Assert 13 FAIL: "supply chain attestation" section not found on trust page');
 }
@@ -166,7 +175,7 @@ if (!lower.includes("slsa")) {
 if (!lower.includes("cargo auditable")) {
   failures.push('Assert 13 FAIL: "cargo auditable" not mentioned — embedded dep list not documented');
 }
-// Must state "planned" near the supply chain section
+// Supply chain section must reflect shipped state (not planned)
 const scaIdx = lower.indexOf('id="supply-chain-attestation"');
 if (scaIdx !== -1) {
   const sectionEnd = lower.indexOf('id="telemetry"', scaIdx + 1);
@@ -174,31 +183,23 @@ if (scaIdx !== -1) {
     scaIdx,
     sectionEnd !== -1 ? sectionEnd : lower.length,
   );
-  const plannedCount = (section.match(/planned/g) || []).length;
-  if (plannedCount < 3) {
-    failures.push(`Assert 13 FAIL: "planned" appears only ${plannedCount} time(s) in the supply chain section — must use planned language throughout (expected at least 3)`);
+  // Must NOT still say "planned (track 0053)" as the primary status
+  if (section.includes("planned (track 0053)")) {
+    failures.push('Assert 13 FAIL: supply chain section still says "Planned (track 0053)" — v0.1.8 shipped these capabilities');
   }
-  // Check that every supply-chain component description uses future/conditional language
-  // Combined positive check (must contain future marker) + negative check (must not contain present-tense verbs)
-  // Applied only to table description cells, not the section heading or narrative text
-  const futureMarkers = ["will ", "to be ", "planned"];
-  const presentTenseVerbs = ["are signed", "carries", "are built", "are wired", "are designed to run", "generates", "includes", "embeds", "releases include"];
-  const componentDescriptions = section.match(/<td>(.*?)<\/td>/gs) || [];
-  for (const desc of componentDescriptions) {
-    const descLower = desc.toLowerCase();
-    if (descLower.length < 10) continue;
-    // Skip non-description cells (tool names are in <code> tags)
-    if (descLower.includes("<code>")) continue;
-    // Positive: must contain at least one future marker
-    const hasFuture = futureMarkers.some((marker) => descLower.includes(marker));
-    if (!hasFuture) {
-      failures.push(`Assert 13 FAIL: supply chain component description lacks future/conditional language (will/to be/planned): "${descLower.substring(0, 80)}..."`);
-    }
-    // Negative: must not contain present-tense capability verbs (no exemptions — these are capability claims, not boundary text)
-    for (const verb of presentTenseVerbs) {
-      if (descLower.includes(verb)) {
-        failures.push(`Assert 13 FAIL: present-tense claim "${verb}" found in supply chain component description: "${descLower.substring(0, 80)}..."`);
-      }
+  // Must NOT say "will be actionable once the pipeline ships"
+  if (section.includes("will be actionable once the pipeline ships")) {
+    failures.push('Assert 13 FAIL: supply chain section still says commands "will be actionable once the pipeline ships" — they are actionable now');
+  }
+  // Must NOT say "what each release will carry" (future tense for shipped capability)
+  if (section.includes("what each release will carry")) {
+    failures.push('Assert 13 FAIL: supply chain section still uses future tense "what each release will carry" — capabilities shipped');
+  }
+  // Must NOT contain present-tense capability verbs that imply unshipped (the old denylist)
+  const unshippedVerbs = ["to be generated", "will be signed", "will carry", "will be built with", "will embed", "will be attached"];
+  for (const verb of unshippedVerbs) {
+    if (section.includes(verb)) {
+      failures.push(`Assert 13 FAIL: future-tense claim "${verb}" found in supply chain section — capability has shipped`);
     }
   }
 }
@@ -230,8 +231,8 @@ if (!existsSync(securityPath)) {
   if (!securityContent.includes("supply chain attestation")) {
     failures.push('Assert 15 FAIL: SECURITY.md does not mention "supply chain attestation"');
   }
-  if (!securityContent.includes("planned")) {
-    failures.push('Assert 15 FAIL: SECURITY.md does not use "planned" language for supply chain capabilities');
+  if (!securityContent.includes("shipped")) {
+    failures.push('Assert 15 FAIL: SECURITY.md does not use "shipped" language for supply chain capabilities');
   }
   if (!securityContent.includes("cosign verify-blob")) {
     failures.push('Assert 15 FAIL: SECURITY.md missing cosign verify-blob recipe');

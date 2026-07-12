@@ -221,7 +221,7 @@ export const releaseVerificationSteps: string[] = [
   "Download the binary archive and its companion .sha256 checksum file from the GitHub Release page for your platform (Linux, macOS, or Windows).",
   "Run sha256sum -c ledgerful-<platform>.tar.gz.sha256 on Linux/macOS. On Windows, hash ledgerful-x86_64-pc-windows-msvc.zip with Get-FileHash -Algorithm SHA256 and compare it with the companion .zip.sha256 file.",
   "A successful verification prints filename: OK for each file. Any FAILED output means the download is corrupt or tampered — do not use the binary.",
-  "Note: specific download URLs are a WEB-0005 launch fact and will be published when the release is smoke-tested and publicly documented. Windows Authenticode signing and macOS Developer ID / Gatekeeper notarization are not yet implemented — binaries may trigger OS security prompts on first launch. Both code-signing capabilities and SLSA provenance attestations are planned enhancements.",
+  "Note: download URLs are live on the v0.1.8 GitHub Release. Windows Authenticode signing and macOS Developer ID / Gatekeeper notarization are not yet implemented — binaries may trigger OS security prompts on first launch. OS code signing is a planned enhancement. Supply chain attestation (SBOM, cosign, SLSA) shipped with v0.1.8 — see the supply chain section below.",
 ];
 
 export type SupplyChainComponent = {
@@ -235,31 +235,31 @@ export const supplyChainComponents: SupplyChainComponent[] = [
     name: "CycloneDX SBOM",
     tool: "cargo cyclonedx --all-features",
     description:
-      "A per-release Software Bill of Materials to be generated from the Cargo lockfile. Will cover the engine (all features) and the MCP npm package. Will be attached as a release asset alongside the binaries.",
+      "A per-release Software Bill of Materials generated from the Cargo lockfile. Covers the engine (all features) and the MCP npm package. Attached as a release asset alongside the binaries.",
   },
   {
     name: "cosign keyless signing",
-    tool: "cosign sign-blob (Sigstore Fulcio, planned GitHub OIDC)",
+    tool: "cosign sign-blob (Sigstore Fulcio, GitHub OIDC)",
     description:
-      "Release archives and the SBOM will be signed with cosign keyless signing using the planned GitHub Actions OIDC identity. No long-lived signing keys to manage. Verifiers will check the signature against the workflow identity and Fulcio certificate.",
+      "Release archives and the SBOM are signed with cosign keyless signing using the GitHub Actions OIDC identity. No long-lived signing keys to manage. Verifiers check the signature against the workflow identity and Fulcio certificate.",
   },
   {
     name: "SLSA build provenance",
     tool: "actions/attest (GitHub native)",
     description:
-      "Each binary will carry a SLSA build-provenance attestation emitted inside the matrix build job that compiled it. Provenance will bind the artifact to the runner, source commit, and build parameters that produced it. Verifiable with gh attestation verify.",
+      "Each binary carries a SLSA build-provenance attestation emitted inside the matrix build job that compiled it. Provenance binds the artifact to the runner, source commit, and build parameters that produced it. Verifiable with gh attestation verify.",
   },
   {
     name: "SBOM attestation",
     tool: "actions/attest-sbom",
     description:
-      "The SBOM file will carry a signed attestation bound to the built artifact digest — the distinct claim that this is the bill of materials for that binary. Distinct from build provenance, which proves where it was built.",
+      "The SBOM file carries a signed attestation bound to the built artifact digest — the distinct claim that this is the bill of materials for that binary. Distinct from build provenance, which proves where it was built.",
   },
   {
     name: "Embedded dependency list",
     tool: "cargo auditable",
     description:
-      "Releases will be built with cargo auditable, which will embed the dependency graph in the binary as a custom linker section. Verifiable offline with cargo audit bin or syft without needing the SBOM file.",
+      "Releases are built with cargo auditable, which embeds the dependency graph in the binary as a custom linker section. Verifiable offline with cargo audit bin or syft without needing the SBOM file.",
   },
 ];
 
@@ -268,7 +268,7 @@ export const supplyChainVerifyCommands: { label: string; command: string; note: 
     label: "Verify the SBOM signature (cosign keyless)",
     command:
       "cosign verify-blob \\\n  --certificate-identity-regexp '^https://github\\.com/Ryan-AI-Studios/Ledgerful/\\.github/workflows/release\\.yml@.+' \\\n  --certificate-oidc-issuer https://token.actions.githubusercontent.com \\\n  --signature ledgerful-<ver>.cdx.json.sig \\\n  --certificate ledgerful-<ver>.cdx.json.pem \\\n  ledgerful-<ver>.cdx.json",
-    note: "Checks that the SBOM was signed by the release workflow's planned OIDC identity. The identity and issuer values will be finalized when the pipeline ships.",
+    note: "Checks that the SBOM was signed by the release workflow's OIDC identity (anchored to release.yml).",
   },
   {
     label: "Verify binary build provenance (SLSA)",
@@ -302,9 +302,9 @@ export const supplyChainGaps: { heading: string; body: string }[] = [
       "rusqlite uses the bundled feature, which statically links a native C SQLite library. A Rust-crate SBOM lists libsqlite3-sys as a crate component but does not enumerate the vendored C library as a separate component. This is a standard limitation of crate-level SBOM generation, not specific to the fork.",
   },
   {
-    heading: "GitHub attestations require a public or Enterprise-Cloud repo",
+    heading: "OS code signing is not yet implemented",
     body:
-      "The SLSA build-provenance and SBOM attestation steps use GitHub's native artifact attestation feature, which requires a public repository or a private repo on GitHub Enterprise Cloud. On the current private free-plan repo, those steps will not activate until the 0027 public flip. The SBOM and cosign signing phases will not have this restriction and will be available on the private repo once the pipeline ships.",
+      "The release pipeline signs artifacts with cosign and SLSA provenance but does not yet implement Windows Authenticode or macOS Developer ID / Gatekeeper notarization. Binaries may trigger OS security prompts on first launch. OS code signing is a planned enhancement layered on top of the existing artifact signing.",
   },
 ];
 

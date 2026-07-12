@@ -38,16 +38,14 @@ export default function DocsMcpPage() {
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
-            <strong>npm package pending release:</strong> {mcpPackage.note} Until
-            then, use the CLI-based setup below.
+            <strong>npm package published:</strong> {mcpPackage.note}
           </p>
           <p style={{ marginTop: "12px" }}>
-            A future release will allow starting the server with:
+            Start the server with:
             <br />
             <code>
               npx {mcpPackage.name}
-            </code>{" "}
-            (pending release — not yet available)
+            </code>
           </p>
         </div>
       </section>

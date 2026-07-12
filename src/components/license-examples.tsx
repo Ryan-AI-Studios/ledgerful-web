@@ -1,20 +1,20 @@
 import { licenseBoundaryColumns, licensePersonas } from "@/lib/content/pricing";
 
 /**
- * Best-effort license-boundary explainer for /pricing. Wrapped in a
- * prominent draft banner because counsel sign-off + license-in-force is the
- * async 0027 launch gate, not a blocker on shipping this content — see
- * 0025-WebPricingReframe spec.md §2/DoD-4.
+ * Plain-language license-boundary explainer for /pricing. The PolyForm
+ * Noncommercial License 1.0.0 + Ledgerful Small-Entity Commercial Exception
+ * v1.0 are in force (counsel-reviewed); this remains a summary, not the
+ * operative text — see 0025-WebPricingReframe spec.md §2/DoD-4.
  */
 export function LicenseExamples() {
   return (
     <>
       <div className="legal-draft-banner">
-        <strong>DRAFT — PENDING LEGAL REVIEW.</strong> The summary and
-        examples below are our best-effort reading of the PolyForm
-        Noncommercial License 1.0.0 plus the Ledgerful Small-Entity
-        Commercial Exception v1.0. They are not legal advice and are subject
-        to change before counsel sign-off and license-in-force.
+        <strong>Plain-language summary — not legal advice.</strong> The
+        summary and examples below explain the PolyForm Noncommercial License
+        1.0.0 plus the Ledgerful Small-Entity Commercial Exception v1.0 in
+        plain terms. The license text governs; where this summary and the
+        license differ, the license controls.
       </div>
       <div className="license-boundary-columns">
         {licenseBoundaryColumns.map((column) => (

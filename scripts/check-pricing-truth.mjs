@@ -36,13 +36,13 @@ assert.doesNotMatch(
 );
 assert.match(
   install,
-  /draft license terms/i,
-  "Install must preserve the unresolved draft-license wording",
+  /in force|source-available|polyform/i,
+  "Install must reference the in-force license terms",
 );
 assert.match(
   pricing,
-  /draft terms[^<]*pending legal review/i,
-  "Pricing must identify the license boundary as draft terms pending legal review",
+  /in force|in-force/i,
+  "Pricing must identify the license as in force",
 );
 assert.doesNotMatch(
   pricing,
@@ -95,20 +95,18 @@ assert.match(
   "Enterprise (planned) card must wire 'Contact us' to a mailto: destination",
 );
 
-// Planned-card mailto CTAs must not read as a guaranteed-live channel — the
-// destination inbox is unprovisioned until the pre-flip checklist closes
-// (see deferred.md "Waitlist / contact CTA destination")
+// Planned-card mailto CTAs — inbox is now provisioned
 assert.match(
   pricing,
-  /Inbox provisioning is in progress/,
-  "Planned-card CTAs must disclose that the destination inbox is not yet provisioned",
+  /Inbox is provisioned/,
+  "Planned-card CTAs must disclose that the inbox is provisioned and delivery is verified",
 );
 
-// License examples must stay visibly draft/gated until counsel sign-off (DoD-4)
+// License examples must carry the "not legal advice" disclaimer (not a DRAFT banner — license is in force)
 assert.match(
   pricing,
-  /DRAFT\s*—\s*PENDING LEGAL REVIEW/,
-  "License examples must carry the DRAFT — PENDING LEGAL REVIEW banner until counsel sign-off",
+  /not legal advice/i,
+  "License examples must carry the 'not legal advice' disclaimer",
 );
 
 // Do not advertise the prior-MIT arbitrage on the conversion surface (user directive,

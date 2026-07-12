@@ -22,7 +22,7 @@ export default function DocsReleasesPage() {
       <section className="page-hero compact">
         <p className="hero-kicker">Docs · Releases</p>
         <h1>Release verification.</h1>
-        <StatusPill status="unresolved" />
+        <StatusPill status="resolved" />
         <p>
           The release workflow requires SHA-256 checksums alongside every binary
           archive. {release.value}.
@@ -32,17 +32,18 @@ export default function DocsReleasesPage() {
       {/* ── Section 1: Release status ─────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="Release artifact status">
-          {release.value}. Download URLs are not yet publicly available.
+          {release.value}. Download URLs are live on the v0.1.8 GitHub
+          Release page.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
-            <strong>Release artifacts pending:</strong> {release.note} The
-            verification process documented below describes what will apply
-            after publication — it is not currently actionable.
+            <strong>Release artifacts available:</strong> {release.note} The
+            verification process documented below is actionable for the
+            v0.1.8 release.
           </p>
           <p style={{ marginTop: "12px" }}>
-            <strong>Install today:</strong> The only supported install path is
-            building from source. See the{" "}
+            <strong>Install from source:</strong> You can also build from
+            source. See the{" "}
             <Link href="/docs/cli" className="inline-link">
               CLI install page
             </Link>{" "}
@@ -51,11 +52,10 @@ export default function DocsReleasesPage() {
           <p style={{ marginTop: "12px" }}>
             <strong>OS code signing status:</strong> Windows Authenticode and
             macOS Developer ID / Gatekeeper notarization are not yet
-            implemented. When release artifacts are available, binaries may
-            trigger OS security prompts on first launch. Code signing for both
-            platforms is a separate planned enhancement. Supply chain
-            attestation (SBOM, cosign signing, SLSA provenance) is planned in
-            track 0053 — see the{" "}
+            implemented. Binaries may trigger OS security prompts on first
+            launch. Code signing for both platforms is a separate planned
+            enhancement. Supply chain attestation (SBOM, cosign signing, SLSA
+            provenance) shipped with v0.1.8 — see the{" "}
             <Link href="/trust#supply-chain-attestation" className="inline-link">
               trust page supply chain section
             </Link>
@@ -150,13 +150,13 @@ ledgerful doctor`}
             content, commit messages, or private key material.
           </p>
           <p style={{ marginTop: "12px" }}>
-            <strong>Reporting issues:</strong> A formal support and issue
-            reporting channel will be published alongside the public release.
-            Until then, refer to the{" "}
+            <strong>Reporting issues:</strong> General (non-security) bugs
+            can be reported via GitHub Issues on the public repository. For
+            security vulnerabilities, see the{" "}
             <Link href="/trust" className="inline-link">
               trust and security page
             </Link>{" "}
-            for the responsible disclosure status.
+            for the responsible disclosure channel.
           </p>
         </div>
       </section>

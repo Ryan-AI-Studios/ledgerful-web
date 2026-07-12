@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Ledgerful is in pre-release development. The latest tag is v0.1.6; the local source version is 0.1.7. Security fixes are applied to the main branch and included in the next release. There are no backport branches.
+Ledgerful is pre-1.0 software. The latest release is v0.1.8. Security fixes are applied to the main branch and included in the next release. There are no backport branches.
 
 ## Reporting a vulnerability
 
@@ -10,8 +10,8 @@ Ledgerful is in pre-release development. The latest tag is v0.1.6; the local sou
 
 Report vulnerabilities through one of these channels:
 
-- **Email:** security@ledgerful.dev (provisioning pending — see note below)
-- **GitHub private vulnerability reporting:** available once the repository is public
+- **Email:** security@ledgerful.dev (active)
+- **GitHub private vulnerability reporting:** available on the public repository
 
 **Response timeline:**
 - Acknowledgment: within 3 business days
@@ -19,25 +19,23 @@ Report vulnerabilities through one of these channels:
 - Fix or mitigation: within 30 days for high-severity, 90 days for medium
 - Disclosure: coordinated disclosure after a fix is released, with a 90-day maximum from initial report
 
-**Safe harbor:** Ledgerful follows disclose.io-style safe harbor principles. Good-faith security research that respects user data and privacy will not be subject to legal action. This policy is marked DRAFT pending LLC and counsel review.
+**Safe harbor:** Ledgerful follows disclose.io-style safe harbor principles. Good-faith security research that respects user data and privacy will not be subject to legal action.
 
 **No PGP key is published.** We do not require or recommend encrypted reporting at this stage.
 
-> **Note:** The security@ledgerful.dev mailbox is documented but pending activation via Cloudflare Email Routing. GitHub private vulnerability reporting is available once the repository is public. Until then, if you discover a vulnerability, please contact the maintainer via the GitHub profile at [github.com/Ryan-AI-Studios](https://github.com/Ryan-AI-Studios) (or the commit-author email visible in the repository's git log). If you cannot reach any channel above, do not delay — any direct communication method is acceptable for good-faith reports.
+## Supply chain attestation (shipped with v0.1.8)
 
-## Supply chain attestation (planned — track 0053)
-
-Ledgerful's release pipeline is being hardened with verifiable supply-chain integrity. The following capabilities are **planned** and will ship with track 0053-SupplyChainAttestation:
+Ledgerful's release pipeline is hardened with verifiable supply-chain integrity. The following capabilities shipped with the v0.1.8 release (track 0053-SupplyChainAttestation):
 
 | Capability | Tool | Status |
 |---|---|---|
-| CycloneDX SBOM (engine + MCP) | `cargo cyclonedx --all-features` | Planned |
-| Artifact + SBOM signing | cosign keyless (Sigstore Fulcio) | Planned |
-| SLSA build provenance | `actions/attest` (GitHub native) | Planned (requires public repo) |
-| SBOM attestation | `actions/attest-sbom` | Planned (requires public repo) |
-| Embedded dependency list | `cargo auditable` | Planned |
+| CycloneDX SBOM (engine + MCP) | `cargo cyclonedx --all-features` | Shipped |
+| Artifact + SBOM signing | cosign keyless (Sigstore Fulcio) | Shipped |
+| SLSA build provenance | `actions/attest` (GitHub native) | Shipped |
+| SBOM attestation | `actions/attest-sbom` | Shipped |
+| Embedded dependency list | `cargo auditable` | Shipped |
 
-### Verification recipes (once shipped)
+### Verification recipes
 
 **Verify SBOM signature (cosign keyless):**
 ```bash
@@ -72,7 +70,7 @@ syft ledgerful
 
 1. **cozo git-dependency is not CVE-matched:** the `cozo-redux` crate is a git dependency pinned by commit, not a registry package. Downstream vulnerability scanners keyed on registry coordinates will not automatically match it. Upstream cozo advisories are tracked manually.
 2. **Bundled native SQLite is not enumerated as its own component:** `rusqlite` uses the `bundled` feature, which statically links a native C SQLite library. A Rust-crate SBOM lists `libsqlite3-sys` as a crate but does not enumerate the vendored C library as a separate component.
-3. **GitHub attestations require a public or Enterprise-Cloud repo:** the SLSA build-provenance and SBOM attestation steps require a public repository or GitHub Enterprise Cloud. They will activate at the public flip (track 0027).
+3. **OS code signing is not yet implemented:** the pipeline signs artifacts with cosign and SLSA provenance but does not yet implement Windows Authenticode or macOS Developer ID / Gatekeeper notarization. Binaries may trigger OS security prompts on first launch.
 
 ### Boundary
 
@@ -83,6 +81,6 @@ Artifact signing and build provenance are release-pipeline metadata — not a pr
 Ledgerful has two distinct signing surfaces that should not be confused:
 
 - **Ed25519 ledger signing** (product): every committed ledger entry is signed over a 5-field payload. This is the product's core provenance mechanism. The signing key lives at `~/.ledgerful/keys/`.
-- **cosign/Sigstore artifact signing** (release pipeline): release archives and SBOMs will be signed with cosign keyless signing using the GitHub Actions OIDC identity. No long-lived keys. This will prove the download came from the documented release workflow.
+- **cosign/Sigstore artifact signing** (release pipeline): release archives and SBOMs are signed with cosign keyless signing using the GitHub Actions OIDC identity. No long-lived keys. This proves the download came from the documented release workflow.
 
 These are orthogonal: one proves ledger entry integrity, the other proves release artifact integrity.

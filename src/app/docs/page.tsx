@@ -75,8 +75,8 @@ export default function DocsPage() {
       </section>
       <section className="content-band">
         <SectionHeading title="Documentation index">
-          Seven topics cover every product surface. Unresolved release and
-          package links are disclosed rather than presented as live destinations.
+          Seven topics cover every product surface. Hosted and planned
+          capabilities are state-labeled so you can tell what ships today.
         </SectionHeading>
         <div className="doc-grid">{liveTopics.map(renderCard)}</div>
         {pendingTopics.length > 0 && (
@@ -89,9 +89,9 @@ export default function DocsPage() {
                 marginBottom: "16px",
               }}
             >
-              {release.value}. Documentation remains visibly pending until the
-              anonymous publication check passes and a human claim audit updates
-              this baseline.
+              {release.value}. The GitHub Action is a planned surface —
+              its workflow YAML is documented as a reference shape, not an
+              installable action.
             </p>
             <div className="doc-grid">{pendingTopics.map(renderCard)}</div>
           </>

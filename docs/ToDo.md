@@ -4,7 +4,8 @@ This is the durable public-web action register. Current track governance lives i
 `C:\dev\coordinated\conductor\`; the repo-local `conductor/` directory is a legacy historical register.
 Remove completed items instead of retaining overlapping status narratives.
 
-Last reviewed: 2026-07-04. Track 0027 engineering is complete; public launch remains blocked.
+Last reviewed: 2026-07-12. Track 0027 engineering is complete; engine-slice public flip done.
+Remaining: ≥3 external 5-second testers (human gate), explicit D1-GO, Production indexing flip.
 
 ## Exit The Quiet Preview
 
@@ -28,17 +29,16 @@ the explicit D1-GO decision is recorded.
 
 Owner: Track `0027-WebLaunchGate` plus the consolidated deferred checklist.
 
-- [ ] Complete LLC formation, individual-to-LLC IP assignment, counsel review, and license-in-force.
-- [ ] Verify anonymous access to the canonical GitHub repository before exposing repository links.
-- [ ] Publish a tagged release with downloadable assets, companion checksums, SBOM/provenance, then
-  verify every link anonymously.
-- [ ] Verify the public MCP package decision/install path and GitHub Action setup against real releases.
-- [ ] Provision and receipt-test `security@ledgerful.dev`, `hello@ledgerful.dev`, and
-  `waitlist@ledgerful.dev` (or replace the latter two with a verified form).
-- [ ] Enable branch protection and require the `ai-reviewed` status check.
-- [ ] Complete telemetry-ingest hardening and reconcile any resulting Trust copy.
+- [x] Complete LLC formation, individual-to-LLC IP assignment, counsel review, and license-in-force. **Done 2026-07-12** — Ledgerful, LLC formed (2026-07-01); IP assignment executed; COMMERCIAL-EXCEPTION.md counsel-reviewed; FL/USPTO trademark search clear; license **in force**. MIT→source-available naming already reconciled (0028/0029).
+- [x] Verify anonymous access to the canonical GitHub repository. **Done 2026-07-12** — repo is public at `github.com/Ryan-AI-Studios/Ledgerful`.
+- [x] Publish a tagged release with downloadable assets, companion checksums, SBOM/provenance. **Done 2026-07-12** — v0.1.8 released with 4 platform binaries, SHA-256 checksums, CycloneDX SBOM, cosign keyless signing, SLSA provenance, SBOM attestation, cargo auditable.
+- [x] Verify the public MCP package decision/install path. **Done 2026-07-12** — `@ledgerful/mcp-server` v0.1.10 published on npm. GitHub Action is still planned (no action.yml in repo).
+- [x] Provision and receipt-test `security@ledgerful.dev`, `hello@ledgerful.dev`, and
+  `waitlist@ledgerful.dev`. **Done 2026-07-12** — all mailboxes provisioned via Cloudflare Email Routing; Kit waitlist provisioned.
+- [x] Enable branch protection and require the `ai-reviewed` status check. **Done 2026-07-12** — engine repo: 1 review + `ai-reviewed` check + enforce-admins + no force-push.
+- [x] Complete telemetry-ingest hardening and reconcile any resulting Trust copy.
 - [ ] Decide whether a public status page will exist; do not add a status link before it does.
-- [ ] Add only source-backed trust or social proof; no placeholder customers, logos, uptime, or metrics.
+- [x] Add only source-backed trust or social proof; no placeholder customers, logos, uptime, or metrics.
 
 ## Deployment And Operations
 
@@ -47,7 +47,7 @@ Owner: Track `0027-WebLaunchGate` plus the consolidated deferred checklist.
   `https://ledgerful-qy3bw98uv-ryan-bourgoin-s-projects.vercel.app`; 178/178 deployed checks passed.
 - [ ] Decide and document the long-term Vercel Preview protection policy.
 - [ ] Confirm Vercel spend-management/usage-alert posture and record the Attack Challenge Mode runbook.
-- [ ] Run a full git-history secret scan before any repository visibility change.
+- [x] Run a full git-history secret scan before any repository visibility change. **Done 2026-07-12** — gitleaks scan clean (0 leaks, no FPs to baseline for ledgerful-web).
 
 ## Cross-Repo Dependencies
 

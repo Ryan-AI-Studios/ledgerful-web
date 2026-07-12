@@ -50,7 +50,7 @@ export type PricingFaqItem = {
  * by recommendation.md §4.4.
  */
 export const pricingBoundaryStatement =
-  "Draft terms — pending legal review: intended to be free for individuals, noncommercial use, and small companies (under $1M revenue, internal use); paid for larger companies; resale, hosting, or OEM would require a separate agreement.";
+  "Free for individuals, noncommercial use, and small companies (under $1M revenue, internal use); paid for larger companies; resale, hosting, or OEM would require a separate agreement.";
 
 /**
  * Local capabilities are identical across the Local and Commercial License
@@ -86,9 +86,9 @@ export const editions: Edition[] = [
     audience:
       "Individuals, noncommercial use, and small companies under $1M aggregate gross revenue (internal use)",
     price: "Free for qualifying use",
-    state: "unresolved",
+    state: "available",
     description:
-      "Run the current local build for evaluation; the intended small-entity permission remains draft until legal review and license-in-force close.",
+      "Run the current local build under the in-force PolyForm Noncommercial License with the Small-Entity Commercial Exception.",
     includes: localCapabilities,
   },
   {
@@ -96,9 +96,9 @@ export const editions: Edition[] = [
     audience:
       "Companies at or above $1M aggregate gross revenue running Ledgerful internally",
     price: "Commercial license required",
-    state: "unresolved",
+    state: "available",
     description:
-      "The same local-first CLI, dashboard, ledger, and evidence export as Local, under commercial terms that remain unannounced and pending legal review.",
+      "The same local-first CLI, dashboard, ledger, and evidence export as Local, under a commercial license. The base license is in force; commercial pricing is not yet announced.",
     includes: localCapabilities,
     cta: { label: "Review license terms", href: "/trust#license" },
   },
@@ -118,7 +118,7 @@ export const editions: Edition[] = [
     cta: {
       label: "Join the waitlist",
       href: "mailto:waitlist@ledgerful.dev?subject=Ledgerful%20Hosted%20waitlist",
-      note: "Inbox provisioning is in progress; delivery is not yet verified. Do not rely on this channel before launch.",
+      note: "Inbox is provisioned; delivery is verified.",
     },
   },
   {
@@ -137,7 +137,7 @@ export const editions: Edition[] = [
     cta: {
       label: "Contact us",
       href: "mailto:hello@ledgerful.dev?subject=Ledgerful%20Enterprise%20inquiry",
-      note: "Inbox provisioning is in progress; delivery is not yet verified. Do not rely on this channel before launch.",
+      note: "Inbox is provisioned; delivery is verified.",
     },
   },
 ];
@@ -336,9 +336,9 @@ export type LicensePersona = {
 
 /**
  * Best-effort personas matching the Ledgerful Small-Entity Commercial
- * Exception text. Rendered under a "DRAFT — PENDING LEGAL REVIEW" banner
- * per 0025-WebPricingReframe spec.md §2 — counsel sign-off is the async
- * 0027 gate, not a blocker on shipping this draft.
+ * Exception text. Rendered under a "plain-language summary — not legal
+ * advice" banner per 0025-WebPricingReframe spec.md §2. The license is in
+ * force (counsel-reviewed); the summary is still not the operative text.
  */
 export const licensePersonas: LicensePersona[] = [
   {

@@ -39,12 +39,13 @@ This release includes:
 - [ ] SBOM attestation: `gh attestation verify <sbom> --owner Ryan-AI-Studios`
 - [ ] Embedded dependency list: `cargo audit bin ledgerful`
 
-> GitHub attestations require the repository to be public or on GitHub Enterprise Cloud.
+> GitHub attestations (`gh attestation verify`) require the repository to be public or on GitHub Enterprise Cloud.
 
 ### Known gaps
 
 - The `cozo-redux` git-dependency is not CVE-matched by registry-keyed scanners.
 - Bundled native SQLite is not enumerated as its own SBOM component.
+- OS code signing (Windows Authenticode, macOS Developer ID) is not yet implemented.
 
 ### Changes
 

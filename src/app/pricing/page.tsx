@@ -54,10 +54,11 @@ export default function PricingPage() {
 
       <section className="content-band">
         <SectionHeading title="Editions">
-          Local and Commercial License describe the same current software under
-          draft terms pending legal review and license-in-force. Hosted and
-          Enterprise are planned and require a future control plane, with no
-          announced prices or timelines.
+          Local and Commercial License describe the same current software
+          under the in-force PolyForm Noncommercial License with the
+          Small-Entity Commercial Exception. Hosted and Enterprise are
+          planned and require a future control plane, with no announced
+          prices or timelines.
         </SectionHeading>
 
         <aside
@@ -67,13 +68,13 @@ export default function PricingPage() {
           <div className="available-today-head">
             <StatusPill status="local-only" />
             <h2 id="available-today-heading">Implemented in the current build</h2>
-            <p className="available-today-price">License terms unresolved</p>
+            <p className="available-today-price">Source-available, in force</p>
           </div>
           <p>
-            The local capabilities below are implemented. The intended
-            noncommercial and small-entity permissions remain draft until legal
-            review, LLC/IP assignment, and license-in-force close. No paid
-            commercial price is announced.
+            The local capabilities below are implemented. The license is in
+            force: Ledgerful, LLC formed, IP assigned, Small-Entity
+            Commercial Exception counsel-reviewed. No paid commercial price
+            is announced.
           </p>
           <ul className="available-today-list">
             {availableToday.map((item) => (

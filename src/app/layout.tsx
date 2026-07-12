@@ -88,7 +88,7 @@ const knowsAbout = [
   "Local-first code analysis",
   "Code change risk analysis",
   "Deterministic code review",
-  "Software bill of materials and provenance",
+  "Signed provenance for code changes",
   "SOC 2-style evidence export for engineering teams",
   "Multi-repository change impact",
 ];

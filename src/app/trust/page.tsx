@@ -18,6 +18,9 @@ import {
   publicSiteInfra,
   releaseVerificationSteps,
   soc2ExportLayout,
+  supplyChainComponents,
+  supplyChainGaps,
+  supplyChainVerifyCommands,
   telemetrySchema,
   threatModel,
   trustDataFlows,
@@ -821,6 +824,7 @@ export default function TrustPage() {
     license,
     release,
     repository,
+    supplyChainAttestation,
     telemetry,
   } = launchTruth.facts;
 
@@ -1217,13 +1221,139 @@ export default function TrustPage() {
               <strong>OS code signing status:</strong> Windows Authenticode
               signing and macOS Developer ID / Gatekeeper notarization are
               not yet implemented. Binaries may trigger OS security prompts
-              on first launch. Code signing for both platforms and SLSA
-              provenance attestations are planned enhancements for a future
-              release.
+              on first launch. Code signing for both platforms is a
+              separate planned enhancement. Supply chain attestation
+              (SBOM, cosign signing, SLSA provenance) is planned in{" "}
+              <a
+                href="#supply-chain-attestation"
+                className="inline-link"
+              >
+                the next section
+              </a>
+              .
             </div>
           </section>
 
-          {/* ── Section 8: Telemetry ─────────────────────────── */}
+          {/* ── Section 8: Supply chain attestation ──────────── */}
+          <section
+            id="supply-chain-attestation"
+            className="content-band trust-section"
+          >
+            <SectionHeading title="Supply chain attestation">
+              {supplyChainAttestation.value}. This is Ledgerful&apos;s own
+              release-integrity posture — not a product feature that
+              generates SBOMs or attestations for your repository.
+            </SectionHeading>
+            <div
+              className="disclosure-notice"
+              style={{ marginBottom: "24px" }}
+            >
+              <strong>Planned (track 0053):</strong>{" "}
+              {supplyChainAttestation.note} The SBOM and cosign
+              verification commands below will be actionable once the
+              pipeline ships. The <code>gh attestation verify</code>{" "}
+              commands additionally require the repository to be public
+              or on GitHub Enterprise Cloud.
+            </div>
+
+            <h3
+              className="trust-subheading"
+              style={{ marginTop: "32px", marginBottom: "16px" }}
+            >
+              What each release will carry
+            </h3>
+            <div
+              className="table-scroll"
+              role="region"
+              aria-label="Supply chain attestation components, horizontally scrollable"
+              tabIndex={0}
+            >
+              <table
+                className="trust-table"
+                style={{ minWidth: "420px" }}
+                aria-label="Supply chain attestation components planned for each release"
+              >
+                <thead>
+                  <tr>
+                    <th scope="col">Component</th>
+                    <th scope="col">Tool</th>
+                    <th scope="col">What it proves</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {supplyChainComponents.map((comp) => (
+                    <tr key={comp.name}>
+                      <th scope="row">
+                        <strong>{comp.name}</strong>
+                      </th>
+                      <td>
+                        <code>{comp.tool}</code>
+                      </td>
+                      <td>{comp.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <h3
+              className="trust-subheading"
+              style={{ marginTop: "32px", marginBottom: "16px" }}
+            >
+              How to verify (once shipped)
+            </h3>
+            {supplyChainVerifyCommands.map((cmd) => (
+              <div key={cmd.label} style={{ marginBottom: "24px" }}>
+                <p className="doc-caption">{cmd.label}</p>
+                <div className="terminal-window">
+                  <div className="terminal-bar">
+                    <span />
+                    <span />
+                    <span />
+                  </div>
+                  <pre>
+                    <code>{cmd.command}</code>
+                  </pre>
+                </div>
+                <p
+                  className="item-caveat"
+                  style={{ marginTop: "8px" }}
+                >
+                  {cmd.note}
+                </p>
+              </div>
+            ))}
+
+            <h3
+              className="trust-subheading"
+              style={{ marginTop: "32px", marginBottom: "16px" }}
+            >
+              Honest gaps
+            </h3>
+            <div className="disclosure-notice">
+              {supplyChainGaps.map((gap) => (
+                <div key={gap.heading} style={{ marginBottom: "16px" }}>
+                  <p>
+                    <strong>{gap.heading}:</strong> {gap.body}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div
+              className="disclosure-notice"
+              style={{ marginTop: "24px" }}
+            >
+              <strong>Boundary:</strong> Artifact signing and build
+              provenance are release-pipeline metadata. They are
+              distinct from the product&apos;s Ed25519 ledger signing basis
+              (the 5-field payload: tx_id, category, summary, reason,
+              committed_at). This track changes neither the ledger
+              signing basis nor the no-network runtime invariant.
+            </div>
+          </section>
+
+          {/* ── Section 9: Telemetry ─────────────────────────── */}
           <section id="telemetry" className="content-band trust-section">
             <SectionHeading title="Telemetry">
               {telemetry.value}. It must be explicitly enabled.
@@ -1309,7 +1439,7 @@ export default function TrustPage() {
             </details>
           </section>
 
-          {/* ── Section 9: Redacted evidence export ─────────── */}
+          {/* ── Section 10: Redacted evidence export ─────────── */}
           <section id="soc2-export" className="content-band trust-section">
             <SectionHeading title="Redacted evidence export">
               The SOC2 evidence export is a ZIP file generated entirely from
@@ -1498,7 +1628,7 @@ export default function TrustPage() {
             </details>
           </section>
 
-          {/* ── Section 10: What we prove / what we don't ───── */}
+          {/* ── Section 11: What we prove / what we don't ───── */}
           <section id="prove-dont" className="content-band trust-section">
             <SectionHeading title="What we prove and what we don't">
               The chain-hash shipped in 0046 adds a concrete claim ceiling.
@@ -1559,7 +1689,7 @@ export default function TrustPage() {
             </div>
           </section>
 
-          {/* ── Section 11: Threat model + non-goals ────────── */}
+          {/* ── Section 12: Threat model + non-goals ────────── */}
           <section id="threat-model" className="content-band trust-section">
             <SectionHeading title="Threat model and non-goals">
               Where Ledgerful provides protection today, and the categories of
@@ -1601,7 +1731,7 @@ export default function TrustPage() {
             </div>
           </section>
 
-          {/* ── Section 11: Responsible disclosure ──────────── */}
+          {/* ── Section 13: Responsible disclosure ──────────── */}
           <section id="disclosure" className="content-band trust-section">
             <SectionHeading title="Responsible disclosure">
               {disclosure.value}. Disclosure remains an unresolved launch
@@ -1639,7 +1769,7 @@ export default function TrustPage() {
             </div>
           </section>
 
-          {/* ── Section 12: License ──────────────────────────── */}
+          {/* ── Section 14: License ──────────────────────────── */}
           <section id="license" className="content-band trust-section">
             <SectionHeading title="License">
               Draft source terms are {license.base} plus the small-entity
@@ -1674,7 +1804,7 @@ export default function TrustPage() {
             </div>
           </section>
 
-          {/* ── Section 13: Subprocessors (TWO lists) ────────── */}
+          {/* ── Section 15: Subprocessors (TWO lists) ────────── */}
           <section id="subprocessors" className="content-band trust-section">
             <SectionHeading title="Subprocessors">
               Default local analysis uses no subprocessors for project data.

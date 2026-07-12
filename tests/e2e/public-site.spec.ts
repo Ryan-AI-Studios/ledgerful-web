@@ -453,23 +453,68 @@ test("trust inline links are distinguishable without color alone", async ({ page
   }
 });
 
+test("trust supply chain attestation section uses planned language", async ({ page }) => {
+  await page.goto("/trust");
+  const section = page.locator("#supply-chain-attestation");
+  await expect(section).toBeVisible();
+  const sectionText = await section.textContent();
+  // Must use "planned" language — at least 3 occurrences for the 5 planned components
+  const plannedCount = (sectionText?.toLowerCase().match(/planned/g) || []).length;
+  expect(plannedCount).toBeGreaterThanOrEqual(3);
+  await expect(section).toContainText("SBOM");
+  await expect(section).toContainText("cosign");
+  await expect(section).toContainText("SLSA");
+  await expect(section).toContainText("cargo auditable");
+  await expect(section).toContainText("cozo");
+  await expect(section).toContainText("native SQLite");
+  await expect(section).toContainText("not a product feature");
+  // Combined positive + negative check on each component description cell
+  const tableRows = section.locator("table tbody tr");
+  const rowCount = await tableRows.count();
+  const presentTenseVerbs = [
+    "are signed", "carries", "are built", "are wired",
+    "are designed to run", "generates", "includes", "embeds",
+    "releases include",
+  ];
+  for (let i = 0; i < rowCount; i++) {
+    const descriptionCell = tableRows.nth(i).locator("td").last();
+    const descText = (await descriptionCell.textContent())?.toLowerCase() ?? "";
+    if (descText.length < 10) continue;
+    const hasFuture = descText.includes("will ") || descText.includes("to be ") || descText.includes("planned");
+    if (!hasFuture) {
+      throw new Error(`Supply chain component ${i} description lacks future/conditional language: "${descText.substring(0, 80)}..."`);
+    }
+    for (const verb of presentTenseVerbs) {
+      if (descText.includes(verb)) {
+        throw new Error(`Present-tense claim "${verb}" in supply chain component ${i} description: "${descText.substring(0, 80)}..."`);
+      }
+    }
+  }
+  // No banned positioning terms
+  for (const banned of ["tamper-proof", "immutable", "blockchain-grade"]) {
+    await expect(section).not.toContainText(banned);
+  }
+});
+
 // WEB-0024 — recomposed /trust adds the reads/writes/uploads boundary
-// table and splits the subprocessor list into two. Six `.table-scroll`
-// wrappers in total: the boundary table, the SOC2 ZIP layout, the
-// telemetry schema, the sample ledger CSV (inside the redacted export
-// <details>), the public-site subprocessor list, and the product /
-// future-hosted subprocessor list. At 320/375px the boundary table
-// (5 columns of sentences), the sample ledger CSV (7 columns), the
+// table, the supply-chain attestation components table, and splits the
+// subprocessor list into two. Seven `.table-scroll` wrappers in total:
+// the boundary table, the SOC2 ZIP layout, the telemetry schema, the
+// sample ledger CSV (inside the redacted export <details>), the
+// public-site subprocessor list, the product / future-hosted subprocessor
+// list, and the supply-chain components table. At 320/375px the boundary
+// table (5 columns of sentences), the sample ledger CSV (7 columns), the
 // public-site subprocessor table (1 row, but the purpose cell contains
-// a long sentence that wraps wider than the column), and the product
-// subprocessor table (3 columns with longer purpose text) actually
-// overflow. The SOC2 ZIP layout and the telemetry schema do not.
+// a long sentence that wraps wider than the column), the product
+// subprocessor table (3 columns with longer purpose text), and the
+// supply-chain components table actually overflow. The SOC2 ZIP layout
+// and the telemetry schema do not.
 for (const width of [320, 375]) {
   test(`trust only exposes necessary keyboard scroll regions at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 812 });
     await page.goto("/trust");
     const wrappers = page.locator(".table-scroll");
-    await expect(wrappers).toHaveCount(6);
+    await expect(wrappers).toHaveCount(7);
     let scrollableCount = 0;
 
     for (const wrapper of await wrappers.all()) {
@@ -498,7 +543,7 @@ for (const width of [320, 375]) {
       }
     }
 
-    expect(scrollableCount).toBe(4);
+    expect(scrollableCount).toBe(5);
   });
 }
 

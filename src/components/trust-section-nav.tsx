@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 /**
- * The 13 sections of the recomposed /trust page, in canonical order.
+ * The 14 sections of the recomposed /trust page, in canonical order.
  * Source of truth for both the section nav and the page itself — keep
  * in sync with the `<section id="...">` order in `app/trust/page.tsx`.
  */
@@ -15,12 +15,13 @@ export const trustSections: { id: string; label: string }[] = [
   { id: "dashboard-security", label: "5. Dashboard & token model" },
   { id: "signing", label: "6. Signing & key storage" },
   { id: "release-verification", label: "7. Release verification" },
-  { id: "telemetry", label: "8. Telemetry schema" },
-  { id: "soc2-export", label: "9. Redacted evidence export" },
-  { id: "threat-model", label: "10. Threat model & non-goals" },
-  { id: "disclosure", label: "11. Responsible disclosure" },
-  { id: "license", label: "12. License" },
-  { id: "subprocessors", label: "13. Subprocessors" },
+  { id: "supply-chain-attestation", label: "8. Supply chain attestation" },
+  { id: "telemetry", label: "9. Telemetry schema" },
+  { id: "soc2-export", label: "10. Redacted evidence export" },
+  { id: "threat-model", label: "11. Threat model & non-goals" },
+  { id: "disclosure", label: "12. Responsible disclosure" },
+  { id: "license", label: "13. License" },
+  { id: "subprocessors", label: "14. Subprocessors" },
 ];
 
 /**

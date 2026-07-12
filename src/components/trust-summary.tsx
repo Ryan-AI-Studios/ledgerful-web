@@ -76,8 +76,10 @@ export function TrustSummary() {
             companion checksums for each binary archive. No anonymous
             public release is available yet while the repository is
             private; the local source version is 0.1.7. Code signing
-            (Windows Authenticode, macOS notarization) and SLSA
-            provenance attestations are planned.
+            (Windows Authenticode, macOS notarization) is planned.
+            Supply chain attestation (SBOM, cosign, SLSA) is planned
+            in track 0053 — see the supply chain attestation section
+            below.
           </dd>
         </div>
         <div>

@@ -224,6 +224,90 @@ export const releaseVerificationSteps: string[] = [
   "Note: specific download URLs are a WEB-0005 launch fact and will be published when the release is smoke-tested and publicly documented. Windows Authenticode signing and macOS Developer ID / Gatekeeper notarization are not yet implemented — binaries may trigger OS security prompts on first launch. Both code-signing capabilities and SLSA provenance attestations are planned enhancements.",
 ];
 
+export type SupplyChainComponent = {
+  name: string;
+  tool: string;
+  description: string;
+};
+
+export const supplyChainComponents: SupplyChainComponent[] = [
+  {
+    name: "CycloneDX SBOM",
+    tool: "cargo cyclonedx --all-features",
+    description:
+      "A per-release Software Bill of Materials to be generated from the Cargo lockfile. Will cover the engine (all features) and the MCP npm package. Will be attached as a release asset alongside the binaries.",
+  },
+  {
+    name: "cosign keyless signing",
+    tool: "cosign sign-blob (Sigstore Fulcio, planned GitHub OIDC)",
+    description:
+      "Release archives and the SBOM will be signed with cosign keyless signing using the planned GitHub Actions OIDC identity. No long-lived signing keys to manage. Verifiers will check the signature against the workflow identity and Fulcio certificate.",
+  },
+  {
+    name: "SLSA build provenance",
+    tool: "actions/attest (GitHub native)",
+    description:
+      "Each binary will carry a SLSA build-provenance attestation emitted inside the matrix build job that compiled it. Provenance will bind the artifact to the runner, source commit, and build parameters that produced it. Verifiable with gh attestation verify.",
+  },
+  {
+    name: "SBOM attestation",
+    tool: "actions/attest-sbom",
+    description:
+      "The SBOM file will carry a signed attestation bound to the built artifact digest — the distinct claim that this is the bill of materials for that binary. Distinct from build provenance, which proves where it was built.",
+  },
+  {
+    name: "Embedded dependency list",
+    tool: "cargo auditable",
+    description:
+      "Releases will be built with cargo auditable, which will embed the dependency graph in the binary as a custom linker section. Verifiable offline with cargo audit bin or syft without needing the SBOM file.",
+  },
+];
+
+export const supplyChainVerifyCommands: { label: string; command: string; note: string }[] = [
+  {
+    label: "Verify the SBOM signature (cosign keyless)",
+    command:
+      "cosign verify-blob \\\n  --certificate-identity-regexp '^https://github\\.com/Ryan-AI-Studios/Ledgerful/\\.github/workflows/release\\.yml@.+' \\\n  --certificate-oidc-issuer https://token.actions.githubusercontent.com \\\n  --signature ledgerful-<ver>.cdx.json.sig \\\n  --certificate ledgerful-<ver>.cdx.json.pem \\\n  ledgerful-<ver>.cdx.json",
+    note: "Checks that the SBOM was signed by the release workflow's planned OIDC identity. The identity and issuer values will be finalized when the pipeline ships.",
+  },
+  {
+    label: "Verify binary build provenance (SLSA)",
+    command:
+      "gh attestation verify ledgerful-<platform>.tar.gz \\\n  --owner Ryan-AI-Studios",
+    note: "Confirms the binary was built by the documented GitHub Actions workflow. Requires the repository to be public or on GitHub Enterprise Cloud.",
+  },
+  {
+    label: "Verify the SBOM attestation",
+    command:
+      "gh attestation verify ledgerful-<ver>.cdx.json \\\n  --owner Ryan-AI-Studios",
+    note: "Confirms the SBOM is the bill of materials for this release. Requires the repository to be public or on GitHub Enterprise Cloud.",
+  },
+  {
+    label: "Inspect embedded dependencies (offline)",
+    command:
+      "cargo audit bin ledgerful\n# or:\nsyft ledgerful",
+    note: "Reads the dependency list embedded in the binary by cargo auditable. Works offline without the SBOM file. Available on each target where cargo auditable succeeded.",
+  },
+];
+
+export const supplyChainGaps: { heading: string; body: string }[] = [
+  {
+    heading: "cozo git-dependency is not CVE-matched",
+    body:
+      "The cozo-redux crate is a git dependency pinned by commit, not a registry package. Downstream vulnerability scanners keyed on registry coordinates will not automatically match it against published advisories. Upstream cozo advisories are tracked manually. Publishing the fork to crates.io would give it a registry coordinate but does not change this gap for the current git-pinned rev.",
+  },
+  {
+    heading: "Bundled native SQLite is not enumerated as its own component",
+    body:
+      "rusqlite uses the bundled feature, which statically links a native C SQLite library. A Rust-crate SBOM lists libsqlite3-sys as a crate component but does not enumerate the vendored C library as a separate component. This is a standard limitation of crate-level SBOM generation, not specific to the fork.",
+  },
+  {
+    heading: "GitHub attestations require a public or Enterprise-Cloud repo",
+    body:
+      "The SLSA build-provenance and SBOM attestation steps use GitHub's native artifact attestation feature, which requires a public repository or a private repo on GitHub Enterprise Cloud. On the current private free-plan repo, those steps will not activate until the 0027 public flip. The SBOM and cosign signing phases will not have this restriction and will be available on the private repo once the pipeline ships.",
+  },
+];
+
 /**
  * Public-site hosting & docs infrastructure — never touches user code.
  * Vercel hosts the static marketing/docs site; it serves only the published

@@ -146,6 +146,21 @@ export const launchTruth = {
       value: "Future Vercel + Supabase baseline",
       note: "Hosted tenancy, billing, webhooks, and identity are not in this repo.",
     },
+    supplyChainAttestation: {
+      label: "Supply chain attestation",
+      status: "planned",
+      value: "SBOM, cosign signing, SLSA provenance planned (0053)",
+      note: "Track 0053-SupplyChainAttestation will add per-release CycloneDX SBOM, cosign keyless signing, SLSA build-provenance attestation, SBOM attestation, and cargo-auditable dependency embedding to the release pipeline. The SBOM and cosign signing phases will be available on the private repo once the pipeline ships; GitHub artifact attestations require a public or Enterprise-Cloud repository and will activate at the 0027 public flip. Two honest SBOM gaps: the cozo git-dependency has no registry coordinate (not automatically CVE-matched), and bundled native SQLite is not enumerated as its own component.",
+      components: [
+        "CycloneDX SBOM (engine --all-features + MCP npm)",
+        "cosign keyless signing (Sigstore Fulcio, GitHub OIDC)",
+        "SLSA build-provenance attestation (actions/attest)",
+        "SBOM attestation (actions/attest-sbom)",
+        "cargo auditable dep embedding",
+      ],
+      publicRepoRequired: true,
+      track: "0053-SupplyChainAttestation",
+    },
   },
 } as const;
 

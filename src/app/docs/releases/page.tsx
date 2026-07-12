@@ -1,4 +1,4 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
@@ -53,7 +53,13 @@ export default function DocsReleasesPage() {
             macOS Developer ID / Gatekeeper notarization are not yet
             implemented. When release artifacts are available, binaries may
             trigger OS security prompts on first launch. Code signing for both
-            platforms and SLSA provenance attestations are planned enhancements.
+            platforms is a separate planned enhancement. Supply chain
+            attestation (SBOM, cosign signing, SLSA provenance) is planned in
+            track 0053 — see the{" "}
+            <Link href="/trust#supply-chain-attestation" className="inline-link">
+              trust page supply chain section
+            </Link>
+            .
           </p>
         </div>
       </section>

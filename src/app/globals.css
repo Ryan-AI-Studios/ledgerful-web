@@ -278,10 +278,9 @@ main {
 
 .hero-section {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
-  gap: clamp(38px, 6vw, 82px);
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 5vw, 56px);
   align-items: start;
-  min-height: min(760px, calc(100vh - 82px));
   padding-block: clamp(44px, 8vw, 96px);
 }
 
@@ -769,11 +768,6 @@ code {
 }
 
 @media (max-width: 900px) {
-  .hero-section {
-    grid-template-columns: 1fr;
-    min-height: auto;
-  }
-
   .site-header {
     align-items: flex-start;
     flex-wrap: wrap;
@@ -3184,11 +3178,11 @@ code {
   border-bottom: none;
 }
 
-/* WEB-0021 — hero-proof: action -> receipt split composition. Stacks on
-   narrow viewports instead of shrinking two panes into illegibility. */
+/* WEB-0021 — hero-proof: action -> receipt stacked composition. Rows instead
+   of columns so each item spans full width. */
 .hero-proof {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: 1fr;
   gap: clamp(20px, 3.5vw, 40px);
   align-items: start;
 }
@@ -3202,12 +3196,6 @@ code {
 .hero-proof-action .terminal-window,
 .hero-proof-receipt .evidence-frame {
   width: 100%;
-}
-
-@media (max-width: 720px) {
-  .hero-proof {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* WEB-0021 — evidence frame: code-native wrapper for a real captured product

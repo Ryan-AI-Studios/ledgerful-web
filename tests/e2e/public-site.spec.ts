@@ -744,26 +744,29 @@ test("mobile hero explanation is not visually truncated", async ({ page }) => {
   expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
 });
 
-test("desktop hero receipt keeps its intrinsic height beside the terminal", async ({ page }) => {
+test("desktop hero proof renders as full-width stacked rows", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("/");
 
   const dimensions = await page.evaluate(() => {
     const action = document.querySelector<HTMLElement>(".hero-proof-action");
     const receipt = document.querySelector<HTMLElement>(".hero-proof-receipt");
-    const frame = document.querySelector<HTMLElement>(
-      ".hero-proof-receipt .evidence-frame",
-    );
-    if (!action || !receipt || !frame) throw new Error("Hero proof is incomplete");
+    const proof = document.querySelector<HTMLElement>(".hero-proof");
+    if (!action || !receipt || !proof) throw new Error("Hero proof is incomplete");
     return {
-      actionHeight: action.getBoundingClientRect().height,
-      receiptHeight: receipt.getBoundingClientRect().height,
-      frameHeight: frame.getBoundingClientRect().height,
+      actionWidth: action.getBoundingClientRect().width,
+      receiptWidth: receipt.getBoundingClientRect().width,
+      proofWidth: proof.getBoundingClientRect().width,
+      actionTop: action.getBoundingClientRect().top,
+      receiptTop: receipt.getBoundingClientRect().top,
     };
   });
 
-  expect(dimensions.receiptHeight).toBeLessThan(dimensions.actionHeight);
-  expect(dimensions.frameHeight).toBe(dimensions.receiptHeight);
+  // Both items span full width of the hero-proof container
+  expect(dimensions.actionWidth).toBeCloseTo(dimensions.proofWidth, -1);
+  expect(dimensions.receiptWidth).toBeCloseTo(dimensions.proofWidth, -1);
+  // Receipt is below the action (stacked rows, not side-by-side)
+  expect(dimensions.receiptTop).toBeGreaterThan(dimensions.actionTop);
 });
 
 test("theme switching still works when preference storage is blocked", async ({ page }) => {

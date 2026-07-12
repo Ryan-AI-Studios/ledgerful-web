@@ -82,7 +82,7 @@ export function HeroProof() {
               alt="Ledgerful local dashboard showing Project Health and Recent Changes for a scanned sample repository, with per-file risk state"
               width={2560}
               height={1600}
-              sizes="(max-width: 900px) 100vw, 50vw"
+              sizes="(max-width: 900px) 100vw, 100vw"
             />
           </picture>
           <figcaption className="evidence-frame-meta">

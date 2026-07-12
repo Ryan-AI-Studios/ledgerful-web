@@ -1,0 +1,83 @@
+﻿[1m[36m[DEMO][39m[0m Building demo repository at C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full
+[2m2026-07-11T23:08:37.820302Z[0m [32m INFO[0m [2mledgerful::commands::init[0m[2m:[0m Discovered git repository root at: "."
+[2m2026-07-11T23:08:37.820364Z[0m [32m INFO[0m [2mledgerful::commands::init[0m[2m:[0m Resolved root for initialization: .
+[2m2026-07-11T23:08:37.828036Z[0m [32m INFO[0m [2mledgerful::commands::init[0m[2m:[0m Created starter config at C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full\.ledgerful\config.toml
+[2m2026-07-11T23:08:37.828303Z[0m [32m INFO[0m [2mledgerful::commands::init[0m[2m:[0m Created starter rules at C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full\.ledgerful\rules.toml
+[2m2026-07-11T23:08:37.828627Z[0m [32m INFO[0m [2mledgerful::commands::init[0m[2m:[0m Added .ledgerful/ to .gitignore
+Installed Ledgerful ledger gate hooks: pre-commit, pre-push, commit-msg, post-commit.
+[2m2026-07-11T23:08:37.853238Z[0m [32m INFO[0m [2mrusqlite_migration[0m[2m:[0m Database migrated to version 56
+[2m2026-07-11T23:08:37.888654Z[0m [32m INFO[0m [2mledgerful::state::cozo::init[0m[2m:[0m [migrate] Upgrading CozoDB schema from v2 to v3 (URN IDs and typed kinds)
+
+[36m[1mVerification Auto-Policy Details[0m[39m
+[1m  Detected Stack:[0m
+    ΓÇó Cargo (Cargo.toml)
+[1m  Initial Commands:[0m
+    ΓÇó git diff --check
+    ΓÇó git diff --cached --check
+    ΓÇó cargo fmt --all -- --check
+    ΓÇó cargo clippy --all-targets --all-features -- -D warnings
+    ΓÇó cargo test --workspace --all-features
+    ΓÇó cargo test --workspace --all-features --doc
+
+
+[4m[1mLedgerful Status[0m[0m
+  Gate mode: [1m[33mobserve[39m[0m
+  Model:      none (run 'ledgerful setup ai' or set GEMINI_API_KEY / OLLAMA_CLOUD_API_KEY)
+  Keys:       C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full\.ledgerful\keys
+  Hooks:      commit-msg, post-commit, pre-push (.git/hooks/)
+  Pending tx: [32m0[39m
+  Drift:      [32m0[39m
+
+[4m[1mNext Steps[0m[0m
+  1. ledgerful index --incremental    # Index changed files (~5-10s for a medium repo)
+  2. ledgerful web start              # Launch the local dashboard at http://127.0.0.1:52001
+  3. ledgerful verify --scope fast    # Run scoped verification on changed files
+
+[33m[1mNotice:[0m[39m commits are recorded and warned, never blocked. Run 'ledgerful gate mode enforce' when ready.
+[2m2026-07-11T23:08:37.954619Z[0m [32m INFO[0m [2mledgerful::commands::init[0m[2m:[0m Ledgerful initialized successfully!
+[1m[36m[DEMO][39m[0m Commit cycle 1/5: feat(invoice): [DEMO] add invoice calculation logic
+[1m[36m[DEMO][39m[0m Commit cycle 2/5: refactor(invoice): [DEMO] extract tax rate into config
+[1m[36m[DEMO][39m[0m Commit cycle 3/5: feat(cli): [DEMO] add CLI argument parsing
+[1m[36m[DEMO][39m[0m Commit cycle 4/5: chore(release): [DEMO] bump version to 0.2.0
+[1m[36m[DEMO][39m[0m Commit cycle 5/5: fix(invoice): [DEMO] fix rounding error in tax calculation
+[1m[36m[DEMO][39m[0m Running ledgerful verify --scope fast
+[1m[36m[DEMO][39m[0m [4m[1mVerification Plan[0m[0m
+[1m[36m[DEMO][39m[0m   [2mSource:[0m Auto-Policy
+[1m[36m[DEMO][39m[0m   [2mRunner:[0m cargo test
+[1m[36m[DEMO][39m[0m   [2mΓÇó[0m Lint
+[1m[36m[DEMO][39m[0m   [2mΓÇó[0m Check formatting
+[1m[36m[DEMO][39m[0m   [2mΓÇó[0m Test
+[1m[36m[DEMO][39m[0m   [2mΓÇó[0m Check for whitespace errors in staging area
+[1m[36m[DEMO][39m[0m   [2mΓÇó[0m Check for whitespace errors in working tree
+[1m[36m[DEMO][39m[0m [1m[31mFAILURE[39m[0m Verification failed for: cargo clippy --all-targets --all-features -- -D warnings
+[1m[36m[DEMO][39m[0m [1m[31mFAILURE[39m[0m Verification failed for: cargo fmt --all -- --check
+[1m[36m[DEMO][39m[0m [1m[31mFAILURE[39m[0m Verification failed for: cargo test --workspace --all-features
+[1m[36m[DEMO][39m[0m [1m[32mSUCCESS[39m[0m Verification passed for: git diff --cached --check
+[1m[36m[DEMO][39m[0m [1m[32mSUCCESS[39m[0m Verification passed for: git diff --check
+[1m[36m[DEMO][39m[0m [96m[1mSuggested Actions[0m[39m
+[1m[36m[DEMO][39m[0m [36m============================================================[39m
+[1m[36m[DEMO][39m[0m [1m[33m![39m[0m [33mVerification command(s) failed ΓÇö re-assess blast radius[39m
+[1m[36m[DEMO][39m[0m    ΓåÆ ledgerful impact --summary
+[1m[36m[DEMO][39m[0m [36mi[39m [2mPrediction warnings present ΓÇö review rationale and re-assess impact[0m
+[1m[36m[DEMO][39m[0m    ΓåÆ ledgerful verify --explain
+[1m[36m[DEMO][39m[0m ledgerful impact --summary
+[1m[36m[DEMO][39m[0m [2m2026-07-11T23:08:41.833989Z[0m [33m WARN[0m [2mledgerful::verify::predictor[0m[2m:[0m Temporal prediction degraded: Insufficient history for temporal analysis (found 6 commits, need at least 10)
+[1m[36m[DEMO][39m[0m [2m2026-07-11T23:08:41.834440Z[0m [33m WARN[0m [2mledgerful::verify::predictor[0m[2m:[0m Temporal coupling data is missing or unavailable; falling back to structural-only prediction.
+[1m[36m[DEMO][39m[0m [2m2026-07-11T23:08:41.834521Z[0m [33m WARN[0m [2mledgerful::verify::predictor[0m[2m:[0m Semantic prediction: warming up (0/50 history records)
+[1m[36m[DEMO][39m[0m Running 5 verification step(s)...
+[1m[36m[DEMO][39m[0m [2m2026-07-11T23:08:41.860169Z[0m [32m INFO[0m [2mledgerful::verify::engine[0m[2m:[0m Running verification command via Direct: cargo clippy --all-targets --all-features -- -D warnings
+[1m[36m[DEMO][39m[0m [2m2026-07-11T23:08:41.880416Z[0m [32m INFO[0m [2mledgerful::verify::engine[0m[2m:[0m Running verification command via Direct: cargo fmt --all -- --check
+[1m[36m[DEMO][39m[0m [2m2026-07-11T23:08:41.901586Z[0m [32m INFO[0m [2mledgerful::verify::engine[0m[2m:[0m Running verification command via Direct: cargo test --workspace --all-features
+[1m[36m[DEMO][39m[0m [2m2026-07-11T23:08:41.921836Z[0m [32m INFO[0m [2mledgerful::verify::engine[0m[2m:[0m Running verification command via Direct: git diff --cached --check
+[1m[36m[DEMO][39m[0m [2m2026-07-11T23:08:41.957448Z[0m [32m INFO[0m [2mledgerful::verify::engine[0m[2m:[0m Running verification command via Direct: git diff --check
+[1m[36m[DEMO][39m[0m [1m[33mWARN[39m[0m Temporal prediction degraded: Insufficient history for temporal analysis (found 6 commits, need at least 10)
+[1m[36m[DEMO][39m[0m [1m[33mWARN[39m[0m Temporal coupling data is missing or unavailable; falling back to structural-only prediction.
+[1m[36m[DEMO][39m[0m [1m[33mWARN[39m[0m Semantic prediction: warming up (0/50 history records)
+[1m[36m[DEMO][39m[0m Verification failed
+[1m[36m[DEMO][39m[0m Exporting DEMO evidence to C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full\ledgerful-DEMO-evidence.zip
+
+[1m[32mSUCCESS:[39m[0m Demo evidence export ready: C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full\ledgerful-DEMO-evidence.zip
+[1m[36mVerifier:[39m[0m Verify it offline with the public key in the export: [36mcd C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full && ledgerful verify --signatures --against-export C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full\ledgerful-DEMO-evidence.zip[39m
+[1m[36mDashboard:[39m[0m Open the demo repo in the dashboard: [36mcd C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full && ledgerful web start[39m
+[1m[33mNotice:[39m[0m Gate mode for this demo: [1m[33mobserve[39m[0m (observe mode warns only; enforce would block).
+[1m[36m[DEMO][39m[0m Demo repo kept at: C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full

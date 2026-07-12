@@ -196,9 +196,14 @@ export const soc2ExportLayout: SocExportFile[] = [
       "Raw 32-byte Ed25519 verifying key (the public half of ~/.ledgerful/keys/). Used to verify manifest.sig offline without trusting a remote key server.",
   },
   {
+    filename: "chain_head.json",
+    description:
+      "Signed chain head binding the latest entry hash, genesis boundary, and chain length. Present when the ledger has entries; omitted for empty-state. Used by `ledgerful verify --against-export` to detect rollback or tail-truncation against an independently retained export.",
+  },
+  {
     filename: "ledger.csv",
     description:
-      "All committed ledger provenance records in RFC 4180 CSV format. Columns: tx_id, category, entity, change_type, summary, reason, committed_at, signed, signature. Sorted by committed_at ascending.",
+      "All committed ledger provenance records in RFC 4180 CSV format. Columns: tx_id, category, entity, change_type, summary, reason, committed_at, signed, signature, observed, prev_hash. Sorted by committed_at ascending, then tx_id ascending. The observed column carries gate-mode metadata (0050); prev_hash links each entry to its predecessor in the chain (0046, post-genesis only).",
   },
   {
     filename: "verification_history.csv",
@@ -331,4 +336,83 @@ export const nonGoals: string[] = [
   "Zero-network or zero-telemetry absolutes. The default build excludes telemetry; opt-in telemetry and the configured cloud-model ask and index --fast workflows are the outbound paths for project data. The optional viz command generates a local HTML file that loads the vis-network library from a public CDN when opened in a browser. Nothing here is a 'no network ever' guarantee.",
   "Air-gap. The engine can run fully offline, but this page does not claim that every install configuration is air-gapped. Operators are responsible for their own network posture.",
   "SSO / SAML / OIDC / SCIM / RBAC in the local daemon. None of these are implemented locally. They are enterprise-planned for a future control plane.",
+];
+
+export type ProveDontClaim = {
+  heading: string;
+  body: string;
+};
+
+export const proveClaims: ProveDontClaim[] = [
+  {
+    heading: "Each ledger entry is Ed25519-signed",
+    body:
+      "Every committed entry is signed over a 5-field payload: tx_id, category, summary, reason, and committed_at. " +
+      "The signature verifies that those fields have not changed since the entry was signed. (sign_ledger_entry basis: tx_id, category, summary, reason, committed_at)",
+  },
+  {
+    heading: "The SOC2 export manifest is signed",
+    body:
+      "Each SOC2 evidence ZIP includes manifest.sig, a 64-byte Ed25519 signature over the manifest.json bytes, " +
+      "plus manifest.pub for offline verification. (src/export/soc2.rs:300-305)",
+  },
+  {
+    heading: "Chain hash makes order/set tampering evident",
+    body:
+      "From the chain-hash adoption date, every post-genesis entry stores prev_hash and a signed chain head binds the latest entry hash, " +
+      "genesis, and length. Running ledgerful verify --signatures --chain walks the linkage end-to-end and detects alteration, removal, " +
+      "reordering, or insertion. (0046 decision memo §3)",
+  },
+  {
+    heading: "verify --against-export detects rollback when the head is retained",
+    body:
+      "ledgerful verify --against-export <path> compares the live chain head against a previously exported signed head. " +
+      "If the live chain is shorter, points to a different latest entry, or presents a mismatched head, the command fails. " +
+      "Detection requires the export to be kept outside the machine — for example, an auditor copy or CI artifact. (0046 decision memo §4)",
+  },
+  {
+    heading: "The offline verifier is a standalone, dependency-free Node.js script",
+    body:
+      "verify-soc2-sample.mjs has no dependencies and runs offline. It recomputes SHA-256 over each file and verifies the Ed25519 " +
+      "manifest signature with the public key included in the export.",
+  },
+];
+
+export const dontProveClaims: ProveDontClaim[] = [
+  {
+    heading: "Signer identity",
+    body:
+      "manifest.pub in the export is self-asserted: it originated from the same machine that produced the ZIP. A compromised machine " +
+      "could replace the ledger data, the signature, and the public key together, producing a self-consistent but fraudulent export. " +
+      "Out-of-band verification — comparing the Ed25519 fingerprint against a copy obtained independently — is required to close that gap. " +
+      "(sample-soc2/index.md:93-103)",
+  },
+  {
+    heading: "Rollback to an earlier valid state from the same machine",
+    body:
+      "The chain head stored on the local machine can be rolled back alongside the database, and that earlier head will still verify. " +
+      "Detecting rollback requires a chain head retained independently of the machine. (0046 decision memo §3)",
+  },
+  {
+    heading: "Pre-chain entries",
+    body:
+      "Entries committed before chain-hash adoption (migration m51) remain order-unverifiable by design. " +
+      "We do not fabricate retroactive chain history. (0046 decision memo §6)",
+  },
+  {
+    heading: "Ground truth of category and summary",
+    body:
+      "Category, summary, and reason are strings entered by the user. The signature proves they have not been altered since signing; " +
+      "it does not prove they are accurate or complete.",
+  },
+];
+
+/**
+ * Combined claim ceiling used by scripts or surfaces that need a single list.
+ * The prove and don't-prove halves are kept separate in proveClaims and
+ * dontProveClaims so the Trust page can render them under their own headings.
+ */
+export const proveDontClaims: ProveDontClaim[] = [
+  ...proveClaims,
+  ...dontProveClaims,
 ];

@@ -10,9 +10,11 @@ import { pageDescriptions } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
 import {
   boundaryRows,
+  dontProveClaims,
   networkOutbound,
   nonGoals,
   productSubprocessors,
+  proveClaims,
   publicSiteInfra,
   releaseVerificationSteps,
   soc2ExportLayout,
@@ -1496,7 +1498,68 @@ export default function TrustPage() {
             </details>
           </section>
 
-          {/* ── Section 10: Threat model + non-goals ────────── */}
+          {/* ── Section 10: What we prove / what we don't ───── */}
+          <section id="prove-dont" className="content-band trust-section">
+            <SectionHeading title="What we prove and what we don't">
+              The chain-hash shipped in 0046 adds a concrete claim ceiling.
+              This section restates what the signatures and chain verify, and
+              the known gaps that require an out-of-band check.
+            </SectionHeading>
+
+            <div className="prove-dont-grid">
+              <div className="prove-dont-column">
+                <h3
+                  style={{
+                    fontSize: "1.1rem",
+                    fontWeight: 720,
+                    marginBottom: "12px",
+                    color: "var(--ink)",
+                  }}
+                >
+                  What we prove
+                </h3>
+                <ul className="prove-dont-list">
+                  {proveClaims.map((claim) => (
+                    <li key={claim.heading}>
+                      <strong>{claim.heading}.</strong>{" "}
+                      <span>{claim.body}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="prove-dont-column">
+                <h3
+                  style={{
+                    fontSize: "1.1rem",
+                    fontWeight: 720,
+                    marginBottom: "12px",
+                    color: "var(--ink)",
+                  }}
+                >
+                  What we don&rsquo;t prove
+                </h3>
+                <ul className="prove-dont-list">
+                  {dontProveClaims.map((claim) => (
+                    <li key={claim.heading}>
+                      <strong>{claim.heading}.</strong>{" "}
+                      <span>{claim.body}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="disclosure-notice" style={{ marginTop: "24px" }}>
+              <strong>Why this matters:</strong> the chain makes tampering{" "}
+              <em>evident</em>, not impossible. We do not use the words
+              &ldquo;never altered&rdquo; or &ldquo;unchangeable&rdquo; as a
+              guarantee anywhere on this page, and the listed gaps are
+              intentional limits, not temporary shortcomings.
+            </div>
+          </section>
+
+          {/* ── Section 11: Threat model + non-goals ────────── */}
           <section id="threat-model" className="content-band trust-section">
             <SectionHeading title="Threat model and non-goals">
               Where Ledgerful provides protection today, and the categories of

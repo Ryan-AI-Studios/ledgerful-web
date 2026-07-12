@@ -247,6 +247,12 @@ Repeat `--add-dir <repo>` for sibling repos. No `$null |`, `--yolo`, or native
 
 Use Sonnet 5/high. Restrict tools; `allowedTools` alone is not restriction.
 
+**Two invocation patterns** — the positional `$Prompt` form can fail on Windows
+PowerShell when the prompt contains characters that parse as CLI flags. Piping
+via stdin is the reliable fallback.
+
+**Pattern A — positional argument (may fail on long/complex prompts):**
+
 ```powershell
 Push-Location $PrimaryRepo
 try {
@@ -262,6 +268,27 @@ try {
       "Bash(git -C * log *)" "Bash(git -C * show *)" `
     --disallowedTools "Edit" "Write" "NotebookEdit" "mcp__*" `
     --add-dir "C:\dev\coordinated" $Prompt |
+    Set-Content "$TrackDir\review.claude.md" -Encoding utf8
+} finally { Pop-Location }
+```
+
+**Pattern B — stdin pipe (reliable fallback):**
+
+```powershell
+Push-Location $PrimaryRepo
+try {
+  $Prompt | claude -p --model claude-sonnet-5 --effort high `
+    --permission-mode dontAsk --no-session-persistence --no-chrome `
+    --disable-slash-commands --strict-mcp-config `
+    --tools "Read,Glob,Grep,Bash" `
+    --allowedTools "Read" "Glob" "Grep" `
+      "Bash(git status *)" "Bash(git branch *)" "Bash(git diff *)" `
+      "Bash(git log *)" "Bash(git show *)" "Bash(git rev-parse *)" `
+      "Bash(git merge-base *)" "Bash(git ls-files *)" "Bash(git grep *)" `
+      "Bash(git -C * status *)" "Bash(git -C * diff *)" `
+      "Bash(git -C * log *)" "Bash(git -C * show *)" `
+    --disallowedTools "Edit" "Write" "NotebookEdit" "mcp__*" `
+    --add-dir "C:\dev\coordinated" |
     Set-Content "$TrackDir\review.claude.md" -Encoding utf8
 } finally { Pop-Location }
 ```

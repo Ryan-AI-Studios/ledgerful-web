@@ -1631,7 +1631,7 @@ export default function TrustPage() {
           {/* ── Section 11: What we prove / what we don't ───── */}
           <section id="prove-dont" className="content-band trust-section">
             <SectionHeading title="What we prove and what we don't">
-              The chain-hash shipped in 0046 adds a concrete claim ceiling.
+              The chain-hash feature adds a concrete claim ceiling.
               This section restates what the signatures and chain verify, and
               the known gaps that require an out-of-band check.
             </SectionHeading>

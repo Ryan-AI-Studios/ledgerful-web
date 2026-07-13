@@ -97,7 +97,7 @@ export const launchTruth = {
       label: "GitHub Action install URL",
       status: "unresolved",
       value: "Not publicly installable",
-      note: "The GitHub Action is a planned feature (track 0047). No action.yml exists in the public repository yet. The workflow YAML on the docs page is a reference for the planned shape, not an installable action.",
+      note: "The GitHub Action is a planned feature. No action.yml exists in the public repository yet. The workflow YAML on the docs page is a reference for the planned shape, not an installable action.",
       sourcePath: "action/action.yml",
       publiclyInstallable: false,
     },

@@ -7,8 +7,7 @@ handles public claims, install instructions, telemetry wiring, and trust/securit
 shows combined SAST tools miss ~98% of formally-provable AI-code findings, so this protocol is the
 higher-value gate for security-sensitive changes.
 
-This document adapts the repo-specific subset of
-`C:\dev\Security-and-Compliance-Plan.md` §6 (E1) to the web repo. It is enforced through a
+This document adapts the repo-specific subset of the project's security-and-compliance plan §6 (E1) to the web repo. It is enforced through a
 required `ai-reviewed` status check before merge to `main`.
 
 ## Protocol
@@ -32,8 +31,7 @@ telemetry, `src/`, `public/`, `scripts/`, or `.github/`), the reviewer must conf
 
 ### Dependency provenance
 
-- No AI-suggested dependency is merged without the provenance check from
-  `C:\dev\Security-and-Compliance-Plan.md` §3 (slopsquatting sweep).
+- No AI-suggested dependency is merged without the provenance check from the project's security-and-compliance plan §3 (slopsquatting sweep).
 - Run `npm run check:provenance` (or the CI provenance job) on any dependency change and inspect the
   report for flagged packages.
 
@@ -67,7 +65,7 @@ Replace `<COMMIT_SHA>` with the head commit of the PR branch. If the review fail
 
 > **Note:** Branch protection on private repos requires GitHub Pro. Until the repo goes public,
 > the `ai-reviewed` status check is created but not enforced as a required check. Enforcement will
-> be enabled when the repo transitions to public (tracked in `C:\dev\coordinated\conductor\deferred.md`).
+> be enabled when the repo transitions to public (tracked in the consolidated deferred checklist).
 
 ## SAST caveat
 

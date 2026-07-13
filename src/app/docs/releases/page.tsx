@@ -67,7 +67,7 @@ export default function DocsReleasesPage() {
       {/* ── Section 2: Checksum verification ─────────────────── */}
       <section className="content-band">
         <SectionHeading title="SHA-256 verification process">
-          When release artifacts are available, each download will be accompanied
+          Each release download is accompanied
           by a <code>.sha256</code> checksum file. Verify the checksum before
           running any binary.
         </SectionHeading>

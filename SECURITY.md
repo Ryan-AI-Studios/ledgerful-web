@@ -11,7 +11,7 @@ Ledgerful is pre-1.0 software. The latest release is v0.1.8. Security fixes are 
 Report vulnerabilities through one of these channels:
 
 - **Email:** security@ledgerful.dev (active)
-- **GitHub private vulnerability reporting:** available on the public repository
+- **GitHub private vulnerability reporting:** available once the repository is public (the engine repository at [Ryan-AI-Studios/Ledgerful](https://github.com/Ryan-AI-Studios/Ledgerful) has this enabled; this web repo will enable it at the visibility flip)
 
 **Response timeline:**
 - Acknowledgment: within 3 business days
@@ -25,7 +25,7 @@ Report vulnerabilities through one of these channels:
 
 ## Supply chain attestation (shipped with v0.1.8)
 
-Ledgerful's release pipeline is hardened with verifiable supply-chain integrity. The following capabilities shipped with the v0.1.8 release (track 0053-SupplyChainAttestation):
+Ledgerful's release pipeline is hardened with verifiable supply-chain integrity. The following capabilities shipped with the v0.1.8 release:
 
 | Capability | Tool | Status |
 |---|---|---|
@@ -42,8 +42,7 @@ Ledgerful's release pipeline is hardened with verifiable supply-chain integrity.
 cosign verify-blob \
   --certificate-identity-regexp '^https://github\.com/Ryan-AI-Studios/Ledgerful/\.github/workflows/release\.yml@.+' \
   --certificate-oidc-issuer https://token.actions.githubusercontent.com \
-  --signature ledgerful-<ver>.cdx.json.sig \
-  --certificate ledgerful-<ver>.cdx.json.pem \
+  --bundle ledgerful-<ver>.cdx.json.bundle \
   ledgerful-<ver>.cdx.json
 ```
 
@@ -74,7 +73,7 @@ syft ledgerful
 
 ### Boundary
 
-Artifact signing and build provenance are release-pipeline metadata — not a product feature that generates SBOMs or attestations for your repository. They are distinct from the product's Ed25519 ledger signing basis (the 5-field payload: `tx_id`, `category`, `summary`, `reason`, `committed_at`). Track 0053 changes neither the ledger signing basis nor the no-network runtime invariant.
+Artifact signing and build provenance are release-pipeline metadata — not a product feature that generates SBOMs or attestations for your repository. They are distinct from the product's Ed25519 ledger signing basis (the 5-field payload: `tx_id`, `category`, `summary`, `reason`, `committed_at`). These capabilities change neither the ledger signing basis nor the no-network runtime invariant.
 
 ## Ledger signing vs. artifact signing
 

@@ -365,6 +365,26 @@ function hasAncestor(node, predicate) {
       `Assert 6 FAIL [docs/cli]: "release artifact", "release binary", or "pre-built release" not found`
     );
   }
+  // Regression guard: when launch-facts.ts says the release is resolved,
+  // /docs/cli must NOT say binaries are "not yet available" or "planned for a future release"
+  const stalePhrases = [
+    "not yet available",
+    "planned for a future release",
+    "are a launch fact",
+  ];
+  for (const phrase of stalePhrases) {
+    if (lower.includes(phrase)) {
+      failures.push(
+        `Assert 6 FAIL [docs/cli]: stale phrase "${phrase}" found — release is resolved (v0.1.8 shipped)`
+      );
+    }
+  }
+  // "when available" / "once available" as future tense for a shipped release
+  if (lower.includes("when available") || lower.includes("once available")) {
+    failures.push(
+      `Assert 6 FAIL [docs/cli]: future-tense "when/once available" found — release is resolved (v0.1.8 shipped)`
+    );
+  }
 }
 
 // ── Assert 7: /docs/dashboard — "loopback" or "127.0.0.1" present ────────────
@@ -457,6 +477,13 @@ function hasAncestor(node, predicate) {
   if (!lower.includes("pending") && !lower.includes("available") && !lower.includes("v0.1.8")) {
     failures.push(
       `Assert 10 FAIL [docs/releases]: no "available", "pending", or version notice found — must disclose release status`
+    );
+  }
+  // Regression guard: when release is resolved, /docs/releases must NOT use
+  // future tense "when release artifacts are available" for a shipped release
+  if (lower.includes("when release artifacts are available")) {
+    failures.push(
+      `Assert 10 FAIL [docs/releases]: stale future-tense "when release artifacts are available" found — release is resolved (v0.1.8 shipped)`
     );
   }
 }

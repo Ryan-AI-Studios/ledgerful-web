@@ -203,7 +203,7 @@ export const soc2ExportLayout: SocExportFile[] = [
   {
     filename: "ledger.csv",
     description:
-      "All committed ledger provenance records in RFC 4180 CSV format. Columns: tx_id, category, entity, change_type, summary, reason, committed_at, signed, signature, observed, prev_hash. Sorted by committed_at ascending, then tx_id ascending. The observed column carries gate-mode metadata (0050); prev_hash links each entry to its predecessor in the chain (0046, post-genesis only).",
+      "All committed ledger provenance records in RFC 4180 CSV format. Columns: tx_id, category, entity, change_type, summary, reason, committed_at, signed, signature, observed, prev_hash. Sorted by committed_at ascending, then tx_id ascending. The observed column carries gate-mode metadata; prev_hash links each entry to its predecessor in the chain, post-genesis only.",
   },
   {
     filename: "verification_history.csv",
@@ -267,7 +267,7 @@ export const supplyChainVerifyCommands: { label: string; command: string; note: 
   {
     label: "Verify the SBOM signature (cosign keyless)",
     command:
-      "cosign verify-blob \\\n  --certificate-identity-regexp '^https://github\\.com/Ryan-AI-Studios/Ledgerful/\\.github/workflows/release\\.yml@.+' \\\n  --certificate-oidc-issuer https://token.actions.githubusercontent.com \\\n  --signature ledgerful-<ver>.cdx.json.sig \\\n  --certificate ledgerful-<ver>.cdx.json.pem \\\n  ledgerful-<ver>.cdx.json",
+      "cosign verify-blob \\\n  --certificate-identity-regexp '^https://github\\.com/Ryan-AI-Studios/Ledgerful/\\.github/workflows/release\\.yml@.+' \\\n  --certificate-oidc-issuer https://token.actions.githubusercontent.com \\\n  --bundle ledgerful-<ver>.cdx.json.bundle \\\n  ledgerful-<ver>.cdx.json",
     note: "Checks that the SBOM was signed by the release workflow's OIDC identity (anchored to release.yml).",
   },
   {
@@ -445,14 +445,14 @@ export const proveClaims: ProveDontClaim[] = [
     body:
       "From the chain-hash adoption date, every post-genesis entry stores prev_hash and a signed chain head binds the latest entry hash, " +
       "genesis, and length. Running ledgerful verify --signatures --chain walks the linkage end-to-end and detects alteration, removal, " +
-      "reordering, or insertion. (0046 decision memo §3)",
+      "reordering, or insertion. (chain-hash decision memo §3)",
   },
   {
     heading: "verify --against-export detects rollback when the head is retained",
     body:
       "ledgerful verify --against-export <path> compares the live chain head against a previously exported signed head. " +
       "If the live chain is shorter, points to a different latest entry, or presents a mismatched head, the command fails. " +
-      "Detection requires the export to be kept outside the machine — for example, an auditor copy or CI artifact. (0046 decision memo §4)",
+      "Detection requires the export to be kept outside the machine — for example, an auditor copy or CI artifact. (chain-hash decision memo §4)",
   },
   {
     heading: "The offline verifier is a standalone, dependency-free Node.js script",
@@ -475,13 +475,13 @@ export const dontProveClaims: ProveDontClaim[] = [
     heading: "Rollback to an earlier valid state from the same machine",
     body:
       "The chain head stored on the local machine can be rolled back alongside the database, and that earlier head will still verify. " +
-      "Detecting rollback requires a chain head retained independently of the machine. (0046 decision memo §3)",
+      "Detecting rollback requires a chain head retained independently of the machine. (chain-hash decision memo §3)",
   },
   {
     heading: "Pre-chain entries",
     body:
       "Entries committed before chain-hash adoption (migration m51) remain order-unverifiable by design. " +
-      "We do not fabricate retroactive chain history. (0046 decision memo §6)",
+      "We do not fabricate retroactive chain history. (chain-hash decision memo §6)",
   },
   {
     heading: "Ground truth of category and summary",

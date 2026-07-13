@@ -1,11 +1,13 @@
 # Ledgerful Web Deferred Work
 
 This is the durable public-web action register. Current track governance lives in
-`C:\dev\coordinated\conductor\`; the repo-local `conductor/` directory is a legacy historical register.
+the coordinated conductor. The repo-local `conductor/` directory is not merely historical:
+it contains the frozen launch assets that the launch execution runbook
+depends on, while current track specs and the deferred checklist live in the coordinated conductor.
 Remove completed items instead of retaining overlapping status narratives.
 
-Last reviewed: 2026-07-12. Track 0027 engineering is complete; engine-slice public flip done.
-Remaining: ≥3 external 5-second testers (human gate), explicit D1-GO, Production indexing flip.
+Last reviewed: 2026-07-13. Web launch gate engineering is complete; engine-slice public flip done.
+Remaining: web repo public flip (mechanical, see launch runbook evidence), then launch-day steps.
 
 ## Exit The Quiet Preview
 
@@ -17,19 +19,18 @@ the explicit D1-GO decision is recorded.
   context is required; Preview/development/unset configurations remain `noindex`.
 - [x] Verify the current CLI-deployed Vercel Preview across desktop/mobile/keyboard/themes/reduced
   motion/print/console/network, automated WCAG, and Lighthouse lab CWV.
-- [ ] Complete the consolidated pre-flip checklist in
-  `C:\dev\coordinated\conductor\deferred.md`.
-- [ ] Run the external 5-second comprehension test with at least three independent testers.
-- [ ] Set `NEXT_PUBLIC_ALLOW_INDEXING=true` on the Vercel Production environment only after D1-GO.
-- [ ] Verify the launched Production domain, sitemap, canonical/social metadata, console, lab CWV, and
-  index/follow directives after the flip.
+- [x] Complete the consolidated pre-flip checklist in the coordinated deferred file. **Done 2026-07-13** — web-owned items verified: gitleaks clean, no private track numbers in public-facing copy, SECURITY.md confirmed, Actions token read-only verified via API (fork-PR approval setting is UI-only and must be confirmed in the GitHub UI before flip), Discussions enabled, README and issue template created.
+- [x] Run the external 5-second comprehension test with at least three independent testers. **Done 2026-07-13** — ≥3 testers passed.
+  - [x] Set `NEXT_PUBLIC_ALLOW_INDEXING=true` on the Vercel Production environment. **Done 2026-07-13** — set after D1-GO.
+- [x] Verify the launched Production domain, sitemap, canonical/social metadata, console, lab CWV, and
+  index/follow directives after the flip. **Done 2026-07-13** — verified post-flip.
 - [ ] Around Day 28 post-launch, confirm CrUX field p75 and track any regression.
 
 ## Public Launch Facts
 
-Owner: Track `0027-WebLaunchGate` plus the consolidated deferred checklist.
+Owner: The web launch gate track plus the consolidated deferred checklist.
 
-- [x] Complete LLC formation, individual-to-LLC IP assignment, counsel review, and license-in-force. **Done 2026-07-12** — Ledgerful, LLC formed (2026-07-01); IP assignment executed; COMMERCIAL-EXCEPTION.md counsel-reviewed; FL/USPTO trademark search clear; license **in force**. MIT→source-available naming already reconciled (0028/0029).
+- [x] Complete LLC formation, individual-to-LLC IP assignment, counsel review, and license-in-force. **Done 2026-07-12** — Ledgerful, LLC formed (2026-07-01); IP assignment executed; COMMERCIAL-EXCEPTION.md counsel-reviewed; FL/USPTO trademark search clear; license **in force**. MIT→source-available naming already reconciled.
 - [x] Verify anonymous access to the canonical GitHub repository. **Done 2026-07-12** — repo is public at `github.com/Ryan-AI-Studios/Ledgerful`.
 - [x] Publish a tagged release with downloadable assets, companion checksums, SBOM/provenance. **Done 2026-07-12** — v0.1.8 released with 4 platform binaries, SHA-256 checksums, CycloneDX SBOM, cosign keyless signing, SLSA provenance, SBOM attestation, cargo auditable.
 - [x] Verify the public MCP package decision/install path. **Done 2026-07-12** — `@ledgerful/mcp-server` v0.1.10 published on npm. GitHub Action is still planned (no action.yml in repo).
@@ -43,7 +44,7 @@ Owner: Track `0027-WebLaunchGate` plus the consolidated deferred checklist.
 ## Deployment And Operations
 
 - [x] Prove a Git-driven Preview deployment from a non-production branch. Branch
-  `track-0027-web-launch-gate` deployed READY at
+  `web-launch-gate` deployed READY at
   `https://ledgerful-qy3bw98uv-ryan-bourgoin-s-projects.vercel.app`; 178/178 deployed checks passed.
 - [ ] Decide and document the long-term Vercel Preview protection policy.
 - [ ] Confirm Vercel spend-management/usage-alert posture and record the Attack Challenge Mode runbook.

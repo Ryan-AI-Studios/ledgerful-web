@@ -34,7 +34,7 @@ sha256sum -c ledgerful-<platform>.tar.gz.sha256
 This release includes:
 
 - [ ] CycloneDX SBOM: `ledgerful-<ver>.cdx.json`
-- [ ] cosign keyless signature: `.sig` + `.pem` beside each archive
+- [ ] cosign keyless signature: `.bundle` file beside each archive and SBOM
 - [ ] SLSA build provenance: `gh attestation verify <archive> --owner Ryan-AI-Studios`
 - [ ] SBOM attestation: `gh attestation verify <sbom> --owner Ryan-AI-Studios`
 - [ ] Embedded dependency list: `cargo audit bin ledgerful`

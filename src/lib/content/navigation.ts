@@ -29,7 +29,7 @@ export const publicNavigation = [...mainNavigation, ...footerNavigation];
 export const pageDescriptions = {
   home: "Ledgerful runs on your machine to analyze repo changes, record signed provenance, plan verification, and export audit evidence without uploading source code by default.",
   install:
-    "Install the Ledgerful CLI from source, verify the binary, and run your first scan. Pre-built release binaries are a launch fact and are not yet available.",
+    "Install the Ledgerful CLI from a pre-built v0.1.8 release binary or build from source. Verify the binary and run your first scan.",
   architecture:
     "What Ledgerful reads, analyzes, and produces entirely on your machine, then the three Ledgerful surfaces: local engine and CLI, embedded loopback dashboard, public web, and the planned hosted control plane. Local-first data flow, opt-in telemetry.",
   docs: "Install, verify, and operate Ledgerful without confusing local tooling with hosted features.",

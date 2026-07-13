@@ -1,7 +1,7 @@
 /**
- * Shared content model for WEB-0004 doc pages.
+ * Shared content model for doc pages.
  * Verified against Ledgerful source: mcp/manifest.rs, action/action.yml,
- * conductor/conductor.md, and WebStartArgs.
+ * engine source, and WebStartArgs.
  */
 
 export type McpTool = {
@@ -107,7 +107,7 @@ export type SyncCommand = {
   description: string;
 };
 
-/** Sync subcommands confirmed from conductor.md */
+/** Sync subcommands confirmed from engine source */
 export const syncCommands: SyncCommand[] = [
   {
     command: "ledgerful sync init",

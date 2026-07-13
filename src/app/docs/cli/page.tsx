@@ -23,16 +23,16 @@ export default function DocsCliPage() {
         <p className="hero-kicker">Docs · CLI</p>
         <h1>Install and run Ledgerful.</h1>
         <p>
-          Build from source using Cargo. Release artifacts (pre-built binaries)
-          are a WEB-0005 launch fact and are not yet available.
+          Install the <code>ledgerful</code> CLI from a pre-built v0.1.8 release
+          binary or build from source using Cargo.
         </p>
       </section>
 
       {/* ── Section 1: Prerequisites ─────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="Prerequisites">
-          The source install requires the Rust toolchain. Release binaries, once
-          available, will not require Rust.
+          The source install requires the Rust toolchain. Pre-built release
+          binaries (v0.1.8) do not require Rust.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
@@ -50,12 +50,11 @@ export default function DocsCliPage() {
             Windows). The stable toolchain is sufficient.
           </p>
           <p style={{ marginTop: "12px" }}>
-            <strong>Release binaries:</strong> {release.note} When available,
-            they will not require Rust. Check the{" "}
+            <strong>Release binaries:</strong> {release.note} The{" "}
             <Link href="/docs/releases" className="inline-link">
               release verification page
             </Link>{" "}
-            for status.
+            has checksums and provenance details.
           </p>
         </div>
       </section>

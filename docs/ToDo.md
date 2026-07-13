@@ -19,7 +19,7 @@ the explicit D1-GO decision is recorded.
   context is required; Preview/development/unset configurations remain `noindex`.
 - [x] Verify the current CLI-deployed Vercel Preview across desktop/mobile/keyboard/themes/reduced
   motion/print/console/network, automated WCAG, and Lighthouse lab CWV.
-- [x] Complete the consolidated pre-flip checklist in the coordinated deferred file. **Done 2026-07-13** — web-owned items verified: gitleaks clean, no private track numbers in public-facing copy, SECURITY.md confirmed, Actions token read-only verified via API (fork-PR approval setting is UI-only and must be confirmed in the GitHub UI before flip), Discussions enabled, README and issue template created.
+- [x] Complete the consolidated pre-flip checklist in the coordinated deferred file. **Done 2026-07-13** — web-owned items verified: gitleaks clean, no private track numbers in public-facing copy, SECURITY.md confirmed, Actions hardening fully verified (fork-PR approval confirmed in UI, read-only token via API), Discussions enabled, README and issue template created, repo public, branch protection applied, private vuln reporting enabled.
 - [x] Run the external 5-second comprehension test with at least three independent testers. **Done 2026-07-13** — ≥3 testers passed.
   - [x] Set `NEXT_PUBLIC_ALLOW_INDEXING=true` on the Vercel Production environment. **Done 2026-07-13** — set after D1-GO.
 - [x] Verify the launched Production domain, sitemap, canonical/social metadata, console, lab CWV, and

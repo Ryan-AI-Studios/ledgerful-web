@@ -280,7 +280,6 @@ for (const viewport of [
         exact: false,
       }),
       page.locator("#hero").getByRole("link", { name: "Install Ledgerful" }),
-      page.locator(".hero-proof"),
     ]) {
       await expect(locator).toBeInViewport();
     }
@@ -319,7 +318,6 @@ test("homepage install command copy button copies the real install command", asy
 // section order the rebuilt page is specified to render, plus the three
 // top-level landmarks.
 const homepageH2Order = [
-  "One scan. One receipt.",
   "Where your data goes",
   "Proof points, linked to evidence",
   "The volume of change has outpaced the evidence for it.",
@@ -742,31 +740,6 @@ test("mobile hero explanation is not visually truncated", async ({ page }) => {
 
   expect(dimensions.lineClamp).toBe("none");
   expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
-});
-
-test("desktop hero proof renders as full-width stacked rows", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 800 });
-  await page.goto("/");
-
-  const dimensions = await page.evaluate(() => {
-    const action = document.querySelector<HTMLElement>(".hero-proof-action");
-    const receipt = document.querySelector<HTMLElement>(".hero-proof-receipt");
-    const proof = document.querySelector<HTMLElement>(".hero-proof");
-    if (!action || !receipt || !proof) throw new Error("Hero proof is incomplete");
-    return {
-      actionWidth: action.getBoundingClientRect().width,
-      receiptWidth: receipt.getBoundingClientRect().width,
-      proofWidth: proof.getBoundingClientRect().width,
-      actionTop: action.getBoundingClientRect().top,
-      receiptTop: receipt.getBoundingClientRect().top,
-    };
-  });
-
-  // Both items span full width of the hero-proof container
-  expect(dimensions.actionWidth).toBeCloseTo(dimensions.proofWidth, -1);
-  expect(dimensions.receiptWidth).toBeCloseTo(dimensions.proofWidth, -1);
-  // Receipt is below the action (stacked rows, not side-by-side)
-  expect(dimensions.receiptTop).toBeGreaterThan(dimensions.actionTop);
 });
 
 test("theme switching still works when preference storage is blocked", async ({ page }) => {

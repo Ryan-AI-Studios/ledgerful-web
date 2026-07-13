@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import type { SoftwareApplication, WithContext } from "schema-dts";
 import Image from "next/image";
 import Link from "next/link";
-import { HeroProof } from "@/components/hero-proof";
 import { ArtifactPreview } from "@/components/artifact-preview";
 import { AudienceRoutes } from "@/components/audience-routes";
 import { CapabilityGrid } from "@/components/capability-grid";
@@ -98,12 +97,10 @@ export default function Home() {
 
   return (
     <PageShell>
-      {/* 2. Hero, and 3. the action -> receipt proof visual — two distinct
-          <section> landmarks (each with its own heading, per the required
-          section order) sharing one grid row so the proof visual sits
-          beside the hero copy on wide viewports instead of below a full
-          screen of hero text. On narrow viewports the grid collapses to a
-          single column, so section 2 still renders before section 3. */}
+      {/* 2. Hero — headline, subhead, install CTA, release status. The proof
+          visual (verification plan terminal + dashboard receipt) now lives
+          only in section 7 ("What a scan actually produces") to avoid
+          repeating the same images twice on the page. */}
       <div className="hero-section">
         <section className="hero-copy" id="hero">
           <h1>
@@ -132,11 +129,6 @@ export default function Home() {
               Read the docs
             </Link>
           </div>
-        </section>
-
-        <section id="proof-visual" aria-label="Action and receipt proof visual">
-          <h2 className="visually-hidden">One scan. One receipt.</h2>
-          <HeroProof />
         </section>
       </div>
 

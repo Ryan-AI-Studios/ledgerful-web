@@ -297,9 +297,12 @@ main {
   overscroll-behavior-inline: contain;
 }
 
-.hero-copy,
 .page-hero {
   max-width: 760px;
+}
+
+.hero-copy {
+  max-width: 100%;
 }
 
 .hero-kicker,
@@ -330,7 +333,7 @@ h3 {
 }
 
 .hero-copy h1 {
-  max-width: 880px;
+  max-width: 100%;
   font-size: clamp(3rem, 5vw, 4.8rem);
   line-height: 0.95;
   letter-spacing: -0.035em;
@@ -3424,9 +3427,13 @@ code {
    evidence-frame/terminal-window beneath it (no nested cards). */
 .produces-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 22px;
   align-items: start;
+}
+
+.produces-grid > article:first-child {
+  grid-column: 1 / -1;
 }
 
 .produces-grid > article {

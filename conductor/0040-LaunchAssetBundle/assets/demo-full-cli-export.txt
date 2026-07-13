@@ -1,1 +1,0 @@
-﻿[1m[32mSUCCESS:[39m[0m SOC2 evidence exported to C:\Users\RyanB\AppData\Local\Temp\opencode\vhs-full\ledgerful-soc2-evidence.zip

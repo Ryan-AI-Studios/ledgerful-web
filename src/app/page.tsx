@@ -107,8 +107,7 @@ export default function Home() {
       <div className="hero-section">
         <section className="hero-copy" id="hero">
           <h1>
-            Understand code change risk before it ships. Runs locally on your
-            code.
+            Understand code change risk before it ships. Runs locally.
           </h1>
           <p className="hero-subhead">
             Ledgerful analyzes Git repositories locally and produces risk,

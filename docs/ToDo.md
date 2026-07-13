@@ -37,7 +37,7 @@ Owner: Track `0027-WebLaunchGate` plus the consolidated deferred checklist.
   `waitlist@ledgerful.dev`. **Done 2026-07-12** — all mailboxes provisioned via Cloudflare Email Routing; Kit waitlist provisioned.
 - [x] Enable branch protection and require the `ai-reviewed` status check. **Done 2026-07-12** — engine repo: 1 review + `ai-reviewed` check + enforce-admins + no force-push.
 - [x] Complete telemetry-ingest hardening and reconcile any resulting Trust copy.
-- [ ] Decide whether a public status page will exist; do not add a status link before it does.
+- [x] Decide whether a public status page will exist. **Decided 2026-07-13: Option B — no status page at v1.** A local-first tool with no hosted control plane has no uptime to report; `launch-facts.ts` statusPage → `"planned"`. **Deferred until hosted services exist** (see Cross-Repo Dependencies). Do not link `status.ledgerful.dev` until a real status surface exists.
 - [x] Add only source-backed trust or social proof; no placeholder customers, logos, uptime, or metrics.
 
 ## Deployment And Operations
@@ -57,6 +57,7 @@ These capabilities remain visibly planned until their owning repositories ship r
 - [ ] Future control-plane `CP-0`: hosted tenancy, signed-summary ingestion, GitHub App webhooks, and
   hosted portfolio queries.
 - [ ] Future control-plane `CP-1`: billing, subscriptions, entitlements, and customer portal.
+- [ ] Public **status page** (`status.ledgerful.dev`) — deferred from launch (Option B, 2026-07-13). Revisit when the hosted control plane (CP-0/CP-1) ships and there is real uptime to report; then build the status surface and flip `launch-facts.ts` statusPage → `"resolved"` with the URL.
 - [ ] Future control-plane `CP-2`: SAML/OIDC, SCIM, RBAC, hosted audit logs, retention controls, and
   enterprise audit export.
 - [ ] Hosted data-deletion, subprocessor, and source-upload documentation after hosted services exist.

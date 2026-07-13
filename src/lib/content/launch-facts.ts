@@ -48,9 +48,9 @@ export const launchTruth = {
     },
     statusPage: {
       label: "Status page",
-      status: "unresolved",
-      value: "Not published",
-      note: "Do not link status.ledgerful.dev until the status surface exists.",
+      status: "planned",
+      value: "Deferred to hosted services",
+      note: "Decision 2026-07-13: no public status page at v1 (Option B). A local-first tool with no hosted control plane has no uptime to report. Deferred until the hosted control plane (CP-0/CP-1) ships; do not link status.ledgerful.dev until a real status surface exists.",
     },
     license: {
       label: "Source-available license terms",

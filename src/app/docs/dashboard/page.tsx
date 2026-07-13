@@ -22,8 +22,9 @@ export default function DocsDashboardPage() {
         <h1>Launch the local dashboard.</h1>
         <StatusPill status="local-only" />
         <p>
-          The Ledgerful dashboard is a local-only web UI. It runs as a loopback
-          daemon and requires an ephemeral session token to access.
+          The Ledgerful dashboard is a local-only web UI. It ships with the
+          Ledgerful CLI — there is nothing separate to install. It runs as a
+          loopback daemon and requires an ephemeral session token to access.
         </p>
       </section>
 
@@ -42,21 +43,26 @@ export default function DocsDashboardPage() {
           </div>
           <pre>
             <code>
-              {`# Start with the default port (52001)
+              {`# Start the dashboard and open it in your browser (recommended)
+ledgerful web start --open
+
+# Start without opening a browser (prints the tokenized URL to copy)
 ledgerful web start
 
-# Start on a custom port
-ledgerful web start --port 3001`}
+# Custom port, running in the background
+ledgerful web start --port 3001 --background`}
             </code>
           </pre>
         </div>
         <p
           className="doc-caption"
         >
-          At startup the daemon prints the dashboard URL including a session
-          token. Copy the full URL — including the <code>?token=</code> query
-          parameter — and open it in your browser. The dashboard immediately
-          captures the token in memory and strips it from the address bar.
+          With <code>--open</code>, the daemon launches your browser at the
+          tokenized URL automatically. Without it, the daemon prints the
+          dashboard URL including a session token — copy the full URL, including
+          the <code>?token=</code> query parameter, and open it in your browser.
+          Either way, the dashboard immediately captures the token in memory and
+          strips it from the address bar.
         </p>
       </section>
 

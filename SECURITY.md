@@ -11,7 +11,7 @@ Ledgerful is pre-1.0 software. The latest release is v0.1.8. Security fixes are 
 Report vulnerabilities through one of these channels:
 
 - **Email:** security@ledgerful.dev (active)
-- **GitHub private vulnerability reporting:** available once the repository is public (the engine repository at [Ryan-AI-Studios/Ledgerful](https://github.com/Ryan-AI-Studios/Ledgerful) has this enabled; this web repo will enable it at the visibility flip)
+- **GitHub private vulnerability reporting:** enabled on the public repository
 
 **Response timeline:**
 - Acknowledgment: within 3 business days

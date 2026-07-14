@@ -176,8 +176,8 @@ export default function Home() {
           Local CLI, dashboard, signed provenance, and SOC 2-style evidence
           export are implemented now. Team sync is beta. Hosted and enterprise
           features are planned — see the full breakdown on{" "}
-          <Link href="/pricing" className="inline-link">
-            the pricing page
+          <Link href="/editions" className="inline-link">
+            the editions page
           </Link>
           .
         </SectionHeading>
@@ -271,11 +271,11 @@ export default function Home() {
         }}
       />
       <script
-        // Forward the old #legend anchor on the homepage to /pricing#legend
-        // now that the full 5-state glossary lives on the pricing page.
+        // Forward the old #legend anchor on the homepage to /editions#legend
+        // now that the full 5-state glossary lives on the editions page.
         dangerouslySetInnerHTML={{
           __html:
-            "(function(){if(location.hash==='#legend'){location.replace('/pricing#legend');}})();",
+            "(function(){if(location.hash==='#legend'){location.replace('/editions#legend');}})();",
         }}
       />
     </PageShell>

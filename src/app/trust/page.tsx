@@ -844,6 +844,91 @@ export default function TrustPage() {
         <TrustSectionNav />
 
         <div className="trust-content">
+          {/* ── Executive summary table (procurement quick view) */}
+          <section className="content-band" id="exec-summary">
+            <SectionHeading title="Executive summary">
+              The short version for procurement reviewers.
+            </SectionHeading>
+            <p className="trust-disclaimer">
+              Ledgerful produces technical evidence only; it is not legal advice
+              and does not guarantee regulatory compliance.
+            </p>
+            <table className="exec-summary-table">
+              <tbody>
+                <tr>
+                  <th scope="row">Is source uploaded by default?</th>
+                  <td>No. Analysis runs on your machine.</td>
+                </tr>
+                <tr>
+                  <th scope="row">Where does analysis run?</th>
+                  <td>Your machine. Local daemon at 127.0.0.1:52001.</td>
+                </tr>
+                <tr>
+                  <th scope="row">Where are keys stored?</th>
+                  <td>Locally. ~/.ledgerful/keys/ (Ed25519).</td>
+                </tr>
+                <tr>
+                  <th scope="row">Is evidence signed?</th>
+                  <td>Yes. Every ledger entry is Ed25519-signed.</td>
+                </tr>
+                <tr>
+                  <th scope="row">Is telemetry required?</th>
+                  <td>No. Opt-in only, disabled by default.</td>
+                </tr>
+                <tr>
+                  <th scope="row">Hosted control plane?</th>
+                  <td>Planned. Not built.</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          {/* ── Procurement facts ─────────────────────────────── */}
+          <section className="content-band" id="procurement">
+            <SectionHeading title="Procurement facts">
+              What a security reviewer needs to know.
+            </SectionHeading>
+            <dl className="procurement-facts">
+              <dt>Security contact</dt>
+              <dd>security@ledgerful.dev (active, monitored)</dd>
+
+              <dt>Disclosure policy</dt>
+              <dd>
+                Responsible disclosure with safe-harbor. See{" "}
+                <Link href="#disclosure">disclosure section</Link>.
+              </dd>
+
+              <dt>Release verification</dt>
+              <dd>
+                SHA-256 checksums, cosign keyless signing, SLSA build provenance.
+                See <Link href="#release-verification">release verification</Link>.
+              </dd>
+
+              <dt>SBOM availability</dt>
+              <dd>CycloneDX SBOM published with every release.</dd>
+
+              <dt>Signing mechanism</dt>
+              <dd>Ed25519 for ledger entries; cosign for release artifacts.</dd>
+
+              <dt>Data-handling statement</dt>
+              <dd>No source uploads by default. Telemetry is opt-in only.</dd>
+
+              <dt>Certification disclaimer</dt>
+              <dd>
+                Ledgerful produces technical evidence only; it is not legal
+                advice and does not guarantee regulatory compliance.
+              </dd>
+
+              <dt>Last updated</dt>
+              <dd>July 14, 2026</dd>
+            </dl>
+          </section>
+
+          <hr className="trust-section-break" />
+          <SectionHeading kicker="Deep dive" title="Full trust and security documentation">
+            The detailed treatment of every boundary, mechanism, and policy.
+          </SectionHeading>
+
           {/* ── Section 1: Executive summary ──────────────────── */}
           <section id="summary" className="content-band trust-section">
             <TrustSummary />
@@ -1975,7 +2060,7 @@ export default function TrustPage() {
               <Link className="button-primary" href="/install">
                 Try Ledgerful locally
               </Link>
-              <Link className="button-secondary" href="/pricing">
+              <Link className="button-secondary" href="/editions">
                 See editions and feature states
               </Link>
             </div>

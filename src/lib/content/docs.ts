@@ -18,8 +18,8 @@ export const docTopics: DocTopic[] = [
     deployment: "runs-locally",
     pillar: "track",
     summary:
-      launchTruth.facts.release.note,
-    nextAction: "Build from source or download a release binary; verify the SHA-256 checksum.",
+      "Install the Ledgerful CLI from a release binary or source, then run your first scan to confirm it works.",
+    nextAction: "Build from source or download a release binary; run a smoke test.",
     href: "/docs/cli",
   },
   {
@@ -44,12 +44,12 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "GitHub Action setup",
-    maturity: "beta",
-    deployment: "runs-locally",
+    maturity: "planned",
+    deployment: "hosted",
     pillar: "assess",
     summary:
-      launchTruth.facts.githubAction.note,
-    nextAction: "Publish install YAML after action release hygiene is complete.",
+      "A future hosted control-plane integration for PR risk comments. The workflow YAML is a reference shape, not an installable action today.",
+    nextAction: "Publish install YAML after the public action is released.",
     href: "/docs/github-action",
   },
   {
@@ -78,8 +78,8 @@ export const docTopics: DocTopic[] = [
     deployment: "runs-locally",
     pillar: "prove",
     summary:
-      launchTruth.facts.release.note,
-    nextAction: "Download the v0.1.8 release and verify the SHA-256 checksum.",
+      "Verify the v0.1.8 release binary with its SHA-256 checksum and run the local health report.",
+    nextAction: "Download the release and verify the SHA-256 checksum.",
     href: "/docs/releases",
   },
 ];

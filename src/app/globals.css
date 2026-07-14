@@ -686,6 +686,13 @@ code {
   color: oklch(0.16 0.07 300);
 }
 
+/* Maturity + deployment combo: keep maturity color family and force
+   accessible contrast so "Planned · Hosted" pills pass WCAG AA. */
+.status-planned.status-hosted {
+  background: oklch(0.94 0.03 270);
+  color: oklch(0.13 0.06 270);
+}
+
 /* Launch-fact statuses (backward compat) */
 .status-resolved,
 .status-completed {
@@ -884,6 +891,13 @@ code {
   .status-hosted {
     background: oklch(0.94 0.045 300);
     color: oklch(0.15 0.07 300);
+  }
+
+  /* Maturity + deployment combo: keep maturity color family and force
+     accessible contrast so "Planned · Hosted" pills pass WCAG AA. */
+  .status-planned.status-hosted {
+    background: oklch(0.94 0.03 270);
+    color: oklch(0.13 0.06 270);
   }
 
   /* Unresolved — light amber, dark text (WCAG AA) */
@@ -1356,6 +1370,36 @@ code {
   color: var(--muted);
   font-size: 0.9rem;
   margin-bottom: 16px;
+}
+
+.decision-tree {
+  margin-bottom: 32px;
+}
+
+.decision-tree-heading {
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+}
+
+.decision-tree-list {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: var(--ink-muted);
+}
+
+.decision-tree-list li {
+  padding-left: 16px;
+  position: relative;
+}
+
+.decision-tree-list li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--brand);
 }
 
 .boundary-grid,
@@ -1959,6 +2003,105 @@ code {
   color: var(--muted);
 }
 
+/* Executive summary table at top of /trust */
+.exec-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.exec-summary-table th,
+.exec-summary-table td {
+  padding: 12px 14px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+}
+
+.exec-summary-table tbody th {
+  font-weight: 620;
+  color: var(--ink);
+  width: 42%;
+}
+
+.exec-summary-table td {
+  color: var(--muted);
+}
+
+@media (max-width: 720px) {
+  .exec-summary-table th,
+  .exec-summary-table td {
+    display: block;
+    width: 100%;
+    padding: 10px 12px;
+  }
+
+  .exec-summary-table tbody th {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+}
+
+/* Procurement facts definition list on /trust */
+.procurement-facts {
+  display: grid;
+  grid-template-columns: minmax(140px, 30%) 1fr;
+  gap: 10px 24px;
+  margin: 0;
+}
+
+.procurement-facts dt {
+  font-size: 0.82rem;
+  font-weight: 720;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.procurement-facts dd {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.procurement-facts dd a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 720px) {
+  .procurement-facts {
+    grid-template-columns: 1fr;
+    gap: 6px 0;
+  }
+
+  .procurement-facts dt {
+    margin-top: 14px;
+  }
+}
+
+/* Section break between procurement quick view and deep dive on /trust */
+.trust-section-break {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: clamp(32px, 5vw, 56px) 0 clamp(28px, 4vw, 44px);
+}
+
+/* Trust-page certification disclaimer */
+.trust-disclaimer {
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--state-unresolved);
+  background: var(--surface-raised);
+  border-radius: 0 var(--radius-control) var(--radius-control) 0;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
 /* Boundary table (5 columns; collapses to readable stacked on narrow) */
 .boundary-table th,
 .boundary-table td {
@@ -2056,7 +2199,7 @@ code {
   font-weight: 600;
 }
 
-/* "Available today" summary card — sits above edition grid on /pricing.
+/* "Available today" summary card — sits above edition grid on /editions.
    Visually distinct from edition cards (and from .pricing-card--planned)
    so users can tell at a glance which surface is the one to use right now. */
 .available-today {
@@ -2295,7 +2438,7 @@ code {
   left: 0;
 }
 
-/* Closing CTA band on /pricing — replaces inline styles for clarity. */
+/* Closing CTA band on /editions — replaces inline styles for clarity. */
 .pricing-cta-band {
   padding-top: clamp(32px, 5vw, 64px);
   padding-bottom: clamp(48px, 8vw, 96px);
@@ -3189,7 +3332,7 @@ code {
 
 /* B4-TRUST — sample-export disclosure (matches .disclosure-notice pattern).
    .pricing-faq-item shares the same disclosure chrome (border/marker/focus)
-   for the /pricing FAQ — see 0025-WebPricingReframe. */
+   for the /editions FAQ — see 0025-WebPricingReframe. */
 .sample-export,
 .pricing-faq-item {
   border: 1px solid var(--line);

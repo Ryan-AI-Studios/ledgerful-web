@@ -47,6 +47,15 @@ const nextConfig: NextConfig = {
   // Do not re-enable experimental SRI without a real Vercel deploy proving CDN parity.
   // Vercel can serve transformed chunk bytes that fail browser validation:
   // https://github.com/vercel/next.js/issues/91633
+  async redirects() {
+    return [
+      {
+        source: "/pricing",
+        destination: "/editions",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

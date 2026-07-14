@@ -1,7 +1,7 @@
 import { licenseBoundaryColumns, licensePersonas } from "@/lib/content/pricing";
 
 /**
- * Plain-language license-boundary explainer for /pricing. The PolyForm
+ * Plain-language license-boundary explainer for /editions. The PolyForm
  * Noncommercial License 1.0.0 + Ledgerful Small-Entity Commercial Exception
  * v1.0 are in force (counsel-reviewed); this remains a summary, not the
  * operative text — see 0025-WebPricingReframe spec.md §2/DoD-4.

@@ -73,9 +73,9 @@ export const localCapabilities: EditionItem[] = [
   },
   {
     label: "GitHub Action setup path",
-    maturity: "beta",
+    maturity: "planned",
     deployment: "runs-locally",
-    caveat: "Public install docs in progress",
+    caveat: "Not publicly installable yet",
   },
   {
     label: "Local team sync foundation",
@@ -246,12 +246,12 @@ export const matrixGroups: MatrixGroup[] = [
       },
       {
         feature: "GitHub Action setup path",
-        caveat: "Public install docs in progress",
+        caveat: "Not publicly installable yet",
         cells: [
-          { maturity: "beta", deployment: "runs-locally" },
-          { maturity: "beta", deployment: "runs-locally" },
-          { maturity: "beta", deployment: "runs-locally" },
-          { maturity: "beta", deployment: "runs-locally" },
+          { maturity: "planned", deployment: "runs-locally" },
+          { maturity: "planned", deployment: "runs-locally" },
+          { maturity: "planned", deployment: "runs-locally" },
+          { maturity: "planned", deployment: "runs-locally" },
         ],
       },
       {
@@ -304,7 +304,7 @@ export const pricingFootnotes: string[] = [
   `${launchTruth.facts.license.note} No paid commercial price is announced.`,
   "GitHub App, hosted portfolio, hosted audit log, and billing portal require a future hosted control plane. No timeline is announced.",
   "SAML / OIDC SSO, SCIM, and RBAC are planned for enterprise and require a future hosted control plane with enterprise identity infrastructure. No timeline is announced.",
-  `MCP stdio tools are published on npm (v${launchTruth.facts.mcpPackage.version}). GitHub Action setup path is beta. ${launchTruth.facts.githubAction.note}`,
+  `MCP stdio tools are published on npm (v${launchTruth.facts.mcpPackage.version}). GitHub Action setup path is planned — not publicly installable yet. ${launchTruth.facts.githubAction.note}`,
   "Source upload is never required for local editions. The local daemon does not implement SSO, RBAC, or tenant isolation.",
   "No Commercial License, Hosted, or Enterprise price is announced.",
 ];

@@ -113,7 +113,7 @@ for (const route of publicRoutes) {
 const dedicatedOgImage: Partial<Record<(typeof publicRoutes)[number], string>> = {
   "/architecture": "/og/architecture.png",
   "/install": "/og/install.png",
-  "/pricing": "/og/pricing.png",
+  "/editions": "/og/pricing.png",
   "/trust": "/og/trust.png",
 };
 
@@ -786,34 +786,43 @@ test("the page background gradient does not tile", async ({ page }) => {
 
 // ── WEB-0023 — install page: verified command leads, before the platform table ──
 
-test("install page leads with the install command before the platform table, with a smoke test in between (DoD-1)", async ({
+test("install page leads with command, then OS tabs, then five numbered steps (0059 Phase 2 restyle)", async ({
   page,
 }) => {
   await page.goto("/install");
 
   const order = await page.evaluate(() => {
     const commandBlock = document.querySelector(".install-command--expanded");
-    const platformTable = document.querySelector(".platform-table");
-    const smokeHeading = Array.from(document.querySelectorAll(".step-index")).find((element) =>
-      element.textContent?.includes("SMOKE TEST"),
+    const osTabs = document.querySelector(".os-tabs");
+    const stepSection = document.querySelector(".step-block");
+    const stepHeadings = Array.from(document.querySelectorAll(".step-index")).map((el) =>
+      el.textContent?.trim(),
     );
-    if (!commandBlock || !platformTable || !smokeHeading) {
-      return { found: false, commandBeforeTable: false, smokeBeforeTable: false };
-    }
+    const fiveSteps = ["01 · INSTALL CLI", "02 · VERIFY BINARY", "03 · SCAN A REPO", "04 · LAUNCH DASHBOARD", "05 · REVIEW RESULT"];
     return {
-      found: true,
-      commandBeforeTable: Boolean(
-        commandBlock.compareDocumentPosition(platformTable) & Node.DOCUMENT_POSITION_FOLLOWING,
+      hasCommand: Boolean(commandBlock),
+      hasTabs: Boolean(osTabs),
+      hasSteps: Boolean(stepSection),
+      commandBeforeTabs: Boolean(
+        commandBlock && osTabs && commandBlock.compareDocumentPosition(osTabs) & Node.DOCUMENT_POSITION_FOLLOWING,
       ),
-      smokeBeforeTable: Boolean(
-        smokeHeading.compareDocumentPosition(platformTable) & Node.DOCUMENT_POSITION_FOLLOWING,
+      tabsBeforeSteps: Boolean(
+        osTabs && stepSection && osTabs.compareDocumentPosition(stepSection) & Node.DOCUMENT_POSITION_FOLLOWING,
       ),
+      allFiveSteps: fiveSteps.every((text) => stepHeadings.some((h) => h?.includes(text))),
+      oldPlatformTableGone: !document.querySelector(".platform-table"),
+      oldSmokeTestGone: !stepHeadings.some((h) => h?.includes("SMOKE TEST")),
     };
   });
 
-  expect(order.found).toBe(true);
-  expect(order.commandBeforeTable).toBe(true);
-  expect(order.smokeBeforeTable).toBe(true);
+  expect(order.hasCommand).toBe(true);
+  expect(order.hasTabs).toBe(true);
+  expect(order.hasSteps).toBe(true);
+  expect(order.commandBeforeTabs).toBe(true);
+  expect(order.tabsBeforeSteps).toBe(true);
+  expect(order.allFiveSteps).toBe(true);
+  expect(order.oldPlatformTableGone).toBe(true);
+  expect(order.oldSmokeTestGone).toBe(true);
 });
 
 test("install page never renders the fake 'ledgerful compliance export' CLI command", async ({ page }) => {
@@ -936,26 +945,26 @@ test("architecture diagram restacks vertically and stays legible at 320px", asyn
 
 // ── 0025-WebPricingReframe — plain-English boundary, planned-card CTAs, FAQ ──
 
-test("pricing planned-card CTAs point at labeled mailto destinations, not fake contact paths", async ({
+test("editions planned-card CTAs point at labeled mailto destinations, not fake contact paths", async ({
   page,
 }) => {
-  await page.goto("/pricing");
+  await page.goto("/editions");
 
-  const waitlist = page.getByRole("link", { name: "Join the waitlist" });
+  const waitlist = page.locator(".pricing-card--planned a", { hasText: "Join the waitlist" }).first();
   await expect(waitlist).toBeVisible();
   await expect(waitlist).toHaveAttribute("href", /^mailto:waitlist@ledgerful\.dev\?subject=/);
 
-  const contact = page.getByRole("link", { name: "Contact us" });
+  const contact = page.locator(".pricing-card--planned .pricing-card-cta a", { hasText: "Contact us" }).first();
   await expect(contact).toBeVisible();
   await expect(contact).toHaveAttribute("href", /^mailto:hello@ledgerful\.dev\?subject=/);
 
-  const licenseTerms = page.getByRole("link", { name: "Review license terms" });
+  const licenseTerms = page.locator(".pricing-card a", { hasText: "Review license terms" }).first();
   await expect(licenseTerms).toBeVisible();
   await expect(licenseTerms).toHaveAttribute("href", "/trust#license");
 });
 
-test("pricing license examples render the not-legal-advice disclaimer", async ({ page }) => {
-  await page.goto("/pricing");
+test("editions license examples render the not-legal-advice disclaimer", async ({ page }) => {
+  await page.goto("/editions");
 
   await expect(page.getByText("not legal advice", { exact: false })).toBeVisible();
   // Four personas from licensePersonas — spot-check first and last.
@@ -969,8 +978,8 @@ test("pricing license examples render the not-legal-advice disclaimer", async ({
   ).toBeVisible();
 });
 
-test("pricing FAQ disclosures are keyboard operable", async ({ page }) => {
-  await page.goto("/pricing");
+test("editions FAQ disclosures are keyboard operable", async ({ page }) => {
+  await page.goto("/editions");
 
   const item = page.locator(".pricing-faq-item").first();
   await expect(item).not.toHaveAttribute("open", "");

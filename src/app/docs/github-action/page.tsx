@@ -24,10 +24,11 @@ export default function DocsGithubActionPage() {
       <section className="page-hero compact">
         <p className="hero-kicker">Docs · GitHub Action</p>
         <h1>Add risk comments to pull requests.</h1>
-        <StatusPill maturity="beta" deployment="runs-locally" />
+        <StatusPill maturity="planned" deployment="hosted" />
         <p>
-          The Ledgerful GitHub Action runs a risk scan on each pull request and
-          posts a structured comment with impact and risk data.
+          The Ledgerful GitHub Action is not publicly installable yet. The
+          workflow YAML is documented as a reference shape, not a ready-to-use
+          action.
         </p>
       </section>
 

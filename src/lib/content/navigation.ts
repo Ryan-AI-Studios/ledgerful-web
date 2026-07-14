@@ -17,7 +17,7 @@ export const mainNavigation = [
   { href: "/#pillars", label: "Product" },
   { href: "/architecture", label: "How it works" },
   { href: "/docs", label: "Docs" },
-  { href: "/pricing", label: "Editions" },
+  { href: "/editions", label: "Editions" },
   { href: "/trust", label: "Trust" },
 ];
 

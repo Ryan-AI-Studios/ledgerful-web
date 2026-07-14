@@ -25,19 +25,19 @@ import {
 } from "@/lib/content/pricing";
 
 export const metadata: Metadata = {
-  title: "Pricing — editions and feature states",
+  title: "Editions — licenses and feature states",
   description: pageDescriptions.pricing,
   alternates: {
-    canonical: "/pricing",
+    canonical: "/editions",
   },
   openGraph: {
-    url: "/pricing",
+    url: "/editions",
     images: [
       {
         url: "/og/pricing.png",
         width: 1200,
         height: 630,
-        alt: "Pricing — editions and feature states, with a real local dashboard receipt showing Project Health and Recent Changes.",
+        alt: "Editions — licenses and feature states, with a real local dashboard receipt showing Project Health and Recent Changes.",
       },
     ],
   },
@@ -50,12 +50,12 @@ export const metadata: Metadata = {
 // (localCapabilities) so this summary can't drift out of sync with them.
 const availableToday = localCapabilities;
 
-export default function PricingPage() {
+export default function EditionsPage() {
   return (
     <PageShell>
       <section className="page-hero compact">
         <p className="hero-kicker">Edition boundaries</p>
-        <h1>A plain boundary: free, paid, or a separate agreement.</h1>
+        <h1>Use Ledgerful locally for free. License it for broader commercial use.</h1>
         <p>{pricingBoundaryStatement}</p>
       </section>
 
@@ -67,6 +67,30 @@ export default function PricingPage() {
           planned and require a future control plane, with no announced
           prices or timelines.
         </SectionHeading>
+
+        <div className="decision-tree">
+          <h2 className="decision-tree-heading">Which edition fits you?</h2>
+          <ul className="decision-tree-list">
+            <li>
+              <strong>Individual or noncommercial use</strong> →{" "}
+              <Link href="/install" className="inline-link">Local</Link>
+            </li>
+            <li>
+              <strong>Qualifying small commercial use</strong> (under $1M
+              aggregate gross revenue, internal use) →{" "}
+              <Link href="/install" className="inline-link">Local</Link>
+            </li>
+            <li>
+              <strong>Broader commercial use</strong> (at or above $1M revenue)
+              →{" "}
+              <Link href="/trust#license" className="inline-link">Commercial License</Link>
+            </li>
+            <li>
+              <strong>Hosted, regulated, or custom deployment</strong> →{" "}
+              <a href="mailto:hello@ledgerful.dev?subject=Ledgerful%20Enterprise%20inquiry" className="inline-link">Contact us</a>
+            </li>
+          </ul>
+        </div>
 
         <aside
           className="available-today"
@@ -173,6 +197,11 @@ export default function PricingPage() {
           examples matching the Small-Entity Commercial Exception text.
         </SectionHeading>
         <LicenseExamples />
+        <p className="edition-disclaimer" style={{ marginTop: "16px", color: "var(--muted)" }}>
+          Still unsure?{" "}
+          <a href="mailto:hello@ledgerful.dev?subject=Ledgerful%20edition%20question" className="inline-link">Email hello@ledgerful.dev</a>{" "}
+          and describe your use case.
+        </p>
       </section>
 
       <section className="content-band">
@@ -226,7 +255,10 @@ export default function PricingPage() {
                     {row.cells.map((cell, i) =>
                       cell ? (
                         <td key={matrixEditionHeaders[i]}>
-                          <StatusPill maturity={cell.maturity} deployment={cell.deployment} />
+                          <span className="matrix-included">
+                            <CheckCircle2 size={16} aria-hidden="true" />
+                            <span className="visually-hidden">included</span>
+                          </span>
                         </td>
                       ) : (
                         <td key={matrixEditionHeaders[i]}>

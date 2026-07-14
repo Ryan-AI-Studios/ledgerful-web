@@ -162,10 +162,10 @@ const ROUTES = [
     slug: "trust",
     routePath: "/trust",
     // src/app/trust/page.tsx metadata.title
-    title: "Trust and security — local-first data flow and SOC2 evidence",
+    title: "Trust and security — local-first data flow and SOC 2-style evidence",
     // src/lib/content/navigation.ts pageDescriptions.trust
     description:
-      "Local-first data flow, telemetry, sync, SOC2 export, and future hosted boundaries.",
+      "Local-first data flow, telemetry, sync, SOC 2-style export, and future hosted boundaries.",
     // src/components/captured-evidence.ts capturedEvidence.verifyHealth —
     // a real captured CLI run (command + its real final output line).
     command: "ledgerful verify --health",
@@ -179,9 +179,9 @@ const ROUTES = [
   },
   {
     slug: "pricing",
-    routePath: "/pricing",
-    // src/app/pricing/page.tsx metadata.title
-    title: "Pricing — editions and feature states",
+    routePath: "/editions",
+    // src/app/editions/page.tsx metadata.title
+    title: "Editions — licenses and feature states",
     // src/lib/content/navigation.ts pageDescriptions.pricing
     description:
       "Ledgerful editions with explicit available, beta, and planned states.",
@@ -199,7 +199,7 @@ const ROUTES = [
     command: "ledgerful verify --signatures",
     commandLabel: "All signature validations passed successfully!",
     sources: {
-      title: "src/app/pricing/page.tsx metadata.title",
+      title: "src/app/editions/page.tsx metadata.title",
       description: "src/lib/content/navigation.ts pageDescriptions.pricing",
       command:
         "ledgerful verify --signatures output captured against the sample repo (see C:\\dev\\FrontendDev\\output\\ledgerful-assets\\) — NOT install/page.tsx's `ledgerful compliance export` (that subcommand doesn't exist in v0.1.8; pre-existing bug in install/page.tsx, tracked in deferred.md, out of scope here)",

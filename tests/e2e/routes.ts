@@ -11,7 +11,7 @@ export const publicRoutes = [
   "/docs/releases",
   "/docs/sync",
   "/install",
-  "/pricing",
+  "/editions",
   "/trust",
   "/waitlist",
 ] as const;
@@ -20,6 +20,6 @@ export const primaryNavigation = [
   { href: "/#pillars", label: "Product" },
   { href: "/architecture", label: "How it works" },
   { href: "/docs", label: "Docs" },
-  { href: "/pricing", label: "Editions" },
+  { href: "/editions", label: "Editions" },
   { href: "/trust", label: "Trust" },
 ] as const;

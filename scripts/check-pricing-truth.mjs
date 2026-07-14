@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const [pricing, install] = await Promise.all([
-  readFile(".next/server/app/pricing.html", "utf8"),
+  readFile(".next/server/app/editions.html", "utf8"),
   readFile(".next/server/app/install.html", "utf8"),
 ]);
 
@@ -75,8 +75,8 @@ assert.match(
 // 0025-WebPricingReframe: plain-English boundary sentence must lead the page
 assert.match(
   pricing,
-  /free for individuals, noncommercial use, and small companies/i,
-  "Pricing must lead with the plain-English free/paid/agreement boundary sentence",
+  /Use Ledgerful locally for free\. License it for broader commercial use\./i,
+  "Editions must lead with the value-first free/commercial boundary sentence",
 );
 
 // New edition names must be present (Local / Commercial License / Hosted / Enterprise)

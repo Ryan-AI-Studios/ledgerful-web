@@ -112,7 +112,7 @@ const stateRows: StateRow[] = [
   },
   {
     scope: "Hosted control plane",
-    body: "A future hosted mode will add tenancy, hosted audit log, GitHub App callbacks, billing, and SSO/SCIM/RBAC. None of this is shipped today — see /pricing for explicit state labels.",
+    body: "A future hosted mode will add tenancy, hosted audit log, GitHub App callbacks, billing, and SSO/SCIM/RBAC. None of this is shipped today — see /editions for explicit state labels.",
     maturity: "planned",
     deployment: "hosted",
   },
@@ -423,7 +423,7 @@ export default function ArchitecturePage() {
           </li>
           <li>
             <Link
-              href="/pricing"
+              href="/editions"
               style={{
                 color: "var(--primary-strong)",
                 fontWeight: 680,
@@ -432,7 +432,7 @@ export default function ArchitecturePage() {
                 textDecorationColor: "var(--line)",
               }}
             >
-              Pricing →
+              Editions →
             </Link>{" "}
             editions with explicit maturity and deployment states.
           </li>

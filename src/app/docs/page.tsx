@@ -41,7 +41,7 @@ export default function DocsPage() {
         {topic.href ? (
           <p className="next-action">
             <ArrowRight size={16} aria-hidden="true" />
-            Read docs
+            Open guide
           </p>
         ) : (
           <p className="next-action" style={{ color: "var(--muted)", fontWeight: 400 }}>
@@ -55,7 +55,7 @@ export default function DocsPage() {
         key={topic.title}
         href={topic.href}
         className="doc-card-link"
-        aria-label={`Read docs: ${topic.title}`}
+        aria-label={`Open guide: ${topic.title}`}
       >
         <article>{inner}</article>
       </Link>

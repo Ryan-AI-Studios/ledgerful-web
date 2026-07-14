@@ -1,17 +1,16 @@
-// Captured from real v0.1.6 runs on Windows x86_64.
+// Captured from real v0.1.8 runs on Linux x86_64 (Docker Ubuntu 24.04).
 // Source files: public/evidence/{version,doctor,verify-health}.txt
 // Generating commands:
 //   - version.txt       : ledgerful --version
 //   - doctor.txt        : ledgerful doctor
 //   - verify-health.txt : ledgerful verify --health
-// PowerShell `2>&1` capture wrappers (ErrorRecord blocks) are stripped from the
-// source files; program stdout is reproduced verbatim below.
+// ANSI styling is stripped; program stdout is reproduced verbatim below.
 
 export const capturedEvidence = {
   version: {
     command: "ledgerful --version",
     description: "Binary version",
-    lines: ["ledgerful 0.1.6"],
+    lines: ["ledgerful 0.1.8"],
   },
   doctor: {
     command: "ledgerful doctor",
@@ -19,27 +18,28 @@ export const capturedEvidence = {
     lines: [
       "Ledgerful Doctor - Environment Health Check",
       "==================================================",
-      "Environment:         Windows",
-      "Active Shell:        Powershell",
-      "LEDGERFUL_PLATFORM:  os=windows, arch=x86_64, family=windows, target_triple=x86_64-pc-windows-msvc",
+      "Environment:         Wsl",
+      "Active Shell:        Unknown",
+      "LEDGERFUL_PLATFORM:  os=linux, arch=x86_64, family=unix, target_triple=x86_64-unknown-linux-gnu",
       "",
       "Tools:",
-      "  git                Found (C:\\Program Files\\Git\\cmd\\git.exe)",
-      "  gemini             Found (C:\\Users\\RyanB\\AppData\\Roaming\\npm\\gemini.cmd)",
+      "  git                Found (/usr/bin/git)",
+      "  gemini             NOT FOUND",
       "",
-      "Current Path:        C:\\dev\\ledgerful",
+      "Current Path:        /tmp/neutral-repo",
       "Path Type:           Native",
       "",
-      "Active Ask Backend:  Gemini (Cloud)",
-      "Embedding Model:     nomic-embed-text (768 dims) @ http://127.0.0.1:8083",
-      "Completion Model:    gemma-4-E4B-it-Q6_K.gguf @ http://127.0.0.1:8081",
-      "Native Graph:        Ready (CozoDB active, 7462 nodes, 31911 edges)",
+      "Active Ask Backend:  Local (127.0.0.1)",
+      "Embedding Model:     Not configured",
+      "Completion Model:    Not configured",
+      "Native Graph:        Ready (CozoDB active, 1 nodes, 1 edges)",
       "",
       "Index Health:",
-      "  \u2022 Search index: OK (1526 documents)",
-      "  \u2022 Graph state: Current",
-      "  \u2022 Impact report: Current (Clean tree)",
-      "GPU VRAM:            0.0 GB / 11.1 GB (Driver limitation: zero-usage reporting on Intel Arc)",
+      "  \u2022 Gate mode: observe (matches ledger history)",
+      "  \u2022 Search index: OK (0 documents)",
+      "  \u2022 Graph state: Empty (never indexed)",
+      "  \u2022 Impact report: None (run 'ledgerful scan --impact')",
+      "GPU VRAM:            n/a (Windows-only monitoring)",
     ],
   },
   verifyHealth: {
@@ -48,14 +48,11 @@ export const capturedEvidence = {
     lines: [
       "Verification Health Check",
       "Checking verification dependencies...",
-      "",
-      "  Checking cargo...",
-      "  [OK] cargo is available.",
       "  Checking git...",
       "  [OK] git is available.",
       "  Checking ledger state...",
-      "  [OK] Ledger is clean.",
-      "  [OK] Runner: cargo test (nextest available)",
+      "  [NOTE] No impact report found. Run 'ledgerful scan --impact' after making changes.",
+      "  [OK] Runner: cargo test (nextest not available)",
       "",
       "All verification dependencies are available.",
     ],
@@ -67,7 +64,7 @@ export const panelOrder = ["version", "doctor", "verifyHealth"] as const;
 // Real sanitized artifact previews for `hero-proof.tsx` / `artifact-preview.tsx`.
 // Each block traces to one real, already-verified capture — never fabricated.
 //   - verificationPlan  : `ledgerful verify --dry-run` run against the synthetic
-//                         sample repo (captured 2026-07-03, engine v0.1.7). Leading
+//                         sample repo (captured 2026-07-13, engine v0.1.8). Leading
 //                         blank line / ANSI styling stripped, same convention as
 //                         the PowerShell-wrapper stripping above.
 //   - provenanceRecord  : one real, Ed25519-signed ledger row from `ledger.csv`
@@ -80,18 +77,18 @@ export const artifactPreviews = {
   verificationPlan: {
     sourceLabel: "ledgerful verify --dry-run",
     caption:
-      "Verification plan — captured 2026-07-03, engine v0.1.7, sample repo",
+      "Verification plan — captured 2026-07-13, engine v0.1.8, sample repo",
     lines: [
       "Verification Plan",
       "  Source: Auto-Policy",
       "  Runner: cargo test",
-      "  • Check for whitespace errors in staging area",
-      "  • Check for whitespace errors in working tree",
-      "  • Run build",
+      "  \u2022 Check for whitespace errors in staging area",
+      "  \u2022 Check for whitespace errors in working tree",
+      "  \u2022 Run build",
       "Verification Steps:",
-      "  • git diff --cached --check (timeout: 400s)",
-      "  • git diff --check (timeout: 400s)",
-      "  • npm run build (timeout: 400s)",
+      "  \u2022 git diff --cached --check (timeout: 400s)",
+      "  \u2022 git diff --check (timeout: 400s)",
+      "  \u2022 npm run build (timeout: 400s)",
       "",
       "Dry run mode: verification plan displayed above. No commands were executed.",
     ],
@@ -101,15 +98,15 @@ export const artifactPreviews = {
     caption:
       "Signed provenance record — one real row from the verified sample-soc2 export",
     lines: [
-      "tx_id:        6341380a-5a23-4b12-a1f3-19bd54630296",
+      "tx_id:        e09f48ab-0afe-4881-833f-8fd80048ea34",
       "category:     BUGFIX",
-      "entity:       invoice-tax-rate-fix",
+      "entity:       src/invoice.rs",
       "change_type:  Modify",
-      "summary:      Add TX region tax rate; tighten session validity check",
-      "reason:       Closed a billing gap and a session edge case found during review",
-      "committed_at: 2026-07-03T05:05:33.663336200+00:00",
+      "summary:      fix(invoice): [DEMO] fix rounding error in tax calculation",
+      "reason:       Switch tax calculation from f64 to Decimal to eliminate floating-point rounding.",
+      "committed_at: 2026-07-14T01:47:02.876335722+00:00",
       "signed:       yes",
-      "signature:    382829cdca90ba3d844fc376f34ebbf559ccaf58d92ba3267d1046ef28a5602837a3f8368c3a2e4fc7cefcb39fba75b5b06c83233ec67cdf448fccc121eb3202",
+      "signature:    f3e27176bf5e8437b2308f7fb6ae6ec7e8866d71b337ab132069f50789897d41672208a4c34a72af64a16c59139766ab1e3f37d4171382e8b57d4ea307c39807",
     ],
   },
   evidenceExport: {
@@ -118,12 +115,13 @@ export const artifactPreviews = {
       "Evidence export manifest — tamper-evidence hashes, sample-soc2 export",
     lines: [
       "{",
-      '  "generatedAt": "2026-07-03T05:47:57.608023+00:00",',
+      '  "generatedAt": "2026-07-14T01:47:02.982622805+00:00",',
       '  "files": [',
-      '    { "name": "ledger.csv", "sha256": "5fd8b59fa895489acbe6a848e3c1614d0c02a63da98ea1d077c9f79323753669", "size": 1039 },',
+      '    { "name": "chain_head.json", "sha256": "3a0555a3cdc06156530aaff441232247bae2c105ea7c199b8c9a77f836cba68f", "size": 431 },',
+      '    { "name": "ledger.csv", "sha256": "25ca4a8dc3e93e94f3c84f8b53e6de4c9bafb4544b90a07c7932567662927b63", "size": 3266 },',
       '    { "name": "verification_history.csv", "sha256": "56ef6d6ace5d5bd1381b764ec3d0398c30c7225219aec22c0029e65cf6ed0e84", "size": 57 }',
       "  ],",
-      '  "entryCount": 3',
+      '  "entryCount": 7',
       "}",
     ],
   },

@@ -326,7 +326,7 @@ const homepageH2Order = [
   "How it stays local",
   "Start where you sit",
   "What each state label means",
-  "Register interest",
+  "Get launch updates",
   "Install now, or read the docs first",
 ];
 
@@ -985,7 +985,7 @@ test("waitlist page renders the interest-capture form with one email field and a
   await page.goto("/waitlist");
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Register interest in Ledgerful.",
+    "Get launch updates",
   );
 
   const emailInput = page.getByLabel("Email address");
@@ -997,12 +997,12 @@ test("waitlist page renders the interest-capture form with one email field and a
   });
   await expect(designPartnerCheckbox).toBeVisible();
 
-  const submitButton = page.getByRole("button", { name: "Register interest" });
+  const submitButton = page.getByRole("button", { name: "Get updates" });
   await expect(submitButton).toBeVisible();
   await expect(submitButton).toHaveAttribute("type", "submit");
 });
 
-test("waitlist page has noindex meta (quiet preview)", async ({ page }) => {
+test("waitlist page has noindex meta", async ({ page }) => {
   await page.goto("/waitlist");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
     "content",
@@ -1056,7 +1056,7 @@ test("waitlist honeypot filled submission returns success without error (DoD-2 h
   const honeypot = page.locator('input[name="website"]');
   await honeypot.fill("spam-bot-filler");
 
-  const submitButton = page.getByRole("button", { name: "Register interest" });
+  const submitButton = page.getByRole("button", { name: "Get updates" });
   await submitButton.click();
 
   const statusMessage = page.locator('[role="status"]');
@@ -1072,12 +1072,12 @@ test("waitlist form without ESP configured shows honest error (no silent drop)",
   const emailInput = page.getByLabel("Email address");
   await emailInput.fill("test-waitlist@example.com");
 
-  const submitButton = page.getByRole("button", { name: "Register interest" });
+  const submitButton = page.getByRole("button", { name: "Get updates" });
   await submitButton.click();
 
   const errorMessage = page.locator('.waitlist-form [role="alert"]');
   await expect(errorMessage).toBeVisible({ timeout: 10_000 });
-  await expect(errorMessage).toContainText(/not yet connected/i);
+  await expect(errorMessage).toContainText(/could not process your request right now/i);
 });
 
 test("waitlist form shows error for invalid email", async ({ page }) => {
@@ -1086,7 +1086,7 @@ test("waitlist form shows error for invalid email", async ({ page }) => {
   const emailInput = page.getByLabel("Email address");
   await emailInput.fill("not-an-email");
 
-  const submitButton = page.getByRole("button", { name: "Register interest" });
+  const submitButton = page.getByRole("button", { name: "Get updates" });
   await submitButton.click();
 
   const errorMessage = page.locator('.waitlist-form [role="alert"]');
@@ -1103,7 +1103,7 @@ test("waitlist form with ESP configured shows double-opt-in confirmation (DoD-1 
       body: JSON.stringify({
         ok: true,
         message:
-          "Thanks. Check your email to confirm your interest — double opt-in keeps the list real.",
+          "Thanks. Check your email to confirm your launch-updates subscription — double opt-in keeps the list real.",
       }),
     });
   });
@@ -1118,7 +1118,7 @@ test("waitlist form with ESP configured shows double-opt-in confirmation (DoD-1 
   });
   await designPartner.check();
 
-  const submitButton = page.getByRole("button", { name: "Register interest" });
+  const submitButton = page.getByRole("button", { name: "Get updates" });
   await submitButton.click();
 
   const statusMessage = page.locator('[role="status"]');

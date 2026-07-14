@@ -1,1 +1,1 @@
-ledgerful 0.1.6
+ledgerful 0.1.8

@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// NOTE: The Kit double-opt-in / auto-responder email template must also say
+// "launch updates" (not the old pre-launch framing) to match this framing.
+// That is a Kit account platform change, not a repo edit — update it in the
+// Kit dashboard alongside this code change.
+
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const KIT_API_BASE = "https://api.kit.com/v4";
 
@@ -22,7 +27,7 @@ export async function POST(request: NextRequest) {
 
   if (honeypot) {
     return NextResponse.json(
-      { ok: true, message: "Thanks. Check your email to confirm." },
+      { ok: true, message: "Thanks. Check your email to confirm your launch-updates subscription." },
       { status: 200 },
     );
   }
@@ -42,7 +47,7 @@ export async function POST(request: NextRequest) {
       {
         ok: false,
         message:
-          "We are in quiet preview and the waitlist is not yet connected. Please try again when we launch.",
+          "We could not process your request right now. Please try again later.",
       },
       { status: 503 },
     );
@@ -129,7 +134,7 @@ export async function POST(request: NextRequest) {
       {
         ok: true,
         message:
-          "Thanks. Check your email to confirm your interest — double opt-in keeps the list real.",
+          "Thanks. Check your email to confirm your launch-updates subscription — double opt-in keeps the list real.",
       },
       { status: 200 },
     );

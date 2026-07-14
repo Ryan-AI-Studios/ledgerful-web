@@ -32,7 +32,7 @@ export function EvidencePanel() {
             </pre>
             <div className="terminal-annotation">
               <span className="terminal-caption">
-                {`${panel.description} — captured from v0.1.6`}
+                {`${panel.description} — captured from v0.1.8`}
               </span>
               <span className="terminal-meta">{panel.command}</span>
             </div>
@@ -41,9 +41,9 @@ export function EvidencePanel() {
       })}
       <p className="evidence-caption">
         <span>
-          Real output from a <strong>v0.1.6</strong> run on Windows x86_64.
-          Source files in <code>public/evidence/</code>. PowerShell capture
-          wrappers are stripped; program stdout is reproduced verbatim.
+          Real output from a <strong>v0.1.8</strong> run on Linux x86_64.
+          Source files in <code>public/evidence/</code>. Program stdout is
+          reproduced verbatim.
         </span>
       </p>
     </div>

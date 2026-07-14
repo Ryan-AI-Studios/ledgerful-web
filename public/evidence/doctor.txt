@@ -1,23 +1,24 @@
 ﻿Ledgerful Doctor - Environment Health Check
 ==================================================
-Environment:         Windows
-Active Shell:        Powershell
-LEDGERFUL_PLATFORM:  os=windows, arch=x86_64, family=windows, target_triple=x86_64-pc-windows-msvc
+Environment:         Wsl
+Active Shell:        Unknown
+LEDGERFUL_PLATFORM:  os=linux, arch=x86_64, family=unix, target_triple=x86_64-unknown-linux-gnu
 
 Tools:
-  git                Found (C:\Program Files\Git\cmd\git.exe)
-  gemini             Found (C:\Users\RyanB\AppData\Roaming\npm\gemini.cmd)
+  git                Found (/usr/bin/git)
+  gemini             NOT FOUND
 
-Current Path:        C:\dev\ledgerful
+Current Path:        /tmp/neutral-repo
 Path Type:           Native
 
-Active Ask Backend:  Gemini (Cloud)
-Embedding Model:     nomic-embed-text (768 dims) @ http://127.0.0.1:8083
-Completion Model:    gemma-4-E4B-it-Q6_K.gguf @ http://127.0.0.1:8081
-Native Graph:        Ready (CozoDB active, 7462 nodes, 31911 edges)
+Active Ask Backend:  Local (127.0.0.1)
+Embedding Model:     Not configured
+Completion Model:    Not configured
+Native Graph:        Ready (CozoDB active, 1 nodes, 1 edges)
 
 Index Health:
-  ΓÇó Search index: OK (1526 documents)
-  ΓÇó Graph state: Current
-  ΓÇó Impact report: Current (Clean tree)
-GPU VRAM:            0.0 GB / 11.1 GB (Driver limitation: zero-usage reporting on Intel Arc)
+  • Gate mode: observe (matches ledger history)
+  • Search index: OK (0 documents)
+  • Graph state: Empty (never indexed)
+  • Impact report: None (run 'ledgerful scan --impact')
+GPU VRAM:            n/a (Windows-only monitoring)

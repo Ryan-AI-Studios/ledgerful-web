@@ -1423,7 +1423,7 @@ export default function TrustPage() {
                 <code>{`{
   "schema_version": 1,
   "anonymous_id": "00000000-0000-4000-8000-000000000000",
-  "client_version": "0.1.7",
+  "client_version": "0.1.8",
   "platform": "windows",
   "sent_at": "2026-07-02T14:00:00Z",
   "window_start": "2026-06-25T14:00:00Z",
@@ -1535,7 +1535,7 @@ export default function TrustPage() {
               <pre>
                 <code>{`{
   "generatedAt": "2026-06-30T14:22:08.114Z",
-  "toolVersion": "0.1.6",
+  "toolVersion": "0.1.8",
   "entryCount": 3,
   "files": [
     {

@@ -73,7 +73,7 @@ function DoctorOutputPreview() {
       </pre>
       <div className="terminal-annotation">
         <span className="terminal-caption">
-          Representative output — captured from a real v0.1.6 run
+          Representative output — captured from a real v0.1.8 run
         </span>
         <span className="terminal-meta">{panel.command}</span>
       </div>

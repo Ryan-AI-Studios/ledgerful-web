@@ -43,7 +43,7 @@ export function WaitlistForm() {
           kind: "success",
           message:
             body.message ??
-            "Thanks. Check your email to confirm your interest.",
+            "Thanks. Check your email to confirm your launch-updates subscription.",
         });
         return;
       }
@@ -124,12 +124,12 @@ export function WaitlistForm() {
             className="waitlist-submit"
             disabled={status.kind === "submitting"}
           >
-            {status.kind === "submitting" ? "Submitting…" : "Register interest"}
+            {status.kind === "submitting" ? "Submitting…" : "Get updates"}
           </button>
 
           <p className="waitlist-caveat">
-            We are in quiet preview. Leaving your email means you want a launch
-            announcement. Nothing else.
+            Get launch announcements and changelog updates. No spam, no
+            commitment.
           </p>
         </form>
       )}

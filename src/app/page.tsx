@@ -286,11 +286,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 11.5. Waitlist / early access */}
+      {/* 11.5. Waitlist / launch updates */}
       <section className="content-band" id="waitlist">
-        <SectionHeading title="Register interest">
-          We are in quiet preview. Leave your email and we will let you know when
-          Ledgerful is ready to install. No commitment, no timeline, no purchase.{" "}
+        <SectionHeading title="Get launch updates">
+          Ledgerful v0.1.8 is installed today. If you want launch announcements
+          and changelog updates, leave your email. No commitment, no spam.{" "}
           <Link href="/waitlist" className="inline-link">
             Open the full form
           </Link>

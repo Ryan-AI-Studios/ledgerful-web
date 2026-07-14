@@ -1,12 +1,9 @@
 ﻿Verification Health Check
 Checking verification dependencies...
-
-  Checking cargo...
-  [OK] cargo is available.
   Checking git...
   [OK] git is available.
   Checking ledger state...
-  [OK] Ledger is clean.
-  [OK] Runner: cargo test (nextest available)
+  [NOTE] No impact report found. Run 'ledgerful scan --impact' after making changes.
+  [OK] Runner: cargo test (nextest not available)
 
 All verification dependencies are available.

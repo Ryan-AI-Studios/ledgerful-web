@@ -6,7 +6,7 @@ import { WaitlistForm } from "@/components/waitlist-form";
 import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
-  title: "Early access — Ledgerful",
+  title: "Launch updates — Ledgerful",
   description: pageDescriptions.waitlist,
   alternates: { canonical: "/waitlist" },
   openGraph: {
@@ -22,11 +22,11 @@ export default function WaitlistPage() {
   return (
     <PageShell>
       <section className="page-hero compact">
-        <p className="hero-kicker">Quiet preview</p>
-        <h1>Register interest in Ledgerful.</h1>
+        <p className="hero-kicker">Launch updates</p>
+        <h1>Get launch updates</h1>
         <p>
-          We are in quiet preview. Leave your email and we will let you know when
-          Ledgerful is ready to install. No commitment, no timeline, no purchase.
+          Ledgerful is installed and public. Leave your email for launch
+          announcements and changelog updates — nothing else.
         </p>
       </section>
 
@@ -36,11 +36,11 @@ export default function WaitlistPage() {
 
       <section className="content-band">
         <SectionHeading title="What you are signing up for">
-          An email when Ledgerful is ready to install. Nothing else. Your email
-          is sent to Kit, our email provider, solely to deliver the launch
-          announcement. We do not sell it or use it for anything beyond that.
-          Double opt-in means you confirm your interest from your inbox before
-          we add you.
+          An email when we ship a notable update or changelog entry. Nothing
+          else. Your email is sent to Kit, our email provider, solely to deliver
+          launch announcements and changelog updates. We do not sell it or use
+          it for anything beyond that. Double opt-in means you confirm from your
+          inbox before we add you.
         </SectionHeading>
       </section>
 

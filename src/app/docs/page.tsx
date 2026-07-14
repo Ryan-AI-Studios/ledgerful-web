@@ -7,7 +7,6 @@ import { StatusPill } from "@/components/status-pill";
 import { docTopics } from "@/lib/content/docs";
 import { launchTruth } from "@/lib/content/launch-facts";
 import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
-import { pillars } from "@/lib/content/pillars";
 
 export const metadata: Metadata = {
   title: "Docs — CLI, dashboard, MCP, GitHub Action, compliance, sync",
@@ -23,6 +22,24 @@ export const metadata: Metadata = {
     images: [homeOgImage.url],
   },
 };
+
+const taskGroups = [
+  {
+    label: "Get started",
+    description: "Install the CLI, run your first scan, and launch the local dashboard.",
+    topics: ["CLI install and smoke test", "Local dashboard launch"],
+  },
+  {
+    label: "Integrate",
+    description: "Connect AI assistants, CI, and team sync to the local engine.",
+    topics: ["MCP setup", "GitHub Action setup", "Local team sync"],
+  },
+  {
+    label: "Evidence & security",
+    description: "Export audit evidence, verify releases, and review local data handling.",
+    topics: ["SOC 2-style evidence export", "Release verification"],
+  },
+] as const;
 
 export default function DocsPage() {
   const { release } = launchTruth.facts;
@@ -64,8 +81,8 @@ export default function DocsPage() {
     );
   };
 
-  const topicsForPillar = (pillarId: string) =>
-    liveTopics.filter((t) => t.pillar === pillarId);
+  const topicsForTask = (topicTitles: readonly string[]) =>
+    liveTopics.filter((t) => topicTitles.includes(t.title));
 
   return (
     <PageShell>
@@ -79,17 +96,16 @@ export default function DocsPage() {
       </section>
       <section className="content-band">
         <SectionHeading title="Documentation index">
-          Organized by what Ledgerful does. Hosted and planned capabilities are
+          Organized by what you need to do. Planned capabilities are
           state-labeled so you can tell what ships today.
         </SectionHeading>
-        {pillars.map((pillar) => {
-          const pillarTopics = topicsForPillar(pillar.id);
-          if (pillarTopics.length === 0) return null;
+        {taskGroups.map((group) => {
+          const groupTopics = topicsForTask(group.topics);
           return (
-            <div key={pillar.id} className="doc-pillar-group">
-              <h3 className="doc-pillar-heading">{pillar.label}</h3>
-              <p className="doc-pillar-desc">{pillar.description}</p>
-              <div className="doc-grid">{pillarTopics.map(renderCard)}</div>
+            <div key={group.label} className="doc-pillar-group">
+              <h3 className="doc-pillar-heading">{group.label}</h3>
+              <p className="doc-pillar-desc">{group.description}</p>
+              <div className="doc-grid">{groupTopics.map(renderCard)}</div>
             </div>
           );
         })}

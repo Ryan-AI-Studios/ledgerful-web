@@ -43,8 +43,9 @@ export default function DocsGithubActionPage() {
           <p>
             <strong>GitHub Action (this page):</strong> A reusable workflow step
             that runs inside your own GitHub Actions CI environment. You control
-            the workflow YAML, the permissions, and the token. It is implemented
-            in source as a beta, but is not publicly installable yet.
+            the workflow YAML, the permissions, and the token. The action is not
+            publicly installable yet — the workflow YAML here is a reference
+            shape, not a ready-to-use action.
           </p>
           <p style={{ marginTop: "12px" }}>
             <strong>Hosted GitHub App:</strong>{" "}

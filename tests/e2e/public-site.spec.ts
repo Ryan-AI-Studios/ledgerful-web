@@ -378,7 +378,7 @@ for (const { width, height } of dod2Viewports) {
 }
 
 test("skip link and native disclosure are keyboard operable", async ({ page }) => {
-  await page.goto("/trust");
+  await page.goto("/docs/security");
   await page.keyboard.press("Tab");
   const skipLink = page.getByRole("link", { name: "Skip to content" });
   await expect(skipLink).toBeFocused();
@@ -392,7 +392,7 @@ test("skip link and native disclosure are keyboard operable", async ({ page }) =
 
 test("mobile section-nav disclosure is keyboard operable at 375px", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
-  await page.goto("/trust");
+  await page.goto("/docs/security");
 
   // The desktop rail is hidden at 375px; the mobile <details> disclosure shows.
   const rail = page.locator(".trust-section-nav--rail");
@@ -452,8 +452,8 @@ test("trust inline links are distinguishable without color alone", async ({ page
   }
 });
 
-test("trust supply chain attestation section reflects shipped state", async ({ page }) => {
-  await page.goto("/trust");
+test("docs/security supply chain attestation section reflects shipped state", async ({ page }) => {
+  await page.goto("/docs/security");
   const section = page.locator("#supply-chain-attestation");
   await expect(section).toBeVisible();
   const sectionText = await section.textContent();
@@ -491,7 +491,7 @@ test("trust supply chain attestation section reflects shipped state", async ({ p
   }
 });
 
-// WEB-0024 — recomposed /trust adds the reads/writes/uploads boundary
+// WEB-0024 — recomposed /docs/security adds the reads/writes/uploads boundary
 // table, the supply-chain attestation components table, and splits the
 // subprocessor list into two. Seven `.table-scroll` wrappers in total:
 // the boundary table, the SOC2 ZIP layout, the telemetry schema, the
@@ -505,9 +505,9 @@ test("trust supply chain attestation section reflects shipped state", async ({ p
 // supply-chain components table actually overflow. The SOC2 ZIP layout
 // and the telemetry schema do not.
 for (const width of [320, 375]) {
-  test(`trust only exposes necessary keyboard scroll regions at ${width}px`, async ({ page }) => {
+  test(`docs/security only exposes necessary keyboard scroll regions at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 812 });
-    await page.goto("/trust");
+    await page.goto("/docs/security");
     const wrappers = page.locator(".table-scroll");
     await expect(wrappers).toHaveCount(7);
     let scrollableCount = 0;
@@ -546,7 +546,7 @@ for (const width of [320, 375]) {
 // guard that `@media print` doesn't silently break; a human still
 // eyeballs the artifact for cut tables/diagrams.
 test("trust page generates a printable PDF for human review", async ({ page }) => {
-  await page.goto("/trust");
+  await page.goto("/docs/security");
   await page.emulateMedia({ media: "print" });
 
   // Assert the print CSS actually applied before generating the PDF:

@@ -56,7 +56,7 @@ export default function DocsReleasesPage() {
             launch. Code signing for both platforms is a separate planned
             enhancement. Supply chain attestation (SBOM, cosign signing, SLSA
             provenance) shipped with v0.1.8 — see the{" "}
-            <Link href="/trust#supply-chain-attestation" className="inline-link">
+            <Link href="/docs/security#supply-chain-attestation" className="inline-link">
               trust page supply chain section
             </Link>
             .

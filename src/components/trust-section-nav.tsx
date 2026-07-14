@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 
 /**
- * The 15 sections of the recomposed /trust page, in canonical order.
- * Source of truth for both the section nav and the page itself — keep
- * in sync with the `<section id="...">` order in `app/trust/page.tsx`.
+ * The deep-dive sections of /docs/security, in canonical order.
+ * Source of truth for the section nav and the page itself — keep
+ * in sync with the `<section id="...">` order in `app/docs/security/page.tsx`.
  */
 export const trustSections: { id: string; label: string }[] = [
   { id: "summary", label: "1. Executive summary" },
@@ -18,11 +18,9 @@ export const trustSections: { id: string; label: string }[] = [
   { id: "supply-chain-attestation", label: "8. Supply chain attestation" },
   { id: "telemetry", label: "9. Telemetry schema" },
   { id: "soc2-export", label: "10. Redacted evidence export" },
-  { id: "threat-model", label: "11. Threat model & non-goals" },
-  { id: "prove-dont", label: "12. What we prove / what we don't" },
-  { id: "disclosure", label: "13. Responsible disclosure" },
-  { id: "license", label: "14. License" },
-  { id: "subprocessors", label: "15. Subprocessors" },
+  { id: "prove-dont", label: "11. What we prove / what we don't" },
+  { id: "threat-model", label: "12. Threat model & non-goals" },
+  { id: "subprocessors", label: "13. Subprocessors" },
 ];
 
 /**

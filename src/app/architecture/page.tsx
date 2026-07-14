@@ -195,23 +195,26 @@ export default function ArchitecturePage() {
 
         <div className="produces-grid" style={{ marginTop: "8px" }}>
           <article>
+            <p className="artifact-why">Tells you what to test before you merge.</p>
             <h3>Verification plan</h3>
             <ArtifactPreview id="verificationPlan" />
           </article>
           <article>
+            <p className="artifact-why">A signed receipt you can verify offline.</p>
             <h3>Signed provenance record</h3>
             <ArtifactPreview id="provenanceRecord" />
           </article>
           <article>
+            <p className="artifact-why">Hand to an auditor; no dashboard required.</p>
             <h3>Evidence export manifest</h3>
             <ArtifactPreview id="evidenceExport" />
           </article>
         </div>
       </section>
 
-      {/* ── Diagram — component topology, after the workflow ───────────── */}
+      {/* ── Diagram + Surfaces — consolidated ──────────────────── */}
       <section className="content-band" id="diagram">
-        <SectionHeading title="Surfaces and the local-first boundary">
+        <SectionHeading title="Architecture at a glance">
           The host runs the engine and dashboard. The public web is static and
           does not host a control plane. The hosted mode is planned and is
           shown dashed.
@@ -232,9 +235,11 @@ export default function ArchitecturePage() {
 
       {/* ── Surfaces strip ─────────────────────────────────── */}
       <section className="split-band" id="surfaces">
-        <SectionHeading title="The three surfaces today">
-          Each surface has an explicit state. No hosted or enterprise
-          capability is presented as live before the control plane exists.
+        <SectionHeading title="The three surfaces">
+          Each surface has an explicit state. The hosted control plane is
+          planned and not shown here — see{" "}
+          <Link href="/editions" className="inline-link">editions</Link> for
+          what is coming.
         </SectionHeading>
         <div className="surface-strip">
           {surfaces.map((surface) => {
@@ -308,15 +313,15 @@ export default function ArchitecturePage() {
           style={{ marginTop: "16px" }}
         >
           Telemetry, when enabled, sends the aggregate schema documented on the
-          trust page. Separately, configured cloud-model ask workflows can send
+          security architecture page. Separately, configured cloud-model ask workflows can send
           sanitized, truncated context to the selected provider. See{" "}
           <Link
-            href="/trust"
+            href="/docs/security#telemetry"
             style={{
               color: "var(--accent)",
             }}
           >
-            the trust page
+            the security architecture page
           </Link>{" "}
           for the full telemetry schema.
         </p>

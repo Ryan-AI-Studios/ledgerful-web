@@ -52,7 +52,7 @@ const nextConfig: NextConfig = {
       {
         source: "/pricing",
         destination: "/editions",
-        permanent: true,
+        statusCode: 301,
       },
     ];
   },

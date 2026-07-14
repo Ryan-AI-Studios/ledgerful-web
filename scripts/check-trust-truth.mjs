@@ -1,106 +1,106 @@
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 
-const htmlPath = join(process.cwd(), ".next/server/app/trust.html");
-let html;
-try {
-  html = readFileSync(htmlPath, "utf8");
-} catch {
-  console.error("FAIL: Could not read", htmlPath, "— run npm run build first");
-  process.exit(1);
+function readHtml(route) {
+  const htmlPath = join(process.cwd(), `.next/server/app${route}.html`);
+  try {
+    return readFileSync(htmlPath, "utf8");
+  } catch {
+    console.error("FAIL: Could not read", htmlPath, "— run npm run build first");
+    process.exit(1);
+  }
 }
 
-const lower = html.toLowerCase();
+const trustHtmlRaw = readHtml("/trust");
+const securityHtmlRaw = readHtml("/docs/security");
+const trustLower = trustHtmlRaw.toLowerCase();
+const securityLower = securityHtmlRaw.toLowerCase();
 const failures = [];
 
-if (lower.includes("ledgerful.io")) {
+// Assertions that must hold on the concise /trust landing page.
+
+if (trustLower.includes("ledgerful.io")) {
   failures.push("Canonical-domain FAIL: trust page must use ledgerful.dev, not ledgerful.io");
 }
-if (lower.includes("operative source terms")) {
+if (trustLower.includes("operative source terms")) {
   failures.push("License FAIL: resolved terms must not be called operative");
 }
-if (!lower.includes("in force") && !lower.includes("license is in force")) {
+if (!trustLower.includes("in force") && !trustLower.includes("license is in force")) {
   failures.push("License FAIL: trust page must state the license is in force");
 }
-if (lower.includes("github actions integration for the future hosted ci workflow")) {
+if (trustLower.includes("github actions integration for the future hosted ci workflow")) {
   failures.push(
     "GitHub boundary FAIL: the self-managed Action must not be conflated with the future hosted App",
   );
 }
 
+// Assert 2-6: concise procurement-facing claims stay on /trust.
+if (!trustLower.includes("opt-in")) {
+  failures.push('Assert 2 FAIL: "opt-in" not found on /trust — telemetry opt-in claim missing');
+}
+if (!trustLower.includes("source") || !trustLower.includes("upload")) {
+  failures.push('Assert 3 FAIL: "source" and/or "upload" not found on /trust — no-source-upload claim missing');
+}
+if (!trustLower.includes("loopback") && !trustLower.includes("127.0.0.1")) {
+  failures.push('Assert 4 FAIL: "loopback" or "127.0.0.1" not found on /trust — daemon access not documented');
+}
+if (!trustLower.includes("sha-256") && !trustLower.includes("checksum")) {
+  failures.push('Assert 5 FAIL: "SHA-256" or "checksum" not found on /trust — release verification not documented');
+}
+if (!trustLower.includes("responsible disclosure")) {
+  failures.push('Assert 6 FAIL: "responsible disclosure" not found on /trust');
+}
+
+// Assert 14: banned terms must not appear on either trust/security page.
+for (const banned of ["tamper-proof", "immutable", "blockchain-grade"]) {
+  if (trustLower.includes(banned)) {
+    failures.push(`Assert 14 FAIL: banned term "${banned}" found on /trust`);
+  }
+  if (securityLower.includes(banned)) {
+    failures.push(`Assert 14 FAIL: banned term "${banned}" found on /docs/security`);
+  }
+}
+
+// Assertions that must hold on the deep /docs/security page.
+
+// Assert 4 (deep): hardened token details.
 for (const required of ["authorization", "bearer", "in memory", "stripped"]) {
-  if (!lower.includes(required)) {
+  if (!securityLower.includes(required)) {
     failures.push(
-      `Auth-flow FAIL: trust page is missing hardened token detail "${required}"`,
+      `Auth-flow FAIL: /docs/security is missing hardened token detail "${required}"`,
     );
   }
 }
 
-// Assert 2: opt-in (telemetry)
-if (!lower.includes("opt-in")) {
-  failures.push('Assert 2 FAIL: "opt-in" not found — telemetry opt-in claim missing');
-}
-
-// Assert 3: no-source-upload
-if (!lower.includes("source") || !lower.includes("upload")) {
-  failures.push('Assert 3 FAIL: "source" and/or "upload" not found — no-source-upload claim missing');
-}
-
-// Assert 4: daemon access
-if (!lower.includes("loopback") && !lower.includes("127.0.0.1")) {
-  failures.push('Assert 4 FAIL: "loopback" or "127.0.0.1" not found — daemon access not documented');
-}
-
-// Assert 5: release verification
-if (!lower.includes("sha-256") && !lower.includes("checksum")) {
-  failures.push('Assert 5 FAIL: "SHA-256" or "checksum" not found — release verification not documented');
-}
-
-// Assert 6: responsible disclosure
-if (!lower.includes("responsible disclosure")) {
-  failures.push('Assert 6 FAIL: "responsible disclosure" not found');
-}
-
-// Assert 7: enterprise identity terms must not appear without "planned"
-// Uses word-boundary regex to avoid false positives from HTML attribute values
-// such as "crossorigin" which contains "sso" as a substring.
-// Excludes OIDC occurrences in the supply chain attestation section where
-// "OIDC" refers to the cosign/Sigstore signing identity (GitHub Actions OIDC),
-// not enterprise SSO. The RSC flight payload duplicates the section content so
-// we also check for cosign/sigstore/fulcio as supply-chain context markers.
+// Assert 7: enterprise identity terms must not appear without "planned".
 const enterpriseTerms = ["sso", "saml", "oidc", "scim", "rbac"];
 for (const term of enterpriseTerms) {
-  // Require a non-identifier boundary on both sides so "oidc-issuer" flags
-  // are not treated as an unqualified OIDC claim.
   const regex = new RegExp(`(?<![a-z0-9_-])${term}(?![a-z0-9_-])`, "gi");
   let match;
-  while ((match = regex.exec(lower)) !== null) {
+  while ((match = regex.exec(securityLower)) !== null) {
     const idx = match.index;
-    // Check within 120 chars in either direction for "planned"
-    const window = lower.slice(Math.max(0, idx - 120), idx + term.length + 120);
+    const window = securityLower.slice(Math.max(0, idx - 120), idx + term.length + 120);
     if (window.includes("planned")) {
       continue;
     }
-    // Allow OIDC in supply-chain attestation context (cosign/Sigstore/Fulcio/release-workflow)
     if (term === "oidc" && (window.includes("cosign") || window.includes("sigstore") || window.includes("fulcio") || window.includes("release workflow"))) {
       continue;
     }
-    failures.push(`Assert 7 FAIL: "${term.toUpperCase()}" appears without a "planned" qualifier nearby`);
-    break; // one failure per term is enough
+    failures.push(`Assert 7 FAIL: "${term.toUpperCase()}" appears on /docs/security without a "planned" qualifier nearby`);
+    break;
   }
 }
-// Also check "audit log" without planned
-const auditIdx = lower.indexOf("audit log");
+const auditIdx = securityLower.indexOf("audit log");
 if (auditIdx !== -1) {
-  const window = lower.slice(Math.max(0, auditIdx - 120), auditIdx + 120);
+  const window = securityLower.slice(Math.max(0, auditIdx - 120), auditIdx + 120);
   if (!window.includes("planned")) {
-    failures.push('Assert 7 FAIL: "audit log" appears without "planned" qualifier nearby');
+    failures.push('Assert 7 FAIL: "audit log" appears on /docs/security without "planned" qualifier nearby');
   }
 }
 
-// Assert 8: crash reporting addressed
-if (!lower.includes("crash")) {
-  failures.push('Assert 8 FAIL: crash reporting not addressed — add explicit statement about crash reports');
+// Assert 8: crash reporting addressed.
+if (!securityLower.includes("crash")) {
+  failures.push('Assert 8 FAIL: crash reporting not addressed on /docs/security');
 }
 
 // Assert 9: telemetry schema matches the engine UsagePayload.
@@ -116,13 +116,13 @@ for (const field of [
   "features_enabled",
   "active_days_in_window",
 ]) {
-  if (!lower.includes(field)) {
-    failures.push(`Assert 9 FAIL: telemetry field "${field}" is missing`);
+  if (!securityLower.includes(field)) {
+    failures.push(`Assert 9 FAIL: telemetry field "${field}" is missing on /docs/security`);
   }
 }
 for (const staleField of ["subcommand / action", "duration / timing"]) {
-  if (lower.includes(staleField)) {
-    failures.push(`Assert 9 FAIL: stale telemetry field "${staleField}" is still published`);
+  if (securityLower.includes(staleField)) {
+    failures.push(`Assert 9 FAIL: stale telemetry field "${staleField}" is still published on /docs/security`);
   }
 }
 
@@ -135,67 +135,62 @@ for (const phrase of [
   "openrouter",
   "repository-local .env",
 ]) {
-  if (!lower.includes(phrase)) {
-    failures.push(`Assert 10 FAIL: trust disclosure is missing "${phrase}"`);
+  if (!securityLower.includes(phrase)) {
+    failures.push(`Assert 10 FAIL: /docs/security disclosure is missing "${phrase}"`);
   }
 }
 
 // Assert 11: current signing-key filename is documented.
-if (!lower.includes("private.key")) {
-  failures.push('Assert 11 FAIL: current private.key signing-key path is missing');
+if (!securityLower.includes("private.key")) {
+  failures.push('Assert 11 FAIL: current private.key signing-key path is missing on /docs/security');
 }
 
-// Assert 12: waitlist ESP subprocessor is disclosed
-if (!lower.includes("kit (waitlist)") && !lower.includes("kit (formerly convertkit)")) {
-  failures.push('Assert 12 FAIL: Kit waitlist ESP subprocessor not disclosed on trust page');
+// Assert 12: waitlist ESP subprocessor is disclosed.
+if (!securityLower.includes("kit (waitlist)") && !securityLower.includes("kit (formerly convertkit)")) {
+  failures.push('Assert 12 FAIL: Kit waitlist ESP subprocessor not disclosed on /docs/security');
 }
-if (!lower.includes("double opt-in")) {
-  failures.push('Assert 12 FAIL: "double opt-in" not found — waitlist consent model not documented');
+if (!securityLower.includes("double opt-in")) {
+  failures.push('Assert 12 FAIL: "double opt-in" not found on /docs/security — waitlist consent model not documented');
 }
-if (!lower.includes("email capture is separate from telemetry")) {
-  failures.push('Assert 12 FAIL: email-capture ≠ telemetry reconciliation missing');
+if (!securityLower.includes("email capture is separate from telemetry")) {
+  failures.push('Assert 12 FAIL: email-capture ≠ telemetry reconciliation missing on /docs/security');
 }
-if (!lower.includes("waitlist deletion request")) {
-  failures.push('Assert 12 FAIL: waitlist deletion path not disclosed');
+if (!securityLower.includes("waitlist deletion request")) {
+  failures.push('Assert 12 FAIL: waitlist deletion path not disclosed on /docs/security');
 }
 
-// Assert 13: supply chain attestation — shipped language + caveats
-if (!lower.includes("supply chain attestation")) {
-  failures.push('Assert 13 FAIL: "supply chain attestation" section not found on trust page');
+// Assert 13: supply chain attestation — shipped language + caveats.
+if (!securityLower.includes("supply chain attestation")) {
+  failures.push('Assert 13 FAIL: "supply chain attestation" section not found on /docs/security');
 }
-if (!lower.includes("sbom")) {
-  failures.push('Assert 13 FAIL: "SBOM" not mentioned — supply chain section missing SBOM disclosure');
+if (!securityLower.includes("sbom")) {
+  failures.push('Assert 13 FAIL: "SBOM" not mentioned on /docs/security');
 }
-if (!lower.includes("cosign")) {
-  failures.push('Assert 13 FAIL: "cosign" not mentioned — supply chain signing not documented');
+if (!securityLower.includes("cosign")) {
+  failures.push('Assert 13 FAIL: "cosign" not mentioned on /docs/security');
 }
-if (!lower.includes("slsa")) {
-  failures.push('Assert 13 FAIL: "SLSA" not mentioned — build provenance not documented');
+if (!securityLower.includes("slsa")) {
+  failures.push('Assert 13 FAIL: "SLSA" not mentioned on /docs/security');
 }
-if (!lower.includes("cargo auditable")) {
-  failures.push('Assert 13 FAIL: "cargo auditable" not mentioned — embedded dep list not documented');
+if (!securityLower.includes("cargo auditable")) {
+  failures.push('Assert 13 FAIL: "cargo auditable" not mentioned on /docs/security');
 }
-// Supply chain section must reflect shipped state (not planned)
-const scaIdx = lower.indexOf('id="supply-chain-attestation"');
+const scaIdx = securityLower.indexOf('id="supply-chain-attestation"');
 if (scaIdx !== -1) {
-  const sectionEnd = lower.indexOf('id="telemetry"', scaIdx + 1);
-  const section = lower.slice(
+  const sectionEnd = securityLower.indexOf('id="telemetry"', scaIdx + 1);
+  const section = securityLower.slice(
     scaIdx,
-    sectionEnd !== -1 ? sectionEnd : lower.length,
+    sectionEnd !== -1 ? sectionEnd : securityLower.length,
   );
-  // Must NOT still say "planned (track 0053)" as the primary status
   if (section.includes("planned (track 0053)")) {
     failures.push('Assert 13 FAIL: supply chain section still says "Planned (track 0053)" — v0.1.8 shipped these capabilities');
   }
-  // Must NOT say "will be actionable once the pipeline ships"
   if (section.includes("will be actionable once the pipeline ships")) {
     failures.push('Assert 13 FAIL: supply chain section still says commands "will be actionable once the pipeline ships" — they are actionable now');
   }
-  // Must NOT say "what each release will carry" (future tense for shipped capability)
   if (section.includes("what each release will carry")) {
     failures.push('Assert 13 FAIL: supply chain section still uses future tense "what each release will carry" — capabilities shipped');
   }
-  // Must NOT contain present-tense capability verbs that imply unshipped (the old denylist)
   const unshippedVerbs = ["to be generated", "will be signed", "will carry", "will be built with", "will embed", "will be attached"];
   for (const verb of unshippedVerbs) {
     if (section.includes(verb)) {
@@ -203,26 +198,17 @@ if (scaIdx !== -1) {
     }
   }
 }
-// Must carry both mandatory caveats
-if (!lower.includes("cozo") && !lower.includes("cozo-redux")) {
-  failures.push('Assert 13 FAIL: cozo git-dependency gap not documented on trust page');
+if (!securityLower.includes("cozo") && !securityLower.includes("cozo-redux")) {
+  failures.push('Assert 13 FAIL: cozo git-dependency gap not documented on /docs/security');
 }
-if (!lower.includes("native sqlite") && !lower.includes("bundled native sqlite")) {
-  failures.push('Assert 13 FAIL: bundled native SQLite gap not documented on trust page');
+if (!securityLower.includes("native sqlite") && !securityLower.includes("bundled native sqlite")) {
+  failures.push('Assert 13 FAIL: bundled native SQLite gap not documented on /docs/security');
 }
-// Boundary: must not claim this is a product feature for users
-if (!lower.includes("not a product feature") && !lower.includes("not a product feature that")) {
-  failures.push('Assert 13 FAIL: supply chain section must state it is not a product feature for the user');
+if (!securityLower.includes("not a product feature") && !securityLower.includes("not a product feature that")) {
+  failures.push('Assert 13 FAIL: /docs/security supply chain section must state it is not a product feature for the user');
 }
 
-// Assert 14: banned terms must not appear on the trust page
-for (const banned of ["tamper-proof", "immutable", "blockchain-grade"]) {
-  if (lower.includes(banned)) {
-    failures.push(`Assert 14 FAIL: banned term "${banned}" found on trust page`);
-  }
-}
-
-// Assert 15: SECURITY.md exists and contains required content
+// Assert 15: SECURITY.md exists and contains required content.
 const securityPath = join(process.cwd(), "SECURITY.md");
 if (!existsSync(securityPath)) {
   failures.push('Assert 15 FAIL: SECURITY.md does not exist at repo root');
@@ -259,7 +245,7 @@ if (!existsSync(securityPath)) {
   }
 }
 
-// Assert 16: release-notes template exists and contains required content
+// Assert 16: release-notes template exists and contains required content.
 const templatePath = join(process.cwd(), "docs/release-notes-template.md");
 if (!existsSync(templatePath)) {
   failures.push('Assert 16 FAIL: docs/release-notes-template.md does not exist');

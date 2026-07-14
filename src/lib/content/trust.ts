@@ -387,7 +387,7 @@ export const productSubprocessors: ProductSubprocessor[] = [
   {
     name: "GitHub",
     purpose:
-      "Future GitHub App installation records and webhooks for the hosted control plane. The current self-managed GitHub Action is a separate beta path run in the customer's own repository.",
+      "Future GitHub App installation records and webhooks for the hosted control plane. The current self-managed GitHub Action is a separate planned path run in the customer's own repository — not publicly installable yet.",
     maturity: "planned",
     deployment: "hosted",
     tier: "hosted-planned",

@@ -9,9 +9,8 @@ import Link from "next/link";
 export function DataFlowStrip() {
   return (
     <p className="data-flow-strip">
-      Reads your local repo <span aria-hidden="true">→</span> analyzes locally{" "}
-      <span aria-hidden="true">→</span> writes reports to disk. Nothing
-      uploads by default.{" "}
+      Reads your repo <span aria-hidden="true">→</span> analyzes on your
+      machine <span aria-hidden="true">→</span> writes reports to disk.{" "}
       <Link href="/trust" className="inline-link">
         See the trust page
       </Link>

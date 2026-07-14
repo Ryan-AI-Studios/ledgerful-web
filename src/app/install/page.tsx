@@ -310,11 +310,11 @@ ledgerful audit
 ledgerful web start`}
         </CodeBlock>
         <p className="doc-caption">
-          SOC2-style evidence export is dashboard-only: after{" "}
-          <code>ledgerful web start</code>, open the dashboard and use its
-          Export action (served locally via the daemon&rsquo;s{" "}
-          <code>/api/compliance/export</code> route while the dashboard is
-          running). There is no standalone CLI subcommand for it — see{" "}
+          SOC 2-style evidence export is available from the dashboard or the
+          CLI: after{" "}
+          <code>ledgerful web start</code>, use the dashboard&rsquo;s Export
+          action, or run{" "}
+          <code>ledgerful export evidence --profile soc2</code> directly — see{" "}
           <Link href="/docs/compliance" className="inline-link">
             the compliance export docs
           </Link>{" "}
@@ -520,7 +520,7 @@ ledgerful web start`}
               >
                 Trust & security →
               </Link>{" "}
-              Local-first data flow, signing model, SOC2 export layout,
+              Local-first data flow, signing model, SOC 2-style export layout,
               telemetry, and disclosure.
             </li>
             <li>

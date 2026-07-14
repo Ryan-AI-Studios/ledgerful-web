@@ -62,16 +62,15 @@ export const localCapabilities: EditionItem[] = [
   { label: "Local CLI and engine", state: "available" },
   { label: "Local dashboard", state: "local-only" },
   { label: "Signed ledger provenance", state: "available" },
-  { label: "Manual SOC2 evidence ZIP", state: "local-only" },
+  { label: "Manual SOC 2-style evidence ZIP", state: "local-only" },
   {
     label: "MCP stdio tools",
-    state: "beta",
-    caveat: "Public release smoke pending",
+    state: "available",
   },
   {
     label: "GitHub Action setup path",
     state: "beta",
-    caveat: "Public install docs and release smoke pending",
+    caveat: "Public install docs in progress",
   },
   {
     label: "Local team sync foundation",
@@ -181,7 +180,7 @@ export const matrixGroups: MatrixGroup[] = [
         ],
       },
       {
-        feature: "SOC2 evidence ZIP export",
+        feature: "SOC 2-style evidence ZIP export",
         cells: [
           { state: "local-only" },
           { state: "local-only" },
@@ -228,17 +227,16 @@ export const matrixGroups: MatrixGroup[] = [
     rows: [
       {
         feature: "MCP stdio tools",
-        caveat: "Public release smoke pending",
         cells: [
-          { state: "beta" },
-          { state: "beta" },
-          { state: "beta" },
-          { state: "beta" },
+          { state: "available" },
+          { state: "available" },
+          { state: "available" },
+          { state: "available" },
         ],
       },
       {
         feature: "GitHub Action setup path",
-        caveat: "Public install docs and release smoke pending",
+        caveat: "Public install docs in progress",
         cells: [
           { state: "beta" },
           { state: "beta" },
@@ -296,7 +294,7 @@ export const pricingFootnotes: string[] = [
   `${launchTruth.facts.license.note} No paid commercial price is announced.`,
   "GitHub App, hosted portfolio, hosted audit log, and billing portal require a future hosted control plane. No timeline is announced.",
   "SAML / OIDC SSO, SCIM, and RBAC are enterprise planned and require a future hosted control plane with enterprise identity infrastructure. No timeline is announced.",
-  `MCP stdio tools and GitHub Action setup paths are beta. ${launchTruth.facts.mcpPackage.note} ${launchTruth.facts.githubAction.note}`,
+  `MCP stdio tools are published on npm (v${launchTruth.facts.mcpPackage.version}). GitHub Action setup path is beta. ${launchTruth.facts.githubAction.note}`,
   "Source upload is never required for local editions. The local daemon does not implement SSO, RBAC, or tenant isolation.",
   "No Commercial License, Hosted, or Enterprise price is announced.",
 ];

@@ -276,12 +276,46 @@ main {
   color: var(--on-brand);
 }
 
+.header-github {
+  display: inline-flex;
+  min-height: 44px;
+  min-width: 44px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
+  padding: 8px 10px;
+  background: transparent;
+  color: var(--ink-muted);
+}
+
+.header-github:hover {
+  background: var(--surface-strong);
+  color: var(--ink);
+}
+
 .hero-section {
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(28px, 5vw, 56px);
   align-items: start;
   padding-block: clamp(44px, 8vw, 96px);
+}
+
+.hero-visual {
+  display: block;
+  min-width: 0;
+}
+
+.hero-visual-frame {
+  width: 100%;
+  margin: 0;
+}
+
+@media (min-width: 900px) {
+  .hero-section {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .technical-token {
@@ -519,7 +553,7 @@ code {
 
 .content-band,
 .split-band {
-  padding-block: clamp(54px, 8vw, 104px);
+  padding-block: clamp(36px, 6vw, 72px);
 }
 
 .section-heading {
@@ -689,9 +723,27 @@ code {
   padding-block: 42px 54px;
 }
 
-.site-footer h2 {
+.site-footer h2,
+.footer-heading {
   margin-bottom: 12px;
   font-size: 0.96rem;
+  font-weight: 720;
+}
+
+.license-badge {
+  display: inline-block;
+  margin-left: 10px;
+  padding: 3px 9px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 680;
+  color: var(--muted);
+  vertical-align: middle;
+}
+
+.license-badge a {
+  color: inherit;
 }
 
 .site-footer li {
@@ -3209,9 +3261,9 @@ code {
   display: grid;
   overflow: hidden;
   margin: 0;
-  border: 1px solid var(--line);
+  border: 1px solid var(--terminal-border);
   border-radius: var(--radius);
-  background: var(--surface);
+  background: var(--terminal-bg);
   box-shadow: var(--shadow);
 }
 
@@ -3228,18 +3280,18 @@ code {
   justify-content: space-between;
   gap: 10px;
   padding: 12px clamp(16px, 3vw, 22px);
-  border-top: 1px solid var(--line);
+  border-top: 1px solid var(--terminal-border);
   font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
   font-size: 0.78rem;
   letter-spacing: 0.01em;
 }
 
 .evidence-frame-caption {
-  color: var(--muted);
+  color: var(--terminal-text);
 }
 
 .evidence-frame-url {
-  color: var(--ink);
+  color: var(--terminal-text);
   font-weight: 620;
 }
 
@@ -3325,8 +3377,12 @@ code {
 
 .install-command--expanded {
   flex-direction: column;
-  align-items: stretch;
+  align-items: flex-start;
   gap: 16px;
+}
+
+.install-command--expanded .button-primary {
+  width: auto;
 }
 
 .install-command-copy {
@@ -3430,6 +3486,12 @@ code {
   grid-template-columns: repeat(2, 1fr);
   gap: 22px;
   align-items: start;
+}
+
+@media (max-width: 640px) {
+  .produces-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .produces-grid > article:first-child {

@@ -21,8 +21,7 @@ const jetBrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default:
-      "Ledgerful — Local-First Code Change Risk Analysis for Developer Teams",
+    default: "Ledgerful — Local-First Code Change Risk Analysis",
     template: "%s | Ledgerful",
   },
   description:

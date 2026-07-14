@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { LicenseExamples } from "@/components/license-examples";
 import { pageDescriptions } from "@/lib/content/navigation";
-import { stateLabels } from "@/lib/content/features";
+import { stateLabels, type FeatureState } from "@/lib/content/features";
 import {
   editions,
   matrixGroups,
@@ -172,8 +172,8 @@ export default function PricingPage() {
 
       <section className="content-band">
         <SectionHeading kicker="Comparison" title="Feature matrix">
-          Every row carries an explicit state. Planned features require a future
-          hosted control plane and have no announced timeline.
+          Every row carries an explicit state. Planned features are not built
+          yet and have no announced timeline.
         </SectionHeading>
         <p className="matrix-scroll-hint" aria-hidden="true">
           Scroll the table →
@@ -260,6 +260,22 @@ export default function PricingPage() {
         </div>
       </section>
 
+      <section className="content-band" id="legend">
+        <SectionHeading title="What each state label means">
+          The same labels appear on the feature matrix above and on the
+          homepage. Available and local-only capabilities run on your machine;
+          hosted and enterprise features are not built yet.
+        </SectionHeading>
+        <div className="state-legend">
+          {stateLegendOrder.map((state) => (
+            <div className="state-legend-item" key={state}>
+              <StatusPill status={state} />
+              <p>{stateDefinitions[state]}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <div className="content-band pricing-cta-band">
         <p>Review the draft source terms, then run locally. No account required.</p>
         <div className="hero-actions">
@@ -270,3 +286,21 @@ export default function PricingPage() {
     </PageShell>
   );
 }
+
+// Real definitions of each feature state — shared with the homepage summary
+// and the pricing-page glossary so the wording cannot drift.
+const stateDefinitions: Record<FeatureState, string> = {
+  available: "Ships in the current local binary today.",
+  beta: "Implemented and usable; not yet fully tested for public release.",
+  "local-only": "Local-only today; no hosted equivalent exists yet.",
+  "hosted planned": "A future hosted service. Not built.",
+  "enterprise planned": "A future enterprise service. Not built.",
+};
+
+const stateLegendOrder: FeatureState[] = [
+  "available",
+  "beta",
+  "local-only",
+  "hosted planned",
+  "enterprise planned",
+];

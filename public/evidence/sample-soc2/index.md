@@ -4,7 +4,7 @@
 by any auditor, and downloading it does not imply Ledgerful (or any customer of Ledgerful)
 has completed a SOC 2 audit. It exists to show the exact shape and cryptographic
 tamper-evidence of the real `GET /api/compliance/export` output (the local dashboard's
-"Export SOC2 Evidence" button — **there is no CLI equivalent**), so you can inspect it
+"Export SOC 2-style Evidence" button — also available via `ledgerful export evidence --profile soc2`), so you can inspect it
 before running it against your own repository.
 
 - **Source:** generated from a synthetic demo repository (`invoice-service`,
@@ -12,11 +12,11 @@ before running it against your own repository.
   — **not** a real customer, **not** real data. Nothing in this zip was
   hand-edited after export.
 - **Generating command:** `ledgerful demo --keep` (produces a synthetic repo,
-  runs the real hook flow with ephemeral keys, and exports the SOC2 evidence
+  runs the real hook flow with ephemeral keys, and exports the SOC 2-style evidence
   zip). The export uses the same `export evidence --profile soc2` code path as
-  the dashboard's "Export SOC2 Evidence" button (`GET /api/compliance/export`).
-  **There is no separate `ledgerful` CLI subcommand for the dashboard export** —
-  SOC2 export is a dashboard/API feature, not a CLI one; `ledgerful demo` is the
+  the dashboard's "Export SOC 2-style Evidence" button (`GET /api/compliance/export`).
+  **The CLI also exports evidence** via `ledgerful export evidence --profile soc2` —
+  SOC 2-style export is available from both the dashboard and the CLI; `ledgerful demo` is the
   demo command that happens to call it internally.
 - **File:** [`ledgerful-soc2-evidence-sample.zip`](./ledgerful-soc2-evidence-sample.zip) (3.9 KB)
 
@@ -117,7 +117,6 @@ applied to a real, non-sample export.)
   `manifest.pub` — VALID (not a hand-edited or stale-signature file)
 
 If you're evaluating Ledgerful for an actual SOC 2 program, generate this export against
-your own repository — from your own local dashboard's Compliance page ("Export SOC2
-Evidence" button), or `GET /api/compliance/export` directly — rather than relying on this
-sample. There is no CLI subcommand for this; it exists purely to demonstrate the format and
-verifiability of the real output.
+your own repository — from your own local dashboard's Compliance page ("Export SOC 2-style
+Evidence" button), `GET /api/compliance/export` directly, or `ledgerful export evidence --profile soc2`
+on the CLI.

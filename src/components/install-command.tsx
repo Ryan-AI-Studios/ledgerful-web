@@ -132,6 +132,7 @@ export function InstallCommand({
         title={INSTALL_COMMAND}
       >
         {copied ? <Check size={16} aria-hidden="true" /> : <Copy size={16} aria-hidden="true" />}
+        <span className="visually-hidden">{copied ? "Copied" : "Copy"}</span>
       </button>
     </div>
   );

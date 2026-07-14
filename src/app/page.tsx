@@ -4,17 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArtifactPreview } from "@/components/artifact-preview";
 import { AudienceRoutes } from "@/components/audience-routes";
-import { CapabilityGrid } from "@/components/capability-grid";
 import { DataFlowStrip } from "@/components/data-flow-strip";
 import { EvidencePanel } from "@/components/evidence-panel";
 import { InstallCommand } from "@/components/install-command";
 import { PageShell } from "@/components/page-shell";
 import { ProofStrip } from "@/components/proof-strip";
 import { SectionHeading } from "@/components/section-heading";
-import { StatusPill } from "@/components/status-pill";
 import { WaitlistForm } from "@/components/waitlist-form";
-import { capturedEvidence } from "@/components/captured-evidence";
-import type { FeatureState } from "@/lib/content/features";
 import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions, siteUrl } from "@/lib/content/navigation";
 
@@ -39,34 +35,6 @@ const softwareApplicationJsonLd: WithContext<SoftwareApplication> = {
 // "what a scan produces" preview grid — same real image, different caption.
 const DASHBOARD_CAPTURE_URL = "http://127.0.0.1:52001/dashboard";
 
-// The only real evidence in this repo for a "repo knowledge/search"
-// capability is this one line from a captured `ledgerful doctor` run — there
-// is no captured screenshot or artifact for search results, so this section
-// shows the real line rather than an invented search UI. See
-// src/components/captured-evidence.ts.
-const searchIndexLine = capturedEvidence.doctor.lines.find((line) =>
-  line.includes("Search index"),
-);
-
-// Short, real definitions of each feature state — grounds the legend in
-// what the state actually means for a reader deciding whether to rely on a
-// capability today, without repeating the per-feature evidence text already
-// shown in the capability grid above it.
-const stateDefinitions: Record<FeatureState, string> = {
-  available: "Ships in the current local binary today.",
-  beta: "Implemented and usable, but not yet public-release-verified.",
-  "local-only": "Runs today, only on your machine — no hosted equivalent exists yet.",
-  "hosted planned": "A design target for the future hosted control plane. Not built.",
-  "enterprise planned": "A design target for future enterprise identity and audit. Not built.",
-};
-
-const stateLegendOrder: FeatureState[] = [
-  "available",
-  "beta",
-  "local-only",
-  "hosted planned",
-  "enterprise planned",
-];
 
 function RiskSummaryPreview() {
   return (
@@ -85,7 +53,7 @@ function RiskSummaryPreview() {
         />
       </picture>
       <figcaption className="evidence-frame-meta">
-        <span className="evidence-frame-caption">Real local dashboard receipt</span>
+        <span className="evidence-frame-caption">Local dashboard receipt</span>
         <span className="evidence-frame-url">{DASHBOARD_CAPTURE_URL}</span>
       </figcaption>
     </figure>
@@ -97,10 +65,9 @@ export default function Home() {
 
   return (
     <PageShell>
-      {/* 2. Hero — headline, subhead, install CTA, release status. The proof
-          visual (verification plan terminal + dashboard receipt) now lives
-          only in section 7 ("What a scan actually produces") to avoid
-          repeating the same images twice on the page. */}
+      {/* 2. Hero — headline, subhead, install CTA, release status. The right
+          column shows a real, 0056-clean captured provenance record rendered as
+          a native terminal window so it is theme-adaptive without extra images. */}
       <div className="hero-section">
         <section className="hero-copy" id="hero">
           <h1>
@@ -130,6 +97,9 @@ export default function Home() {
             </Link>
           </div>
         </section>
+        <div className="hero-visual">
+          <ArtifactPreview id="provenanceRecord" className="hero-visual-frame" />
+        </div>
       </div>
 
       {/* 4. Data-flow strip */}
@@ -147,7 +117,7 @@ export default function Home() {
       {/* 6. Problem and stakes */}
       <section className="split-band" id="problem">
         <SectionHeading title="The volume of change has outpaced the evidence for it.">
-          Three real pressures, not a comparison to any other tool.
+          More commits, more repositories, more evidence rebuilt after the fact.
         </SectionHeading>
         <div className="problem-grid">
           <article>
@@ -180,17 +150,12 @@ export default function Home() {
       {/* 7. What Ledgerful produces */}
       <section className="content-band" id="produces">
         <SectionHeading title="What a scan actually produces">
-          Five real outputs, each traceable to a captured artifact — nothing
-          below is a mockup.
+          Each output is a captured artifact from a real v0.1.8 run.
         </SectionHeading>
         <div className="produces-grid">
           <article>
             <h3>Risk summary</h3>
             <RiskSummaryPreview />
-          </article>
-          <article>
-            <h3>Provenance record</h3>
-            <ArtifactPreview id="provenanceRecord" />
           </article>
           <article>
             <h3>Verification plan</h3>
@@ -200,49 +165,26 @@ export default function Home() {
             <h3>Evidence export</h3>
             <ArtifactPreview id="evidenceExport" />
           </article>
-          {searchIndexLine ? (
-            <article>
-              <h3>Repo knowledge and search</h3>
-              <div
-                className="terminal-window annotated"
-                aria-label="Search index status — ledgerful doctor"
-              >
-                <div className="terminal-bar" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
-                </div>
-                <pre>
-                  <code>{searchIndexLine}</code>
-                </pre>
-                <div className="terminal-annotation">
-                  <span className="terminal-caption">
-                    One real line from a captured environment health check —
-                    no search-results UI is shown because none has been
-                    captured yet
-                  </span>
-                  <span className="terminal-meta">ledgerful doctor</span>
-                </div>
-              </div>
-            </article>
-          ) : null}
         </div>
       </section>
 
-      {/* 8. Capability grid */}
+      {/* 8. Available today vs. planned */}
       <section className="split-band" id="capabilities">
-        <SectionHeading title="Every capability, in one flat list">
-          Every row carries an explicit state. Hosted and enterprise
-          capabilities are not shown as live before the control plane exists.
+        <SectionHeading title="What's available today">
+          Local CLI, dashboard, signed provenance, and SOC 2-style evidence
+          export are implemented now. Team sync is beta. Hosted and enterprise
+          features are planned — see the full breakdown on{" "}
+          <Link href="/pricing" className="inline-link">
+            the pricing page
+          </Link>
+          .
         </SectionHeading>
-        <CapabilityGrid />
       </section>
 
       {/* 9. How it stays local */}
       <section className="content-band" id="stays-local">
-        <SectionHeading title="How it stays local">
-          The engine, ledger, and dashboard run on your machine. The local
-          dashboard binds to <code>127.0.0.1</code> only. Hosted sync is{" "}
+        <SectionHeading title="Local by default">
+          The engine, ledger, and dashboard run on your machine. Hosted sync is{" "}
           <em style={{ fontStyle: "normal", color: "var(--ink-primary)" }}>
             planned
           </em>
@@ -262,35 +204,16 @@ export default function Home() {
       {/* 10. Audience routing */}
       <section className="split-band" id="audience">
         <SectionHeading title="Start where you sit">
-          Three real paths, no invented case studies.
+          Pick the entry point that matches your role.
         </SectionHeading>
         <AudienceRoutes />
       </section>
 
-      {/* 11. Available-today vs. planned legend */}
-      <section className="content-band" id="legend">
-        <SectionHeading title="What each state label means">
-          The same five states appear on the capability grid above and on{" "}
-          <Link href="/pricing" className="inline-link">
-            the pricing page
-          </Link>
-          .
-        </SectionHeading>
-        <div className="state-legend">
-          {stateLegendOrder.map((state) => (
-            <div className="state-legend-item" key={state}>
-              <StatusPill status={state} />
-              <p>{stateDefinitions[state]}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 11.5. Waitlist / launch updates */}
+      {/* 11. Waitlist / launch updates */}
       <section className="content-band" id="waitlist">
         <SectionHeading title="Get launch updates">
           Ledgerful v0.1.8 is installed today. If you want launch announcements
-          and changelog updates, leave your email. No commitment, no spam.{" "}
+          and changelog updates, leave your email.{" "}
           <Link href="/waitlist" className="inline-link">
             Open the full form
           </Link>
@@ -299,23 +222,34 @@ export default function Home() {
         <WaitlistForm />
       </section>
 
-      {/* 12. Final install CTA */}
+      {/* 12. Final CTA */}
       <section className="content-band" id="install-cta">
         <SectionHeading title="Install now, or read the docs first">
-          The same source-build command from earlier on this page.
+          The full install guide has platform-specific binaries and
+          verification steps.
         </SectionHeading>
-        <InstallCommand variant="expanded" linkLabel="Open the install guide" />
-        <p style={{ marginTop: "18px" }}>
-          <Link href="/docs" className="inline-link">
-            Docs →
+        <div className="hero-actions">
+          <Link href="/install" className="button-primary">
+            Open the install guide
           </Link>
-        </p>
+          <Link href="/docs" className="button-secondary">
+            Docs
+          </Link>
+        </div>
       </section>
 
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(softwareApplicationJsonLd),
+        }}
+      />
+      <script
+        // Forward the old #legend anchor on the homepage to /pricing#legend
+        // now that the full 5-state glossary lives on the pricing page.
+        dangerouslySetInnerHTML={{
+          __html:
+            "(function(){if(location.hash==='#legend'){location.replace('/pricing#legend');}})();",
         }}
       />
     </PageShell>

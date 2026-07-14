@@ -21,7 +21,7 @@ export const changelogEntries: ChangelogEntry[] = [
     title: "Commercial roadmap snapshot",
     state: "completed",
     details:
-      "Roadmap confirms the local engine, CLI, daemon APIs, local SOC2 export, MCP path, GitHub Action path, and team sync foundation.",
+      "Roadmap confirms the local engine, CLI, daemon APIs, local SOC 2-style export, MCP path, GitHub Action path, and team sync foundation.",
   },
   {
     date: "2026-06-25",

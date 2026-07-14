@@ -128,8 +128,8 @@ export function WaitlistForm() {
           </button>
 
           <p className="waitlist-caveat">
-            Get launch announcements and changelog updates. No spam, no
-            commitment.
+            Launch announcements and changelog updates. Double opt-in — you
+            confirm from your inbox.
           </p>
         </form>
       )}

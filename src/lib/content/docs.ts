@@ -43,11 +43,11 @@ export const docTopics: DocTopic[] = [
     href: "/docs/github-action",
   },
   {
-    title: "SOC2 evidence export",
+    title: "SOC 2-style evidence export",
     state: "local-only",
     summary:
       "Local daemon can generate a ZIP with signed manifest, ledger CSV, verification history, and ADRs.",
-    nextAction: "Keep this framed as a local export, not a hosted SOC2 portal.",
+    nextAction: "Keep this framed as a local export, not a hosted SOC 2 portal.",
     href: "/docs/compliance",
   },
   {

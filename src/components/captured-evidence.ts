@@ -96,7 +96,7 @@ export const artifactPreviews = {
   provenanceRecord: {
     sourceLabel: "ledger.csv — signed entry",
     caption:
-      "Signed provenance record — one real row from the verified sample-soc2 export",
+      "Signed provenance record — one row from the verified sample-soc2 export",
     lines: [
       "tx_id:        e09f48ab-0afe-4881-833f-8fd80048ea34",
       "category:     BUGFIX",
@@ -106,7 +106,7 @@ export const artifactPreviews = {
       "reason:       Switch tax calculation from f64 to Decimal to eliminate floating-point rounding.",
       "committed_at: 2026-07-14T01:47:02.876335722+00:00",
       "signed:       yes",
-      "signature:    f3e27176bf5e8437b2308f7fb6ae6ec7e8866d71b337ab132069f50789897d41672208a4c34a72af64a16c59139766ab1e3f37d4171382e8b57d4ea307c39807",
+      "signature:    f3e27176…39807",
     ],
   },
   evidenceExport: {
@@ -118,8 +118,8 @@ export const artifactPreviews = {
       '  "generatedAt": "2026-07-14T01:47:02.982622805+00:00",',
       '  "files": [',
       '    { "name": "chain_head.json", "sha256": "3a0555a3cdc06156530aaff441232247bae2c105ea7c199b8c9a77f836cba68f", "size": 431 },',
-      '    { "name": "ledger.csv", "sha256": "25ca4a8dc3e93e94f3c84f8b53e6de4c9bafb4544b90a07c7932567662927b63", "size": 3266 },',
-      '    { "name": "verification_history.csv", "sha256": "56ef6d6ace5d5bd1381b764ec3d0398c30c7225219aec22c0029e65cf6ed0e84", "size": 57 }',
+      '    { "name": "ledger.csv", "sha256": "25ca4a8d…2927b63", "size": 3266 },',
+      '    { "name": "verification_history.csv", "sha256": "56ef6d6a…6ed0e84", "size": 57 }',
       "  ],",
       '  "entryCount": 7',
       "}",

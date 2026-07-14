@@ -6,19 +6,23 @@ import Link from "next/link";
 // intentionally omits the .workflow-step-index numerals.
 const proofItems = [
   {
-    label: "Runs locally by default",
-    href: "/architecture",
-  },
-  {
     label: "Deterministic outputs",
+    body: "Same repo, same state, same risk score.",
     href: "/trust",
   },
   {
-    label: "Source upload off by default",
+    label: "Signed ledger provenance",
+    body: "Ed25519 signatures verified offline.",
+    href: "/trust",
+  },
+  {
+    label: "Verification plan per commit",
+    body: "Build and test steps planned automatically.",
     href: "/trust",
   },
   {
     label: "Release workflow emits companion checksums",
+    body: "SHA-256 + cosign + SLSA per release.",
     href: "/docs/releases",
   },
 ] as const;
@@ -31,6 +35,7 @@ export function ProofStrip() {
           <h3>
             <Link href={item.href}>{item.label}</Link>
           </h3>
+          <p>{item.body}</p>
         </article>
       ))}
     </div>

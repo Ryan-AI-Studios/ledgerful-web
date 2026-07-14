@@ -8,7 +8,7 @@ export default function NotFound() {
         <p className="hero-kicker">Route not found</p>
         <h1>This public page is not available.</h1>
         <p>
-          Ledgerful launch facts are kept explicit. If a package, release,
+          Ledgerful claims are kept explicit. If a package, release,
           status, or hosted feature link is missing, it has not been published
           as a real destination yet.
         </p>

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { footerNavigation, mainNavigation } from "@/lib/content/navigation";
-import { launchFacts } from "@/lib/content/launch-facts";
-import { StatusPill } from "./status-pill";
+import { launchTruth } from "@/lib/content/launch-facts";
+
+const licensePath = "/trust#license";
 
 export function SiteFooter() {
   return (
@@ -10,14 +11,30 @@ export function SiteFooter() {
         <Link href="/" className="footer-brand">
           Ledgerful
         </Link>
+        <span className="license-badge">
+          <Link href={licensePath}>PolyForm NC</Link>
+        </span>
         <p>
           Public web for a local-first change intelligence and provenance tool.
-          No hosted-source-upload claim is made here.
+          The Ledgerful engine is source-available under{" "}
+          <Link href={licensePath} className="inline-link">
+            PolyForm Noncommercial
+          </Link>
+          . Built by{" "}
+          <a
+            href={launchTruth.facts.repository.href}
+            className="inline-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ryan AI Studios
+          </a>
+          .
         </p>
       </div>
       <div className="footer-grid">
         <div>
-          <p style={{ fontWeight: 720, fontSize: "0.96rem", marginBottom: "12px" }}>Pages</p>
+          <h2 className="footer-heading">Pages</h2>
           <ul>
             {mainNavigation.map((item) => (
               <li key={item.href}>
@@ -32,14 +49,23 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <p style={{ fontWeight: 720, fontSize: "0.96rem", marginBottom: "12px" }}>Launch facts</p>
+          <h2 className="footer-heading">Resources</h2>
           <ul>
-            {launchFacts.slice(0, 4).map((fact) => (
-              <li key={fact.label}>
-                <span>{fact.label}</span>
-                <StatusPill status={fact.status} />
-              </li>
-            ))}
+            <li>
+              <a
+                href={launchTruth.facts.repository.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub repo
+              </a>
+            </li>
+            <li>
+              <Link href={licensePath}>License</Link>
+            </li>
+            <li>
+              <a href="mailto:security@ledgerful.dev">Security disclosure</a>
+            </li>
           </ul>
         </div>
       </div>

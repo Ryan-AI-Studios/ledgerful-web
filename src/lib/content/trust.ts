@@ -81,7 +81,7 @@ export const writesLocally: string[] = [
   ".ledgerful/index/ — local full-text search index (project-local)",
   ".ledgerful/sync/ — signed and encrypted sync bundles when sync is enabled (project-local)",
   "~/.ledgerful/keys/private.key and public.pem — Ed25519 key pair, generated on first use (legacy private.pem is migrated)",
-  "SOC2 evidence ZIP — written to a local path of your choice on demand via the dashboard",
+  "SOC 2-style evidence ZIP — written to a local path of your choice on demand via the dashboard",
   "Platform paths: Windows uses %USERPROFILE%\\.ledgerful\\keys\\; Linux and macOS use ~/.ledgerful/keys/ resolved from $HOME. Project-local .ledgerful/ directories are always relative to your repository root.",
 ];
 
@@ -384,7 +384,7 @@ export const productSubprocessors: ProductSubprocessor[] = [
 /**
  * Concise threat-model + non-goals bullets. Sources:
  *   - coordination.md §6.2 (no SAML/OIDC/RBAC/SCIM in local daemon)
- *   - the SOC2 export page (local-only ZIP export, not a hosted SOC2 portal)
+ *   - the SOC 2-style export page (local-only ZIP export, not a hosted SOC 2 portal)
  *   - the signing section (private key at rest protected only by filesystem
  *     permissions; FDE is the primary recommended mitigation)
  *   - the data flow content above (no zero-network / zero-telemetry absolutes;
@@ -415,7 +415,7 @@ export const threatModel: { heading: string; body: string }[] = [
 
 export const nonGoals: string[] = [
   "Hosted-mode guarantees. The local-first engine does not promise the SLAs, RBAC, audit log retention, or team-scope guarantees of a hosted control plane. Hosted mode is planned and does not exist today.",
-  "SOC2 certified / SOC2 compliant. Ledgerful generates a local SOC2-style evidence export from your ledger; we are not a certified audit firm and do not claim third-party SOC 2 attestation.",
+  "SOC 2 certified / SOC 2 compliant. Ledgerful generates a local SOC 2-style evidence export from your ledger; we are not a certified audit firm and do not claim third-party SOC 2 attestation.",
   "FedRAMP, FIPS 140, or other government baselines. No claim is made about FedRAMP authorization, FIPS-validated cryptography, or comparable government certification.",
   "Zero-network or zero-telemetry absolutes. The default build excludes telemetry; opt-in telemetry and the configured cloud-model ask and index --fast workflows are the outbound paths for project data. The optional viz command generates a local HTML file that loads the vis-network library from a public CDN when opened in a browser. Nothing here is a 'no network ever' guarantee.",
   "Air-gap. The engine can run fully offline, but this page does not claim that every install configuration is air-gapped. Operators are responsible for their own network posture.",
@@ -435,9 +435,9 @@ export const proveClaims: ProveDontClaim[] = [
       "The signature verifies that those fields have not changed since the entry was signed. (sign_ledger_entry basis: tx_id, category, summary, reason, committed_at)",
   },
   {
-    heading: "The SOC2 export manifest is signed",
+    heading: "The SOC 2-style export manifest is signed",
     body:
-      "Each SOC2 evidence ZIP includes manifest.sig, a 64-byte Ed25519 signature over the manifest.json bytes, " +
+      "Each SOC 2-style evidence ZIP includes manifest.sig, a 64-byte Ed25519 signature over the manifest.json bytes, " +
       "plus manifest.pub for offline verification. (src/export/soc2.rs:300-305)",
   },
   {

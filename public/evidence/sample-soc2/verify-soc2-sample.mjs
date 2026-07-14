@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // verify-soc2-sample.mjs
 //
-// Standalone, rerunnable offline verification of a ledgerful SOC2-style evidence
+// Standalone, rerunnable offline verification of a ledgerful SOC 2-style evidence
 // export zip, per coordination.md §4.7 ("Offline tamper-evidence" procedure):
 //
 //   1. Re-SHA-256 every file listed in manifest.json's `files` array and compare

@@ -51,7 +51,7 @@ export const featureStates: FeatureItem[] = [
     evidence: "Local ledger and compliance export contracts are implemented.",
   },
   {
-    name: "SOC2 evidence export",
+    name: "SOC 2-style evidence export",
     state: "local-only",
     description:
       "Exports a local ZIP bundle with manifest, hashes, signature, ledger CSV, verification history, and ADR files.",
@@ -59,23 +59,23 @@ export const featureStates: FeatureItem[] = [
   },
   {
     name: "MCP stdio tools",
-    state: "beta",
+    state: "available",
     description:
-      "Local MCP server and package path exist, but public package/release smoke remains a launch fact.",
-    evidence: "Roadmap marks MCP package release smoke as unresolved.",
+      "The @ledgerful/mcp-server package is published on npm (v0.1.10). The local MCP server connects AI assistants to the engine.",
+    evidence: "launch-facts.ts confirms @ledgerful/mcp-server is published on npm.",
   },
   {
     name: "GitHub Action path",
     state: "beta",
     description:
-      "Action package and PR validation path exist; public install hygiene still needs release proof.",
+      "Action package and PR validation path exist; public install docs are still in progress.",
     evidence: "Roadmap separates Action implementation from public release docs.",
   },
   {
     name: "Hosted control plane",
     state: "hosted planned",
     description:
-      "Hosted portfolio, GitHub App, billing, and retained audit state belong to a future control plane.",
+      "A future hosted service. Not built.",
   },
   {
     name: "SSO, SCIM, RBAC, hosted audit log",

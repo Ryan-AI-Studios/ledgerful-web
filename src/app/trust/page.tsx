@@ -310,7 +310,7 @@ function DataFlowDiagram() {
         fontWeight="600"
         fill="currentColor"
       >
-        SOC2 zip (local)
+        SOC 2-style zip (local)
       </text>
 
       {/* ── Local arrows (read/write) ─────────────────────── */}
@@ -790,7 +790,7 @@ function TokenModelDiagram() {
 }
 
 export const metadata: Metadata = {
-  title: "Trust and security — local-first data flow and SOC2 evidence",
+  title: "Trust and security — local-first data flow and SOC 2-style evidence",
   description: pageDescriptions.trust,
   alternates: {
     canonical: "/trust",
@@ -802,7 +802,7 @@ export const metadata: Metadata = {
         url: "/og/trust.png",
         width: 1200,
         height: 630,
-        alt: "Trust and security — local-first data flow and SOC2 evidence, with a real local dashboard receipt showing Project Health and Recent Changes.",
+        alt: "Trust and security — local-first data flow and SOC 2-style evidence, with a real local dashboard receipt showing Project Health and Recent Changes.",
       },
     ],
   },
@@ -955,7 +955,7 @@ export default function TrustPage() {
                   <p className="print-flow-kicker">Local outputs</p>
                   <ul className="print-flow-list">
                     <li>Sync dir (<code>dir://</code>)</li>
-                    <li>SOC2 evidence ZIP (local)</li>
+                    <li>SOC 2-style evidence ZIP (local)</li>
                   </ul>
                 </div>
                 <div className="print-flow-zone print-flow-zone--optional" style={{ marginTop: "12px" }}>
@@ -1140,7 +1140,7 @@ export default function TrustPage() {
           <section id="signing" className="content-band trust-section">
             <SectionHeading title="Signing and key management">
               Ledgerful uses Ed25519 signing to provide tamper-evident ledger
-              provenance and offline-verifiable SOC2 evidence.
+              provenance and offline-verifiable SOC 2-style evidence.
             </SectionHeading>
             <div className="disclosure-notice">
               <p>
@@ -1174,7 +1174,7 @@ export default function TrustPage() {
                 the encryption key.
               </p>
               <p style={{ marginTop: "12px" }}>
-                <strong>SOC2 export signing:</strong> Each SOC2 evidence ZIP
+                <strong>SOC 2-style export signing:</strong> Each SOC 2-style evidence ZIP
                 includes <code>manifest.sig</code> (64-byte Ed25519 signature
                 over <code>manifest.json</code>) and{" "}
                 <code>manifest.pub</code> (32-byte verifying key). This allows
@@ -1442,8 +1442,8 @@ export default function TrustPage() {
           {/* ── Section 10: Redacted evidence export ─────────── */}
           <section id="soc2-export" className="content-band trust-section">
             <SectionHeading title="Redacted evidence export">
-              The SOC2 evidence export is a ZIP file generated entirely from
-              local data. This is not a hosted SOC2 portal — no data leaves
+              The SOC 2-style evidence export is a ZIP file generated entirely from
+              local data. This is not a hosted SOC 2 portal — no data leaves
               your machine during export.
             </SectionHeading>
             <div
@@ -1451,7 +1451,7 @@ export default function TrustPage() {
               style={{ marginBottom: "24px" }}
             >
               <strong>Scope:</strong> This is a local ZIP export only. A
-              hosted SOC2 portal (with continuous monitoring, auditor access
+              hosted SOC 2 portal (with continuous monitoring, auditor access
               controls, and live attestation) is enterprise-planned and
               requires a future hosted control plane.
             </div>
@@ -1468,7 +1468,7 @@ export default function TrustPage() {
             <div className="table-scroll" style={{ marginBottom: "28px" }}>
               <table
                 className="trust-table"
-                aria-label="SOC2 export ZIP file layout"
+                aria-label="SOC 2-style export ZIP file layout"
               >
                 <thead>
                   <tr>

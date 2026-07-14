@@ -322,10 +322,9 @@ const homepageH2Order = [
   "Proof points, linked to evidence",
   "The volume of change has outpaced the evidence for it.",
   "What a scan actually produces",
-  "Every capability, in one flat list",
-  "How it stays local",
+  "What's available today",
+  "Local by default",
   "Start where you sit",
-  "What each state label means",
   "Get launch updates",
   "Install now, or read the docs first",
 ];

@@ -20,11 +20,11 @@ export default function DocsCompliancePage() {
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section className="page-hero compact">
         <p className="hero-kicker">Docs · Compliance</p>
-        <h1>Export local SOC2 evidence.</h1>
+        <h1>Export local SOC 2-style evidence.</h1>
         <StatusPill status="local-only" />
         <p>
           Ledgerful generates a signed ZIP of local evidence entirely on your
-          machine. This is not a hosted SOC2 portal — no data leaves your device
+          machine. This is not a hosted SOC 2 portal — no data leaves your device
           during export.
         </p>
       </section>
@@ -38,17 +38,17 @@ export default function DocsCompliancePage() {
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
-            <strong>Local only:</strong> The SOC2 evidence export is a local ZIP
+            <strong>Local only:</strong> The SOC 2-style evidence export is a local ZIP
             generated entirely from your machine&apos;s{" "}
             <code>.ledgerful/</code> data. No data leaves your machine during
-            export. There is no hosted SOC2 portal — continuous monitoring,
+            export. There is no hosted SOC 2 portal — continuous monitoring,
             auditor access controls, and live attestation are enterprise-planned
             and require a future hosted control plane.
           </p>
           <p style={{ marginTop: "12px" }}>
-            <strong>No CLI export command:</strong> The export is triggered from
-            the local dashboard, not from the command line. Follow the steps
-            below to generate the ZIP.
+            <strong>Two export paths:</strong> Export from the local dashboard
+            (below) or from the CLI:{" "}
+            <code>ledgerful export evidence --profile soc2</code>.
           </p>
         </div>
       </section>
@@ -96,7 +96,7 @@ export default function DocsCompliancePage() {
           history, and any ADR files committed to the ledger.
         </SectionHeading>
         <div className="table-scroll-wrapper">
-          <table className="trust-table" aria-label="SOC2 export ZIP file layout">
+          <table className="trust-table" aria-label="SOC 2-style export ZIP file layout">
             <thead>
               <tr>
                 <th scope="col">File</th>

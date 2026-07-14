@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 /**
  * Concise executive summary (1-screen target) for /trust.
  *
@@ -27,7 +25,7 @@ export function TrustSummary() {
             structure; writes ledger, reports, and an Ed25519 signing key to
             <code> .ledgerful/</code> and <code>~/.ledgerful/keys/</code>. No
             outbound network is required for scan, audit, ledger, verify,
-            dashboard, or the local SOC2-style evidence export.
+            dashboard, or the local SOC 2-style evidence export.
           </dd>
         </div>
         <div>
@@ -64,7 +62,7 @@ export function TrustSummary() {
           <dt>Signing &amp; key storage</dt>
           <dd>
             Ed25519 key pair at <code>~/.ledgerful/keys/private.key</code>{" "}
-            (Windows: <code>%USERPROFILE%\.ledgerful\keys\</code>). Each SOC2
+            (Windows: <code>%USERPROFILE%\.ledgerful\keys\</code>). Each SOC 2-style
             evidence ZIP embeds a manifest hash, an Ed25519 signature, and a
             verifying key for offline tamper verification.
           </dd>
@@ -99,12 +97,7 @@ export function TrustSummary() {
       </dl>
       <p className="trust-summary-foot">
         Boundary answer first: <strong>local by default, opt-in by name</strong>.
-        For the source of every claim above, see the launch facts on{" "}
-        <Link className="inline-link" href="/changelog">
-          the changelog
-          <span className="sr-only"> (opens in same tab)</span>
-        </Link>
-        .
+        For the source of every claim above, see the changelog.
       </p>
     </aside>
   );

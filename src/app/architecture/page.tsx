@@ -176,7 +176,7 @@ export default function ArchitecturePage() {
             <p>
               A scan can produce a risk summary, a verification plan, and a
               signed provenance record written to the ledger; the dashboard
-              can turn ledger history into a SOC2-style evidence export.
+              can turn ledger history into a SOC 2-style evidence export.
               Below is real, redacted output captured from each — the same
               artifacts shown on the homepage.
             </p>
@@ -346,7 +346,7 @@ export default function ArchitecturePage() {
               The signing key and verifying key are stored as hex-encoded
               files at <code>~/.ledgerful/keys/private.key</code> and{" "}
               <code>~/.ledgerful/keys/public.pem</code> (Windows:{" "}
-              <code>%USERPROFILE%\.ledgerful\keys\</code>). The SOC2 evidence
+              <code>%USERPROFILE%\.ledgerful\keys\</code>). The SOC 2-style evidence
               ZIP is generated entirely from local data; the manifest,
               signature, hashes, ledger CSV, verification history, and ADR
               files never leave the host during export.
@@ -408,7 +408,7 @@ export default function ArchitecturePage() {
             >
               Trust & security →
             </Link>{" "}
-            outbound network inventory, signing model, SOC2 export layout,
+            outbound network inventory, signing model, SOC 2-style export layout,
             release verification.
           </li>
           <li>

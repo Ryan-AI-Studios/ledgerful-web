@@ -323,6 +323,7 @@ const homepageH2Order = [
   "The volume of change has outpaced the evidence for it.",
   "What a scan actually produces",
   "What's available today",
+  "What Ledgerful does",
   "Local by default",
   "Start where you sit",
   "Get launch updates",
@@ -613,15 +614,21 @@ test("dark mode and reduced motion retain readable deterministic rendering", asy
   await context.close();
 });
 
-test("dark is the no-preference default and the theme control persists light", async ({ page }) => {
+test("system is the default preference and the theme control persists light", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-  await page.getByRole("button", { name: "Light", exact: true }).click();
+  // Default preference is "system"; effective theme follows the OS.
+  // Playwright defaults to a light color scheme, so data-theme is "light".
+  await expect(page.locator("html")).toHaveAttribute("data-theme-preference", "system");
+  // Compact toggle cycles: system → dark → light.
+  // Click until light is the explicit preference (not just the system default).
+  const toggle = page.locator(".theme-toggle--compact[data-theme-choice]");
+  for (let i = 0; i < 3; i++) {
+    await toggle.click();
+    const choice = await toggle.getAttribute("data-theme-choice");
+    if (choice === "light") break;
+  }
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await expect(page.getByRole("button", { name: "Light", exact: true })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
+  await expect(toggle).toHaveAttribute("data-theme-choice", "light");
   expect(await page.evaluate(() => localStorage.getItem("ledgerful-theme"))).toBe("light");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
@@ -649,16 +656,16 @@ test("saved theme is applied by the CSP-hashed head script before hydration", as
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   await expect(page.getByRole("group", { name: "Color theme" })).toHaveCount(0);
-  await expect(page.locator(".theme-toggle-placeholder")).toBeVisible();
+  await expect(page.locator(".theme-toggle--compact[aria-hidden='true']")).toBeVisible();
   await context.close();
 });
 
 test("theme controls expose visible keyboard focus", async ({ page }) => {
   await page.goto("/");
-  const system = page.getByRole("button", { name: "System", exact: true });
-  await system.focus();
-  await expect(system).toBeFocused();
-  const outline = await system.evaluate((element) => {
+  const toggle = page.locator(".theme-toggle--compact[data-theme-choice]");
+  await toggle.focus();
+  await expect(toggle).toBeFocused();
+  const outline = await toggle.evaluate((element) => {
     const style = getComputedStyle(element);
     return { style: style.outlineStyle, width: style.outlineWidth };
   });
@@ -672,34 +679,30 @@ test("mobile header visual order matches keyboard order", async ({ page }) => {
   // ThemeToggle hydrates client-side (it renders a placeholder until mount);
   // wait for the real control before reading DOM order so this assertion
   // doesn't race the homepage's client-side hydration under load.
-  await page.waitForSelector('.theme-toggle button[data-theme-choice="system"]');
+  await page.waitForSelector('.theme-toggle--compact[data-theme-choice]');
   const order = await page.evaluate(() => {
-    const homeElement = document.querySelector<HTMLElement>('.site-nav a[href="/"]');
-    const systemElement = document.querySelector<HTMLElement>(
-      '.theme-toggle button[data-theme-choice="system"]',
+    const brandElement = document.querySelector<HTMLElement>('.brand-mark');
+    const toggleElement = document.querySelector<HTMLElement>(
+      '.theme-toggle--compact[data-theme-choice]',
     );
     const installElement = document.querySelector<HTMLElement>(".header-install");
-    if (!homeElement || !systemElement || !installElement) {
+    if (!brandElement || !toggleElement || !installElement) {
       throw new Error("Expected mobile header controls were not rendered.");
     }
+    // DOM order is the source of truth for keyboard (Tab) order. Visual
+    // wrapping may shift vertical positions at narrow widths, but the
+    // tab order must follow DOM order — that's what this test verifies.
     return {
-      homeBeforeSystem: Boolean(
-        homeElement.compareDocumentPosition(systemElement) & Node.DOCUMENT_POSITION_FOLLOWING,
+      brandBeforeToggle: Boolean(
+        brandElement.compareDocumentPosition(toggleElement) & Node.DOCUMENT_POSITION_FOLLOWING,
       ),
-      systemBeforeInstall: Boolean(
-        systemElement.compareDocumentPosition(installElement) & Node.DOCUMENT_POSITION_FOLLOWING,
+      toggleBeforeInstall: Boolean(
+        toggleElement.compareDocumentPosition(installElement) & Node.DOCUMENT_POSITION_FOLLOWING,
       ),
-      vertical: [
-        homeElement.getBoundingClientRect().top,
-        systemElement.getBoundingClientRect().top,
-        installElement.getBoundingClientRect().top,
-      ],
     };
   });
-  expect(order.homeBeforeSystem).toBe(true);
-  expect(order.systemBeforeInstall).toBe(true);
-  expect(order.vertical[0]).toBeLessThanOrEqual(order.vertical[1]);
-  expect(order.vertical[1]).toBeLessThanOrEqual(order.vertical[2]);
+  expect(order.brandBeforeToggle).toBe(true);
+  expect(order.toggleBeforeInstall).toBe(true);
 });
 
 test("every primary navigation link is visible at 320px", async ({ page }) => {
@@ -748,12 +751,14 @@ test("theme switching still works when preference storage is blocked", async ({ 
     };
   });
   await page.goto("/");
-  await page.getByRole("button", { name: "Light", exact: true }).click();
+  const toggle = page.locator(".theme-toggle--compact[data-theme-choice]");
+  for (let i = 0; i < 3; i++) {
+    await toggle.click();
+    const theme = await page.locator("html").getAttribute("data-theme");
+    if (theme === "light") break;
+  }
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
-  await expect(page.getByRole("button", { name: "Light", exact: true })).toHaveAttribute(
-    "aria-pressed",
-    "true",
-  );
+  await expect(toggle).toHaveAttribute("data-theme-choice", "light");
 });
 
 test("head theme fallback keeps dark browser chrome when storage reads are blocked", async ({

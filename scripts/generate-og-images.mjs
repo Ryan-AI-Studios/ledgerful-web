@@ -184,7 +184,7 @@ const ROUTES = [
     title: "Pricing — editions and feature states",
     // src/lib/content/navigation.ts pageDescriptions.pricing
     description:
-      "Ledgerful editions with explicit available, beta, local-only, hosted planned, and enterprise planned states.",
+      "Ledgerful editions with explicit available, beta, and planned states.",
     // NOTE: install/page.tsx's own code block lists `ledgerful compliance
     // export` as a CLI command, but that subcommand does not exist in the
     // shipped v0.1.8 CLI (`ledgerful compliance --help` errors with

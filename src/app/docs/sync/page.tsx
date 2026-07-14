@@ -21,7 +21,7 @@ export default function DocsSyncPage() {
       <section className="page-hero compact">
         <p className="hero-kicker">Docs · Sync</p>
         <h1>Local team sync.</h1>
-        <StatusPill status="beta" />
+        <StatusPill maturity="beta" deployment="runs-locally" />
         <p>
           Ledgerful sync writes signed, encrypted bundles to a directory you
           control. No cloud transport is involved by default.

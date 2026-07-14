@@ -21,7 +21,7 @@ export default function DocsCompliancePage() {
       <section className="page-hero compact">
         <p className="hero-kicker">Docs · Compliance</p>
         <h1>Export local SOC 2-style evidence.</h1>
-        <StatusPill status="local-only" />
+        <StatusPill maturity="available" deployment="runs-locally" />
         <p>
           Ledgerful generates a signed ZIP of local evidence entirely on your
           machine. This is not a hosted SOC 2 portal — no data leaves your device

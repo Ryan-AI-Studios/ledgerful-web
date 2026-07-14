@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { CalendarClock } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
-import { StatusPill } from "@/components/status-pill";
+import { LaunchPill } from "@/components/launch-pill";
 import { changelogEntries } from "@/lib/content/changelog";
 import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 
@@ -42,7 +42,7 @@ export default function ChangelogPage() {
                 <div className="timeline-meta">
                   <span>{entry.date}</span>
                   <span>{entry.area}</span>
-                  <StatusPill status={entry.state} />
+                  <LaunchPill status={entry.state} />
                 </div>
                 <h3>{entry.title}</h3>
                 <p>{entry.details}</p>

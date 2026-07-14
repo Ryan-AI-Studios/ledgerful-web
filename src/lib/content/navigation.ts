@@ -14,12 +14,19 @@ export const homeOgImage = {
 };
 
 export const mainNavigation = [
-  { href: "/", label: "Home" },
-  { href: "/install", label: "Install" },
+  { href: "/#pillars", label: "Product" },
   { href: "/architecture", label: "How it works" },
   { href: "/docs", label: "Docs" },
-  { href: "/pricing", label: "Pricing" },
+  { href: "/pricing", label: "Editions" },
   { href: "/trust", label: "Trust" },
+];
+
+// Home and Install are rendered in the footer but not in the header nav
+// (the brand logo is the Home link; Install is a standalone CTA in the
+// header).
+export const footerOnlyNavigation = [
+  { href: "/", label: "Home" },
+  { href: "/install", label: "Install" },
 ];
 
 export const footerNavigation = [{ href: "/changelog", label: "Changelog" }];
@@ -33,7 +40,7 @@ export const pageDescriptions = {
   architecture:
     "What Ledgerful reads, analyzes, and produces entirely on your machine, then the three Ledgerful surfaces: local engine and CLI, embedded loopback dashboard, public web, and the planned hosted control plane. Local-first data flow, opt-in telemetry.",
   docs: "Install, verify, and operate Ledgerful without confusing local tooling with hosted features.",
-  pricing: "Ledgerful editions with explicit available, beta, local-only, hosted planned, and enterprise planned states.",
+  pricing: "Ledgerful editions with explicit available, beta, and planned states.",
   trust: "Local-first data flow, telemetry, sync, SOC 2-style export, and future hosted boundaries.",
   changelog: "Public web, local engine, dashboard, and hosted-control-plane milestones.",
   waitlist: "Get launch announcements and changelog updates from Ledgerful. Double opt-in, no purchase required.",

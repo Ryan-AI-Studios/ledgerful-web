@@ -6,7 +6,14 @@ import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { LicenseExamples } from "@/components/license-examples";
 import { pageDescriptions } from "@/lib/content/navigation";
-import { stateLabels, type FeatureState } from "@/lib/content/features";
+import {
+  maturityLabels,
+  deploymentLabels,
+  editionLabels,
+  type Maturity,
+  type Deployment,
+  type Edition,
+} from "@/lib/content/features";
 import {
   editions,
   matrixGroups,
@@ -66,7 +73,7 @@ export default function PricingPage() {
           aria-labelledby="available-today-heading"
         >
           <div className="available-today-head">
-            <StatusPill status="local-only" />
+            <StatusPill maturity="available" deployment="runs-locally" />
             <h2 id="available-today-heading">Implemented in the current build</h2>
             <p className="available-today-price">Source-available, in force</p>
           </div>
@@ -83,9 +90,9 @@ export default function PricingPage() {
                 <span>
                   <span className="available-today-label">{item.label}</span>
                   <span className="available-today-state">
-                    <StatusPill status={item.state} />
+                    <StatusPill maturity={item.maturity} deployment={item.deployment} />
                     <span className="visually-hidden">
-                      {stateLabels[item.state]}
+                      {maturityLabels[item.maturity]} · {deploymentLabels[item.deployment]}
                     </span>
                   </span>
                 </span>
@@ -103,9 +110,7 @@ export default function PricingPage() {
         </aside>
         <div className="pricing-grid">
           {editions.map((edition) => {
-            const isPlanned =
-              edition.state === "hosted planned" ||
-              edition.state === "enterprise planned";
+            const isPlanned = edition.maturity === "planned";
             return (
               <article
                 key={edition.name}
@@ -118,7 +123,7 @@ export default function PricingPage() {
                     <h3>{edition.name}</h3>
                     <p>{edition.audience}</p>
                   </div>
-                  <StatusPill status={edition.state} />
+                  <StatusPill maturity={edition.maturity} deployment={edition.deployment} />
                 </div>
                 <p className={edition.price.startsWith("$") ? "price" : "price price--label"}>
                   {edition.price}
@@ -134,7 +139,7 @@ export default function PricingPage() {
                           <span className="item-caveat">{item.caveat}</span>
                         ) : null}
                       </span>
-                      <StatusPill status={item.state} />
+                      <StatusPill maturity={item.maturity} deployment={item.deployment} />
                     </li>
                   ))}
                 </ul>
@@ -221,7 +226,7 @@ export default function PricingPage() {
                     {row.cells.map((cell, i) =>
                       cell ? (
                         <td key={matrixEditionHeaders[i]}>
-                          <StatusPill status={cell.state} />
+                          <StatusPill maturity={cell.maturity} deployment={cell.deployment} />
                         </td>
                       ) : (
                         <td key={matrixEditionHeaders[i]}>
@@ -263,16 +268,27 @@ export default function PricingPage() {
       <section className="content-band" id="legend">
         <SectionHeading title="What each state label means">
           The same labels appear on the feature matrix above and on the
-          homepage. Available and local-only capabilities run on your machine;
-          hosted and enterprise features are not built yet.
+          homepage. Available and beta capabilities run on your machine;
+          hosted features are planned and not built yet.
         </SectionHeading>
         <div className="state-legend">
-          {stateLegendOrder.map((state) => (
-            <div className="state-legend-item" key={state}>
-              <StatusPill status={state} />
-              <p>{stateDefinitions[state]}</p>
+          {stateLegendOrder.map(([maturity, deployment]) => (
+            <div className="state-legend-item" key={`${maturity}-${deployment}`}>
+              <StatusPill maturity={maturity} deployment={deployment} />
+              <p>{stateDefinitions[maturity][deployment]}</p>
             </div>
           ))}
+        </div>
+        <div className="edition-legend" style={{ marginTop: "20px" }}>
+          <h3 style={{ fontSize: "0.95rem", marginBottom: "8px" }}>Edition columns</h3>
+          <ul style={{ listStyle: "none", padding: 0, display: "grid", gap: "6px", color: "var(--muted)" }}>
+            {(Object.keys(editionLabels) as Edition[]).map((ed) => (
+              <li key={ed} style={{ display: "flex", gap: "8px" }}>
+                <strong style={{ color: "var(--ink-primary)", minWidth: "100px" }}>{editionLabels[ed]}</strong>
+                <span>{ed === "local" ? "Free for individuals and small companies" : ed === "commercial" ? "Paid license for broader commercial use" : ed === "hosted" ? "Planned hosted service" : "Planned enterprise features"}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
@@ -287,20 +303,25 @@ export default function PricingPage() {
   );
 }
 
-// Real definitions of each feature state — shared with the homepage summary
-// and the pricing-page glossary so the wording cannot drift.
-const stateDefinitions: Record<FeatureState, string> = {
-  available: "Ships in the current local binary today.",
-  beta: "Implemented and usable; not yet fully tested for public release.",
-  "local-only": "Local-only today; no hosted equivalent exists yet.",
-  "hosted planned": "A future hosted service. Not built.",
-  "enterprise planned": "A future enterprise service. Not built.",
+// Real definitions of each feature-state axis pair — shared with the homepage
+// summary and the pricing-page glossary so the wording cannot drift.
+const stateDefinitions: Record<Maturity, Record<Deployment, string>> = {
+  available: {
+    "runs-locally": "Ships in the current local binary today and runs on your machine.",
+    hosted: "Ships in the current local binary today; hosted deployment is not available yet.",
+  },
+  beta: {
+    "runs-locally": "Implemented and usable locally; not yet fully tested for public release.",
+    hosted: "Implemented and usable; hosted deployment is not available yet.",
+  },
+  planned: {
+    "runs-locally": "Planned for a future local delivery path. Not built.",
+    hosted: "A future hosted service. Not built.",
+  },
 };
 
-const stateLegendOrder: FeatureState[] = [
-  "available",
-  "beta",
-  "local-only",
-  "hosted planned",
-  "enterprise planned",
+const stateLegendOrder: [Maturity, Deployment][] = [
+  ["available", "runs-locally"],
+  ["beta", "runs-locally"],
+  ["planned", "hosted"],
 ];

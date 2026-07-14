@@ -35,13 +35,15 @@ type Surface = {
   icon: "monitor" | "globe" | "cloud";
   body: string;
   meta: string;
-  status?: "available" | "local-only" | "hosted planned";
+  maturity?: "available" | "beta" | "planned";
+  deployment?: "runs-locally" | "hosted";
 };
 
 type StateRow = {
   scope: string;
   body: string;
-  status: "available" | "beta" | "local-only" | "hosted planned";
+  maturity: "available" | "beta" | "planned";
+  deployment: "runs-locally" | "hosted";
 };
 
 const surfaces: Surface[] = [
@@ -52,7 +54,8 @@ const surfaces: Surface[] = [
     icon: "monitor",
     body: "The Ledgerful binary runs entirely on your machine. The default build owns the ledger, scan, audit, verify, web (daemon), and MCP command surfaces. Local sync is feature-gated and requires a --features sync build. No remote service is required for normal operation.",
     meta: "Runs on host · no network calls by default",
-    status: "available",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     index: "02",
@@ -61,7 +64,8 @@ const surfaces: Surface[] = [
     icon: "globe",
     body: "The dashboard is a local web UI served by the Ledgerful daemon, bound to 127.0.0.1:52001 with an ephemeral session token. It is not accessible from the internet or other machines on your network.",
     meta: "Binds 127.0.0.1:52001 · one-time launch token → Bearer auth",
-    status: "local-only",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     index: "03",
@@ -70,7 +74,8 @@ const surfaces: Surface[] = [
     icon: "cloud",
     body: "This site. Static, deployable on Vercel, no hosted backend. Public docs describe the local product; they do not run a hosted control plane.",
     meta: "Static · Vercel deployable · no authenticated state",
-    status: "available",
+    maturity: "available",
+    deployment: "runs-locally",
   },
 ];
 
@@ -84,27 +89,32 @@ const stateRows: StateRow[] = [
   {
     scope: "Local default",
     body: "Ledgerful runs on your machine, reads from your repo and local files, writes to .ledgerful/. Source code never leaves the host. No remote calls for scan, ledger, audit, or export.",
-    status: "available",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     scope: "Local team sync",
     body: "With a sync-enabled build, signed and encrypted bundles are written to a directory you choose. You control the transport (a shared drive, a USB stick, or any other dir://-compatible path). Nothing broadcasts.",
-    status: "beta",
+    maturity: "beta",
+    deployment: "runs-locally",
   },
   {
     scope: "Telemetry (opt-in)",
     body: "Disabled by default. When enabled, structured usage events are sent to a Supabase ingest endpoint. Source code, file content, diffs, and commit messages are never transmitted.",
-    status: "available",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     scope: "Configured cloud model",
     body: "The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when that provider is configured and selected. Local-model operation does not use this path.",
-    status: "available",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     scope: "Hosted control plane",
     body: "A future hosted mode will add tenancy, hosted audit log, GitHub App callbacks, billing, and SSO/SCIM/RBAC. None of this is shipped today — see /pricing for explicit state labels.",
-    status: "hosted planned",
+    maturity: "planned",
+    deployment: "hosted",
   },
 ];
 
@@ -229,7 +239,7 @@ export default function ArchitecturePage() {
         <div className="surface-strip">
           {surfaces.map((surface) => {
             const Icon = iconMap[surface.icon];
-            const isPlanned = surface.status === "hosted planned";
+            const isPlanned = surface.maturity === "planned";
             return (
               <article
                 key={surface.index}
@@ -241,8 +251,8 @@ export default function ArchitecturePage() {
                   <span className="surface-role">
                     SURFACE {surface.index}
                   </span>
-                  {surface.status ? (
-                    <StatusPill status={surface.status} />
+                  {surface.maturity ? (
+                    <StatusPill maturity={surface.maturity} deployment={surface.deployment} />
                   ) : null}
                 </div>
                 <Icon size={22} aria-hidden="true" />
@@ -286,7 +296,7 @@ export default function ArchitecturePage() {
                   </th>
                   <td>{row.body}</td>
                   <td>
-                    <StatusPill status={row.status} />
+                    <StatusPill maturity={row.maturity} deployment={row.deployment} />
                   </td>
                 </tr>
               ))}
@@ -354,7 +364,7 @@ export default function ArchitecturePage() {
             <p style={{ marginTop: "12px" }}>
               Hardware-backed key storage, hosted KMS, SSO/SCIM, and RBAC are{" "}
               <em style={{ fontStyle: "normal", color: "var(--ink)" }}>
-                enterprise planned
+                planned for enterprise
               </em>
               . They require the future hosted control plane and are not
               implemented in the local daemon.
@@ -424,8 +434,7 @@ export default function ArchitecturePage() {
             >
               Pricing →
             </Link>{" "}
-            editions with explicit available, beta, local-only, hosted
-            planned, and enterprise planned states.
+            editions with explicit maturity and deployment states.
           </li>
         </ul>
       </section>

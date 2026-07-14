@@ -1,5 +1,5 @@
 import { launchFacts } from "@/lib/content/launch-facts";
-import { StatusPill } from "./status-pill";
+import { LaunchPill } from "./launch-pill";
 
 export function LaunchFacts() {
   return (
@@ -11,7 +11,7 @@ export function LaunchFacts() {
             <p>{fact.note}</p>
           </div>
           <div className="fact-meta">
-            <StatusPill status={fact.status} />
+            <LaunchPill status={fact.status} />
             {fact.href ? (
               <a
                 href={fact.href}

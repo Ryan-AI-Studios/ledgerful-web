@@ -12,7 +12,7 @@ const routes = [
   },
   {
     role: "Engineering manager",
-    body: "Compare available, beta, local-only, and planned editions before committing a team to one.",
+    body: "Compare available, beta, and planned editions before committing a team to one.",
     href: "/pricing",
     cta: "See editions",
   },

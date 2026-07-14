@@ -104,7 +104,7 @@ const organizationJsonLd: WithContext<Organization> = {
   ...(sameAs.length > 0 ? { sameAs } : {}),
 };
 
-const themeScript = `(function(){var r=document.documentElement;try{var p=localStorage.getItem("ledgerful-theme")||"dark";if(!/^(system|dark|light)$/.test(p))p="dark";var t=p==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):p;r.dataset.theme=t;r.dataset.themePreference=p;r.style.colorScheme=t}catch(e){r.dataset.theme="dark";r.dataset.themePreference="dark";r.style.colorScheme="dark"}})();`;
+const themeScript = `(function(){var r=document.documentElement;try{var p=localStorage.getItem("ledgerful-theme")||"system";if(!/^(system|dark|light)$/.test(p))p="system";var t=p==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):p;r.dataset.theme=t;r.dataset.themePreference=p;r.style.colorScheme=t}catch(e){r.dataset.theme="dark";r.dataset.themePreference="system";r.style.colorScheme="dark"}})();`;
 
 export default function RootLayout({
   children,
@@ -115,7 +115,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="dark"
-      data-theme-preference="dark"
+      data-theme-preference="system"
       suppressHydrationWarning
       className={`${archivo.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { footerNavigation, mainNavigation } from "@/lib/content/navigation";
+import { footerNavigation, mainNavigation, footerOnlyNavigation } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
 
 const licensePath = "/trust#license";
@@ -36,6 +36,11 @@ export function SiteFooter() {
         <div>
           <h2 className="footer-heading">Pages</h2>
           <ul>
+            {footerOnlyNavigation.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href}>{item.label}</Link>
+              </li>
+            ))}
             {mainNavigation.map((item) => (
               <li key={item.href}>
                 <Link href={item.href}>{item.label}</Link>

@@ -1,11 +1,12 @@
-import type { FeatureState } from "./features";
+import type { Deployment, Maturity } from "./features";
 import { launchTruth } from "./launch-facts";
 
 export type TrustDataFlow = {
   iconName: "Shield" | "HardDrive" | "RadioTower" | "Cloud";
   title: string;
   body: string;
-  state: FeatureState;
+  maturity: Maturity;
+  deployment: Deployment;
 };
 
 export type TelemetryField = {
@@ -21,7 +22,8 @@ export type SocExportFile = {
 export type Subprocessor = {
   name: string;
   purpose: string;
-  state: FeatureState;
+  maturity: Maturity;
+  deployment: Deployment;
 };
 
 export type BoundaryRow = {
@@ -37,31 +39,36 @@ export const trustDataFlows: TrustDataFlow[] = [
     iconName: "Shield",
     title: "Local default",
     body: "Ledgerful reads git state and project structure locally and writes evidence to .ledgerful/. Scan, ledger, audit, verify, dashboard, and export stay on the machine by default. Local sync is separate and requires a sync-enabled build compiled with --features sync.",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     iconName: "HardDrive",
     title: "Local sync (dir://)",
     body: "When sync is enabled with a dir:// transport, Ledgerful writes signed, encrypted bundles to a local directory path you control. No cloud transport is involved. Bundles are signed and encrypted before leaving the engine.",
-    state: "local-only",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     iconName: "RadioTower",
     title: "Telemetry (opt-in)",
     body: `Usage metrics are excluded from the default build. A build with ${launchTruth.facts.telemetry.feature} must still be enabled with ${launchTruth.facts.telemetry.enableCommand} before aggregate command counts, platform/version metadata, enabled features, and an anonymous ID are sent.`,
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     iconName: "Cloud",
     title: "Configured cloud model",
-    body: "The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when a user configures and selects one of those providers. Separately, ledgerful index --fast can send code chunks to a configured Gemini model for semantic extraction instead of the local model. Neither path is active in the default local-only workflow.",
-    state: "available",
+    body: "The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when a user configures and selects one of those providers. Separately, ledgerful index --fast can send code chunks to a configured Gemini model for semantic extraction instead of the local model. Neither path is active in the default local workflow.",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     iconName: "Cloud",
     title: "Hosted mode (planned)",
     body: "A future hosted control plane will allow teams to share signed summaries and metadata across machines. Source code will never be uploaded by default and will require explicit consent. This mode requires a future hosted infrastructure that does not yet exist.",
-    state: "hosted planned",
+    maturity: "planned",
+    deployment: "hosted",
   },
 ];
 
@@ -91,7 +98,7 @@ export const networkOutbound = {
   crashReporting:
     "None. Ledgerful does not integrate a crash reporter. Panics are handled by Rust's default behavior (stderr output) and are not transmitted anywhere. No crash data is ever sent to a remote service.",
   cloudModels:
-    "Configured only. Two distinct workflows can send data to a configured cloud model. The ask command sends sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when that provider is configured and selected. The index --fast flag sends code chunks to a configured Gemini model for semantic extraction instead of the local model. API credentials may be read from the process environment or repository-local .env file. Neither path is active in the default local-only workflow.",
+    "Configured only. Two distinct workflows can send data to a configured cloud model. The ask command sends sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when that provider is configured and selected. The index --fast flag sends code chunks to a configured Gemini model for semantic extraction instead of the local model. API credentials may be read from the process environment or repository-local .env file. Neither path is active in the default local workflow.",
 } as const;
 
 /**
@@ -320,13 +327,15 @@ export const publicSiteInfra: Subprocessor[] = [
     name: "Vercel",
     purpose:
       "Static site hosting for this public marketing website. Hosts the public www.ledgerful.dev site only and never receives Ledgerful project source code, ledger data, or product data. Visitor traffic to the public site (e.g. IP addresses) is processed by Vercel as the hosting provider for the marketing site, not as a product subprocessor.",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     name: "Kit (waitlist)",
     purpose:
       "Email capture for the /waitlist interest form. Receives the email address, an opt-in timestamp, and a design_partner custom field (set to \"true\" only if the design-partner checkbox is checked) via a first-party server relay. No source code, project data, or product data is sent. Double opt-in is mandatory: adding a subscriber to a double opt-in form triggers a confirmation email that must be acted on. The Kit API key stays server-side and never ships to the browser. To request deletion of your email from the waitlist, contact hello@ledgerful.dev with the subject \"Waitlist deletion request\" — your email and associated data will be removed from Kit within 5 business days.",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
   },
 ];
 
@@ -355,28 +364,32 @@ export const productSubprocessors: ProductSubprocessor[] = [
     name: "Supabase (telemetry)",
     purpose:
       "Opt-in usage telemetry ingest only. No source code or project data is sent. Disabled by default.",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
     tier: "current-product",
   },
   {
     name: "Configured model provider",
     purpose:
       "Gemini, Ollama Cloud, or OpenRouter receives sanitized, truncated context only when a user configures and selects that cloud-backed ask workflow.",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
     tier: "current-product",
   },
   {
     name: "Supabase (hosted backend)",
     purpose:
       "Future control-plane database, auth, and Edge Functions for the hosted team service.",
-    state: "hosted planned",
+    maturity: "planned",
+    deployment: "hosted",
     tier: "hosted-planned",
   },
   {
     name: "GitHub",
     purpose:
       "Future GitHub App installation records and webhooks for the hosted control plane. The current self-managed GitHub Action is a separate beta path run in the customer's own repository.",
-    state: "hosted planned",
+    maturity: "planned",
+    deployment: "hosted",
     tier: "hosted-planned",
   },
 ];
@@ -384,7 +397,7 @@ export const productSubprocessors: ProductSubprocessor[] = [
 /**
  * Concise threat-model + non-goals bullets. Sources:
  *   - coordination.md §6.2 (no SAML/OIDC/RBAC/SCIM in local daemon)
- *   - the SOC 2-style export page (local-only ZIP export, not a hosted SOC 2 portal)
+ *   - the SOC 2-style export page (local ZIP export, not a hosted SOC 2 portal)
  *   - the signing section (private key at rest protected only by filesystem
  *     permissions; FDE is the primary recommended mitigation)
  *   - the data flow content above (no zero-network / zero-telemetry absolutes;
@@ -401,7 +414,7 @@ export const threatModel: { heading: string; body: string }[] = [
   },
   {
     heading: "Local compromise equals key compromise",
-    body: "Private keys are stored as plain hex files protected only by filesystem permissions. Malware or a stolen laptop without Full Disk Encryption (FDE) can extract the signing key and forge ledger entries. FDE is the primary recommended mitigation. Hardware-backed key storage (TPM, Secure Enclave) and hosted KMS are enterprise-planned and require a future control plane.",
+    body: "Private keys are stored as plain hex files protected only by filesystem permissions. Malware or a stolen laptop without Full Disk Encryption (FDE) can extract the signing key and forge ledger entries. FDE is the primary recommended mitigation. Hardware-backed key storage (TPM, Secure Enclave) and hosted KMS are planned for enterprise and require a future control plane.",
   },
   {
     heading: "Local dashboard is loopback-only",
@@ -409,7 +422,7 @@ export const threatModel: { heading: string; body: string }[] = [
   },
   {
     heading: "External paths are opt-in and narrow",
-    body: "Opt-in telemetry sends a fixed aggregate JSON payload (no source, paths, query text, or commit messages). Two configured cloud-model workflows can send data: ask sends sanitized, truncated context, and index --fast sends code chunks to a configured Gemini model for semantic extraction. Both are opt-in (require a configured API key) and neither is active in the default local-only workflow.",
+    body: "Opt-in telemetry sends a fixed aggregate JSON payload (no source, paths, query text, or commit messages). Two configured cloud-model workflows can send data: ask sends sanitized, truncated context, and index --fast sends code chunks to a configured Gemini model for semantic extraction. Both are opt-in (require a configured API key) and neither is active in the default local workflow.",
   },
 ];
 
@@ -419,7 +432,7 @@ export const nonGoals: string[] = [
   "FedRAMP, FIPS 140, or other government baselines. No claim is made about FedRAMP authorization, FIPS-validated cryptography, or comparable government certification.",
   "Zero-network or zero-telemetry absolutes. The default build excludes telemetry; opt-in telemetry and the configured cloud-model ask and index --fast workflows are the outbound paths for project data. The optional viz command generates a local HTML file that loads the vis-network library from a public CDN when opened in a browser. Nothing here is a 'no network ever' guarantee.",
   "Air-gap. The engine can run fully offline, but this page does not claim that every install configuration is air-gapped. Operators are responsible for their own network posture.",
-  "SSO / SAML / OIDC / SCIM / RBAC in the local daemon. None of these are implemented locally. They are enterprise-planned for a future control plane.",
+  "SSO / SAML / OIDC / SCIM / RBAC in the local daemon. None of these are implemented locally. They are planned for enterprise for a future control plane.",
 ];
 
 export type ProveDontClaim = {

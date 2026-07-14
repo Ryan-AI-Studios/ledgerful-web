@@ -23,7 +23,7 @@ export default function DocsMcpPage() {
       <section className="page-hero compact">
         <p className="hero-kicker">Docs · MCP</p>
         <h1>MCP server setup.</h1>
-        <StatusPill status="beta" />
+        <StatusPill maturity="beta" deployment="runs-locally" />
         <p>
           The Ledgerful MCP stdio server exposes 10 tools to AI assistants that
           support the Model Context Protocol.

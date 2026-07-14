@@ -1,43 +1,54 @@
-export type FeatureState =
-  | "available"
-  | "beta"
-  | "local-only"
-  | "hosted planned"
-  | "enterprise planned";
+export type Maturity = "available" | "beta" | "planned";
+export type Deployment = "runs-locally" | "hosted";
+export type Edition = "local" | "commercial" | "hosted" | "enterprise";
 
 export type FeatureItem = {
   name: string;
-  state: FeatureState;
+  maturity: Maturity;
+  deployment: Deployment;
   description: string;
   evidence?: string;
 };
 
-export const stateLabels: Record<FeatureState, string> = {
+export const maturityLabels: Record<Maturity, string> = {
   available: "Available",
   beta: "Beta",
-  "local-only": "Local-only",
-  "hosted planned": "Hosted planned",
-  "enterprise planned": "Enterprise planned",
+  planned: "Planned",
+};
+
+export const deploymentLabels: Record<Deployment, string> = {
+  "runs-locally": "Runs locally",
+  hosted: "Hosted",
+};
+
+export const editionLabels: Record<Edition, string> = {
+  local: "Local",
+  commercial: "Commercial",
+  hosted: "Hosted",
+  enterprise: "Enterprise",
 };
 
 export const featureStates: FeatureItem[] = [
   {
     name: "Local CLI and engine",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
     description:
       "Runs analysis, ledger, audit, verify, web, and MCP workflows from the default local Ledgerful binary.",
     evidence: "Roadmap confirms the local engine and CLI are real today.",
   },
   {
     name: "Local team sync foundation",
-    state: "beta",
+    maturity: "beta",
+    deployment: "runs-locally",
     description:
       "Signed, encrypted dir:// bundles are available in a feature-gated build compiled with --features sync; sync is not included in the default install.",
     evidence: "The engine Cargo feature list keeps sync outside default features.",
   },
   {
     name: "Local dashboard",
-    state: "local-only",
+    maturity: "available",
+    deployment: "runs-locally",
     description:
       "A loopback dashboard backed by the local daemon and ephemeral session token access.",
     evidence:
@@ -45,41 +56,47 @@ export const featureStates: FeatureItem[] = [
   },
   {
     name: "Signed ledger provenance",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
     description:
       "Committed changes can carry signed evidence and offline-verifiable audit artifacts.",
     evidence: "Local ledger and compliance export contracts are implemented.",
   },
   {
     name: "SOC 2-style evidence export",
-    state: "local-only",
+    maturity: "available",
+    deployment: "runs-locally",
     description:
       "Exports a local ZIP bundle with manifest, hashes, signature, ledger CSV, verification history, and ADR files.",
     evidence: "Backend notes document /api/compliance/export as a ZIP download.",
   },
   {
     name: "MCP stdio tools",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
     description:
       "The @ledgerful/mcp-server package is published on npm (v0.1.10). The local MCP server connects AI assistants to the engine.",
     evidence: "launch-facts.ts confirms @ledgerful/mcp-server is published on npm.",
   },
   {
     name: "GitHub Action path",
-    state: "beta",
+    maturity: "beta",
+    deployment: "runs-locally",
     description:
       "Action package and PR validation path exist; public install docs are still in progress.",
     evidence: "Roadmap separates Action implementation from public release docs.",
   },
   {
     name: "Hosted control plane",
-    state: "hosted planned",
+    maturity: "planned",
+    deployment: "hosted",
     description:
       "A future hosted service. Not built.",
   },
   {
     name: "SSO, SCIM, RBAC, hosted audit log",
-    state: "enterprise planned",
+    maturity: "planned",
+    deployment: "hosted",
     description:
       "Enterprise identity and audit features are not implemented in the local daemon.",
   },

@@ -1,11 +1,24 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Monitor, Moon, Sun } from "lucide-react";
 
 export type ThemePreference = "system" | "dark" | "light";
 
 const choices: readonly ThemePreference[] = ["system", "dark", "light"];
 const storageKey = "ledgerful-theme";
+
+const icons: Record<ThemePreference, typeof Monitor> = {
+  system: Monitor,
+  dark: Moon,
+  light: Sun,
+};
+
+const labels: Record<ThemePreference, string> = {
+  system: "System theme",
+  dark: "Dark theme",
+  light: "Light theme",
+};
 
 function effectiveTheme(preference: ThemePreference) {
   return preference === "system"
@@ -29,7 +42,7 @@ export function ThemeToggle() {
     const saved = document.documentElement.dataset.themePreference;
     const initial = choices.includes(saved as ThemePreference)
       ? (saved as ThemePreference)
-      : "dark";
+      : "system";
     applyTheme(initial);
     const syncControl = window.setTimeout(() => setPreference(initial), 0);
 
@@ -54,7 +67,11 @@ export function ThemeToggle() {
     };
   }, []);
 
-  function choose(next: ThemePreference) {
+  function cycle() {
+    const next =
+      preference === null
+        ? "system"
+        : choices[(choices.indexOf(preference) + 1) % choices.length];
     try {
       localStorage.setItem(storageKey, next);
     } catch {
@@ -65,22 +82,31 @@ export function ThemeToggle() {
   }
 
   if (preference === null) {
-    return <div className="theme-toggle-placeholder" aria-hidden="true" />;
+    return (
+      <div
+        className="theme-toggle theme-toggle--compact"
+        aria-hidden="true"
+      >
+        <span className="theme-toggle-icon" />
+      </div>
+    );
   }
 
+  const Icon = icons[preference];
   return (
-    <div className="theme-toggle" role="group" aria-label="Color theme">
-      {choices.map((choice) => (
-        <button
-          type="button"
-          key={choice}
-          data-theme-choice={choice}
-          aria-pressed={preference === choice}
-          onClick={() => choose(choice)}
-        >
-          {choice[0].toUpperCase() + choice.slice(1)}
-        </button>
-      ))}
-    </div>
+    <button
+      type="button"
+      className="theme-toggle theme-toggle--compact"
+      aria-label={`Color theme: ${labels[preference]}`}
+      onClick={cycle}
+      data-theme-choice={preference}
+    >
+      <span className="theme-toggle-icon" aria-hidden="true">
+        <Icon size={18} />
+      </span>
+      <span className="theme-toggle-label" aria-hidden="true">
+        {labels[preference]}
+      </span>
+    </button>
   );
 }

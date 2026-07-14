@@ -50,13 +50,12 @@ assert.doesNotMatch(
   "Pricing must not present unresolved license terms as available today",
 );
 
-// All five approved feature state labels must appear
+// All approved feature state labels must appear
 const requiredLabels = [
   ["Available", "available state label"],
   ["Beta", "beta state label"],
-  ["Local-only", "local-only state label"],
-  ["Hosted planned", "hosted planned state label"],
-  ["Enterprise planned", "enterprise planned state label"],
+  ["Runs locally", "runs-locally state label"],
+  ["Planned", "planned state label"],
 ];
 for (const [label, desc] of requiredLabels) {
   assert.match(

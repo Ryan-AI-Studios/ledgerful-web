@@ -20,12 +20,12 @@ export function SiteHeader() {
       <div className="header-actions">
         <nav className="site-nav" aria-label="Primary navigation">
           {mainNavigation
-            .filter((item) => item.href !== "/install")
             .map((item) => {
+              const basePath = item.href.split("#")[0];
               const isActive =
-                item.href === "/"
+                basePath === "/"
                   ? pathname === "/"
-                  : pathname === item.href || pathname.startsWith(item.href + "/");
+                  : pathname === basePath || pathname.startsWith(basePath + "/");
               return (
                 <Link
                   href={item.href}

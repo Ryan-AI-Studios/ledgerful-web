@@ -1,9 +1,11 @@
-import type { FeatureState } from "./features";
+import type { Deployment, Maturity } from "./features";
 import { launchTruth } from "./launch-facts";
 
 export type DocTopic = {
   title: string;
-  state: FeatureState | "unresolved";
+  maturity: Maturity;
+  deployment: Deployment;
+  pillar?: "track" | "assess" | "prove" | "ask";
   summary: string;
   nextAction: string;
   href?: string;
@@ -12,7 +14,9 @@ export type DocTopic = {
 export const docTopics: DocTopic[] = [
   {
     title: "CLI install and smoke test",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
+    pillar: "track",
     summary:
       launchTruth.facts.release.note,
     nextAction: "Build from source or download a release binary; verify the SHA-256 checksum.",
@@ -20,7 +24,9 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "Local dashboard launch",
-    state: "local-only",
+    maturity: "available",
+    deployment: "runs-locally",
+    pillar: "track",
     summary:
       "Dashboard access is loopback daemon-backed: a one-time launch token is stripped from the URL, held in memory, and sent as Authorization: Bearer.",
     nextAction: "Document token handling without exposing tokens in examples or logs.",
@@ -28,7 +34,9 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "MCP setup",
-    state: "beta",
+    maturity: "beta",
+    deployment: "runs-locally",
+    pillar: "ask",
     summary:
       launchTruth.facts.mcpPackage.note,
     nextAction: "Install via npx or npm install; configure your MCP client.",
@@ -36,7 +44,9 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "GitHub Action setup",
-    state: "beta",
+    maturity: "beta",
+    deployment: "runs-locally",
+    pillar: "assess",
     summary:
       launchTruth.facts.githubAction.note,
     nextAction: "Publish install YAML after action release hygiene is complete.",
@@ -44,7 +54,9 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "SOC 2-style evidence export",
-    state: "local-only",
+    maturity: "available",
+    deployment: "runs-locally",
+    pillar: "prove",
     summary:
       "Local daemon can generate a ZIP with signed manifest, ledger CSV, verification history, and ADRs.",
     nextAction: "Keep this framed as a local export, not a hosted SOC 2 portal.",
@@ -52,7 +64,9 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "Local team sync",
-    state: "beta",
+    maturity: "beta",
+    deployment: "runs-locally",
+    pillar: "track",
     summary:
       "Team sync foundation uses signed/encrypted local-first bundles and dir:// transport.",
     nextAction: "Document setup and recovery once the product workflow is finalized.",
@@ -60,7 +74,9 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "Release verification",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
+    pillar: "prove",
     summary:
       launchTruth.facts.release.note,
     nextAction: "Download the v0.1.8 release and verify the SHA-256 checksum.",

@@ -20,9 +20,9 @@ export default function DocsDashboardPage() {
       <section className="page-hero compact">
         <p className="hero-kicker">Docs · Dashboard</p>
         <h1>Launch the local dashboard.</h1>
-        <StatusPill status="local-only" />
+        <StatusPill maturity="available" deployment="runs-locally" />
         <p>
-          The Ledgerful dashboard is a local-only web UI. It ships with the
+          The Ledgerful dashboard is a local web UI that runs on your machine. It ships with the
           Ledgerful CLI — there is nothing separate to install. It runs as a
           loopback daemon and requires an ephemeral session token to access.
         </p>

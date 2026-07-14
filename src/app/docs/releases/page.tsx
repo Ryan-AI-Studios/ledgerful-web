@@ -22,7 +22,7 @@ export default function DocsReleasesPage() {
       <section className="page-hero compact">
         <p className="hero-kicker">Docs · Releases</p>
         <h1>Release verification.</h1>
-        <StatusPill status="resolved" />
+        <StatusPill maturity="available" deployment="runs-locally" />
         <p>
           The release workflow requires SHA-256 checksums alongside every binary
           archive. {release.value}.

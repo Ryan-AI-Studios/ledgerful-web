@@ -46,7 +46,7 @@ function DataFlowDiagram() {
         sanitized, truncated context sent by the ask workflow when a cloud
         model provider is configured and selected, and code chunks sent by
         ledgerful index --fast to a configured Gemini model for semantic
-        extraction. None of these paths is active in the default local-only
+        extraction. None of these paths is active in the default local
         workflow.
       </desc>
 
@@ -915,7 +915,7 @@ export default function TrustPage() {
                     <Icon size={24} aria-hidden="true" />
                     <div className="trust-card-head">
                       <h3>{flow.title}</h3>
-                      <StatusPill status={flow.state} />
+                      <StatusPill maturity={flow.maturity} deployment={flow.deployment} />
                     </div>
                     <p>{flow.body}</p>
                   </article>
@@ -973,7 +973,7 @@ export default function TrustPage() {
                       opt-in telemetry → Supabase (aggregate metrics)
                     </li>
                   </ol>
-                  <p className="print-flow-note">None of these paths is active in the default local-only workflow.</p>
+                  <p className="print-flow-note">None of these paths is active in the default local workflow.</p>
                 </div>
               </div>
               <figcaption className="diagram-caption">
@@ -983,7 +983,7 @@ export default function TrustPage() {
                 context from the <code>ask</code> workflow to a selected
                 cloud model, and code chunks from <code>index --fast</code>{" "}
                 to a configured Gemini model for semantic extraction. None
-                of these paths is active in the default local-only workflow.
+                of these paths is active in the default local workflow.
               </figcaption>
             </figure>
             <div className="network-inventory" style={{ marginTop: "32px" }}>
@@ -1164,7 +1164,7 @@ export default function TrustPage() {
                   mitigation for local key security.
                 </strong>{" "}
                 Hardware-backed key storage (TPM, Secure Enclave) and hosted
-                KMS are enterprise-planned features for a future control
+                KMS are planned for enterprise features for a future control
                 plane.
               </p>
               <p style={{ marginTop: "12px" }}>
@@ -1185,8 +1185,8 @@ export default function TrustPage() {
                 <strong>Key rotation and enterprise features:</strong> Key
                 rotation is local and manual. Hardware-backed key storage,
                 hosted KMS, and device trust management are
-                enterprise-planned and require a future control plane. SSO /
-                SAML / OIDC, SCIM, and RBAC are also enterprise-planned —
+                planned for enterprise and require a future control plane. SSO /
+                SAML / OIDC, SCIM, and RBAC are also planned for enterprise —
                 none of these are implemented in the local daemon.
               </p>
             </div>
@@ -1452,7 +1452,7 @@ export default function TrustPage() {
             >
               <strong>Scope:</strong> This is a local ZIP export only. A
               hosted SOC 2 portal (with continuous monitoring, auditor access
-              controls, and live attestation) is enterprise-planned and
+              controls, and live attestation) is planned for enterprise and
               requires a future hosted control plane.
             </div>
             <h3
@@ -1864,7 +1864,7 @@ export default function TrustPage() {
                         </th>
                         <td>{sp.purpose}</td>
                         <td>
-                          <StatusPill status={sp.state} />
+                          <StatusPill maturity={sp.maturity} deployment={sp.deployment} />
                         </td>
                       </tr>
                     ))}
@@ -1925,7 +1925,7 @@ export default function TrustPage() {
                         </th>
                         <td>{sp.purpose}</td>
                         <td>
-                          <StatusPill status={sp.state} />
+                          <StatusPill maturity={sp.maturity} deployment={sp.deployment} />
                         </td>
                       </tr>
                     ))}
@@ -1943,7 +1943,7 @@ export default function TrustPage() {
             >
               Data deletion policies and data processing agreements will be
               defined when hosted mode launches. No subprocessor contract
-              applies to local-only installs. Vercel is intentionally listed
+              applies to local installs. Vercel is intentionally listed
               only under public-site infra; it does not process project data
               and is not part of the product / future-hosted subprocessor
               list.

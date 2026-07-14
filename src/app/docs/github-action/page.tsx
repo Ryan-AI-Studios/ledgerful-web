@@ -24,7 +24,7 @@ export default function DocsGithubActionPage() {
       <section className="page-hero compact">
         <p className="hero-kicker">Docs · GitHub Action</p>
         <h1>Add risk comments to pull requests.</h1>
-        <StatusPill status="beta" />
+        <StatusPill maturity="beta" deployment="runs-locally" />
         <p>
           The Ledgerful GitHub Action runs a risk scan on each pull request and
           posts a structured comment with impact and risk data.
@@ -47,9 +47,9 @@ export default function DocsGithubActionPage() {
           </p>
           <p style={{ marginTop: "12px" }}>
             <strong>Hosted GitHub App:</strong>{" "}
-            <StatusPill status="hosted planned" /> A future hosted control-plane
+            <StatusPill maturity="planned" deployment="hosted" /> A future hosted control-plane
             integration that would allow installing Ledgerful as a GitHub App
-            without managing workflow YAML. This is hosted planned and does not
+            without managing workflow YAML. This is planned and does not
             exist yet.
           </p>
         </div>

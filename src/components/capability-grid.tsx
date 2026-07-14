@@ -17,7 +17,7 @@ export function CapabilityGrid() {
             <h3>{feature.name}</h3>
             <p>{feature.description}</p>
           </div>
-          <StatusPill status={feature.state} />
+          <StatusPill maturity={feature.maturity} deployment={feature.deployment} />
         </article>
       ))}
     </div>

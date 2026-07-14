@@ -1,21 +1,36 @@
-import { stateLabels, type FeatureState } from "@/lib/content/features";
-import type { LaunchFactStatus } from "@/lib/content/launch-facts";
+import {
+  deploymentLabels,
+  maturityLabels,
+  type Deployment,
+  type Maturity,
+} from "@/lib/content/features";
 
-type Status = FeatureState | LaunchFactStatus | "completed" | "in progress";
-
-const labels: Record<Status, string> = {
-  ...stateLabels,
-  resolved: "Resolved",
-  unresolved: "Unresolved",
-  planned: "Planned",
-  completed: "Completed",
-  "in progress": "In progress",
+type StatusPillProps = {
+  maturity: Maturity;
+  deployment?: Deployment;
 };
 
-export function StatusPill({ status }: { status: Status }) {
-  return <span className={`status-pill status-${slug(status)}`}>{labels[status]}</span>;
+function slug(input: string) {
+  return input.replace(/\s+/g, "-");
 }
 
-function slug(status: Status) {
-  return status.replace(/\s+/g, "-");
+export function StatusPill({ maturity, deployment }: StatusPillProps) {
+  const maturityClass = `status-${slug(maturity)}`;
+  const deploymentClass = deployment ? `status-${slug(deployment)}` : undefined;
+  const labelParts = [maturityLabels[maturity]];
+  if (deployment) {
+    labelParts.push(deploymentLabels[deployment]);
+  }
+  return (
+    <span
+      className={[
+        "status-pill",
+        maturityClass,
+        deploymentClass,
+      ].filter(Boolean).join(" ")}
+      title={labelParts.join(" · ")}
+    >
+      {labelParts.join(" · ")}
+    </span>
+  );
 }

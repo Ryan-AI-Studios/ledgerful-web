@@ -13,6 +13,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { WaitlistForm } from "@/components/waitlist-form";
 import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions, siteUrl } from "@/lib/content/navigation";
+import { pillars, askCaveat } from "@/lib/content/pillars";
 
 export const metadata: Metadata = {
   description: pageDescriptions.home,
@@ -28,6 +29,7 @@ const softwareApplicationJsonLd: WithContext<SoftwareApplication> = {
   url: siteUrl,
   description:
     "Local-first change intelligence and signed provenance for repo risk and verification evidence.",
+  featureList: pillars.map((p) => p.label),
 };
 
 // Real captured URL, same source as hero-proof.tsx (see that file's comment
@@ -179,6 +181,30 @@ export default function Home() {
           </Link>
           .
         </SectionHeading>
+      </section>
+
+      {/* 8a. The four pillars */}
+      <section className="content-band" id="pillars">
+        <SectionHeading title="What Ledgerful does">
+          Four capabilities, all running on your machine. Nothing uploads by
+          default.
+        </SectionHeading>
+        <div className="pillar-grid">
+          {pillars.map((pillar) => (
+            <div className="pillar-card" key={pillar.id}>
+              <h3>{pillar.label}</h3>
+              <p>{pillar.description}</p>
+              <ul className="pillar-capabilities">
+                {pillar.capabilities.map((cap) => (
+                  <li key={cap}>{cap}</li>
+                ))}
+              </ul>
+              {pillar.id === "ask" && (
+                <p className="pillar-caveat">{askCaveat}</p>
+              )}
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* 9. How it stays local */}

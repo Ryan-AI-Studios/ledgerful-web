@@ -1,9 +1,10 @@
-import type { FeatureState } from "./features";
-import { launchTruth, type LaunchFactStatus } from "./launch-facts";
+import type { Deployment, Maturity } from "./features";
+import { launchTruth } from "./launch-facts";
 
 export type EditionItem = {
   label: string;
-  state: FeatureState;
+  maturity: Maturity;
+  deployment: Deployment;
   caveat?: string;
 };
 
@@ -17,14 +18,16 @@ export type Edition = {
   name: string;
   audience: string;
   price: string;
-  state: FeatureState | Extract<LaunchFactStatus, "unresolved">;
+  maturity: Maturity;
+  deployment: Deployment;
   description: string;
   includes: EditionItem[];
   cta?: EditionCta;
 };
 
 export type MatrixCell = {
-  state: FeatureState;
+  maturity: Maturity;
+  deployment: Deployment;
 } | null;
 
 // cells order: [Local, Commercial License, Hosted, Enterprise]
@@ -59,22 +62,25 @@ export const pricingBoundaryStatement =
  * here so the two cards and the matrix cannot drift out of sync.
  */
 export const localCapabilities: EditionItem[] = [
-  { label: "Local CLI and engine", state: "available" },
-  { label: "Local dashboard", state: "local-only" },
-  { label: "Signed ledger provenance", state: "available" },
-  { label: "Manual SOC 2-style evidence ZIP", state: "local-only" },
+  { label: "Local CLI and engine", maturity: "available", deployment: "runs-locally" },
+  { label: "Local dashboard", maturity: "available", deployment: "runs-locally" },
+  { label: "Signed ledger provenance", maturity: "available", deployment: "runs-locally" },
+  { label: "Manual SOC 2-style evidence ZIP", maturity: "available", deployment: "runs-locally" },
   {
     label: "MCP stdio tools",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
   },
   {
     label: "GitHub Action setup path",
-    state: "beta",
+    maturity: "beta",
+    deployment: "runs-locally",
     caveat: "Public install docs in progress",
   },
   {
     label: "Local team sync foundation",
-    state: "beta",
+    maturity: "beta",
+    deployment: "runs-locally",
     caveat: "Requires a build compiled with --features sync",
   },
 ];
@@ -85,7 +91,8 @@ export const editions: Edition[] = [
     audience:
       "Individuals, noncommercial use, and small companies under $1M aggregate gross revenue (internal use)",
     price: "Free for qualifying use",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
     description:
       "Run the current local build under the in-force PolyForm Noncommercial License with the Small-Entity Commercial Exception.",
     includes: localCapabilities,
@@ -95,7 +102,8 @@ export const editions: Edition[] = [
     audience:
       "Companies at or above $1M aggregate gross revenue running Ledgerful internally",
     price: "Commercial license required",
-    state: "available",
+    maturity: "available",
+    deployment: "runs-locally",
     description:
       "The same local-first CLI, dashboard, ledger, and evidence export as Local, under a commercial license. The base license is in force; commercial pricing is not yet announced.",
     includes: localCapabilities,
@@ -105,14 +113,15 @@ export const editions: Edition[] = [
     name: "Hosted",
     audience: "Managers who need cross-repo hosted visibility",
     price: "Pricing not announced",
-    state: "hosted planned",
+    maturity: "planned",
+    deployment: "hosted",
     description:
       "Planned hosted portfolio, GitHub App workflow, signed summary ingestion, billing, and retained audit state. Requires a future hosted control plane — no live feature claims until it ships.",
     includes: [
-      { label: "Hosted portfolio dashboard", state: "hosted planned" },
-      { label: "GitHub App", state: "hosted planned" },
-      { label: "Hosted audit log", state: "hosted planned" },
-      { label: "Billing portal", state: "hosted planned" },
+      { label: "Hosted portfolio dashboard", maturity: "planned", deployment: "hosted" },
+      { label: "GitHub App", maturity: "planned", deployment: "hosted" },
+      { label: "Hosted audit log", maturity: "planned", deployment: "hosted" },
+      { label: "Billing portal", maturity: "planned", deployment: "hosted" },
     ],
     cta: {
       label: "Join the waitlist",
@@ -124,14 +133,15 @@ export const editions: Edition[] = [
     name: "Enterprise",
     audience: "Security-conscious and regulated organizations",
     price: "Pricing not announced",
-    state: "enterprise planned",
+    maturity: "planned",
+    deployment: "hosted",
     description:
       "Planned enterprise identity, audit export, retention controls, support SLA, and optional self-hosted control plane. Described as roadmap — never sold today.",
     includes: [
-      { label: "SAML / OIDC SSO", state: "enterprise planned" },
-      { label: "SCIM", state: "enterprise planned" },
-      { label: "RBAC", state: "enterprise planned" },
-      { label: "Custom retention and support SLA", state: "enterprise planned" },
+      { label: "SAML / OIDC SSO", maturity: "planned", deployment: "hosted" },
+      { label: "SCIM", maturity: "planned", deployment: "hosted" },
+      { label: "RBAC", maturity: "planned", deployment: "hosted" },
+      { label: "Custom retention and support SLA", maturity: "planned", deployment: "hosted" },
     ],
     cta: {
       label: "Contact us",
@@ -155,37 +165,37 @@ export const matrixGroups: MatrixGroup[] = [
       {
         feature: "Local CLI and engine",
         cells: [
-          { state: "available" },
-          { state: "available" },
-          { state: "available" },
-          { state: "available" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
         ],
       },
       {
         feature: "Local dashboard",
         cells: [
-          { state: "local-only" },
-          { state: "local-only" },
-          { state: "local-only" },
-          { state: "local-only" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
         ],
       },
       {
         feature: "Signed ledger provenance",
         cells: [
-          { state: "available" },
-          { state: "available" },
-          { state: "available" },
-          { state: "available" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
         ],
       },
       {
         feature: "SOC 2-style evidence ZIP export",
         cells: [
-          { state: "local-only" },
-          { state: "local-only" },
-          { state: "local-only" },
-          { state: "local-only" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
         ],
       },
     ],
@@ -196,28 +206,28 @@ export const matrixGroups: MatrixGroup[] = [
       {
         feature: "Local team sync (sync-enabled build)",
         cells: [
-          { state: "local-only" },
-          { state: "local-only" },
-          { state: "local-only" },
-          { state: "local-only" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
         ],
       },
       {
         feature: "Team signatures and devices",
         cells: [
-          { state: "beta" },
-          { state: "beta" },
-          { state: "beta" },
-          { state: "beta" },
+          { maturity: "beta", deployment: "runs-locally" },
+          { maturity: "beta", deployment: "runs-locally" },
+          { maturity: "beta", deployment: "runs-locally" },
+          { maturity: "beta", deployment: "runs-locally" },
         ],
       },
       {
         feature: "Portfolio reports",
         cells: [
-          { state: "beta" },
-          { state: "beta" },
-          { state: "hosted planned" },
-          { state: "hosted planned" },
+          { maturity: "beta", deployment: "runs-locally" },
+          { maturity: "beta", deployment: "runs-locally" },
+          { maturity: "planned", deployment: "hosted" },
+          { maturity: "planned", deployment: "hosted" },
         ],
       },
     ],
@@ -228,25 +238,25 @@ export const matrixGroups: MatrixGroup[] = [
       {
         feature: "MCP stdio tools",
         cells: [
-          { state: "available" },
-          { state: "available" },
-          { state: "available" },
-          { state: "available" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
         ],
       },
       {
         feature: "GitHub Action setup path",
         caveat: "Public install docs in progress",
         cells: [
-          { state: "beta" },
-          { state: "beta" },
-          { state: "beta" },
-          { state: "beta" },
+          { maturity: "beta", deployment: "runs-locally" },
+          { maturity: "beta", deployment: "runs-locally" },
+          { maturity: "beta", deployment: "runs-locally" },
+          { maturity: "beta", deployment: "runs-locally" },
         ],
       },
       {
         feature: "GitHub App",
-        cells: [null, null, { state: "hosted planned" }, { state: "hosted planned" }],
+        cells: [null, null, { maturity: "planned", deployment: "hosted" }, { maturity: "planned", deployment: "hosted" }],
       },
     ],
   },
@@ -255,15 +265,15 @@ export const matrixGroups: MatrixGroup[] = [
     rows: [
       {
         feature: "Hosted portfolio dashboard",
-        cells: [null, null, { state: "hosted planned" }, { state: "hosted planned" }],
+        cells: [null, null, { maturity: "planned", deployment: "hosted" }, { maturity: "planned", deployment: "hosted" }],
       },
       {
         feature: "Hosted audit log",
-        cells: [null, null, { state: "hosted planned" }, { state: "hosted planned" }],
+        cells: [null, null, { maturity: "planned", deployment: "hosted" }, { maturity: "planned", deployment: "hosted" }],
       },
       {
         feature: "Billing portal",
-        cells: [null, null, { state: "hosted planned" }, { state: "hosted planned" }],
+        cells: [null, null, { maturity: "planned", deployment: "hosted" }, { maturity: "planned", deployment: "hosted" }],
       },
     ],
   },
@@ -272,19 +282,19 @@ export const matrixGroups: MatrixGroup[] = [
     rows: [
       {
         feature: "SAML / OIDC SSO",
-        cells: [null, null, null, { state: "enterprise planned" }],
+        cells: [null, null, null, { maturity: "planned", deployment: "hosted" }],
       },
       {
         feature: "SCIM",
-        cells: [null, null, null, { state: "enterprise planned" }],
+        cells: [null, null, null, { maturity: "planned", deployment: "hosted" }],
       },
       {
         feature: "RBAC",
-        cells: [null, null, null, { state: "enterprise planned" }],
+        cells: [null, null, null, { maturity: "planned", deployment: "hosted" }],
       },
       {
         feature: "Custom retention and support SLA",
-        cells: [null, null, null, { state: "enterprise planned" }],
+        cells: [null, null, null, { maturity: "planned", deployment: "hosted" }],
       },
     ],
   },
@@ -293,7 +303,7 @@ export const matrixGroups: MatrixGroup[] = [
 export const pricingFootnotes: string[] = [
   `${launchTruth.facts.license.note} No paid commercial price is announced.`,
   "GitHub App, hosted portfolio, hosted audit log, and billing portal require a future hosted control plane. No timeline is announced.",
-  "SAML / OIDC SSO, SCIM, and RBAC are enterprise planned and require a future hosted control plane with enterprise identity infrastructure. No timeline is announced.",
+  "SAML / OIDC SSO, SCIM, and RBAC are planned for enterprise and require a future hosted control plane with enterprise identity infrastructure. No timeline is announced.",
   `MCP stdio tools are published on npm (v${launchTruth.facts.mcpPackage.version}). GitHub Action setup path is beta. ${launchTruth.facts.githubAction.note}`,
   "Source upload is never required for local editions. The local daemon does not implement SSO, RBAC, or tenant isolation.",
   "No Commercial License, Hosted, or Enterprise price is announced.",

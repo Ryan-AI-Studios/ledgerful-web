@@ -145,7 +145,7 @@ const ROUTES = [
     // src/lib/content/navigation.ts pageDescriptions.home
     description:
       "Ledgerful runs on your machine to analyze repo changes, record signed provenance, plan verification, and export audit evidence — without uploading source code by default.",
-    // src/components/install-command.tsx INSTALL_COMMAND — the homepage's
+    // src/lib/content/install.ts INSTALL_COMMAND — the homepage's
     // real primary-CTA command (WEB-0022 replaced the old "01 · Scan"
     // workflow block this used to cite with the install-first hero).
     command: "cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful",
@@ -155,7 +155,7 @@ const ROUTES = [
     sources: {
       title: "src/app/page.tsx <h1> (home sets metadata.description only, not metadata.title)",
       description: "src/lib/content/navigation.ts pageDescriptions.home",
-      command: "src/components/install-command.tsx INSTALL_COMMAND",
+      command: "src/lib/content/install.ts INSTALL_COMMAND",
     },
   },
   {

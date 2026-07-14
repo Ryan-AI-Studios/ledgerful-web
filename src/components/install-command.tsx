@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, Copy } from "lucide-react";
-
-// Real, canonical install command — matches src/app/install/page.tsx line ~152
-// exactly. Cargo-from-source is the only supported install path for v0.1.x;
-// crates.io is not used. Do not change this string without also updating
-// /install (owned by a later track) and keeping both in sync.
-export const INSTALL_COMMAND =
-  "cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful";
+import { INSTALL_COMMAND } from "@/lib/content/install";
 
 /**
  * The install CTA used on the homepage and reused on /install. Always renders

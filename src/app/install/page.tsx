@@ -177,7 +177,7 @@ export default function InstallPage() {
             </p>
             <p style={{ marginTop: "12px" }}>
               Once installed, confirm with{" "}
-              <code>rustc --version</code>. A working Rust 1.74+ toolchain is
+              <code>rustc --version</code>. A working Rust 1.85+ toolchain is
               the floor for current Ledgerful builds.
             </p>
           </div>

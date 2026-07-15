@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ledgerful public ledger — offline verifier</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #0b0d10;
+  --surface: #11141a;
+  --ink: #f0f2f5;
+  --muted: #9aa3b2;
+  --line: #2a303c;
+  --ok: #3ecf7a;
+  --bad: #f06b6b;
+  --brand: #4db8ff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+@media (prefers-color-scheme: light) {
+  :root { --bg: #ffffff; --surface: #f6f8fa; --ink: #111318; --muted: #4b5563; --line: #d1d5db; }
+}
+body { margin: 0; padding: 24px; background: var(--bg); color: var(--ink); line-height: 1.5; }
+h1 { font-size: 1.35rem; margin: 0 0 8px; }
+p { margin: 0 0 16px; color: var(--muted); max-width: 70ch; }
+button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 10px 16px; border-radius: 6px; }
+button:hover { border-color: var(--brand); }
+#status { margin: 16px 0; white-space: pre-wrap; }
+table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.85rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+.ok { color: var(--ok); }
+.bad { color: var(--bad); }
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; word-break: break-all; }
+tr.hidden { display: none; }
+#filter { margin-top: 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); font: inherit; width: min(100%, 360px); }
+</style>
+</head>
+<body>
+<h1>Ledgerful public ledger — offline verifier</h1>
+<p>
+  Loads <code>entries.ndjson</code> and <code>manifest.json</code> from the same
+  directory, verifies each entry's Ed25519 signature with WebCrypto, and lists
+  the result. This page has no external dependencies and works from
+  <code>file://</code>.
+</p>
+<button id="verify" type="button">Verify all entries</button>
+<input id="filter" type="search" placeholder="Filter by tx_id, category, summary, or risk…" aria-label="Filter entries">
+<div id="status">Ready. Click "Verify all entries" to start.</div>
+<table>
+  <thead>
+    <tr><th>#</th><th>tx_id</th><th>category</th><th>summary</th><th>risk</th><th>status</th></tr>
+  </thead>
+  <tbody id="rows"></tbody>
+</table>
+<script>
+(async function () {
+  const status = document.getElementById('status');
+  const rows = document.getElementById('rows');
+  const filter = document.getElementById('filter');
+  let entries = [];
+  let manifest = null;
+
+  async function load() {
+    try {
+      const [entriesRes, manifestRes] = await Promise.all([
+        fetch('entries.ndjson'),
+        fetch('manifest.json'),
+      ]);
+      if (!entriesRes.ok) throw new Error('entries.ndjson: ' + entriesRes.status);
+      if (!manifestRes.ok) throw new Error('manifest.json: ' + manifestRes.status);
+      const ndjson = await entriesRes.text();
+      entries = ndjson.split('\n').filter(Boolean).map(line => {
+        try { return JSON.parse(line); } catch (e) { return null; }
+      }).filter(Boolean);
+      manifest = await manifestRes.json();
+      status.textContent = 'Loaded ' + entries.length + ' entries. Manifest entryCount: ' + (manifest.entryCount ?? '?') + '.';
+      render();
+    } catch (err) {
+      status.textContent = 'Load error: ' + err.message;
+      status.className = 'bad';
+    }
+  }
+
+  function buildPayload(entry) {
+    return [
+      'tx_id:' + entry.tx_id,
+      'category:' + (entry.category ?? ''),
+      'summary:' + (entry.summary ?? ''),
+      'reason:' + (entry.reason ?? ''),
+      'committed_at:' + (entry.committed_at ?? ''),
+    ].join('\n');
+  }
+
+  function truncate(hex, n) {
+    if (!hex || hex.length <= n + 3) return hex;
+    return hex.slice(0, n) + '…' + hex.slice(-4);
+  }
+
+  function render(results) {
+    rows.innerHTML = '';
+    entries.forEach((entry, i) => {
+      const r = results ? results[i] : null;
+      const tr = document.createElement('tr');
+      tr.dataset.search = [
+        entry.tx_id,
+        entry.category,
+        entry.summary,
+        entry.risk_level,
+      ].join(' ').toLowerCase();
+      tr.innerHTML = '<td>' + (i + 1) + '</td>' +
+        '<td class="mono" title="' + entry.tx_id + '">' + truncate(entry.tx_id, 12) + '</td>' +
+        '<td>' + (entry.category ?? '-') + '</td>' +
+        '<td>' + (entry.summary ?? '-') + '</td>' +
+        '<td>' + (entry.risk_level ?? '-') + '</td>' +
+        '<td class="' + (r ? (r.ok ? 'ok' : 'bad') : '') + '">' + (r ? (r.ok ? 'VALID' : 'INVALID') : '—') + '</td>';
+      rows.appendChild(tr);
+    });
+    applyFilter();
+  }
+
+  function applyFilter() {
+    const q = filter.value.trim().toLowerCase();
+    for (const tr of rows.children) {
+      tr.classList.toggle('hidden', q && !(tr.dataset.search || '').includes(q));
+    }
+  }
+
+  async function verifyAll() {
+    if (!entries.length) {
+      status.textContent = 'No entries loaded.';
+      return;
+    }
+    if (!window.crypto || !crypto.subtle) {
+      status.textContent = 'WebCrypto is not available in this browser. Use the CLI verifier instead: ledgerful verify --signatures against a local copy of the bundle, or open this page in a modern browser (Chrome 113+, Firefox 130+, Safari 17+).';
+      status.className = 'bad';
+      return;
+    }
+    status.textContent = 'Verifying ' + entries.length + ' entries…';
+    const results = [];
+    let valid = 0;
+    let invalid = 0;
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i];
+      let ok = false;
+      let error = null;
+      try {
+        const pubRaw = hexToBytes(entry.public_key);
+        const sigRaw = hexToBytes(entry.signature);
+        const key = await crypto.subtle.importKey('raw', pubRaw, { name: 'Ed25519' }, false, ['verify']);
+        const payload = new TextEncoder().encode(buildPayload(entry));
+        ok = await crypto.subtle.verify('Ed25519', key, sigRaw, payload);
+      } catch (err) {
+        error = err.message;
+      }
+      if (ok) valid++; else invalid++;
+      results.push({ ok, error });
+    }
+    render(results);
+    const manifestNote = manifest && manifest.bundleType === 'sample' ? ' Manifest signature is not included in this sample (no bot key yet).' : '';
+    status.textContent = valid + ' of ' + entries.length + ' entries verified as VALID' + (invalid ? '; ' + invalid + ' INVALID' : '') + '.' + manifestNote;
+    status.className = invalid ? '' : 'ok';
+  }
+
+  function hexToBytes(hex) {
+    const bytes = new Uint8Array(hex.length / 2);
+    for (let i = 0; i < hex.length; i += 2) {
+      bytes[i / 2] = parseInt(hex.slice(i, i + 2), 16);
+    }
+    return bytes;
+  }
+
+  filter.addEventListener('input', applyFilter);
+  document.getElementById('verify').addEventListener('click', verifyAll);
+
+  await load();
+})();
+</script>
+</body>
+</html>

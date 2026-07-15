@@ -29,7 +29,10 @@ export const footerOnlyNavigation = [
   { href: "/install", label: "Install" },
 ];
 
-export const footerNavigation = [{ href: "/changelog", label: "Changelog" }];
+export const footerNavigation = [
+  { href: "/changelog", label: "Changelog" },
+  { href: "/ledger", label: "Public ledger" },
+];
 
 export const publicNavigation = [...mainNavigation, ...footerNavigation];
 
@@ -51,4 +54,6 @@ export const pageDescriptions = {
   docsCompliance: "Export local SOC 2-style evidence as a signed ZIP from the Ledgerful dashboard.",
   docsSync: "Set up local team sync with signed, encrypted bundles over a dir:// transport.",
   docsReleases: "Verify Ledgerful release checksums and run the local health report.",
+  ledger:
+    "Ledgerful's development change ledger, published as a redacted, signed, and verifiable sample. Verify Ed25519 signatures in the browser.",
 };

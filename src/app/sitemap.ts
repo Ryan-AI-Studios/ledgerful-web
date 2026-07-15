@@ -1,4 +1,4 @@
-import type { MetadataRoute } from "next";
+﻿import type { MetadataRoute } from "next";
 import { publicNavigation, siteUrl } from "@/lib/content/navigation";
 
 const docRoutes = [
@@ -9,6 +9,7 @@ const docRoutes = [
   "/docs/compliance",
   "/docs/sync",
   "/docs/releases",
+  "/docs/public-ledger",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

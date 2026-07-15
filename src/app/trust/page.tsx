@@ -121,7 +121,48 @@ export default function TrustPage() {
 
               <dt>Last updated</dt>
               <dd>July 14, 2026</dd>
+
+              <dt>Public ledger</dt>
+              <dd>
+                Browser-verifiable signed change ledger at{" "}
+                <Link href="/ledger" className="inline-link">
+                  /ledger
+                </Link>
+                .
+              </dd>
             </dl>
+          </section>
+
+          {/* ── Public ledger section ───────────────────────────── */}
+          <section className="content-band" id="public-ledger">
+            <SectionHeading title="Public ledger">
+              Ledgerful publishes its own development change ledger as a
+              redacted, signed, browser-verifiable bundle. Every entry carries a
+              real Ed25519 signature you can verify without a backend call.
+            </SectionHeading>
+            <p>
+              View the ledger at{" "}
+              <Link href="/ledger" className="inline-link">
+                /ledger
+              </Link>
+              , or read the docs at{" "}
+              <Link href="/docs/public-ledger" className="inline-link">
+                /docs/public-ledger
+              </Link>
+              .
+            </p>
+            <div className="disclosure-notice" style={{ marginTop: "24px" }}>
+              <p>
+                <strong>What this proves:</strong> each entry&apos;s Ed25519
+                signature.
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>What this does not prove:</strong> the order or set of
+                entries (chain continuity) or the identity behind the signing
+                key. Out-of-band fingerprint comparison is required before
+                treating a key as authentic.
+              </p>
+            </div>
           </section>
 
           {/* ── Deep dive link ──────────────────────────────────── */}

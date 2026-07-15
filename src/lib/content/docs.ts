@@ -82,4 +82,14 @@ export const docTopics: DocTopic[] = [
     nextAction: "Download the release and verify the SHA-256 checksum.",
     href: "/docs/releases",
   },
+  {
+    title: "Public ledger",
+    maturity: "available",
+    deployment: "runs-locally",
+    pillar: "prove",
+    summary:
+      "Ledgerful's own development ledger, published as a redacted, signed, browser-verifiable bundle at /ledger.",
+    nextAction: "Open the public ledger page to verify entries in your browser.",
+    href: "/docs/public-ledger",
+  },
 ];

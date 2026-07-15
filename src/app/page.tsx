@@ -227,6 +227,17 @@ export default function Home() {
         <EvidencePanel />
       </section>
 
+      {/* Public ledger proof link */}
+      <section className="content-band" id="public-ledger-proof">
+        <SectionHeading title="See the public ledger">
+          Ledgerful&apos;s own development change ledger is published at{" "}
+          <Link href="/ledger" className="inline-link">
+            /ledger
+          </Link>{" "}
+          — every entry is Ed25519-signed and verifiable in your browser.
+        </SectionHeading>
+      </section>
+
       {/* 10. Audience routing */}
       <section className="split-band" id="audience">
         <SectionHeading title="Start where you sit">

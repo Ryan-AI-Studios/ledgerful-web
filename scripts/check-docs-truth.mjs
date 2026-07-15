@@ -38,7 +38,7 @@ function readHtml(slug) {
 // ── Load the docs pages that this script actually asserts on ──────────────────
 
 const pages = {};
-const slugs = ["cli", "dashboard", "mcp", "github-action", "compliance", "sync", "releases"];
+const slugs = ["cli", "dashboard", "mcp", "github-action", "compliance", "sync", "releases", "public-ledger"];
 
 for (const slug of slugs) {
   try {

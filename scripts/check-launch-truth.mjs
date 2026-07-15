@@ -1,5 +1,6 @@
-import assert from "node:assert/strict";
+﻿import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { existsSync, readFileSync } from "node:fs";
 import ts from "typescript";
 
 const sourceUrl = new URL("../src/lib/content/launch-facts.ts", import.meta.url);
@@ -180,7 +181,39 @@ async function checkPublishedState() {
   }
 }
 
+function assertPublicLedgerBundle() {
+  const bundleDir = new URL("../public/ledger/", import.meta.url);
+  const ndjsonPath = new URL("entries.ndjson", bundleDir);
+  const manifestPath = new URL("manifest.json", bundleDir);
+  assert.ok(
+    existsSync(ndjsonPath),
+    "Public ledger bundle missing: public/ledger/entries.ndjson â€” run npm run generate:ledger",
+  );
+  const ndjson = readFileSync(ndjsonPath, "utf8");
+  const lines = ndjson.split("\n").filter(Boolean);
+  assert.ok(
+    lines.length > 0,
+    "Public ledger bundle is empty: public/ledger/entries.ndjson has no entries",
+  );
+  assert.ok(
+    existsSync(manifestPath),
+    "Public ledger manifest missing: public/ledger/manifest.json",
+  );
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
+  assert.equal(
+    manifest.entryCount,
+    lines.length,
+    `Public ledger manifest entryCount (${manifest.entryCount}) does not match entries.ndjson line count (${lines.length})`,
+  );
+  console.log(
+    `Public ledger bundle: ${lines.length} entries, manifest verified.`,
+  );
+}
+
 assertInternalBaseline();
+
+assertPublicLedgerBundle();
+
 if (process.env.LAUNCH_TRUTH_LIVE === "1") {
   await checkPublishedState();
   console.log(

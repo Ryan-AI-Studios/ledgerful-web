@@ -1,0 +1,34 @@
+{
+  "allowlist": [
+    "tx_id",
+    "category",
+    "summary",
+    "reason",
+    "committed_at",
+    "author_pseudonym",
+    "verification_result",
+    "verification_duration_ms",
+    "risk_level",
+    "signature",
+    "public_key",
+    "entry_hash",
+    "prev_hash"
+  ],
+  "bundleType": "sample",
+  "chainHeadPresent": false,
+  "entryCount": 178,
+  "files": [
+    {
+      "name": "entries.ndjson",
+      "sha256": "e87ce9e48dd68a2d8a902a0c9b92b829a85bad30cba2f889f82a9dad6094bfe6",
+      "size": 161509
+    }
+  ],
+  "generatedAt": "2026-07-14T23:32:33.824720900+00:00",
+  "publisher": "Ledgerful engine sample export",
+  "sigAlg": "Ed25519",
+  "timeRange": {
+    "first": "2026-06-27T11:11:47.950820800+00:00",
+    "last": "2026-07-14T23:32:33.824720900+00:00"
+  }
+}

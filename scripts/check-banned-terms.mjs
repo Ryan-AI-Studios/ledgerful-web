@@ -25,6 +25,14 @@ const PUBLIC_EVIDENCE_ROOT = "public";
 // 2. 0027 positioning terms (scripts/lib/positioning-terms.mjs)
 // 3. AI-tell fixed strings from humanize-marketing-copy skill blacklist.md
 //    Tier 1 classics + promotional inflation + corporate abstraction
+// Substrings that are allowed even when they contain a banned term. These
+// are web platform API names or engine track names, not marketing copy.
+const API_CONTEXT_ALLOWLIST = Object.freeze([
+  { pattern: /window\.crypto/gi },
+  { pattern: /crypto\.subtle/gi },
+  { pattern: /E1-CRYPTO/g },
+]);
+
 const BANNED_TERMS = Object.freeze([
   // D10 terms from Claims Register
   { term: "tamper-proof", pattern: /\btamper-proof\b/i },
@@ -39,6 +47,8 @@ const BANNED_TERMS = Object.freeze([
   { term: "NFT", pattern: /\bNFT\b/i },
   { term: "on-chain", pattern: /\bon-chain\b/i },
   { term: "tokenomics", pattern: /\btokenomics\b/i },
+  // "crypto" is allowed when it is part of a web platform API context
+  // (window.crypto, crypto.subtle) or an engine track name (E1-CRYPTO).
   { term: "crypto", pattern: /\bcrypto\b/i },
 
   // AI-tell fixed strings — Tier 1 classics
@@ -171,7 +181,15 @@ for (const file of files) {
     if (isDisclaimerLine(line)) return;
     for (const { term, pattern } of BANNED_TERMS) {
       pattern.lastIndex = 0;
-      if (pattern.test(line)) {
+      if (!pattern.test(line)) continue;
+      // Allow the term when it appears only as part of a web platform API
+      // context (window.crypto, crypto.subtle) or as an engine track name.
+      let scrubbed = line;
+      for (const allowed of API_CONTEXT_ALLOWLIST) {
+        scrubbed = scrubbed.replace(allowed.pattern, "__allowed__");
+      }
+      pattern.lastIndex = 0;
+      if (pattern.test(scrubbed)) {
         violations.push({
           path: file.path,
           line: index + 1,

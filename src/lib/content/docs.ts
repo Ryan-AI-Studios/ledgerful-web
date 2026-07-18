@@ -63,6 +63,17 @@ export const docTopics: DocTopic[] = [
     href: "/docs/compliance",
   },
   {
+    title: "SOC 2 control-evidence mapping",
+    maturity: "planned",
+    deployment: "runs-locally",
+    pillar: "prove",
+    summary:
+      "A draft mapping of Ledgerful's framework-agnostic evidence to named SOC 2 controls. Draft — pending design-partner validation; the page is noindex until auditor interviews validate the map.",
+    nextAction:
+      "Open the draft mapping page (noindex, direct-link only) to review the control-to-evidence map.",
+    href: "/docs/soc2-mapping",
+  },
+  {
     title: "Local team sync",
     maturity: "beta",
     deployment: "runs-locally",

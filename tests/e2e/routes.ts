@@ -10,6 +10,7 @@ export const publicRoutes = [
   "/docs/mcp",
   "/docs/public-ledger",
   "/docs/releases",
+  "/docs/soc2-mapping",
   "/docs/sync",
   "/install",
   "/editions",

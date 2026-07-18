@@ -94,6 +94,12 @@ const BANNED_TERMS = Object.freeze([
   { term: "endeavor", pattern: /\bendeavor\b/i },
   { term: "facilitate", pattern: /\bfacilitate\b/i },
   { term: "ascertain", pattern: /\bascertain\b/i },
+
+  // 0048 compliance-claim terms (affirmative form; disclaimer exemption handles negated uses)
+  { term: "compliant", pattern: /\bcompliant\b/i },
+  { term: "certified", pattern: /\bcertified\b/i },
+  { term: "audited", pattern: /\baudited\b/i },
+  { term: "compliance attestation", pattern: /\bcompliance attestation\b/i },
 ]);
 
 const includedExtensions = /\.(?:[cm]?[jt]sx?|mdx?|json|txt)$/i;

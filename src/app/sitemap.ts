@@ -10,7 +10,6 @@ const docRoutes = [
   "/docs/sync",
   "/docs/releases",
   "/docs/public-ledger",
-  "/docs/soc2-mapping",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

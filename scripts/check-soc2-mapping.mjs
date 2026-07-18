@@ -291,6 +291,19 @@ function extractRenderedControlIds(html) {
 
 const html = readFileSync(BUILT_HTML_PATH, "utf8");
 
+const soc2MappingEnabled = process.env.ENABLE_SOC2_MAPPING === "true";
+
+if (!soc2MappingEnabled) {
+  // Default-OFF: the route must 404. The built HTML is the not-found page.
+  assert.match(
+    html,
+    /This public page is not available/,
+    "with ENABLE_SOC2_MAPPING off, /docs/soc2-mapping must render the 404 page",
+  );
+  console.log("SOC 2 mapping check passed (route 404s by default; ENABLE_SOC2_MAPPING off).");
+  process.exit(0);
+}
+
 assert.match(html, /<h1[^>]*>[^<]*SOC 2 control-evidence mapping[^<]*<\/h1>/, "built page must contain the expected h1");
 
 const robotsContent = findRobotsContent(html);

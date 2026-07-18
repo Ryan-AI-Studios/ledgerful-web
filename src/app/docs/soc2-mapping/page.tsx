@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
@@ -7,6 +8,7 @@ import {
   soc2MappingDraftLabel,
 } from "@/lib/content/soc2-mapping";
 import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
+import { soc2MappingEnabled } from "@/lib/soc2-mapping-policy.mjs";
 
 export const metadata: Metadata = {
   title: "SOC 2 control-evidence mapping — documentation",
@@ -34,6 +36,7 @@ export const metadata: Metadata = {
 };
 
 export default function DocsSoc2MappingPage() {
+  if (!soc2MappingEnabled) notFound();
   const mapping = getSoc2Mapping();
 
   return (

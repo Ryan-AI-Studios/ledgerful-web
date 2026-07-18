@@ -4190,6 +4190,69 @@ code {
   margin-bottom: 16px;
 }
 
+/* ── SOC 2 control-evidence mapping (Track 0048) ──────────────────────────── */
+
+.soc2-mapping-hero {
+  max-width: 900px;
+}
+
+.soc2-mapping-draft-label {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--state-unresolved);
+  margin-top: 8px;
+}
+
+.soc2-mapping-draft-notice {
+  max-width: 840px;
+}
+
+.soc2-mapping-control {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 20px;
+  margin-bottom: 16px;
+  max-width: 840px;
+}
+
+.soc2-mapping-control-id {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 0.9rem;
+  color: var(--brand-strong);
+}
+
+.soc2-mapping-control-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 4px 0 8px;
+}
+
+.soc2-mapping-evidence {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 8px 0;
+}
+
+.soc2-mapping-evidence li {
+  margin: 2px 0;
+}
+
+.soc2-mapping-provenance {
+  margin-top: 12px;
+}
+
+.soc2-mapping-limit {
+  margin-top: 8px;
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+
+.soc2-mapping-limit-label {
+  font-weight: 600;
+  color: var(--state-unresolved);
+}
+
 @media (max-width: 640px) {
   .waitlist-submit {
     width: 100%;

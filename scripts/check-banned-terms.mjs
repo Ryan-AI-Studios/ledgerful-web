@@ -5,9 +5,11 @@
 // list (Claims Register D10 + 0027 positioning terms + AI-tell fixed strings),
 // exits non-zero on any hit, and names the file + line + term.
 //
-// Disclaimer exception: if the line contains a negation/disclaimer phrase
-// ("not ", "do not ", "does not ", "never", "are not ", "is not ",
-// "we are not", "no claim"), the hit is skipped.
+// Disclaimer exception: a clause (split by line, ". ", "; ", or ", ") that
+// contains a negation/disclaimer phrase ("not ", "do not ", "does not ",
+// "never", "are not ", "is not ", "we are not", "no claim", "not a ") is
+// skipped. Affirmative clauses mixed with negated clauses on the same line are
+// still caught.
 
 import { readdir, readFile } from "node:fs/promises";
 import { resolve, relative } from "node:path";
@@ -94,22 +96,56 @@ const BANNED_TERMS = Object.freeze([
   { term: "endeavor", pattern: /\bendeavor\b/i },
   { term: "facilitate", pattern: /\bfacilitate\b/i },
   { term: "ascertain", pattern: /\bascertain\b/i },
+
+  // 0048 compliance-claim terms (affirmative form; disclaimer exemption handles negated uses)
+  { term: "compliant", pattern: /\bcompliant\b/i },
+  { term: "certified", pattern: /\bcertified\b/i },
+  { term: "audited", pattern: /\baudited\b/i },
+  { term: "compliance attestation", pattern: /\bcompliance attestation\b/i },
 ]);
 
 const includedExtensions = /\.(?:[cm]?[jt]sx?|mdx?|json|txt)$/i;
 
-function isDisclaimerLine(line) {
-  const lower = line.toLowerCase();
-  return (
-    lower.includes("not ") ||
-    lower.includes("do not ") ||
-    lower.includes("does not ") ||
-    lower.includes("never") ||
-    lower.includes("are not ") ||
-    lower.includes("is not ") ||
-    lower.includes("we are not") ||
-    lower.includes("no claim")
-  );
+const NEGATION_MARKERS = Object.freeze([
+  "not ",
+  "do not ",
+  "does not ",
+  "never",
+  "are not ",
+  "is not ",
+  "we are not",
+  "no claim",
+  "not a ",
+]);
+
+function isNegatedClause(clause) {
+  const lower = clause.toLowerCase();
+  return NEGATION_MARKERS.some((marker) => lower.includes(marker));
+}
+
+function checkBannedTermsInText(text) {
+  const violations = [];
+  const clauses = text.split(/\r?\n|\.\s+|;\s+|,\s+/);
+
+  for (const clause of clauses) {
+    if (isNegatedClause(clause)) continue;
+    for (const { term, pattern } of BANNED_TERMS) {
+      pattern.lastIndex = 0;
+      if (!pattern.test(clause)) continue;
+      // Allow the term when it appears only as part of a web platform API
+      // context (window.crypto, crypto.subtle) or as an engine track name.
+      let scrubbed = clause;
+      for (const allowed of API_CONTEXT_ALLOWLIST) {
+        scrubbed = scrubbed.replace(allowed.pattern, "__allowed__");
+      }
+      pattern.lastIndex = 0;
+      if (pattern.test(scrubbed)) {
+        violations.push({ term, clause: clause.trim() });
+      }
+    }
+  }
+
+  return violations;
 }
 
 async function collectFiles(directory, extensions) {
@@ -178,25 +214,14 @@ for (const file of files) {
       return;
     }
     if (inCodeFence) return;
-    if (isDisclaimerLine(line)) return;
-    for (const { term, pattern } of BANNED_TERMS) {
-      pattern.lastIndex = 0;
-      if (!pattern.test(line)) continue;
-      // Allow the term when it appears only as part of a web platform API
-      // context (window.crypto, crypto.subtle) or as an engine track name.
-      let scrubbed = line;
-      for (const allowed of API_CONTEXT_ALLOWLIST) {
-        scrubbed = scrubbed.replace(allowed.pattern, "__allowed__");
-      }
-      pattern.lastIndex = 0;
-      if (pattern.test(scrubbed)) {
-        violations.push({
-          path: file.path,
-          line: index + 1,
-          term,
-          excerpt: line.trim(),
-        });
-      }
+    const lineViolations = checkBannedTermsInText(line);
+    for (const violation of lineViolations) {
+      violations.push({
+        path: file.path,
+        line: index + 1,
+        term: violation.term,
+        excerpt: violation.clause,
+      });
     }
   });
 }

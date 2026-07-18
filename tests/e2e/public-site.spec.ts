@@ -4,6 +4,7 @@ import { primaryNavigation, publicRoutes } from "./routes";
 
 const viewportWidths = [320, 375, 768, 1280, 1440] as const;
 const expectIndexing = process.env.EXPECT_INDEXING === "true";
+const soc2MappingEnabled = process.env.ENABLE_SOC2_MAPPING === "true";
 
 function collectRuntimeErrors(page: Page) {
   const errors: string[] = [];
@@ -1253,4 +1254,42 @@ test("public ledger offline verifier page loads and has verify controls", async 
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   // The offline verifier has a "Verify all" button
   await expect(page.locator("button").filter({ hasText: /verify/i }).first()).toBeVisible();
+});
+
+// ── Track 0048 SOC 2 control-evidence mapping page tests ───────────────────────
+
+test("/docs/soc2-mapping 404s when ENABLE_SOC2_MAPPING is off (default)", async ({
+  page,
+}) => {
+  if (soc2MappingEnabled) test.skip();
+  const response = await page.goto("/docs/soc2-mapping", { waitUntil: "networkidle" });
+  expect(response?.status()).toBe(404);
+});
+
+test("/docs/soc2-mapping is noindex, draft-labeled, and renders the control map when enabled", async ({
+  page,
+}) => {
+  if (!soc2MappingEnabled) test.skip();
+  const response = await page.goto("/docs/soc2-mapping", { waitUntil: "networkidle" });
+  expect(response?.ok()).toBe(true);
+  await expect(page.locator("h1")).toHaveCount(1);
+  // Route-level noindex gate (independent of site-wide flag)
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+    "content",
+    /noindex.*nofollow/,
+  );
+  // Draft label visible
+  await expect(page.locator("body")).toContainText(/Draft.*pending design-partner validation/);
+  // Disclaimer visible
+  await expect(page.locator("body")).toContainText(/mapping aid/i);
+  await expect(page.locator("body")).toContainText(/NOT a certification or compliance attestation/i);
+  for (const id of ["CC8.1", "CC3.4", "CC7.1", "CC7.2", "CC6.8", "CC4.1"]) {
+    await expect(page.locator("body")).toContainText(id);
+  }
+  // No banned compliance-claim terms in affirmative form
+  const bodyText = await page.locator("body").innerText();
+  expect(bodyText).not.toMatch(/\bSOC 2 compliant\b/i);
+  expect(bodyText).not.toMatch(/\bcertified\b/i);
+  expect(bodyText).not.toMatch(/\btamper-proof\b/i);
+  expect(bodyText).not.toMatch(/\bis audited\b/i);
 });

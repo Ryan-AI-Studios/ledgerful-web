@@ -8,12 +8,14 @@
 
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import path from "node:path";
 import { parse } from "parse5";
 
+// Parser in this script must stay in sync with src/lib/content/soc2-mapping.ts.
+
+const VENDOR_MAPPINGS_PATH = path.join(process.cwd(), "src", "lib", "content", "soc2-mapping.toml");
 const ENGINE_MAPPINGS_PATH = "C:\\dev\\ledgerful\\mappings\\soc2.toml";
 const BUILT_HTML_PATH = ".next/server/app/docs/soc2-mapping.html";
-
-
 
 const NEGATION_MARKERS = [
   "not ",
@@ -27,26 +29,33 @@ const NEGATION_MARKERS = [
   "not a ",
 ];
 
-function unquote(value) {
-  if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
-    return value.slice(1, -1);
+function parseStringValue(value, lineNumber) {
+  const trimmed = value.trim();
+  if (!trimmed.startsWith('"')) {
+    throw new Error(
+      `expected quoted string at line ${lineNumber}: ${trimmed}`,
+    );
   }
-  return value;
-}
-
-function unescapeString(value) {
-  return value
+  const closing = trimmed.indexOf('"', 1);
+  if (closing === -1) {
+    throw new Error(
+      `unterminated string at line ${lineNumber}`,
+    );
+  }
+  if (closing !== trimmed.length - 1) {
+    throw new Error(
+      `trailing characters after quoted string at line ${lineNumber}: ${trimmed}`,
+    );
+  }
+  const inner = trimmed.slice(1, -1);
+  return inner
     .replace(/\\"/g, '"')
     .replace(/\\\\/g, "\\")
     .replace(/\\n/g, "\n")
     .replace(/\\t/g, "\t");
 }
 
-function parseStringValue(value) {
-  return unescapeString(unquote(value.trim()));
-}
-
-function parseStringArray(text, sourcePath) {
+function parseStringArray(text, sourcePath, lineNumber) {
   if (!text.startsWith("[") || !text.endsWith("]")) {
     throw new Error(
       `Malformed string array in ${sourcePath}: "${text}". Array must start with '[' and end with ']'.`,
@@ -75,9 +84,13 @@ function parseStringArray(text, sourcePath) {
       continue;
     }
     if (char === "," && !inString) {
-      if (current.trim()) {
-        values.push(parseStringValue(current));
+      const element = parseStringValue(current, lineNumber);
+      if (element === "") {
+        throw new Error(
+          `empty evidence element at line ${lineNumber} in ${sourcePath}`,
+        );
       }
+      values.push(element);
       current = "";
       continue;
     }
@@ -85,14 +98,20 @@ function parseStringArray(text, sourcePath) {
   }
 
   if (current.trim()) {
-    values.push(parseStringValue(current));
+    const element = parseStringValue(current, lineNumber);
+    if (element === "") {
+      throw new Error(
+        `empty evidence element at line ${lineNumber} in ${sourcePath}`,
+      );
+    }
+    values.push(element);
   }
 
   return values;
 }
 
-function parseEngineToml() {
-  const raw = readFileSync(ENGINE_MAPPINGS_PATH, "utf8");
+function parseVendoredToml() {
+  const raw = readFileSync(VENDOR_MAPPINGS_PATH, "utf8");
   const lines = raw.split("\n");
   const meta = { framework: "", version: "", source: "", disclaimer: "", status: "" };
   const metaKeys = new Set(["framework", "version", "source", "disclaimer", "status"]);
@@ -108,7 +127,7 @@ function parseEngineToml() {
         const value = currentControl[key];
         if (value === undefined || (Array.isArray(value) && value.length === 0)) {
           throw new Error(
-            `Incomplete [[control]] table in ${ENGINE_MAPPINGS_PATH}: missing "${key}".`,
+            `Incomplete [[control]] table in ${VENDOR_MAPPINGS_PATH}: missing "${key}".`,
           );
         }
       }
@@ -140,7 +159,7 @@ function parseEngineToml() {
     const separatorIndex = trimmed.indexOf("=");
     if (separatorIndex === -1) {
       throw new Error(
-        `Malformed line ${lineNumber} in ${ENGINE_MAPPINGS_PATH}: "${trimmed}". Expected key = value.`,
+        `Malformed line ${lineNumber} in ${VENDOR_MAPPINGS_PATH}: "${trimmed}". Expected key = value.`,
       );
     }
 
@@ -150,22 +169,28 @@ function parseEngineToml() {
     if (currentSection === "meta") {
       if (!metaKeys.has(key)) {
         throw new Error(
-          `Unexpected key "${key}" at line ${lineNumber} in [meta] table of ${ENGINE_MAPPINGS_PATH}.`,
+          `Unexpected key "${key}" at line ${lineNumber} in [meta] table of ${VENDOR_MAPPINGS_PATH}.`,
         );
       }
-      meta[key] = parseStringValue(value);
+      meta[key] = parseStringValue(value, lineNumber);
       continue;
     }
 
     if (currentSection === "control") {
       const stringKeys = new Set(["id", "title", "provenance", "limit"]);
       if (key === "evidence") {
-        currentControl.evidence = parseStringArray(value, ENGINE_MAPPINGS_PATH);
+        currentControl.evidence = parseStringArray(value, VENDOR_MAPPINGS_PATH, lineNumber);
       } else if (stringKeys.has(key)) {
-        currentControl[key] = parseStringValue(value);
+        const parsed = parseStringValue(value, lineNumber);
+        if (parsed === "") {
+          throw new Error(
+            `empty control ${key} at line ${lineNumber} in ${VENDOR_MAPPINGS_PATH}`,
+          );
+        }
+        currentControl[key] = parsed;
       } else {
         throw new Error(
-          `Unexpected key "${key}" at line ${lineNumber} in [[control]] table of ${ENGINE_MAPPINGS_PATH}.`,
+          `Unexpected key "${key}" at line ${lineNumber} in [[control]] table of ${VENDOR_MAPPINGS_PATH}.`,
         );
       }
     }
@@ -176,18 +201,35 @@ function parseEngineToml() {
   for (const key of metaKeys) {
     if (!meta[key]) {
       throw new Error(
-        `Missing required [meta] field "${key}" in ${ENGINE_MAPPINGS_PATH}.`,
+        `Missing required [meta] field "${key}" in ${VENDOR_MAPPINGS_PATH}.`,
       );
     }
   }
 
   if (controls.length === 0) {
     throw new Error(
-      `No [[control]] tables found in ${ENGINE_MAPPINGS_PATH}. The mapping cannot be empty.`,
+      `No [[control]] tables found in ${VENDOR_MAPPINGS_PATH}. The mapping cannot be empty.`,
     );
   }
 
   return controls;
+}
+
+function assertVendorMatchesEngine() {
+  let engineRaw;
+  try {
+    engineRaw = readFileSync(ENGINE_MAPPINGS_PATH);
+  } catch {
+    console.log("Vendored soc2-mapping.toml is the source of truth (engine source not available).");
+    return;
+  }
+  const vendorRaw = readFileSync(VENDOR_MAPPINGS_PATH);
+  if (Buffer.compare(engineRaw, vendorRaw) !== 0) {
+    throw new Error(
+      `Vendored soc2-mapping.toml differs from engine source ${ENGINE_MAPPINGS_PATH} — re-vendor it.`,
+    );
+  }
+  console.log("Vendored soc2-mapping.toml matches engine source.");
 }
 
 function findRobotsContent(html) {
@@ -274,7 +316,8 @@ if (bannedViolations.length > 0) {
   process.exit(1);
 }
 
-const engineControls = parseEngineToml();
+assertVendorMatchesEngine();
+const engineControls = parseVendoredToml();
 const renderedIds = extractRenderedControlIds(html);
 const engineIds = engineControls.map((c) => c.id);
 

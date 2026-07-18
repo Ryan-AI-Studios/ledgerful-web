@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import path from "node:path";
 
 /**
  * Build-time content module for the SOC 2 control-evidence mapping page.
@@ -28,28 +29,41 @@ export type Soc2Mapping = {
 
 export const soc2MappingDraftLabel = "Draft — pending design-partner validation";
 
-const ENGINE_MAPPINGS_PATH = "C:\\dev\\ledgerful\\mappings\\soc2.toml";
+const VENDOR_MAPPINGS_PATH = path.join(
+  process.cwd(),
+  "src",
+  "lib",
+  "content",
+  "soc2-mapping.toml",
+);
 
-function unquote(value: string): string {
-  if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
-    return value.slice(1, -1);
+function parseStringValue(value: string, lineNumber: number): string {
+  const trimmed = value.trim();
+  if (!trimmed.startsWith('"')) {
+    throw new Error(
+      `expected quoted string at line ${lineNumber}: ${trimmed}`,
+    );
   }
-  return value;
-}
-
-function unescapeString(value: string): string {
-  return value
+  const closing = trimmed.indexOf('"', 1);
+  if (closing === -1) {
+    throw new Error(
+      `unterminated string at line ${lineNumber}`,
+    );
+  }
+  if (closing !== trimmed.length - 1) {
+    throw new Error(
+      `trailing characters after quoted string at line ${lineNumber}: ${trimmed}`,
+    );
+  }
+  const inner = trimmed.slice(1, -1);
+  return inner
     .replace(/\\"/g, '"')
     .replace(/\\\\/g, "\\")
     .replace(/\\n/g, "\n")
     .replace(/\\t/g, "\t");
 }
 
-function parseStringValue(value: string): string {
-  return unescapeString(unquote(value.trim()));
-}
-
-function parseStringArray(text: string, sourcePath: string): string[] {
+function parseStringArray(text: string, sourcePath: string, lineNumber: number): string[] {
   if (!text.startsWith("[") || !text.endsWith("]")) {
     throw new Error(
       `Malformed string array in ${sourcePath}: "${text}". Array must start with '[' and end with ']'.`,
@@ -79,9 +93,13 @@ function parseStringArray(text: string, sourcePath: string): string[] {
       continue;
     }
     if (char === "," && !inString) {
-      if (current.trim()) {
-        values.push(parseStringValue(current));
+      const element = parseStringValue(current, lineNumber);
+      if (element === "") {
+        throw new Error(
+          `empty evidence element at line ${lineNumber} in ${sourcePath}`,
+        );
       }
+      values.push(element);
       current = "";
       continue;
     }
@@ -89,7 +107,13 @@ function parseStringArray(text: string, sourcePath: string): string[] {
   }
 
   if (current.trim()) {
-    values.push(parseStringValue(current));
+    const element = parseStringValue(current, lineNumber);
+    if (element === "") {
+      throw new Error(
+        `empty evidence element at line ${lineNumber} in ${sourcePath}`,
+      );
+    }
+    values.push(element);
   }
 
   return values;
@@ -165,7 +189,7 @@ export function parseSoc2Toml(raw: string, sourcePath: string): Soc2Mapping {
           `Unexpected key "${key}" at line ${lineNumber} in [meta] table of ${sourcePath}.`,
         );
       }
-      mapping.meta[key as keyof Soc2Mapping["meta"]] = parseStringValue(value);
+      mapping.meta[key as keyof Soc2Mapping["meta"]] = parseStringValue(value, lineNumber);
       continue;
     }
 
@@ -176,7 +200,7 @@ export function parseSoc2Toml(raw: string, sourcePath: string): Soc2Mapping {
             `Control at line ${lineNumber} in ${sourcePath} has malformed "evidence" value. Array must be on a single line.`,
           );
         }
-        currentControl.evidence = parseStringArray(value, sourcePath);
+        currentControl.evidence = parseStringArray(value, sourcePath, lineNumber);
       } else {
         const controlStringKeys: (keyof Omit<Soc2Control, "evidence">)[] = ["id", "title", "provenance", "limit"];
         if (!controlStringKeys.includes(key as keyof Omit<Soc2Control, "evidence">)) {
@@ -184,7 +208,13 @@ export function parseSoc2Toml(raw: string, sourcePath: string): Soc2Mapping {
             `Unexpected key "${key}" at line ${lineNumber} in [[control]] table of ${sourcePath}.`,
           );
         }
-        currentControl[key as keyof Omit<Soc2Control, "evidence">] = parseStringValue(value);
+        const parsed = parseStringValue(value, lineNumber);
+        if (parsed === "") {
+          throw new Error(
+            `empty control ${key} at line ${lineNumber} in ${sourcePath}`,
+          );
+        }
+        currentControl[key as keyof Omit<Soc2Control, "evidence">] = parsed;
       }
     }
   }
@@ -210,16 +240,6 @@ export function parseSoc2Toml(raw: string, sourcePath: string): Soc2Mapping {
 }
 
 export function getSoc2Mapping(): Soc2Mapping {
-  let raw: string;
-  try {
-    raw = readFileSync(ENGINE_MAPPINGS_PATH, "utf8");
-  } catch (error) {
-    throw new Error(
-      `Failed to read engine SOC 2 mapping at ${ENGINE_MAPPINGS_PATH}. ` +
-        `The web slice cannot drift from the engine source of truth. ` +
-        `Ensure the engine repo is present and run the build again.`,
-      { cause: error },
-    );
-  }
-  return parseSoc2Toml(raw, ENGINE_MAPPINGS_PATH);
+  const raw = readFileSync(VENDOR_MAPPINGS_PATH, "utf8");
+  return parseSoc2Toml(raw, VENDOR_MAPPINGS_PATH);
 }

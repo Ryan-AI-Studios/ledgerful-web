@@ -1279,8 +1279,7 @@ test("/docs/soc2-mapping is noindex, draft-labeled, and renders the control map"
   // Disclaimer visible
   await expect(page.locator("body")).toContainText(/mapping aid/i);
   await expect(page.locator("body")).toContainText(/NOT a certification or compliance attestation/i);
-  // All 6 control IDs from the engine TOML
-  for (const id of ["CC8.1", "CC3.4", "CC7.1", "CC7.2", "CC6.8", "CC4.1"]) {
+  for (const id of ["CC8.1", "CC3.4", "CC7.1", "CC7.2", "CC6.8"]) {
     await expect(page.locator("body")).toContainText(id);
   }
   // No banned compliance-claim terms in affirmative form

@@ -13,7 +13,19 @@ import { parse } from "parse5";
 const ENGINE_MAPPINGS_PATH = "C:\\dev\\ledgerful\\mappings\\soc2.toml";
 const BUILT_HTML_PATH = ".next/server/app/docs/soc2-mapping.html";
 
-const EXPECTED_CONTROL_IDS = ["CC8.1", "CC3.4", "CC7.1", "CC7.2", "CC6.8", "CC4.1"];
+
+
+const NEGATION_MARKERS = [
+  "not ",
+  "do not ",
+  "does not ",
+  "never",
+  "are not ",
+  "is not ",
+  "we are not",
+  "no claim",
+  "not a ",
+];
 
 function unquote(value) {
   if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
@@ -34,13 +46,19 @@ function parseStringValue(value) {
   return unescapeString(unquote(value.trim()));
 }
 
-function parseStringArray(text) {
+function parseStringArray(text, sourcePath) {
+  if (!text.startsWith("[") || !text.endsWith("]")) {
+    throw new Error(
+      `Malformed string array in ${sourcePath}: "${text}". Array must start with '[' and end with ']'.`,
+    );
+  }
+  const inner = text.slice(1, -1).trim();
   const values = [];
   let current = "";
   let inString = false;
   let escaped = false;
 
-  for (const char of text) {
+  for (const char of inner) {
     if (escaped) {
       current += char;
       escaped = false;
@@ -76,18 +94,31 @@ function parseStringArray(text) {
 function parseEngineToml() {
   const raw = readFileSync(ENGINE_MAPPINGS_PATH, "utf8");
   const lines = raw.split("\n");
+  const meta = { framework: "", version: "", source: "", disclaimer: "", status: "" };
+  const metaKeys = new Set(["framework", "version", "source", "disclaimer", "status"]);
   const controls = [];
   let currentSection = null;
   let currentControl = {};
+  let lineNumber = 0;
 
   function flushControl() {
-    if (currentSection === "control" && currentControl.id && currentControl.title) {
+    if (currentSection === "control") {
+      const required = ["id", "title", "evidence", "provenance", "limit"];
+      for (const key of required) {
+        const value = currentControl[key];
+        if (value === undefined || (Array.isArray(value) && value.length === 0)) {
+          throw new Error(
+            `Incomplete [[control]] table in ${ENGINE_MAPPINGS_PATH}: missing "${key}".`,
+          );
+        }
+      }
       controls.push({ id: currentControl.id, title: currentControl.title });
     }
     currentControl = {};
   }
 
   for (const line of lines) {
+    lineNumber += 1;
     const trimmed = line.trim();
 
     if (trimmed === "" || trimmed.startsWith("#")) {
@@ -108,22 +139,54 @@ function parseEngineToml() {
 
     const separatorIndex = trimmed.indexOf("=");
     if (separatorIndex === -1) {
-      continue;
+      throw new Error(
+        `Malformed line ${lineNumber} in ${ENGINE_MAPPINGS_PATH}: "${trimmed}". Expected key = value.`,
+      );
     }
 
     const key = trimmed.slice(0, separatorIndex).trim();
     const value = trimmed.slice(separatorIndex + 1).trim();
 
+    if (currentSection === "meta") {
+      if (!metaKeys.has(key)) {
+        throw new Error(
+          `Unexpected key "${key}" at line ${lineNumber} in [meta] table of ${ENGINE_MAPPINGS_PATH}.`,
+        );
+      }
+      meta[key] = parseStringValue(value);
+      continue;
+    }
+
     if (currentSection === "control") {
+      const stringKeys = new Set(["id", "title", "provenance", "limit"]);
       if (key === "evidence") {
-        parseStringArray(value);
-      } else {
+        currentControl.evidence = parseStringArray(value, ENGINE_MAPPINGS_PATH);
+      } else if (stringKeys.has(key)) {
         currentControl[key] = parseStringValue(value);
+      } else {
+        throw new Error(
+          `Unexpected key "${key}" at line ${lineNumber} in [[control]] table of ${ENGINE_MAPPINGS_PATH}.`,
+        );
       }
     }
   }
 
   flushControl();
+
+  for (const key of metaKeys) {
+    if (!meta[key]) {
+      throw new Error(
+        `Missing required [meta] field "${key}" in ${ENGINE_MAPPINGS_PATH}.`,
+      );
+    }
+  }
+
+  if (controls.length === 0) {
+    throw new Error(
+      `No [[control]] tables found in ${ENGINE_MAPPINGS_PATH}. The mapping cannot be empty.`,
+    );
+  }
+
   return controls;
 }
 
@@ -145,19 +208,9 @@ function findRobotsContent(html) {
   return undefined;
 }
 
-function isNegatedLine(line) {
-  const lower = line.toLowerCase();
-  return (
-    lower.includes("not ") ||
-    lower.includes("do not ") ||
-    lower.includes("does not ") ||
-    lower.includes("never") ||
-    lower.includes("are not ") ||
-    lower.includes("is not ") ||
-    lower.includes("we are not") ||
-    lower.includes("no claim") ||
-    lower.includes("not a ")
-  );
+function isNegatedClause(clause) {
+  const lower = clause.toLowerCase();
+  return NEGATION_MARKERS.some((marker) => lower.includes(marker));
 }
 
 function checkBannedTerms(html) {
@@ -170,19 +223,28 @@ function checkBannedTerms(html) {
     { term: "is a compliance attestation", pattern: /\bis a compliance attestation\b/i },
   ];
 
-  const lines = html.split(/\r?\n/);
+  const clauses = html.split(/\r?\n|\.\s+|;\s+|,\s+/);
   const violations = [];
 
-  for (const line of lines) {
-    if (isNegatedLine(line)) continue;
+  for (const clause of clauses) {
+    if (isNegatedClause(clause)) continue;
     for (const { term, pattern } of banned) {
-      if (pattern.test(line)) {
-        violations.push({ term, line: line.trim() });
+      if (pattern.test(clause)) {
+        violations.push({ term, line: clause.trim() });
       }
     }
   }
 
   return violations;
+}
+
+function extractRenderedControlIds(html) {
+  const matches = html.matchAll(/<p[^>]*class="soc2-mapping-control-id"[^>]*>([^<]*)<\/p>/g);
+  const ids = [];
+  for (const match of matches) {
+    ids.push(match[1].trim());
+  }
+  return ids;
 }
 
 const html = readFileSync(BUILT_HTML_PATH, "utf8");
@@ -204,13 +266,6 @@ assert.ok(
   "built page must contain the disclaimer phrase",
 );
 
-for (const id of EXPECTED_CONTROL_IDS) {
-  assert.ok(
-    html.includes(id),
-    `built page must contain expected control ID ${id}`,
-  );
-}
-
 const bannedViolations = checkBannedTerms(html);
 if (bannedViolations.length > 0) {
   for (const violation of bannedViolations) {
@@ -220,11 +275,24 @@ if (bannedViolations.length > 0) {
 }
 
 const engineControls = parseEngineToml();
-for (const control of engineControls) {
-  assert.ok(
-    html.includes(control.id),
-    `built page must contain control ID ${control.id} from engine mappings/soc2.toml`,
-  );
+const renderedIds = extractRenderedControlIds(html);
+const engineIds = engineControls.map((c) => c.id);
+
+const renderedSet = new Set(renderedIds);
+const engineSet = new Set(engineIds);
+
+for (const id of renderedIds) {
+  if (!engineSet.has(id)) {
+    console.error(`rendered control ID ${id} not in engine TOML`);
+    process.exit(1);
+  }
+}
+
+for (const id of engineIds) {
+  if (!renderedSet.has(id)) {
+    console.error(`engine TOML control ID ${id} not rendered`);
+    process.exit(1);
+  }
 }
 
 console.log(

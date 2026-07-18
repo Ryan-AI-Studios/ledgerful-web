@@ -428,7 +428,7 @@ export const threatModel: { heading: string; body: string }[] = [
 
 export const nonGoals: string[] = [
   "Hosted-mode guarantees. The local-first engine does not promise the SLAs, RBAC, audit log retention, or team-scope guarantees of a hosted control plane. Hosted mode is planned and does not exist today.",
-  "SOC 2 certified / SOC 2 compliant. Ledgerful generates a local SOC 2-style evidence export from your ledger; we are not a certified audit firm and do not claim third-party SOC 2 attestation.",
+  "We are not SOC 2 certified or SOC 2 compliant. Ledgerful generates a local SOC 2-style evidence export from your ledger; we are not a certified audit firm and do not claim third-party SOC 2 attestation.",
   "FedRAMP, FIPS 140, or other government baselines. No claim is made about FedRAMP authorization, FIPS-validated cryptography, or comparable government certification.",
   "Zero-network or zero-telemetry absolutes. The default build excludes telemetry; opt-in telemetry and the configured cloud-model ask and index --fast workflows are the outbound paths for project data. The optional viz command generates a local HTML file that loads the vis-network library from a public CDN when opened in a browser. Nothing here is a 'no network ever' guarantee.",
   "Air-gap. The engine can run fully offline, but this page does not claim that every install configuration is air-gapped. Operators are responsible for their own network posture.",

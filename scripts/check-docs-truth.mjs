@@ -38,7 +38,17 @@ function readHtml(slug) {
 // ── Load the docs pages that this script actually asserts on ──────────────────
 
 const pages = {};
-const slugs = ["cli", "dashboard", "mcp", "github-action", "compliance", "sync", "releases", "public-ledger"];
+const slugs = [
+  "cli",
+  "dashboard",
+  "mcp",
+  "github-action",
+  "policy-check",
+  "compliance",
+  "sync",
+  "releases",
+  "public-ledger",
+];
 
 for (const slug of slugs) {
   try {
@@ -560,6 +570,89 @@ if (!pages["github-action"].includes("Ryan-AI-Studios/Ledgerful/action@")) {
   if (lower.includes("ledgerful compliance export")) {
     failures.push(
       `Assert 16 FAIL [install]: "ledgerful compliance export" found — this CLI command does not exist; the export is dashboard-only`
+    );
+  }
+}
+
+// ── Assert 22: /docs/policy-check — command, rules, base-branch, honest limit, permissions ──
+// Track 0049-CiPolicyGates web slice (DoD-4).
+
+{
+  const page = pages["policy-check"];
+  const lower = page.toLowerCase();
+
+  if (!lower.includes("ledgerful policy check") && !lower.includes("policy check")) {
+    failures.push(
+      'Assert 22 FAIL [docs/policy-check]: "policy check" command not documented',
+    );
+  }
+
+  for (const ruleId of [
+    "require_signed_entries",
+    "no_pending_tx",
+    "verification_must_pass",
+    "max_risk_without_adr",
+    "fail_on",
+  ]) {
+    if (!page.includes(ruleId)) {
+      failures.push(
+        `Assert 22 FAIL [docs/policy-check]: built-in rule id "${ruleId}" missing`,
+      );
+    }
+  }
+
+  if (!lower.includes("base branch") && !lower.includes("base-branch")) {
+    failures.push(
+      "Assert 22 FAIL [docs/policy-check]: base-branch policy constraint not documented",
+    );
+  }
+
+  if (
+    !lower.includes("declared") ||
+    !lower.includes("presented") ||
+    !(
+      lower.includes("not a compliance") ||
+      lower.includes("compliance verdict") ||
+      lower.includes("not a certification")
+    )
+  ) {
+    failures.push(
+      "Assert 22 FAIL [docs/policy-check]: honest-limit language missing (declared/presented + not certification)",
+    );
+  }
+
+  for (const perm of ["contents: read", "pull-requests: read", "checks: write"]) {
+    if (!lower.includes(perm)) {
+      failures.push(
+        `Assert 22 FAIL [docs/policy-check]: CI permission "${perm}" missing`,
+      );
+    }
+  }
+
+  if (!lower.includes("--format json") && !lower.includes("format json")) {
+    failures.push(
+      "Assert 22 FAIL [docs/policy-check]: JSON machine contract (--format json) not documented",
+    );
+  }
+
+  // Must not overclaim compliance / certification (positive claims only —
+  // "not a compliance certificate" / "not a certification" are allowed).
+  for (const banned of ["you are compliant", "makes you compliant", "soc 2 certified"]) {
+    if (lower.includes(banned)) {
+      failures.push(
+        `Assert 22 FAIL [docs/policy-check]: banned overclaim "${banned}"`,
+      );
+    }
+  }
+
+  // Availability honesty: v0.1.8 prebuilt caveat or source-install path.
+  if (
+    !lower.includes("cargo install") &&
+    !lower.includes("source install") &&
+    !lower.includes("build from source")
+  ) {
+    failures.push(
+      "Assert 22 FAIL [docs/policy-check]: install path (cargo install / source) missing",
     );
   }
 }

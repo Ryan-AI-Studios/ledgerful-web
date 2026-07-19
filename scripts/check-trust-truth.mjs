@@ -274,6 +274,68 @@ if (!existsSync(templatePath)) {
   }
 }
 
+// Assert 17: policy as code (0049) on /trust — section + honest limit + base-branch constraint.
+if (!trustLower.includes("policy as code") && !trustLower.includes('id="policy-as-code"')) {
+  failures.push(
+    'Assert 17 FAIL: "policy as code" section missing on /trust (id="policy-as-code" or heading text)',
+  );
+}
+if (!trustLower.includes("ledgerful policy check") && !trustLower.includes("policy check")) {
+  failures.push('Assert 17 FAIL: "policy check" not mentioned on /trust');
+}
+if (
+  !trustLower.includes("declared") ||
+  !trustLower.includes("presented") ||
+  !(
+    trustLower.includes("not a compliance") ||
+    trustLower.includes("not a certification") ||
+    trustLower.includes("compliance verdict")
+  )
+) {
+  failures.push(
+    'Assert 17 FAIL: honest-limit language missing on /trust (declared/presented + not compliance/certification)',
+  );
+}
+if (!trustLower.includes("base branch") && !trustLower.includes("base-branch")) {
+  failures.push(
+    'Assert 17 FAIL: base-branch policy constraint not called out on /trust',
+  );
+}
+// Also required on the deep security architecture page.
+if (!securityLower.includes("policy as code") && !securityLower.includes('id="policy-as-code"')) {
+  failures.push(
+    'Assert 17 FAIL: "policy as code" section missing on /docs/security',
+  );
+}
+if (!securityLower.includes("base branch") && !securityLower.includes("base-branch")) {
+  failures.push(
+    'Assert 17 FAIL: base-branch policy constraint not called out on /docs/security',
+  );
+}
+// Banned positive compliance overclaims only — "not SOC 2 certified" is allowed.
+function hasPositiveOverclaim(haystack, phrase) {
+  const re = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+  let m;
+  while ((m = re.exec(haystack)) !== null) {
+    const window = haystack.slice(Math.max(0, m.index - 40), m.index + phrase.length + 10);
+    if (/\bnot\b|\bno\b|\baren't\b|\bare not\b/.test(window)) {
+      continue;
+    }
+    return true;
+  }
+  return false;
+}
+for (const banned of ["you are compliant", "makes you compliant", "soc 2 certified"]) {
+  if (hasPositiveOverclaim(trustLower, banned)) {
+    failures.push(`Assert 17 FAIL: banned compliance overclaim "${banned}" on /trust`);
+  }
+  if (hasPositiveOverclaim(securityLower, banned)) {
+    failures.push(
+      `Assert 17 FAIL: banned compliance overclaim "${banned}" on /docs/security`,
+    );
+  }
+}
+
 if (failures.length > 0) {
   console.error("\ncheck-trust-truth: FAILED\n");
   failures.forEach((f) => console.error(" ", f));

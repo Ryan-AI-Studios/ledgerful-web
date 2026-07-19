@@ -102,4 +102,14 @@ export const docTopics: DocTopic[] = [
     nextAction: "Open the public ledger page to verify entries in your browser.",
     href: "/docs/public-ledger",
   },
+  {
+    title: "Policy check (CI gates)",
+    maturity: "available",
+    deployment: "runs-locally",
+    pillar: "assess",
+    summary:
+      "ledgerful policy check evaluates declared named rules against PR/diff/ledger state and exits nonzero on violation. Offline; base-branch policy is bypass-proof in CI.",
+    nextAction: "Read the rule set, CI permissions model, and honest limits.",
+    href: "/docs/policy-check",
+  },
 ];

@@ -19,8 +19,9 @@ export const trustSections: { id: string; label: string }[] = [
   { id: "telemetry", label: "9. Telemetry schema" },
   { id: "soc2-export", label: "10. Redacted evidence export" },
   { id: "prove-dont", label: "11. What we prove / what we don't" },
-  { id: "threat-model", label: "12. Threat model & non-goals" },
-  { id: "subprocessors", label: "13. Subprocessors" },
+  { id: "policy-as-code", label: "12. Policy as code" },
+  { id: "threat-model", label: "13. Threat model & non-goals" },
+  { id: "subprocessors", label: "14. Subprocessors" },
 ];
 
 /**

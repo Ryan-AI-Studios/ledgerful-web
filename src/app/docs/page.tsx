@@ -32,7 +32,12 @@ const taskGroups = [
   {
     label: "Integrate",
     description: "Connect AI assistants, CI, and team sync to the local engine.",
-    topics: ["MCP setup", "GitHub Action setup", "Local team sync"],
+    topics: [
+      "MCP setup",
+      "GitHub Action setup",
+      "Policy check (CI gates)",
+      "Local team sync",
+    ],
   },
   {
     label: "Evidence & security",

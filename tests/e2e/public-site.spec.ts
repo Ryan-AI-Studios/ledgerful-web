@@ -525,6 +525,34 @@ test("docs/security supply chain attestation section reflects shipped state", as
   }
 });
 
+// 0049 — policy as code (CI gates) on Trust + docs surfaces.
+test("trust policy-as-code section states honest limit and base-branch constraint", async ({
+  page,
+}) => {
+  await page.goto("/trust");
+  const section = page.locator("#policy-as-code");
+  await expect(section).toBeVisible();
+  await expect(section).toContainText("policy check");
+  await expect(section).toContainText("declared");
+  await expect(section).toContainText("presented");
+  await expect(section).toContainText("base branch");
+  await expect(section.getByRole("link", { name: /policy check docs/i })).toBeVisible();
+});
+
+test("docs/policy-check documents rules, permissions, and machine contract", async ({
+  page,
+}) => {
+  await page.goto("/docs/policy-check");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Gate merges");
+  await expect(page.locator("body")).toContainText("require_signed_entries");
+  await expect(page.locator("body")).toContainText("verification_must_pass");
+  await expect(page.locator("body")).toContainText("contents: read");
+  await expect(page.locator("body")).toContainText("--format json");
+  await expect(page.locator("body")).toContainText("base branch");
+  await expect(page.locator("body")).toContainText("declared");
+  await expect(page.locator("body")).toContainText("presented");
+});
+
 // WEB-0024 — recomposed /docs/security adds the reads/writes/uploads boundary
 // table, the supply-chain attestation components table, and splits the
 // subprocessor list into two. Seven `.table-scroll` wrappers in total:

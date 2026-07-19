@@ -8,6 +8,14 @@ export type ChangelogEntry = {
 
 export const changelogEntries: ChangelogEntry[] = [
   {
+    date: "2026-07-19",
+    area: "Public web",
+    title: "Policy as code (CI gates) documented",
+    state: "completed",
+    details:
+      "Trust section and /docs/policy-check for ledgerful policy check: named rules, base-branch CI constraint, permissions model, and honest-limit language (declared rules over the presented ledger — not certification).",
+  },
+  {
     date: "2026-06-26",
     area: "Public web",
     title: "Public site baseline",

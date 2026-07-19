@@ -9,6 +9,10 @@ import { TrustSummary } from "@/components/trust-summary";
 import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
 import {
+  policyCheckBaseBranchConstraint,
+  policyCheckHonestLimit,
+} from "@/lib/content/policy-check";
+import {
   boundaryRows,
   dontProveClaims,
   networkOutbound,
@@ -1683,7 +1687,46 @@ export default function SecurityPage() {
             </div>
           </section>
 
-          {/* ── Section 12: Threat model + non-goals ────────── */}
+          {/* ── Section 12: Policy as code (0049) ───────────── */}
+          <section id="policy-as-code" className="content-band trust-section">
+            <SectionHeading title="Policy as code">
+              Offline CI merge gates over declared named rules — evaluation
+              only, not a compliance certificate.
+            </SectionHeading>
+            <p>
+              <code>ledgerful policy check</code> evaluates a flat{" "}
+              <code>.ledgerful/policy.toml</code> (or a trusted{" "}
+              <code>--policy</code> path) against PR/diff/ledger state and exits
+              nonzero on violation. Built-in rule ids:{" "}
+              <code>require_signed_entries</code>, <code>no_pending_tx</code>,{" "}
+              <code>verification_must_pass</code>,{" "}
+              <code>max_risk_without_adr</code>, <code>fail_on</code>. No
+              expression-language DSL.
+            </p>
+            <div className="disclosure-notice" style={{ marginTop: "24px" }}>
+              <p>
+                <strong>Honest limit:</strong> {policyCheckHonestLimit}
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Base-branch policy:</strong>{" "}
+                {policyCheckBaseBranchConstraint}
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Permissions model:</strong> typical workflow needs{" "}
+                <code>contents: read</code> (checkout + base policy), optional{" "}
+                <code>pull-requests: read</code> / <code>checks: write</code>{" "}
+                for the Action wrapper. The engine only evaluates and exits;
+                posting stays outside the engine. Full rules, CI YAML, and
+                machine JSON contract:{" "}
+                <Link href="/docs/policy-check" className="inline-link">
+                  /docs/policy-check
+                </Link>
+                .
+              </p>
+            </div>
+          </section>
+
+          {/* ── Section 13: Threat model + non-goals ────────── */}
           <section id="threat-model" className="content-band trust-section">
             <SectionHeading title="Threat model and non-goals">
               Where Ledgerful provides protection today, and the categories of
@@ -1725,7 +1768,7 @@ export default function SecurityPage() {
             </div>
           </section>
 
-          {/* ── Section 13: Subprocessors (TWO lists) ────────── */}
+          {/* ── Section 14: Subprocessors (TWO lists) ────────── */}
           <section id="subprocessors" className="content-band trust-section">
             <SectionHeading title="Subprocessors">
               Default local analysis uses no subprocessors for project data.

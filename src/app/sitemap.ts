@@ -6,6 +6,7 @@ const docRoutes = [
   "/docs/dashboard",
   "/docs/mcp",
   "/docs/github-action",
+  "/docs/policy-check",
   "/docs/compliance",
   "/docs/sync",
   "/docs/releases",

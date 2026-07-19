@@ -4,6 +4,10 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions } from "@/lib/content/navigation";
+import {
+  policyCheckBaseBranchConstraint,
+  policyCheckHonestLimit,
+} from "@/lib/content/policy-check";
 
 export const metadata: Metadata = {
   title: "Trust and security — local-first data flow and SOC 2-style evidence",
@@ -120,7 +124,7 @@ export default function TrustPage() {
               </dd>
 
               <dt>Last updated</dt>
-              <dd>July 14, 2026</dd>
+              <dd>July 19, 2026</dd>
 
               <dt>Public ledger</dt>
               <dd>
@@ -161,6 +165,40 @@ export default function TrustPage() {
                 entries (chain continuity) or the identity behind the signing
                 key. Out-of-band fingerprint comparison is required before
                 treating a key as authentic.
+              </p>
+            </div>
+          </section>
+
+          {/* ── Policy as code (0049) ─────────────────────────────── */}
+          <section className="content-band" id="policy-as-code">
+            <SectionHeading title="Policy as code">
+              Gate merges on declared named rules — offline evaluation, not a
+              compliance certificate.
+            </SectionHeading>
+            <p>
+              <code>ledgerful policy check</code> evaluates a flat policy (
+              <code>.ledgerful/policy.toml</code>) against PR/diff/ledger state
+              and exits nonzero on violation. Built-in rules cover signed
+              entries, pending transactions, bound verification, high-risk
+              changes without ADR coverage, and risk thresholds. There is no
+              expression-language DSL.
+            </p>
+            <div className="disclosure-notice" style={{ marginTop: "24px" }}>
+              <p>
+                <strong>Honest limit:</strong> {policyCheckHonestLimit}
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>Base-branch policy:</strong>{" "}
+                {policyCheckBaseBranchConstraint}
+              </p>
+              <p style={{ marginTop: "12px" }}>
+                <strong>CI role:</strong> the engine only evaluates and exits.
+                Posting PR comments or check-runs is the Action wrapper&apos;s
+                job, not the engine. See the{" "}
+                <Link href="/docs/policy-check" className="inline-link">
+                  policy check docs
+                </Link>{" "}
+                for rules, permissions, and a CI workflow example.
               </p>
             </div>
           </section>

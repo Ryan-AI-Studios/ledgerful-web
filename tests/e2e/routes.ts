@@ -8,6 +8,7 @@ export const publicRoutes = [
   "/docs/dashboard",
   "/docs/github-action",
   "/docs/mcp",
+  "/docs/policy-check",
   "/docs/public-ledger",
   "/docs/releases",
   "/docs/sync",

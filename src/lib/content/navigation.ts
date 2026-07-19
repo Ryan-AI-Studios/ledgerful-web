@@ -56,6 +56,8 @@ export const pageDescriptions = {
   docsReleases: "Verify Ledgerful release checksums and run the local health report.",
   docsSoc2Mapping:
     "A draft mapping of Ledgerful's framework-agnostic evidence to named SOC 2 controls. Draft — pending design-partner validation. Not a certification or compliance attestation.",
+  docsPolicyCheck:
+    "Run ledgerful policy check to gate merges on declared named rules. Offline evaluation, base-branch policy in CI, JSON machine contract — not a compliance certificate.",
   ledger:
     "Ledgerful's development change ledger, published as a redacted, signed, and verifiable sample. Verify Ed25519 signatures in the browser.",
 };

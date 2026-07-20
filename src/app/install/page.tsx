@@ -4,7 +4,17 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { InstallCommand } from "@/components/install-command";
-import { INSTALL_COMMAND } from "@/lib/content/install";
+import { StatusPill } from "@/components/status-pill";
+import {
+  BINSTALL_COMMAND,
+  BREW_COMMAND,
+  INSTALL_COMMAND,
+  QUARANTINE_BYPASS,
+  SCOOP_COMMANDS,
+  packageChannels,
+  scriptChannels,
+  type InstallChannel,
+} from "@/lib/content/install";
 import { capturedEvidence } from "@/components/captured-evidence";
 import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions } from "@/lib/content/navigation";
@@ -98,27 +108,77 @@ function ExpectedOutput({
   );
 }
 
+function ChannelCard({ channel }: { channel: InstallChannel }) {
+  const maturity = channel.status === "available" ? "available" : "planned";
+  const commandBlock =
+    channel.status === "available" && channel.commands.length > 0
+      ? channel.commands.join("\n")
+      : null;
+
+  return (
+    <article
+      className="install-channel-card"
+      data-channel={channel.id}
+      data-status={channel.status}
+    >
+      <header className="install-channel-head">
+        <div>
+          <h3>{channel.name}</h3>
+          <p className="install-channel-scope">{channel.scope}</p>
+        </div>
+        <StatusPill maturity={maturity} />
+      </header>
+      <p className="install-channel-summary">{channel.summary}</p>
+      {channel.prereq ? (
+        <p className="install-channel-prereq">
+          Prerequisite: {channel.prereq}
+        </p>
+      ) : null}
+      {commandBlock ? (
+        <CodeBlock caption={`${channel.name} · install`}>{commandBlock}</CodeBlock>
+      ) : (
+        <p className="install-channel-coming" role="status">
+          Install command ships when this channel is live — not yet installable
+          via this package manager.
+        </p>
+      )}
+      {channel.notes ? (
+        <p className="install-channel-notes">{channel.notes}</p>
+      ) : null}
+    </article>
+  );
+}
+
 const platformRows = [
   {
     platform: "Linux",
     shell: "bash / zsh",
-    installPath: "$HOME/.cargo/bin/ledgerful",
+    recommended: BREW_COMMAND,
+    recommendedLabel: "Homebrew (Linuxbrew) or cargo binstall",
+    altCommand: BINSTALL_COMMAND,
+    installPath: "$HOME/.cargo/bin/ledgerful (cargo) or brew prefix",
     keyPath: "$HOME/.ledgerful/keys/",
-    note: "Add $HOME/.cargo/bin to PATH if not already.",
+    note: "Prefer brew or cargo binstall for a prebuilt binary; use the source cargo install when you need a custom feature build.",
   },
   {
     platform: "macOS",
     shell: "zsh (default)",
-    installPath: "$HOME/.cargo/bin/ledgerful",
+    recommended: BREW_COMMAND,
+    recommendedLabel: "Homebrew",
+    altCommand: BINSTALL_COMMAND,
+    installPath: "brew prefix or $HOME/.cargo/bin/ledgerful",
     keyPath: "$HOME/.ledgerful/keys/",
-    note: "Apple silicon and Intel both supported.",
+    note: "Apple Silicon and Intel are both supported. If Gatekeeper blocks a downloaded binary, use the quarantine bypass in the Homebrew card notes.",
   },
   {
     platform: "Windows",
     shell: "PowerShell / Git Bash",
-    installPath: "%USERPROFILE%\\.cargo\\bin\\ledgerful.exe",
+    recommended: SCOOP_COMMANDS.join("\n"),
+    recommendedLabel: "Scoop (portable zip)",
+    altCommand: BINSTALL_COMMAND,
+    installPath: "Scoop shims or %USERPROFILE%\\.cargo\\bin\\ledgerful.exe",
     keyPath: "%USERPROFILE%\\.ledgerful\\keys\\",
-    note: "Authenticode signing not yet implemented; SmartScreen may prompt on first run.",
+    note: "Authenticode signing is not yet implemented; SmartScreen may prompt on first run. winget (Ledgerful.Ledgerful) is Planned until microsoft/winget-pkgs accepts the first package.",
   },
 ];
 
@@ -138,16 +198,17 @@ export default function InstallPage() {
         <p className="hero-kicker">Install</p>
         <h1>Install Ledgerful locally</h1>
         <p className="install-hero-lead">
-          v0.1.8 · macOS, Linux, Windows · source install via Cargo · no hosted
-          account required.
+          v0.1.8 · macOS, Linux, Windows · package managers and prebuilt binaries
+          · no hosted account required.
         </p>
         <div className="install-hero-command">
           <InstallCommand variant="expanded" showLink={false} />
         </div>
         <div className="install-hero-meta">
+          <span className="status-pill status-available">Available</span>
           <span className="status-pill status-runs-locally">Runs locally</span>
           <span className="install-hero-prereq">
-            Prerequisite: Rust 1.85+ via{" "}
+            Source install needs Rust 1.85+ via{" "}
             <a
               href="https://rustup.rs"
               target="_blank"
@@ -156,6 +217,7 @@ export default function InstallPage() {
             >
               rustup.rs
             </a>
+            . Homebrew and cargo binstall install prebuilt release binaries.
           </span>
         </div>
         <p className="install-hero-result">
@@ -184,11 +246,55 @@ export default function InstallPage() {
         </div>
       </section>
 
+      {/* ── Package managers (0051 DoD-5) ───────────────────── */}
+      <section
+        className="content-band"
+        id="package-managers"
+        aria-label="Package managers and prebuilt installs"
+      >
+        <SectionHeading title="Package managers and prebuilt installs">
+          Live channels install a real release binary (or a source build). Planned
+          channels stay labeled until their public package is verified — no
+          fabricated install commands.
+        </SectionHeading>
+        <div className="install-channel-grid">
+          {packageChannels.map((channel) => (
+            <ChannelCard key={channel.id} channel={channel} />
+          ))}
+        </div>
+
+        <div className="install-script-block">
+          <h3 id="one-line-installers">One-line release installers</h3>
+          <p>
+            Download the matching prebuilt archive when one exists for your
+            platform, or fall back to a source build. These scripts do not
+            re-check the published <code>.sha256</code> sidecars — use the{" "}
+            <Link href="/docs/releases" className="inline-link">
+              release verification docs
+            </Link>{" "}
+            when you need checksum verification.
+          </p>
+          <div className="install-channel-grid install-channel-grid--scripts">
+            {scriptChannels.map((channel) => (
+              <ChannelCard key={channel.id} channel={channel} />
+            ))}
+          </div>
+        </div>
+
+        <div className="disclosure-notice" style={{ marginTop: "20px" }}>
+          <strong>macOS Gatekeeper (interim):</strong> release macOS binaries are
+          not yet Apple-codesigned or notarized. If a downloaded binary reports
+          “developer cannot be verified”:
+          <CodeBlock caption="macOS · quarantine bypass (interim)">{QUARANTINE_BYPASS}</CodeBlock>
+          The durable fix is codesign + notarize in the engine release pipeline.
+        </div>
+      </section>
+
       {/* ── OS tabs ─────────────────────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="Choose your platform">
-          The same Cargo source install works on every OS. Pick a tab for the
-          platform-specific binary path, verify command, and first scan.
+          Pick a tab for the recommended prebuilt path, binary location, and first
+          scan. Source install still works on every OS when you need a custom build.
         </SectionHeading>
         <div
           className="os-tabs"
@@ -226,9 +332,13 @@ export default function InstallPage() {
                   <div>
                     <dt>Recommended installer</dt>
                     <dd>
-                      <CodeBlock caption={`${os.label} · install`}>
-                        {INSTALL_COMMAND}
+                      <p className="os-panel-rec-label">{os.recommendedLabel}</p>
+                      <CodeBlock caption={`${os.label} · recommended`}>
+                        {os.recommended}
                       </CodeBlock>
+                      <p className="os-panel-alt">
+                        Alternative: <code>{os.altCommand}</code>
+                      </p>
                     </dd>
                   </div>
                   <div>
@@ -260,32 +370,42 @@ export default function InstallPage() {
       {/* ── Numbered install procedure ──────────────────────── */}
       <section className="content-band">
         <SectionHeading title="Install in five steps">
-          From the Rust toolchain to your first repo review.
+          From a package manager or source build to your first repo review.
         </SectionHeading>
 
         {/* Step 1: Install CLI */}
         <div className="step-block">
           <div className="step-head">
             <span className="step-index">01 · INSTALL CLI</span>
-            <h2>Build the binary from source.</h2>
+            <h2>Pick a live channel and install the binary.</h2>
           </div>
           <div className="step-body">
             <p>
-              Run Cargo against the Ledgerful GitHub repository. Crates.io is
-              not used — only the git source path is supported for v0.1.x.
+              Prefer a package manager or prebuilt path when you want a release
+              binary without a full workspace compile. Use the source cargo
+              install when you need a custom feature build. Crates.io is not used
+              for distribution.
             </p>
           </div>
         </div>
+        <CodeBlock caption="install · Homebrew (prebuilt) · recommended on macOS/Linux">
+          {BREW_COMMAND}
+        </CodeBlock>
+        <CodeBlock caption="install · Scoop (prebuilt) · Windows">
+          {SCOOP_COMMANDS.join("\n")}
+        </CodeBlock>
+        <CodeBlock caption="install · cargo binstall · any platform with cargo-binstall">
+          {BINSTALL_COMMAND}
+        </CodeBlock>
         <CodeBlock caption="install · cargo · source build · ~3–6 min on first run">
           {INSTALL_COMMAND}
         </CodeBlock>
         <ExpectedOutput caption="Expected result">
           <p>
-            Cargo compiles and links the <code>ledgerful</code> binary. On
-            success the binary is placed at <code>{platformRows[0].installPath}</code>{" "}
-            (macOS/Linux) or{" "}
-            <code>{platformRows[2].installPath}</code> (Windows). Make sure
-            that directory is on your <code>PATH</code>.
+            The installer places a <code>ledgerful</code> binary on your{" "}
+            <code>PATH</code> (Homebrew prefix, cargo bin dir, or the one-line
+            installer&apos;s install location). Open a new shell if the command
+            is not found immediately.
           </p>
         </ExpectedOutput>
 

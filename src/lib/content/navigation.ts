@@ -39,7 +39,7 @@ export const publicNavigation = [...mainNavigation, ...footerNavigation];
 export const pageDescriptions = {
   home: "Ledgerful runs on your machine to analyze repo changes, record signed provenance, plan verification, and export audit evidence without uploading source code by default.",
   install:
-    "Install the Ledgerful CLI from a pre-built v0.1.8 release binary or build from source. Verify the binary and run your first scan.",
+    "Install the Ledgerful CLI with Homebrew, Scoop, cargo binstall, a one-line release installer, or a Cargo source build. winget is planned. Verify the binary and run your first scan.",
   architecture:
     "What Ledgerful reads, analyzes, and produces entirely on your machine, then the three Ledgerful surfaces: local engine and CLI, embedded loopback dashboard, public web, and the planned hosted control plane. Local-first data flow, opt-in telemetry.",
   docs: "Install, verify, and operate Ledgerful without confusing local tooling with hosted features.",
@@ -47,7 +47,8 @@ export const pageDescriptions = {
   trust: "Local-first data flow, telemetry, sync, SOC 2-style export, and future hosted boundaries.",
   changelog: "Public web, local engine, dashboard, and hosted-control-plane milestones.",
   waitlist: "Get launch announcements and changelog updates from Ledgerful. Double opt-in, no purchase required.",
-  docsCli: "Install the Ledgerful CLI from source and run your first scan.",
+  docsCli:
+    "Install the Ledgerful CLI with Homebrew, Scoop, cargo binstall, or a Cargo source build, then run your first scan.",
   docsDashboard: "Launch the local daemon, open the dashboard, and understand token security.",
   docsMcp: "Configure the Ledgerful MCP stdio server for AI assistant integration.",
   docsGithubAction: "Add Ledgerful risk comments to GitHub pull requests with the GitHub Action.",

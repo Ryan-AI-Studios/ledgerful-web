@@ -848,13 +848,14 @@ test("the page background gradient does not tile", async ({ page }) => {
 
 // ── WEB-0023 — install page: verified command leads, before the platform table ──
 
-test("install page leads with command, then OS tabs, then five numbered steps (0059 Phase 2 restyle)", async ({
+test("install page leads with command, package managers, OS tabs, then five numbered steps (0051 + 0059)", async ({
   page,
 }) => {
   await page.goto("/install");
 
   const order = await page.evaluate(() => {
     const commandBlock = document.querySelector(".install-command--expanded");
+    const packageManagers = document.querySelector("#package-managers");
     const osTabs = document.querySelector(".os-tabs");
     const stepSection = document.querySelector(".step-block");
     const stepHeadings = Array.from(document.querySelectorAll(".step-index")).map((el) =>
@@ -863,10 +864,18 @@ test("install page leads with command, then OS tabs, then five numbered steps (0
     const fiveSteps = ["01 · INSTALL CLI", "02 · VERIFY BINARY", "03 · SCAN A REPO", "04 · LAUNCH DASHBOARD", "05 · REVIEW RESULT"];
     return {
       hasCommand: Boolean(commandBlock),
+      hasPackageManagers: Boolean(packageManagers),
       hasTabs: Boolean(osTabs),
       hasSteps: Boolean(stepSection),
-      commandBeforeTabs: Boolean(
-        commandBlock && osTabs && commandBlock.compareDocumentPosition(osTabs) & Node.DOCUMENT_POSITION_FOLLOWING,
+      commandBeforePackages: Boolean(
+        commandBlock &&
+          packageManagers &&
+          commandBlock.compareDocumentPosition(packageManagers) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ),
+      packagesBeforeTabs: Boolean(
+        packageManagers &&
+          osTabs &&
+          packageManagers.compareDocumentPosition(osTabs) & Node.DOCUMENT_POSITION_FOLLOWING,
       ),
       tabsBeforeSteps: Boolean(
         osTabs && stepSection && osTabs.compareDocumentPosition(stepSection) & Node.DOCUMENT_POSITION_FOLLOWING,
@@ -878,13 +887,52 @@ test("install page leads with command, then OS tabs, then five numbered steps (0
   });
 
   expect(order.hasCommand).toBe(true);
+  expect(order.hasPackageManagers).toBe(true);
   expect(order.hasTabs).toBe(true);
   expect(order.hasSteps).toBe(true);
-  expect(order.commandBeforeTabs).toBe(true);
+  expect(order.commandBeforePackages).toBe(true);
+  expect(order.packagesBeforeTabs).toBe(true);
   expect(order.tabsBeforeSteps).toBe(true);
   expect(order.allFiveSteps).toBe(true);
   expect(order.oldPlatformTableGone).toBe(true);
   expect(order.oldSmokeTestGone).toBe(true);
+});
+
+test("install page documents live package managers and keeps winget planned (0051)", async ({
+  page,
+}) => {
+  await page.goto("/install");
+  const bodyText = await page.locator("body").innerText();
+  const lower = bodyText.toLowerCase();
+
+  expect(bodyText).toContain("brew install Ryan-AI-Studios/tap/ledgerful");
+  expect(bodyText).toContain(
+    "cargo binstall --git https://github.com/Ryan-AI-Studios/Ledgerful",
+  );
+  expect(bodyText).toContain(
+    "cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful",
+  );
+  expect(bodyText).toContain("scoop install ledgerful");
+  expect(bodyText).toContain(
+    "scoop bucket add ledgerful https://github.com/Ryan-AI-Studios/scoop-bucket",
+  );
+  expect(lower).toContain("winget");
+  // winget remains Planned until microsoft/winget-pkgs accepts the package.
+  expect(bodyText).not.toContain("winget install Ledgerful.Ledgerful");
+  expect(bodyText).toContain("xattr -d com.apple.quarantine");
+
+  const scoopCard = page.locator('[data-channel="scoop"]');
+  const wingetCard = page.locator('[data-channel="winget"]');
+  await expect(scoopCard).toHaveAttribute("data-status", "available");
+  await expect(wingetCard).toHaveAttribute("data-status", "coming");
+  await expect(page.locator('[data-channel="homebrew"]')).toHaveAttribute(
+    "data-status",
+    "available",
+  );
+  await expect(page.locator('[data-channel="cargo-binstall"]')).toHaveAttribute(
+    "data-status",
+    "available",
+  );
 });
 
 test("install page never renders the fake 'ledgerful compliance export' CLI command", async ({ page }) => {

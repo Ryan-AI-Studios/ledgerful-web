@@ -4,6 +4,12 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
+import {
+  BINSTALL_COMMAND,
+  BREW_COMMAND,
+  INSTALL_COMMAND,
+  SCOOP_COMMANDS,
+} from "@/lib/content/install";
 
 export const metadata: Metadata = {
   title: { absolute: "CLI install and first scan — Ledgerful Docs" },
@@ -61,10 +67,16 @@ export default function DocsCliPage() {
 
       {/* ── Section 2: Install ───────────────────────────────── */}
       <section className="content-band">
-        <SectionHeading title="Install from source">
-          Install the <code>ledgerful</code> binary directly from the GitHub
-          repository using Cargo. {repository.note}
+        <SectionHeading title="Install">
+          Prefer a package manager or prebuilt path when you want a release
+          binary without a full workspace compile. Full options and platform
+          notes live on the{" "}
+          <Link href="/install" className="inline-link">
+            install guide
+          </Link>
+          . {repository.note}
         </SectionHeading>
+        <h3 className="doc-subhead">Homebrew (prebuilt)</h3>
         <div className="terminal-window">
           <div className="terminal-bar">
             <span />
@@ -72,14 +84,59 @@ export default function DocsCliPage() {
             <span />
           </div>
           <pre>
-            <code>
-              {`cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful`}
-            </code>
+            <code>{BREW_COMMAND}</code>
           </pre>
         </div>
-        <p
-          className="doc-caption"
-        >
+        <p className="doc-caption">
+          Official tap formula for macOS (Apple Silicon and Intel) and
+          Linuxbrew. Installs the prebuilt release binary.
+        </p>
+        <h3 className="doc-subhead">cargo binstall (prebuilt)</h3>
+        <div className="terminal-window">
+          <div className="terminal-bar">
+            <span />
+            <span />
+            <span />
+          </div>
+          <pre>
+            <code>{BINSTALL_COMMAND}</code>
+          </pre>
+        </div>
+        <p className="doc-caption">
+          Uses <code>[package.metadata.binstall]</code> to resolve the matching
+          GitHub release archive when one exists. Requires{" "}
+          <code>cargo-binstall</code>. May fall back to compiling from source if
+          no prebuilt asset matches. No crates.io publish is used for
+          distribution.
+        </p>
+        <h3 className="doc-subhead">Scoop (Windows, prebuilt)</h3>
+        <div className="terminal-window">
+          <div className="terminal-bar">
+            <span />
+            <span />
+            <span />
+          </div>
+          <pre>
+            <code>{SCOOP_COMMANDS.join("\n")}</code>
+          </pre>
+        </div>
+        <p className="doc-caption">
+          Official Scoop bucket for the portable Windows x86_64 zip. winget (
+          <code>Ledgerful.Ledgerful</code>) is Planned until the first package is
+          accepted on microsoft/winget-pkgs.
+        </p>
+        <h3 className="doc-subhead">Cargo (source)</h3>
+        <div className="terminal-window">
+          <div className="terminal-bar">
+            <span />
+            <span />
+            <span />
+          </div>
+          <pre>
+            <code>{INSTALL_COMMAND}</code>
+          </pre>
+        </div>
+        <p className="doc-caption">
           Cargo builds and links the binary from source. The first build takes
           several minutes. Subsequent installs reuse the build cache. The binary
           is placed in <code>~/.cargo/bin/ledgerful</code> — make sure{" "}

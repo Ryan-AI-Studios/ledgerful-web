@@ -574,6 +574,118 @@ if (!pages["github-action"].includes("Ryan-AI-Studios/Ledgerful/action@")) {
   }
 }
 
+// ── Assert 23: /install — package-manager channels (0051 DoD-5) ───────────────
+// Live channels must appear with real commands. Scoop/winget are Planned until
+// their public packages ship — do not render their install commands as live.
+
+{
+  const lower = installHtml.toLowerCase();
+
+  if (!installHtml.includes("brew install Ryan-AI-Studios/tap/ledgerful")) {
+    failures.push(
+      'Assert 23 FAIL [install]: Homebrew live command missing — expected "brew install Ryan-AI-Studios/tap/ledgerful"',
+    );
+  }
+
+  if (
+    !installHtml.includes(
+      "cargo binstall --git https://github.com/Ryan-AI-Studios/Ledgerful",
+    )
+  ) {
+    failures.push(
+      'Assert 23 FAIL [install]: cargo binstall live command missing',
+    );
+  }
+
+  if (
+    !installHtml.includes(
+      "cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful",
+    )
+  ) {
+    failures.push(
+      "Assert 23 FAIL [install]: canonical cargo source install command missing",
+    );
+  }
+
+  // Scoop is live (public scoop-bucket seed merged 2026-07-20).
+  if (!installHtml.includes("scoop install ledgerful")) {
+    failures.push(
+      'Assert 23 FAIL [install]: Scoop live command missing — expected "scoop install ledgerful"',
+    );
+  }
+  if (
+    !installHtml.includes(
+      "scoop bucket add ledgerful https://github.com/Ryan-AI-Studios/scoop-bucket",
+    )
+  ) {
+    failures.push(
+      "Assert 23 FAIL [install]: Scoop bucket-add command missing",
+    );
+  }
+
+  // winget must not ship as a live install command until microsoft/winget-pkgs
+  // accepts the first package. Coming-state card may name the manager.
+  if (installHtml.includes("winget install Ledgerful.Ledgerful")) {
+    failures.push(
+      'Assert 23 FAIL [install]: "winget install Ledgerful.Ledgerful" found while winget is still Planned — do not ship an unverified command as live',
+    );
+  }
+  if (!lower.includes("winget")) {
+    failures.push(
+      "Assert 23 FAIL [install]: winget must be mentioned as a Planned/coming channel",
+    );
+  }
+
+  // Gatekeeper interim path (unsigned macOS artifacts).
+  if (
+    !installHtml.includes("xattr -d com.apple.quarantine") &&
+    !lower.includes("quarantine")
+  ) {
+    failures.push(
+      "Assert 23 FAIL [install]: macOS Gatekeeper/quarantine interim guidance missing",
+    );
+  }
+
+  // One-line installers must not claim checksum verification they do not do
+  // (engine install.sh / install.ps1 download + extract only).
+  if (
+    lower.includes("verifies the published checksum") ||
+    lower.includes("verify the published sha-256") ||
+    lower.includes("verify the published checksum")
+  ) {
+    failures.push(
+      "Assert 23 FAIL [install]: one-line installers must not claim checksum verification (scripts do not re-check .sha256 sidecars)",
+    );
+  }
+
+  // docs/cli must also document the live package-manager paths.
+  const cliLower = pages["cli"].toLowerCase();
+  if (!pages["cli"].includes("brew install Ryan-AI-Studios/tap/ledgerful")) {
+    failures.push(
+      'Assert 23 FAIL [docs/cli]: Homebrew live command missing',
+    );
+  }
+  if (
+    !pages["cli"].includes(
+      "cargo binstall --git https://github.com/Ryan-AI-Studios/Ledgerful",
+    )
+  ) {
+    failures.push(
+      "Assert 23 FAIL [docs/cli]: cargo binstall live command missing",
+    );
+  }
+  if (!pages["cli"].includes("scoop install ledgerful")) {
+    failures.push(
+      'Assert 23 FAIL [docs/cli]: Scoop live command missing',
+    );
+  }
+  if (!cliLower.includes("winget")) {
+    failures.push(
+      "Assert 23 FAIL [docs/cli]: winget Planned disclosure missing",
+    );
+  }
+}
+
 // ── Assert 22: /docs/policy-check — command, rules, base-branch, honest limit, permissions ──
 // Track 0049-CiPolicyGates web slice (DoD-4).
 

@@ -52,12 +52,21 @@ for (let i = 0; i < lines.length; i++) {
     if (value === null || value === undefined) continue;
     if (key === "committed_at") continue;
     const str = String(value);
-    // @ledgerful.io is Ledgerful's own domain — it appears in signed
-    // Signed-off-by trailers that cannot be edited without breaking Ed25519
-    // signatures. Only flag third-party emails.
+    // Signed fields are byte-exact (cannot redact without breaking Ed25519).
+    // Allow known-public bot/AI co-author domains that appear in git trailers;
+    // flag only unexpected third-party addresses.
     const emailMatch = str.match(emailPattern);
-    if (emailMatch && !emailMatch[0].endsWith("@ledgerful.io")) {
-      failures.push(`Email-like value in entry ${i + 1}, field "${key}": ${emailMatch[0]}`);
+    if (emailMatch) {
+      const email = emailMatch[0].toLowerCase();
+      const allowed =
+        email.endsWith("@ledgerful.io") ||
+        email === "noreply@anthropic.com" ||
+        email.endsWith("@users.noreply.github.com");
+      if (!allowed) {
+        failures.push(
+          `Email-like value in entry ${i + 1}, field "${key}": ${emailMatch[0]}`,
+        );
+      }
     }
     // Also catch obvious identity markers that should never appear.
     if (["author", "author_email", "entity", "related_tickets", "trace_id", "origin", "change_type", "is_breaking"].includes(key)) {

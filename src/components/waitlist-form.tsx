@@ -17,7 +17,6 @@ export function WaitlistForm() {
     const formData = new FormData(form);
     const email = String(formData.get("email") ?? "").trim();
     const website = String(formData.get("website") ?? "").trim();
-    const designPartner = formData.get("designPartner") === "on";
 
     if (!email) {
       setStatus({ kind: "error", message: "Please enter your email address." });
@@ -30,7 +29,7 @@ export function WaitlistForm() {
       const response = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, website, designPartner }),
+        body: JSON.stringify({ email, website, designPartner: false }),
       });
 
       const body = (await response.json().catch(() => ({}))) as {
@@ -99,19 +98,6 @@ export function WaitlistForm() {
               overflow: "hidden",
             }}
           />
-
-          <div className="waitlist-checkbox">
-            <input
-              id="waitlist-design-partner"
-              type="checkbox"
-              name="designPartner"
-              value="on"
-            />
-            <label htmlFor="waitlist-design-partner">
-              I work in regulated FinTech or HealthTech and want to discuss a
-              design-partner fit.
-            </label>
-          </div>
 
           {status.kind === "error" ? (
             <p className="waitlist-message" role="alert">

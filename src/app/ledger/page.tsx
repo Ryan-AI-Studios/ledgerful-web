@@ -53,14 +53,21 @@ export default function LedgerPage() {
   const allEntries = getPublicLedgerEntries();
   const manifest = getPublicLedgerManifest();
 
+  // Bundle is chronological (oldest → newest). Surface the newest rows first.
   const MAX_PAGE_ENTRIES = 20;
-  const entries = allEntries.slice(0, MAX_PAGE_ENTRIES);
+  const entries = [...allEntries]
+    .sort((a, b) => {
+      const ta = a.committed_at ? Date.parse(a.committed_at) : 0;
+      const tb = b.committed_at ? Date.parse(b.committed_at) : 0;
+      return tb - ta;
+    })
+    .slice(0, MAX_PAGE_ENTRIES);
   const remainingCount = allEntries.length - entries.length;
 
   return (
     <PageShell>
+      <div className="ledger-page">
       <section className="ledger-hero page-hero compact">
-        <p className="hero-kicker">Public ledger</p>
         <h1>Ledgerful&apos;s development ledger, signed and verifiable.</h1>
         <p>
           A redacted, cryptographically signed sample of the Ledgerful engine&apos;s
@@ -81,9 +88,10 @@ export default function LedgerPage() {
             as authentic.
           </p>
           <p style={{ marginTop: "12px" }}>
-            This is a sample of the engine&apos;s development ledger; the publishing
-            cron is disabled. Chain linkage (&quot;prev_hash&quot;) is not present in
-            this sample.
+            This is the engine&apos;s development ledger published as a static
+            bundle (refreshed by export, not live-streamed). The signed chain
+            head is included in the manifest when present; per-entry identity
+            still requires out-of-band fingerprint comparison.
           </p>
           <p style={{ marginTop: "12px" }}>
             <strong>Redaction note:</strong> signed fields are published
@@ -212,6 +220,7 @@ export default function LedgerPage() {
           </Link>
         </div>
       </section>
+      </div>
     </PageShell>
   );
 }

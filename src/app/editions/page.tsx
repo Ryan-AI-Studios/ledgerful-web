@@ -7,8 +7,6 @@ import { StatusPill } from "@/components/status-pill";
 import { LicenseExamples } from "@/components/license-examples";
 import { pageDescriptions } from "@/lib/content/navigation";
 import {
-  maturityLabels,
-  deploymentLabels,
   editionLabels,
   type Maturity,
   type Deployment,
@@ -62,7 +60,6 @@ export default function EditionsPage() {
   return (
     <PageShell>
       <section className="page-hero compact">
-        <p className="hero-kicker">Edition boundaries</p>
         <h1>Use Ledgerful locally for free. License it for broader commercial use.</h1>
         <p>{pricingBoundaryStatement}</p>
       </section>
@@ -147,30 +144,26 @@ export default function EditionsPage() {
           aria-labelledby="available-today-heading"
         >
           <div className="available-today-head">
-            <StatusPill maturity="available" deployment="runs-locally" />
             <h2 id="available-today-heading">Implemented in the current build</h2>
-            <p className="available-today-price">Source-available, in force</p>
           </div>
           <p>
-            The local capabilities below are implemented. The license is in
-            force: Ledgerful, LLC formed, IP assigned, Small-Entity
-            Commercial Exception counsel-reviewed. Commercial License
-            introductory pricing is published below; Hosted and Enterprise
-            remain Pricing not announced.
+            The local capabilities below ship in the current build. The
+            license is in force (Ledgerful, LLC formed, IP assigned, Exception
+            counsel-reviewed). Commercial License introductory pricing is
+            published below; Hosted and Enterprise remain Pricing not
+            announced.
           </p>
           <ul className="available-today-list">
             {availableToday.map((item) => (
               <li key={item.label}>
                 <CheckCircle2 size={18} aria-hidden="true" />
-                <span>
+                <div className="available-today-item-body">
                   <span className="available-today-label">{item.label}</span>
-                  <span className="available-today-state">
-                    <StatusPill maturity={item.maturity} deployment={item.deployment} />
-                    <span className="visually-hidden">
-                      {maturityLabels[item.maturity]} · {deploymentLabels[item.deployment]}
-                    </span>
-                  </span>
-                </span>
+                  {item.caveat ? (
+                    <span className="item-caveat">{item.caveat}</span>
+                  ) : null}
+                  <StatusPill maturity={item.maturity} deployment={item.deployment} />
+                </div>
               </li>
             ))}
           </ul>
@@ -314,17 +307,20 @@ export default function EditionsPage() {
                   </ul>
                 ) : null}
                 <p>{edition.description}</p>
-                <ul>
+                <ul className="pricing-card-includes">
                   {edition.includes.map((item) => (
                     <li key={item.label}>
                       <CheckCircle2 size={18} aria-hidden="true" />
-                      <span>
-                        {item.label}
+                      <div className="pricing-card-include-body">
+                        <span className="pricing-card-include-label">{item.label}</span>
                         {item.caveat ? (
                           <span className="item-caveat">{item.caveat}</span>
                         ) : null}
-                      </span>
-                      <StatusPill maturity={item.maturity} deployment={item.deployment} />
+                        <StatusPill
+                          maturity={item.maturity}
+                          deployment={item.deployment}
+                        />
+                      </div>
                     </li>
                   ))}
                 </ul>

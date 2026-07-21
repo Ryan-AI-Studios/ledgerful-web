@@ -7,6 +7,7 @@ import { StatusPill } from "@/components/status-pill";
 import { ArtifactPreview } from "@/components/artifact-preview";
 import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { pageDescriptions } from "@/lib/content/navigation";
+import { boundaryNote } from "@/lib/content/trust";
 
 export const metadata: Metadata = {
   title: { absolute: "How Ledgerful works locally" },
@@ -106,7 +107,7 @@ const stateRows: StateRow[] = [
   },
   {
     scope: "Configured cloud model",
-    body: "The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when that provider is configured and selected. Local-model operation does not use this path.",
+    body: "The ask workflow can send sanitized, truncated impact and retrieved codebase context to Gemini, Ollama Cloud, or OpenRouter when that provider is configured and selected. Separately, ledgerful index --fast can send code chunks to a configured Gemini model for semantic extraction. Local-model operation does not use these paths.",
     maturity: "available",
     deployment: "runs-locally",
   },
@@ -121,10 +122,10 @@ const stateRows: StateRow[] = [
 export default function ArchitecturePage() {
   return (
     <PageShell>
+      <div className="architecture-page">
       {/* ── Hero — reframed around the workflow, not the topology
           (WEB-0023). Route and canonical are unchanged. ────────────────── */}
       <section className="page-hero compact">
-        <p className="hero-kicker">Architecture</p>
         <h1>How Ledgerful works locally.</h1>
         <p>
           Ledgerful reads your repo, analyzes it entirely on your machine, and
@@ -138,18 +139,21 @@ export default function ArchitecturePage() {
       {/* ── Workflow: input → local analysis → outputs, BEFORE the
           component topology diagram (spec: lead with workflow). ───────── */}
       <section className="content-band" id="workflow">
-        <SectionHeading title="What goes in, what runs locally, what comes out.">
+        <SectionHeading
+          className="section-heading--full"
+          title="What goes in, what runs locally, what comes out."
+        >
           Before the surfaces and the diagram below, here is the actual
           workflow — with real, redacted evidence beside each output, not a
           mockup.
         </SectionHeading>
 
-        <div className="step-block">
-          <div className="step-head">
-            <span className="step-index">READS</span>
-            <h2>Your repo. Nothing more.</h2>
-          </div>
-          <div className="step-body">
+        <div className="surface-strip surface-strip--3">
+          <article className="surface-card">
+            <div className="surface-head">
+              <span className="surface-role">READS</span>
+            </div>
+            <h3>Your repo. Nothing more.</h3>
             <p>
               Ledgerful reads your local git repository: the working tree,
               diffs against a base ref, commit history, and its own local
@@ -157,15 +161,12 @@ export default function ArchitecturePage() {
               read files outside the repo, and source code, diffs, and commit
               messages are not uploaded anywhere by default.
             </p>
-          </div>
-        </div>
-
-        <div className="step-block">
-          <div className="step-head">
-            <span className="step-index">ANALYZES</span>
-            <h2>A deterministic local engine.</h2>
-          </div>
-          <div className="step-body">
+          </article>
+          <article className="surface-card">
+            <div className="surface-head">
+              <span className="surface-role">ANALYZES</span>
+            </div>
+            <h3>A deterministic local engine.</h3>
             <p>
               <code>scan</code>, <code>verify</code>, and <code>audit</code>{" "}
               run entirely on your machine — deterministic checks against
@@ -174,15 +175,12 @@ export default function ArchitecturePage() {
               you configure and select a cloud model; it is a separate,
               explicitly configured mode, not part of the default analysis.
             </p>
-          </div>
-        </div>
-
-        <div className="step-block">
-          <div className="step-head">
-            <span className="step-index">PRODUCES</span>
-            <h2>Three real outputs, each with real evidence.</h2>
-          </div>
-          <div className="step-body">
+          </article>
+          <article className="surface-card">
+            <div className="surface-head">
+              <span className="surface-role">PRODUCES</span>
+            </div>
+            <h3>Three real outputs, each with real evidence.</h3>
             <p>
               A scan can produce a risk summary, a verification plan, and a
               signed provenance record written to the ledger; the dashboard
@@ -190,7 +188,7 @@ export default function ArchitecturePage() {
               Below is real, redacted output captured from each — the same
               artifacts shown on the homepage.
             </p>
-          </div>
+          </article>
         </div>
 
         <div className="produces-grid" style={{ marginTop: "8px" }}>
@@ -214,7 +212,10 @@ export default function ArchitecturePage() {
 
       {/* ── Diagram + Surfaces — consolidated ──────────────────── */}
       <section className="content-band" id="diagram">
-        <SectionHeading title="Architecture at a glance">
+        <SectionHeading
+          className="section-heading--full"
+          title="Architecture at a glance"
+        >
           The host runs the engine and dashboard. The public web is static and
           does not host a control plane. The hosted mode is planned and is
           shown dashed.
@@ -235,7 +236,7 @@ export default function ArchitecturePage() {
 
       {/* ── Surfaces strip ─────────────────────────────────── */}
       <section className="split-band" id="surfaces">
-        <SectionHeading title="The three surfaces">
+        <SectionHeading className="section-heading--full" title="The three surfaces">
           Each surface has an explicit state. The hosted control plane is
           planned and not shown here — see{" "}
           <Link href="/editions" className="inline-link">editions</Link> for
@@ -256,11 +257,8 @@ export default function ArchitecturePage() {
                   <span className="surface-role">
                     SURFACE {surface.index}
                   </span>
-                  {surface.maturity ? (
-                    <StatusPill maturity={surface.maturity} deployment={surface.deployment} />
-                  ) : null}
+                  <Icon className="surface-icon" size={22} aria-hidden="true" />
                 </div>
-                <Icon size={22} aria-hidden="true" />
                 <h3>{surface.title}</h3>
                 <p>{surface.body}</p>
                 <div className="surface-meta">
@@ -274,7 +272,10 @@ export default function ArchitecturePage() {
 
       {/* ── Mode state table ───────────────────────────────── */}
       <section className="content-band" id="modes">
-        <SectionHeading title="Operating modes and their data flow">
+        <SectionHeading
+          className="section-heading--full"
+          title="Operating modes and their data flow"
+        >
           Five modes describe what crosses the local-first boundary. Scan,
           ledger, audit, verify, dashboard, and export stay local. Feature-gated
           sync also stays local when compiled with <code>--features sync</code>;
@@ -325,16 +326,19 @@ export default function ArchitecturePage() {
           </Link>{" "}
           for the full telemetry schema.
         </p>
+        <p className="doc-caption" style={{ marginTop: "16px" }}>
+          {boundaryNote}
+        </p>
       </section>
 
       {/* ── Bind address / token ───────────────────────────── */}
       <section className="content-band" id="bindings">
-        <div className="step-block">
-          <div className="step-head">
-            <span className="step-index">DETAIL · DAEMON BIND</span>
-            <h2>The dashboard is loopback-only.</h2>
-          </div>
-          <div className="step-body">
+        <div className="surface-strip surface-strip--2">
+          <article className="surface-card">
+            <div className="surface-head">
+              <span className="surface-role">DETAIL · DAEMON BIND</span>
+            </div>
+            <h3>The dashboard is loopback-only.</h3>
             <p>
               The local daemon binds exclusively to{" "}
               <code>http://127.0.0.1:52001</code>. CORS is restricted to{" "}
@@ -347,26 +351,23 @@ export default function ArchitecturePage() {
               <code>Authorization: Bearer &lt;hex&gt;</code>. Tokens are
               per-session and are never persisted to disk.
             </p>
-          </div>
-        </div>
-
-        <div className="step-block">
-          <div className="step-head">
-            <span className="step-index">DETAIL · KEYS &amp; EXPORT</span>
-            <h2>Keys and evidence export stay on disk.</h2>
-          </div>
-          <div className="step-body">
+          </article>
+          <article className="surface-card">
+            <div className="surface-head">
+              <span className="surface-role">DETAIL · KEYS &amp; EXPORT</span>
+            </div>
+            <h3>Keys and evidence export stay on disk.</h3>
             <p>
               An Ed25519 key pair is generated on first use via OS entropy.
               The signing key and verifying key are stored as hex-encoded
               files at <code>~/.ledgerful/keys/private.key</code> and{" "}
               <code>~/.ledgerful/keys/public.pem</code> (Windows:{" "}
-              <code>%USERPROFILE%\.ledgerful\keys\</code>). The SOC 2-style evidence
-              ZIP is generated entirely from local data; the manifest,
-              signature, hashes, ledger CSV, verification history, and ADR
-              files never leave the host during export.
+              <code>%USERPROFILE%\.ledgerful\keys\</code>). The SOC 2-style
+              evidence ZIP is generated entirely from local data; the
+              manifest, signature, hashes, ledger CSV, verification history,
+              and ADR files never leave the host during export.
             </p>
-            <p style={{ marginTop: "12px" }}>
+            <p>
               Hardware-backed key storage, hosted KMS, SSO/SCIM, and RBAC are{" "}
               <em style={{ fontStyle: "normal", color: "var(--ink)" }}>
                 planned for enterprise
@@ -374,75 +375,39 @@ export default function ArchitecturePage() {
               . They require the future hosted control plane and are not
               implemented in the local daemon.
             </p>
-          </div>
+          </article>
         </div>
       </section>
 
       {/* ── Where next ────────────────────────────────────── */}
       <section className="content-band">
-        <SectionHeading title="Read next">
+        <SectionHeading className="section-heading--full" title="Read next">
           Pair the architecture page with the install path, the trust posture,
           and the release evidence.
         </SectionHeading>
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-            margin: 0,
-            display: "grid",
-            gap: "10px",
-            color: "var(--muted)",
-            lineHeight: 1.6,
-          }}
-        >
+        <ul className="architecture-read-next">
           <li>
-            <Link
-              href="/install"
-              style={{
-                color: "var(--primary-strong)",
-                fontWeight: 680,
-                textDecoration: "underline",
-                textUnderlineOffset: "3px",
-                textDecorationColor: "var(--line)",
-              }}
-            >
+            <Link href="/install" className="inline-link">
               Install →
             </Link>{" "}
             source install, verification steps, and first commands.
           </li>
           <li>
-            <Link
-              href="/trust"
-              style={{
-                color: "var(--primary-strong)",
-                fontWeight: 680,
-                textDecoration: "underline",
-                textUnderlineOffset: "3px",
-                textDecorationColor: "var(--line)",
-              }}
-            >
+            <Link href="/trust" className="inline-link">
               Trust & security →
             </Link>{" "}
             outbound network inventory, signing model, SOC 2-style export layout,
             release verification.
           </li>
           <li>
-            <Link
-              href="/editions"
-              style={{
-                color: "var(--primary-strong)",
-                fontWeight: 680,
-                textDecoration: "underline",
-                textUnderlineOffset: "3px",
-                textDecorationColor: "var(--line)",
-              }}
-            >
+            <Link href="/editions" className="inline-link">
               Editions →
             </Link>{" "}
             editions with explicit maturity and deployment states.
           </li>
         </ul>
       </section>
+      </div>
     </PageShell>
   );
 }

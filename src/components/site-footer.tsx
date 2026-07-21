@@ -34,7 +34,7 @@ export function SiteFooter() {
       <div className="footer-grid">
         <div>
           <h2 className="footer-heading">Pages</h2>
-          <ul>
+          <ul className="footer-pages-list">
             {footerOnlyNavigation.map((item) => (
               <li key={item.href}>
                 <Link href={item.href}>{item.label}</Link>

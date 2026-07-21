@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArtifactPreview } from "@/components/artifact-preview";
 import { AudienceRoutes } from "@/components/audience-routes";
-import { DataFlowStrip } from "@/components/data-flow-strip";
 import { EvidencePanel } from "@/components/evidence-panel";
 import { InstallCommand } from "@/components/install-command";
 import { LegendHashRedirect } from "@/components/legend-hash-redirect";
@@ -68,8 +67,7 @@ export default function Home() {
 
   return (
     <PageShell>
-      {/* 2. Hero — headline/CTAs at reading measure; release line, docs link,
-          and signed receipt span the full hero content width below. */}
+      {/* Hero — headline, CTAs, and release line */}
       <div className="hero-section hero-section--stacked">
         <section className="hero-copy" id="hero">
           <h1>
@@ -80,46 +78,58 @@ export default function Home() {
             provenance, verification, and SOC 2-style evidence without
             uploading source code by default.
           </p>
-          <div className="hero-actions hero-actions--primary">
+          <div className="hero-actions hero-actions--primary hero-actions--with-release">
             <InstallCommand />
             <Link className="button-secondary" href="/architecture">
               See how it works
             </Link>
+            <div className="hero-launch-line">
+              <span className="hero-launch-line-dot" aria-hidden="true" />
+              <span>
+                <strong>{release.value}.</strong> {repository.value} — see{" "}
+                <Link href="/docs/releases">release notes</Link>.
+              </span>
+            </div>
           </div>
         </section>
-        <div className="hero-meta">
-          <div className="hero-launch-line">
-            <span className="hero-launch-line-dot" aria-hidden="true" />
-            <span>
-              <strong>{release.value}.</strong> {repository.value} — see{" "}
-              <Link href="/docs/releases">release notes</Link>.
-            </span>
-          </div>
-          <div className="hero-actions hero-actions--quiet">
-            <Link className="button-tertiary" href="/docs">
-              Read the docs
-            </Link>
-          </div>
-        </div>
-        <aside className="hero-visual" aria-label="Sample signed provenance receipt">
-          <p className="hero-visual-label">Sample signed receipt</p>
-          <ArtifactPreview id="provenanceRecord" className="hero-visual-frame" />
-        </aside>
       </div>
 
-      {/* 4. Data-flow strip */}
-      <section className="content-band content-band--strip" id="data-flow">
-        <h2 className="visually-hidden">Where your data goes</h2>
-        <DataFlowStrip />
+      {/* What Ledgerful does — above the sample receipt */}
+      <section className="content-band" id="pillars">
+        <SectionHeading title="What Ledgerful does">
+          Four capabilities, all running on your machine. Nothing uploads by
+          default.
+        </SectionHeading>
+        <div className="pillar-grid">
+          {pillars.map((pillar) => (
+            <div className="pillar-card" key={pillar.id}>
+              <h3>{pillar.label}</h3>
+              <p>{pillar.description}</p>
+              <ul className="pillar-capabilities">
+                {pillar.capabilities.map((cap) => (
+                  <li key={cap}>{cap}</li>
+                ))}
+              </ul>
+              {pillar.id === "ask" && (
+                <p className="pillar-caveat">{askCaveat}</p>
+              )}
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* 5. Four-item proof strip */}
+      <section className="content-band" id="sample-receipt" aria-label="Sample signed provenance receipt">
+        <p className="hero-visual-label">Sample signed receipt</p>
+        <ArtifactPreview id="provenanceRecord" className="hero-visual-frame" />
+      </section>
+
+      {/* Four-item proof strip */}
       <section className="content-band content-band--strip" id="proof-points">
         <h2 className="visually-hidden">Proof points, linked to evidence</h2>
         <ProofStrip />
       </section>
 
-      {/* 6. Problem and stakes */}
+      {/* Problem and stakes */}
       <section className="split-band" id="problem">
         <SectionHeading title="The volume of change has outpaced the evidence for it.">
           More commits, more repositories, more evidence rebuilt after the fact.
@@ -152,7 +162,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 7. What Ledgerful produces */}
+      {/* What Ledgerful produces */}
       <section className="content-band" id="produces">
         <SectionHeading title="What a scan actually produces">
           Each output is a captured artifact from a real v0.1.9 run.
@@ -173,7 +183,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 8. Available today vs. planned */}
+      {/* Available today vs. planned */}
       <section className="split-band" id="capabilities">
         <SectionHeading title="What's available today">
           Local CLI, dashboard, signed provenance, and SOC 2-style evidence
@@ -184,30 +194,6 @@ export default function Home() {
           </Link>
           .
         </SectionHeading>
-      </section>
-
-      {/* 8a. The four pillars */}
-      <section className="content-band" id="pillars">
-        <SectionHeading title="What Ledgerful does">
-          Four capabilities, all running on your machine. Nothing uploads by
-          default.
-        </SectionHeading>
-        <div className="pillar-grid">
-          {pillars.map((pillar) => (
-            <div className="pillar-card" key={pillar.id}>
-              <h3>{pillar.label}</h3>
-              <p>{pillar.description}</p>
-              <ul className="pillar-capabilities">
-                {pillar.capabilities.map((cap) => (
-                  <li key={cap}>{cap}</li>
-                ))}
-              </ul>
-              {pillar.id === "ask" && (
-                <p className="pillar-caveat">{askCaveat}</p>
-              )}
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* 9. How it stays local */}

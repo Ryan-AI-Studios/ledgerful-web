@@ -1,4 +1,5 @@
 import { licenseBoundaryColumns, licensePersonas } from "@/lib/content/pricing";
+import { commercialPricing } from "@/lib/content/commercial-pricing";
 
 /**
  * Plain-language license-boundary explainer for /editions. The PolyForm
@@ -13,8 +14,17 @@ export function LicenseExamples() {
         <strong>Plain-language summary — not legal advice.</strong> The
         summary and examples below explain the PolyForm Noncommercial License
         1.0.0 plus the Ledgerful Small-Entity Commercial Exception v1.0 in
-        plain terms. The license text governs; where this summary and the
-        license differ, the license controls.
+        plain terms. The{" "}
+        <a
+          href={commercialPricing.exceptionHref}
+          className="inline-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Exception text
+        </a>{" "}
+        governs; where this summary and the license differ, the license
+        controls.
       </div>
       <div className="license-boundary-columns">
         {licenseBoundaryColumns.map((column) => (

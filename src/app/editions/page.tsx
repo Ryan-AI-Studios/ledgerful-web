@@ -23,6 +23,12 @@ import {
   pricingFaq,
   localCapabilities,
 } from "@/lib/content/pricing";
+import {
+  buildCommercialLicenseMailto,
+  buildOemHostingMailto,
+  commercialPriceBandRows,
+  commercialPricing,
+} from "@/lib/content/commercial-pricing";
 
 export const metadata: Metadata = {
   title: "Editions — licenses and feature states",
@@ -50,6 +56,8 @@ export const metadata: Metadata = {
 // (localCapabilities) so this summary can't drift out of sync with them.
 const availableToday = localCapabilities;
 
+const priceBands = commercialPriceBandRows();
+
 export default function EditionsPage() {
   return (
     <PageShell>
@@ -68,26 +76,68 @@ export default function EditionsPage() {
           prices or timelines.
         </SectionHeading>
 
+        {/* Layer 1 — eligibility (revenue / QSE / eval / written auth), not headcount */}
         <div className="decision-tree">
-          <h2 className="decision-tree-heading">Which edition fits you?</h2>
+          <h2 className="decision-tree-heading">Which path fits you?</h2>
+          <p className="decision-tree-intro">
+            Eligibility is revenue- and use-based (Qualified Small Entity,
+            Evaluation Use, or Written Authorization). Headcount price bands
+            apply only after you need a paid Commercial License.
+          </p>
           <ul className="decision-tree-list">
             <li>
               <strong>Individual or noncommercial use</strong> →{" "}
-              <Link href="/install" className="inline-link">Local</Link>
+              <Link href="/install" className="inline-link">
+                Local
+              </Link>
             </li>
             <li>
               <strong>Qualifying small commercial use</strong> (under $1M
-              aggregate gross revenue, internal use) →{" "}
-              <Link href="/install" className="inline-link">Local</Link>
+              aggregated gross revenue across You and Affiliates, Internal
+              Business Use only) →{" "}
+              <Link href="/install" className="inline-link">
+                Local
+              </Link>
             </li>
             <li>
-              <strong>Broader commercial use</strong> (at or above $1M revenue)
+              <strong>Evaluation Use</strong> (30 days, once per Entity +
+              Affiliate group, non-Production only) →{" "}
+              <Link href="/install" className="inline-link">
+                Local
+              </Link>
+              {" · "}
+              <a href="#eval-rights" className="inline-link">
+                rights summary
+              </a>
+            </li>
+            <li>
+              <strong>Broader commercial Internal Business Use</strong> (at
+              or above $1M aggregated revenue, or outside QSE after eval /
+              transition) →{" "}
+              <a href="#commercial-license" className="inline-link">
+                Commercial License pricing
+              </a>
+              {" · "}
+              <a href={buildCommercialLicenseMailto()} className="inline-link">
+                Request commercial license
+              </a>
+            </li>
+            <li>
+              <strong>OEM, hosting-as-a-service, resale, or redistribution</strong>{" "}
               →{" "}
-              <Link href="/trust#license" className="inline-link">Commercial License</Link>
+              <a href={buildOemHostingMailto()} className="inline-link">
+                Separate written agreement
+              </a>{" "}
+              (regardless of size)
             </li>
             <li>
               <strong>Hosted, regulated, or custom deployment</strong> →{" "}
-              <a href="mailto:hello@ledgerful.dev?subject=Ledgerful%20Enterprise%20inquiry" className="inline-link">Contact us</a>
+              <a
+                href="mailto:hello@ledgerful.dev?subject=Ledgerful%20Enterprise%20inquiry"
+                className="inline-link"
+              >
+                Contact us
+              </a>
             </li>
           </ul>
         </div>
@@ -104,8 +154,9 @@ export default function EditionsPage() {
           <p>
             The local capabilities below are implemented. The license is in
             force: Ledgerful, LLC formed, IP assigned, Small-Entity
-            Commercial Exception counsel-reviewed. No paid commercial price
-            is announced.
+            Commercial Exception counsel-reviewed. Commercial License
+            introductory pricing is published below; Hosted and Enterprise
+            remain Pricing not announced.
           </p>
           <ul className="available-today-list">
             {availableToday.map((item) => (
@@ -132,9 +183,106 @@ export default function EditionsPage() {
             </span>
           </div>
         </aside>
+
+        {/* Layer 2 — headcount-band Commercial prices (only if you need a paid license) */}
+        <section
+          id="commercial-license"
+          className="commercial-price-section"
+          aria-labelledby="commercial-license-heading"
+        >
+          <div className="commercial-price-section-head">
+            <h2 id="commercial-license-heading">Commercial License pricing</h2>
+            <span className="provisional-badge">{commercialPricing.provisionalLabel}</span>
+          </div>
+          <p className="commercial-price-section-lead">
+            Flat annual USD license for Internal Business Use when you are
+            outside free eligibility. Same software capabilities as Local —
+            the license changes who may run it, not what it does. These bands
+            are not the free/paid line; revenue and use type are.
+          </p>
+          <ul className="commercial-price-bands">
+            {priceBands.map((band) => (
+              <li key={band.label} className="commercial-price-band">
+                <span className="commercial-price-band-label">{band.label}</span>
+                <span
+                  className={
+                    band.isContact
+                      ? "commercial-price-band-price commercial-price-band-price--contact"
+                      : "commercial-price-band-price"
+                  }
+                >
+                  {band.priceDisplay}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="commercial-price-fulfillment">
+            {commercialPricing.fulfillmentSentence}
+          </p>
+          <p className="commercial-price-oem">{commercialPricing.oemHostingNote}</p>
+          <div className="commercial-price-actions">
+            <a href={buildCommercialLicenseMailto()} className="button-primary">
+              Request commercial license
+              <ArrowRight size={16} aria-hidden="true" />
+            </a>
+            <a
+              href={commercialPricing.exceptionHref}
+              className="button-secondary"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Full Exception text
+              <span className="sr-only"> (opens as markdown)</span>
+            </a>
+          </div>
+
+          <details className="commercial-legal-details" id="eval-rights">
+            <summary>Evaluation, QSE, and transition rights (summary)</summary>
+            <div className="commercial-legal-details-body">
+              <ul>
+                <li>
+                  <strong>Qualified Small Entity (QSE):</strong> under $1M
+                  Aggregated Gross Revenue across You and all Affiliates;
+                  Internal Business Use only. At exactly $1,000,000 you are
+                  not a QSE.
+                </li>
+                <li>
+                  <strong>Evaluation Use:</strong> 30 days, once per Entity +
+                  its Affiliate group, non-Production only; does not reset on
+                  upgrades, new versions, or Affiliate transfers.
+                </li>
+                <li>
+                  <strong>90-day transition:</strong> when you cross the
+                  threshold or on Change of Control, a transition grant may
+                  apply so you can obtain a commercial license — see the
+                  Exception.
+                </li>
+                <li>
+                  <strong>OEM / hosting / resale:</strong> separate written
+                  agreement via {commercialPricing.contactEmail}, regardless of
+                  size.
+                </li>
+              </ul>
+              <p>
+                Plain-language summary — not legal advice. The{" "}
+                <a
+                  href={commercialPricing.exceptionHref}
+                  className="inline-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ledgerful Small-Entity Commercial Exception
+                </a>{" "}
+                text governs.
+              </p>
+            </div>
+          </details>
+        </section>
+
         <div className="pricing-grid">
           {editions.map((edition) => {
             const isPlanned = edition.maturity === "planned";
+            const isCommercial = edition.name === "Commercial License";
             return (
               <article
                 key={edition.name}
@@ -149,9 +297,22 @@ export default function EditionsPage() {
                   </div>
                   <StatusPill maturity={edition.maturity} deployment={edition.deployment} />
                 </div>
-                <p className={edition.price.startsWith("$") ? "price" : "price price--label"}>
+                {edition.provisionalLabel ? (
+                  <span className="provisional-badge">{edition.provisionalLabel}</span>
+                ) : null}
+                <p className={edition.price.startsWith("$") || edition.price.startsWith("From $") ? "price" : "price price--label"}>
                   {edition.price}
                 </p>
+                {isCommercial ? (
+                  <ul className="pricing-card-bands" aria-label="Commercial License price bands">
+                    {priceBands.map((band) => (
+                      <li key={band.label}>
+                        <span>{band.label}</span>
+                        <strong>{band.priceDisplay}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
                 <p>{edition.description}</p>
                 <ul>
                   {edition.includes.map((item) => (
@@ -199,8 +360,26 @@ export default function EditionsPage() {
         <LicenseExamples />
         <p className="edition-disclaimer" style={{ marginTop: "16px", color: "var(--muted)" }}>
           Still unsure?{" "}
-          <a href="mailto:hello@ledgerful.dev?subject=Ledgerful%20edition%20question" className="inline-link">Email hello@ledgerful.dev</a>{" "}
-          and describe your use case.
+          <a
+            href="mailto:hello@ledgerful.dev?subject=Ledgerful%20edition%20question"
+            className="inline-link"
+          >
+            Email hello@ledgerful.dev
+          </a>{" "}
+          for general questions, or{" "}
+          <a href={buildCommercialLicenseMailto()} className="inline-link">
+            legal@ledgerful.dev
+          </a>{" "}
+          for commercial license and OEM inquiries. Not legal advice — the{" "}
+          <a
+            href={commercialPricing.exceptionHref}
+            className="inline-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Exception text
+          </a>{" "}
+          controls.
         </p>
       </section>
 
@@ -266,7 +445,7 @@ export default function EditionsPage() {
                             —
                           </span>
                         </td>
-                      )
+                      ),
                     )}
                   </tr>
                 ))}
@@ -283,9 +462,9 @@ export default function EditionsPage() {
 
       <section className="content-band">
         <SectionHeading kicker="FAQ" title="Common questions">
-          Threshold definition, contractors, hosting, and OEM — plain-English
-          answers pending the same counsel review as the license examples
-          above.
+          Threshold definition, Evaluation Use, 90-day transition, contractors,
+          hosting, OEM, and commercial price bands — plain-English answers.
+          Not legal advice; the Exception text controls.
         </SectionHeading>
         <div className="pricing-faq">
           {pricingFaq.map((item) => (
@@ -313,11 +492,29 @@ export default function EditionsPage() {
         </div>
         <div className="edition-legend" style={{ marginTop: "20px" }}>
           <h3 style={{ fontSize: "0.95rem", marginBottom: "8px" }}>Edition columns</h3>
-          <ul style={{ listStyle: "none", padding: 0, display: "grid", gap: "6px", color: "var(--muted)" }}>
+          <ul
+            style={{
+              listStyle: "none",
+              padding: 0,
+              display: "grid",
+              gap: "6px",
+              color: "var(--muted)",
+            }}
+          >
             {(Object.keys(editionLabels) as Edition[]).map((ed) => (
               <li key={ed} style={{ display: "flex", gap: "8px" }}>
-                <strong style={{ color: "var(--ink-primary)", minWidth: "100px" }}>{editionLabels[ed]}</strong>
-                <span>{ed === "local" ? "Free for individuals and small companies" : ed === "commercial" ? "Paid license for broader commercial use" : ed === "hosted" ? "Planned hosted service" : "Planned enterprise features"}</span>
+                <strong style={{ color: "var(--ink-primary)", minWidth: "100px" }}>
+                  {editionLabels[ed]}
+                </strong>
+                <span>
+                  {ed === "local"
+                    ? "Free for individuals and qualifying small entities"
+                    : ed === "commercial"
+                      ? "Paid commercial license for broader Internal Business Use"
+                      : ed === "hosted"
+                        ? "Planned hosted service"
+                        : "Planned enterprise features"}
+                </span>
               </li>
             ))}
           </ul>
@@ -325,10 +522,14 @@ export default function EditionsPage() {
       </section>
 
       <div className="content-band pricing-cta-band">
-        <p>Review the draft source terms, then run locally. No account required.</p>
+        <p>Review the source terms, then run locally. No account required.</p>
         <div className="hero-actions">
-          <Link href="/docs/cli" className="button-primary">Install the CLI</Link>
-          <Link href="/trust" className="button-secondary">Review trust posture</Link>
+          <Link href="/docs/cli" className="button-primary">
+            Install the CLI
+          </Link>
+          <Link href="/trust" className="button-secondary">
+            Review trust posture
+          </Link>
         </div>
       </div>
     </PageShell>

@@ -1,5 +1,10 @@
 import type { Deployment, Maturity } from "./features";
 import { launchTruth } from "./launch-facts";
+import {
+  buildCommercialLicenseMailto,
+  commercialCardPriceLabel,
+  commercialPricing,
+} from "./commercial-pricing";
 
 export type EditionItem = {
   label: string;
@@ -23,6 +28,8 @@ export type Edition = {
   description: string;
   includes: EditionItem[];
   cta?: EditionCta;
+  /** Optional first-class provisional / introductory badge (Commercial). */
+  provisionalLabel?: string;
 };
 
 export type MatrixCell = {
@@ -53,7 +60,7 @@ export type PricingFaqItem = {
  * by recommendation.md §4.4.
  */
 export const pricingBoundaryStatement =
-  "Free for individuals, noncommercial use, and small companies (under $1M revenue, internal use); paid for larger companies; resale, hosting, or OEM would require a separate agreement.";
+  "Free for individuals, noncommercial use, and qualifying small entities (under $1M aggregated gross revenue across You and Affiliates, Internal Business Use only); paid Commercial License for broader internal commercial use; resale, hosting, or OEM requires a separate written agreement.";
 
 /**
  * Local capabilities are identical across the Local and Commercial License
@@ -89,7 +96,7 @@ export const editions: Edition[] = [
   {
     name: "Local",
     audience:
-      "Individuals, noncommercial use, and small companies under $1M aggregate gross revenue (internal use)",
+      "Individuals, noncommercial use, and qualifying small entities under $1M aggregated gross revenue across You and Affiliates (Internal Business Use only)",
     price: "Free for qualifying use",
     maturity: "available",
     deployment: "runs-locally",
@@ -100,14 +107,19 @@ export const editions: Edition[] = [
   {
     name: "Commercial License",
     audience:
-      "Companies at or above $1M aggregate gross revenue running Ledgerful internally",
-    price: "Commercial license required",
+      "Companies at or above $1M aggregated gross revenue (or otherwise outside QSE) running Ledgerful for Internal Business Use",
+    price: commercialCardPriceLabel(),
     maturity: "available",
     deployment: "runs-locally",
+    provisionalLabel: commercialPricing.provisionalLabel,
     description:
-      "The same local-first CLI, dashboard, ledger, and evidence export as Local, under a commercial license. The base license is in force; commercial pricing is not yet announced.",
+      "The same local-first CLI, dashboard, ledger, and evidence export as Local, under a paid commercial license. Introductory headcount-band pricing is provisional and may move upward on traction (announced, never silent).",
     includes: localCapabilities,
-    cta: { label: "Review license terms", href: "/trust#license" },
+    cta: {
+      label: "Request commercial license",
+      href: buildCommercialLicenseMailto(),
+      note: commercialPricing.fulfillmentSentence,
+    },
   },
   {
     name: "Hosted",
@@ -301,12 +313,12 @@ export const matrixGroups: MatrixGroup[] = [
 ];
 
 export const pricingFootnotes: string[] = [
-  `${launchTruth.facts.license.note} No paid commercial price is announced.`,
+  `${launchTruth.facts.license.note} Commercial License headcount-band prices are introductory/provisional and published on this page; Hosted and Enterprise prices are not announced.`,
   "GitHub App, hosted portfolio, hosted audit log, and billing portal require a future hosted control plane. No timeline is announced.",
   "SAML / OIDC SSO, SCIM, and RBAC are planned for enterprise and require a future hosted control plane with enterprise identity infrastructure. No timeline is announced.",
   `MCP stdio tools are published on npm (v${launchTruth.facts.mcpPackage.version}). GitHub Action setup path is planned — not publicly installable yet. ${launchTruth.facts.githubAction.note}`,
   "Source upload is never required for local editions. The local daemon does not implement SSO, RBAC, or tenant isolation.",
-  "No Commercial License, Hosted, or Enterprise price is announced.",
+  "No Hosted or Enterprise price is announced. OEM, hosting-as-a-service, resale, and redistribution require a separate written agreement regardless of size.",
 ];
 
 /**
@@ -323,15 +335,16 @@ export const licenseBoundaryColumns: {
     items: [
       "Individual use, on your own machine.",
       "Noncommercial use, at any organization size.",
-      "Internal business use by companies under $1M aggregate gross revenue.",
+      "Internal Business Use by a Qualified Small Entity: under $1M aggregated gross revenue across You and all Affiliates (exactly $1M is not QSE).",
+      "Evaluation Use: 30 days, once per Entity + its Affiliate group, non-Production only; does not reset on upgrades or new versions.",
     ],
   },
   {
     heading: "Requires a license or agreement",
     items: [
-      "Internal business use once a company reaches $1M aggregate gross revenue — commercial license.",
-      "Hosting Ledgerful for third parties — separate agreement.",
-      "Reselling Ledgerful, or bundling/embedding it into another product (OEM) — separate agreement.",
+      "Internal Business Use once you are at or above $1M aggregated gross revenue (or otherwise outside QSE) after any Evaluation Use or 90-day transition — commercial license.",
+      "Hosting Ledgerful for third parties — separate written agreement, regardless of size.",
+      "Reselling Ledgerful, or bundling/embedding it into another product (OEM) — separate written agreement, regardless of size.",
     ],
   },
 ];
@@ -350,46 +363,71 @@ export type LicensePersona = {
  */
 export const licensePersonas: LicensePersona[] = [
   {
-    scenario: "A 3-person consultancy runs Ledgerful internally to review its own commits.",
-    outcome: "Free",
-    reason: "Qualifies as a small entity under the noncommercial + small-entity exception terms.",
+    scenario: "A 3-person consultancy under $1M aggregated gross revenue runs Ledgerful internally to review its own commits.",
+    outcome: "Free (QSE Internal Business Use)",
+    reason:
+      "Qualifies as a Qualified Small Entity under the Exception: under $1M aggregated across You and Affiliates, Internal Business Use only.",
   },
   {
-    scenario: "A $50M-revenue company runs Ledgerful in CI across its engineering org.",
+    scenario: "A $50M-revenue company evaluates Ledgerful in a non-Production sandbox for two weeks.",
+    outcome: "Evaluation Use (free, limited)",
+    reason:
+      "Evaluation Use allows 30 days once per Entity + Affiliate group for non-Production only. It is not a production pilot and does not reset on upgrades.",
+  },
+  {
+    scenario: "A $50M-revenue company runs Ledgerful in production CI across its engineering org.",
     outcome: "Commercial license required",
-    reason: "Company revenue exceeds the $1M small-entity threshold for internal use.",
+    reason:
+      "At or above the $1M threshold for Internal Business Use beyond Evaluation Use or any 90-day transition grant.",
   },
   {
     scenario: "A hosting provider offers Ledgerful as a managed service to its customers.",
     outcome: "Separate agreement required",
-    reason: "Hosting for third parties is outside both the free and commercial-license internal-use terms.",
+    reason:
+      "Hosting for third parties is outside both free and commercial-license Internal Business Use terms, regardless of company size.",
   },
   {
     scenario: "A vendor bundles Ledgerful into a product it sells to customers.",
     outcome: "Separate agreement required",
-    reason: "Reselling or OEM bundling is outside both the free and commercial-license internal-use terms.",
+    reason:
+      "Reselling or OEM bundling requires a separate written agreement, not the free path or the headcount-band commercial license alone.",
   },
 ];
 
 export const pricingFaq: PricingFaqItem[] = [
   {
-    question: "What counts toward the $1M revenue threshold?",
+    question: "What counts toward the under-$1M revenue threshold?",
     answer:
-      "The Ledgerful Small-Entity Commercial Exception measures a company's aggregated gross revenue across all its operations, not just the team running Ledgerful. Once a company crosses that threshold, continued internal use requires a commercial license.",
+      "The Ledgerful Small-Entity Commercial Exception measures Aggregated Gross Revenue across You and all Affiliates, not just the team running Ledgerful. Use under $1M / less than $1M wording — at exactly $1,000,000 you are not a Qualified Small Entity. Once you are at or above the threshold, continued Internal Business Use (beyond Evaluation Use or any 90-day transition) requires a commercial license. This is not legal advice; the Exception text controls.",
+  },
+  {
+    question: "What is Evaluation Use?",
+    answer:
+      "Evaluation Use is a limited Exception grant: 30 days, once per Entity and its Affiliate group, non-Production only. It begins on first use of a version under this license and does not reset on upgrades, new versions, or Affiliate transfers. It is not an open production pilot. See the Exception for the operative terms.",
+  },
+  {
+    question: "What is the 90-day transition grant?",
+    answer:
+      "When you cross the QSE revenue threshold or undergo a Change of Control, the Exception provides a 90-day transition period so you can obtain a commercial license without an immediate hard cutover. Details and conditions are in the Exception text — this summary is not legal advice.",
+  },
+  {
+    question: "How is Commercial License priced?",
+    answer:
+      "Introductory annual USD pricing for Internal Business Use commercial licenses: up to 25 engineers $1,500/year; up to 50 engineers $2,500/year; over 50 engineers contact legal@ledgerful.dev. Pricing is provisional and may move upward on traction (announced, never silent). Request a license by email — human invoice path only; no self-serve purchase. Hosted and Enterprise remain Pricing not announced.",
   },
   {
     question: "I'm a contractor or consultant — do I qualify?",
     answer:
-      "It depends on whose revenue is measured. Running Ledgerful on your own consultancy's behalf is evaluated against your company's revenue. Running it while embedded in a client's engineering org is evaluated against that client's revenue.",
+      "It depends on whose revenue is measured. Running Ledgerful on your own consultancy's behalf is evaluated against your company's Aggregated Gross Revenue (You + Affiliates). Running it while embedded in a client's engineering org is evaluated against that client's revenue and Affiliate group.",
   },
   {
     question: "Can I host Ledgerful for my customers?",
     answer:
-      "No — hosting Ledgerful as a service for third parties is not covered by the free or commercial-license internal-use terms and requires a separate agreement.",
+      "No — hosting Ledgerful as a service for third parties is not covered by free or commercial-license Internal Business Use terms and requires a separate written agreement via legal@ledgerful.dev, regardless of company size.",
   },
   {
     question: "Can I bundle or resell Ledgerful (OEM)?",
     answer:
-      "No — bundling Ledgerful into a product you sell, or reselling it, requires a separate agreement rather than the free or commercial-license internal-use terms.",
+      "No — bundling Ledgerful into a product you sell, or reselling it, requires a separate written agreement rather than the free path or headcount-band commercial license. Contact legal@ledgerful.dev.",
   },
 ];

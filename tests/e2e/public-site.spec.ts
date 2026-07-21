@@ -1068,18 +1068,70 @@ test("editions planned-card CTAs point at labeled mailto destinations, not fake 
   await expect(contact).toBeVisible();
   await expect(contact).toHaveAttribute("href", /^mailto:hello@ledgerful\.dev\?subject=/);
 
-  const licenseTerms = page.locator(".pricing-card a", { hasText: "Review license terms" }).first();
-  await expect(licenseTerms).toBeVisible();
-  await expect(licenseTerms).toHaveAttribute("href", "/trust#license");
+  const commercialRequest = page
+    .locator(".pricing-card a", { hasText: "Request commercial license" })
+    .first();
+  await expect(commercialRequest).toBeVisible();
+  const mailtoHref = await commercialRequest.getAttribute("href");
+  expect(mailtoHref).toMatch(/^mailto:legal@ledgerful\.dev\?/);
+  // Structured body fields (template placeholders for the requester)
+  expect(decodeURIComponent(mailtoHref ?? "")).toMatch(/Company:/);
+  expect(decodeURIComponent(mailtoHref ?? "")).toMatch(/Revenue band/i);
+  expect(decodeURIComponent(mailtoHref ?? "")).toMatch(/Engineer count/i);
+  expect(decodeURIComponent(mailtoHref ?? "")).toMatch(/Use case/i);
+});
+
+test("editions commercial pricing figures and exception link are visible", async ({
+  page,
+  request,
+}) => {
+  await page.goto("/editions");
+
+  await expect(page.getByText("$1,500", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("$2,500", { exact: false }).first()).toBeVisible();
+  await expect(
+    page.getByText("commercial pricing is not yet announced", { exact: false }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText("No paid commercial price is announced", { exact: false }),
+  ).toHaveCount(0);
+
+  const exceptionLink = page.locator('a[href="/COMMERCIAL-EXCEPTION.md"]').first();
+  await expect(exceptionLink).toBeVisible();
+
+  // Vendored Exception must resolve (static public asset)
+  const exceptionRes = await request.get("/COMMERCIAL-EXCEPTION.md");
+  expect(exceptionRes.status()).toBe(200);
+  const exceptionBody = await exceptionRes.text();
+  expect(exceptionBody).toMatch(/Qualified Small Entity/);
+  expect(exceptionBody).toMatch(/Evaluation Use/);
+  expect(exceptionBody).toMatch(/legal@ledgerful\.dev/);
+
+  // Eval / QSE qualifiers (visible decision tree + FAQ summaries; details are progressive)
+  await expect(page.getByText("Evaluation Use", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("Affiliates", { exact: false }).first()).toBeVisible();
+  await expect(
+    page.getByText("What is the 90-day transition grant?", { exact: false }),
+  ).toBeVisible();
+  await expect(page.getByText("non-Production", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("Introductory pricing", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("Internal Business Use", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("once per Entity", { exact: false }).first()).toBeVisible();
+
+  // Progressive disclosure body is present in the DOM even when collapsed
+  await expect(page.locator("#eval-rights")).toBeAttached();
+  await expect(page.locator("#eval-rights")).toContainText("90-day");
 });
 
 test("editions license examples render the not-legal-advice disclaimer", async ({ page }) => {
   await page.goto("/editions");
 
-  await expect(page.getByText("not legal advice", { exact: false })).toBeVisible();
-  // Four personas from licensePersonas — spot-check first and last.
   await expect(
-    page.getByText("A 3-person consultancy runs Ledgerful internally", { exact: false }),
+    page.locator(".legal-draft-banner").getByText("not legal advice", { exact: false }),
+  ).toBeVisible();
+  // Personas from licensePersonas — spot-check free QSE and OEM.
+  await expect(
+    page.getByText("A 3-person consultancy under $1M", { exact: false }),
   ).toBeVisible();
   await expect(
     page.getByText("A vendor bundles Ledgerful into a product it sells to customers.", {
@@ -1098,6 +1150,29 @@ test("editions FAQ disclosures are keyboard operable", async ({ page }) => {
   await summary.focus();
   await page.keyboard.press("Enter");
   await expect(item).toHaveAttribute("open", "");
+});
+
+test("editions eval-rights disclosure is keyboard operable", async ({ page }) => {
+  await page.goto("/editions");
+
+  const details = page.locator("#eval-rights");
+  await expect(details).toBeAttached();
+  await expect(details).not.toHaveAttribute("open", "");
+
+  const summary = details.locator("summary");
+  await summary.focus();
+  await page.keyboard.press("Enter");
+  await expect(details).toHaveAttribute("open", "");
+  await expect(details).toContainText("90-day");
+  await expect(details).toContainText("Internal Business Use");
+});
+
+test("/pricing permanent-redirects to /editions", async ({ request }) => {
+  // next.config redirects: /pricing → /editions with statusCode 301
+  const res = await request.get("/pricing", { maxRedirects: 0 });
+  expect([301, 308]).toContain(res.status());
+  const location = res.headers()["location"] ?? "";
+  expect(location).toMatch(/\/editions\/?$/);
 });
 
 // ── 0041-QuietPreviewWaitlist — form, honeypot, CSP, noindex ──

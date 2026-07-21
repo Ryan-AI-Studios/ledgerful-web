@@ -284,13 +284,27 @@ export default function TrustPage() {
             ) : (
               "reviewed Ledgerful source repo LICENSE file"
             )}{" "}
-            reflects the in-force terms. Ledgerful, LLC is formed (FL, effective
+            and the{" "}
+            <a
+              href="/COMMERCIAL-EXCEPTION.md"
+              className="inline-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Small-Entity Commercial Exception
+            </a>{" "}
+            reflect the in-force terms. Ledgerful, LLC is formed (FL, effective
             2026-07-01); individual→LLC IP assignment is executed; the
             Small-Entity Commercial Exception is counsel-reviewed; FL + USPTO
-            trademark searches are clear. Any later change must update the
-            reviewed truth baseline before it reaches public copy. (This
-            website&rsquo;s own repository is proprietary and separately licensed
-            — all rights reserved, no license granted.)
+            trademark searches are clear. Introductory Commercial License
+            pricing for broader Internal Business Use is published on{" "}
+            <a href="/editions#commercial-license" className="inline-link">
+              Editions
+            </a>
+            ; Hosted and Enterprise remain Pricing not announced. Any later
+            change must update the reviewed truth baseline before it reaches
+            public copy. (This website&rsquo;s own repository is proprietary and
+            separately licensed — all rights reserved, no license granted.)
           </p>
         </div>
       </section>

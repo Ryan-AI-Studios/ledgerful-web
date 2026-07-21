@@ -201,7 +201,8 @@ main {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding-block: 22px;
+  /* Tighter than pre-large-logo (22px) so nav sits closer to page content. */
+  padding-block: 10px 12px;
 }
 
 .brand-mark,
@@ -213,14 +214,65 @@ main {
   letter-spacing: 0;
 }
 
-.brand-glyph {
-  display: inline-grid;
-  width: 34px;
-  height: 34px;
-  place-items: center;
-  border-radius: 9px;
-  background: var(--brand);
-  color: var(--on-brand);
+/* Wordmark: both theme variants in DOM; CSS shows only the active one.
+   Default (no data-theme or dark) = dark banner. Light = light banner.
+   Plain <img> required — next/image wrappers do not honor display:none.
+   Display size ~3× the original 32px control (header 96px / footer 84px). */
+.brand-mark .brand-banner,
+.brand-banner {
+  display: block;
+  height: 96px;
+  width: auto;
+  max-width: min(660px, 72vw);
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.footer-brand .brand-banner,
+.brand-banner--footer {
+  height: 84px;
+  max-width: min(600px, 80vw);
+}
+
+.brand-mark .brand-banner-img,
+.brand-banner-img {
+  display: block;
+  height: 96px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.footer-brand .brand-banner-img {
+  height: 84px;
+}
+
+/* Hide the inactive theme variant (next-themes data-hide-on-theme pattern). */
+.brand-banner-img--light {
+  display: none;
+}
+
+html[data-theme="light"] .brand-banner-img--dark {
+  display: none;
+}
+
+html[data-theme="light"] .brand-banner-img--light {
+  display: block;
+}
+
+/* Legacy aliases */
+.brand-glyph,
+.brand-logo,
+.brand-banner-variant {
+  display: none;
+}
+
+.theme-toggle-icon svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
 }
 
 .header-actions {
@@ -349,23 +401,103 @@ main {
   grid-template-columns: 1fr;
   gap: clamp(28px, 5vw, 56px);
   align-items: start;
-  padding-block: clamp(44px, 8vw, 96px);
+  /* Asymmetric: less top gap under the header/nav, keep breathing room below. */
+  padding-block: clamp(12px, 2.5vw, 24px) clamp(36px, 6vw, 72px);
+}
+
+/* Homepage stacked hero: full content-shell width (same shell as proof strip). */
+.hero-section--stacked {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(20px, 3.5vw, 32px);
+  justify-items: stretch;
+}
+
+.hero-section--stacked .hero-copy {
+  width: 100%;
+  max-width: none;
+  justify-self: stretch;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 20px;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  justify-self: stretch;
+  box-sizing: border-box;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.hero-meta .hero-actions--quiet {
+  margin-top: 0;
+  flex: 0 0 auto;
 }
 
 .hero-visual {
-  display: block;
+  display: grid;
+  gap: 10px;
   min-width: 0;
+  width: 100%;
+  max-width: none;
+  justify-self: stretch;
+}
+
+.hero-visual-label {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
 }
 
 .hero-visual-frame {
   width: 100%;
+  max-width: none;
   margin: 0;
+  border-color: var(--rule);
+  box-shadow: none;
+  box-sizing: border-box;
 }
 
-@media (min-width: 900px) {
-  .hero-section {
-    grid-template-columns: 1fr 1fr;
-  }
+.hero-visual-frame .terminal-bar {
+  padding: 10px 12px;
+  opacity: 0.85;
+}
+
+.hero-visual-frame pre {
+  gap: 6px;
+  padding: clamp(14px, 2.2vw, 20px);
+}
+
+.hero-visual-frame code {
+  font-size: clamp(0.72rem, 1.15vw, 0.84rem);
+  line-height: 1.45;
+  color: color-mix(in oklch, var(--terminal-text) 88%, transparent);
+}
+
+.hero-visual-frame .terminal-annotation {
+  padding: 10px 12px;
+  font-size: 0.72rem;
+}
+
+.hero-visual-frame .terminal-caption {
+  color: color-mix(in oklch, var(--ink-muted) 90%, transparent);
+}
+
+/* Data-flow line between hero and proof strip — full content width */
+.data-flow-strip {
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  color: var(--ink-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  text-wrap: pretty;
 }
 
 .technical-token {
@@ -381,8 +513,11 @@ main {
   overscroll-behavior-inline: contain;
 }
 
+/* Full content-shell width, left-aligned with .content-band / homepage hero
+   (was max-width: 760px + margin-inline auto → centered narrow column). */
 .page-hero {
-  max-width: 760px;
+  max-width: none;
+  text-align: left;
 }
 
 .hero-copy {
@@ -424,25 +559,42 @@ h3 {
 }
 
 .page-hero h1 {
-  max-width: 880px;
+  max-width: none;
   font-size: clamp(3rem, 7.5vw, 5.85rem);
   line-height: 0.95;
   letter-spacing: -0.035em;
+  text-align: left;
 }
 
 .hero-copy p,
 .page-hero p {
-  max-width: 68ch;
+  max-width: none;
   margin-top: 24px;
   color: var(--muted);
   font-size: clamp(1.06rem, 2vw, 1.28rem);
   line-height: 1.65;
   text-wrap: pretty;
+  text-align: left;
+}
+
+/* Homepage stacked hero: H1/subhead/CTAs use full content-shell width
+   (must follow the 68ch body measure above so it wins). */
+.hero-section--stacked .hero-copy h1,
+.hero-section--stacked .hero-copy .hero-subhead,
+.hero-section--stacked .hero-copy p {
+  max-width: none;
+  width: 100%;
+}
+
+.hero-section--stacked .hero-actions--primary {
+  width: 100%;
+  max-width: none;
 }
 
 .page-hero.compact {
-  min-height: 360px;
-  padding-block: clamp(54px, 9vw, 112px);
+  min-height: 0;
+  /* Match homepage: short top under nav, modest bottom before next band. */
+  padding-block: clamp(12px, 2.5vw, 24px) clamp(28px, 5vw, 48px);
 }
 
 .page-hero.compact h1 {
@@ -1787,18 +1939,22 @@ code {
    lists, and scroll-margin-top so anchor clicks land below the sticky
    chrome. */
 
+/* Default: full-width single column (concise /trust has content only).
+   Two-column rail layout only when TrustSectionNav is present
+   (/docs/security). Without this, a lone .trust-content child occupies
+   the first 220–260px track and looks like a left 25% column. */
 .trust-layout {
   display: grid;
-  grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(28px, 4vw, 56px);
   align-items: start;
   width: min(var(--max), calc(100% - clamp(32px, 6vw, 88px)));
   margin-inline: auto;
 }
 
-@media (max-width: 900px) {
-  .trust-layout {
-    grid-template-columns: minmax(0, 1fr);
+@media (min-width: 901px) {
+  .trust-layout:has(.trust-section-nav) {
+    grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
   }
 }
 
@@ -2006,6 +2162,7 @@ code {
 /* Executive summary table at top of /trust */
 .exec-summary-table {
   width: 100%;
+  max-width: 56rem;
   border-collapse: collapse;
   font-size: 0.95rem;
   line-height: 1.55;
@@ -2016,17 +2173,22 @@ code {
   padding: 12px 14px;
   text-align: left;
   vertical-align: top;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--rule);
 }
 
 .exec-summary-table tbody th {
   font-weight: 620;
-  color: var(--ink);
+  color: var(--ink-primary);
   width: 42%;
 }
 
 .exec-summary-table td {
-  color: var(--muted);
+  color: var(--ink-muted);
+}
+
+.exec-summary-table tbody tr:last-child th,
+.exec-summary-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 @media (max-width: 720px) {
@@ -2046,9 +2208,10 @@ code {
 /* Procurement facts definition list on /trust */
 .procurement-facts {
   display: grid;
-  grid-template-columns: minmax(140px, 30%) 1fr;
-  gap: 10px 24px;
+  grid-template-columns: minmax(160px, 28%) minmax(0, 1fr);
+  gap: 12px 28px;
   margin: 0;
+  max-width: 56rem;
 }
 
 .procurement-facts dt {
@@ -2056,14 +2219,17 @@ code {
   font-weight: 720;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--ink-muted);
+  padding-top: 2px;
 }
 
 .procurement-facts dd {
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.55;
-  color: var(--ink);
+  color: var(--ink-primary);
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .procurement-facts dd a {
@@ -2072,14 +2238,22 @@ code {
   text-underline-offset: 2px;
 }
 
+.procurement-facts dd a:hover {
+  color: var(--brand-strong);
+}
+
 @media (max-width: 720px) {
   .procurement-facts {
     grid-template-columns: 1fr;
-    gap: 6px 0;
+    gap: 4px 0;
   }
 
   .procurement-facts dt {
-    margin-top: 14px;
+    margin-top: 16px;
+  }
+
+  .procurement-facts dt:first-child {
+    margin-top: 0;
   }
 }
 
@@ -2090,16 +2264,46 @@ code {
   margin: clamp(32px, 5vw, 56px) 0 clamp(28px, 4vw, 44px);
 }
 
-/* Trust-page certification disclaimer */
+/* Concise /trust landing: slightly tighter section rhythm than deep-dive docs */
+.trust-landing-band {
+  padding-block: clamp(28px, 4.5vw, 52px);
+}
+
+.trust-landing-band .section-heading {
+  max-width: 70ch;
+}
+
+.trust-landing-band > p {
+  max-width: 70ch;
+  color: var(--ink-muted);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.trust-deep-dive .hero-actions {
+  margin-top: 8px;
+}
+
+/* Trust-page certification disclaimer — full border (no side-stripe ban) */
 .trust-disclaimer {
   margin: 0 0 18px;
+  max-width: 70ch;
   padding: 12px 14px;
-  border-left: 3px solid var(--state-unresolved);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-control);
   background: var(--surface-raised);
-  border-radius: 0 var(--radius-control) var(--radius-control) 0;
   font-size: 0.92rem;
   line-height: 1.5;
-  color: var(--muted);
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+
+.disclosure-notice--follow {
+  margin-top: 20px;
+}
+
+.disclosure-notice-gap {
+  margin-top: 12px;
 }
 
 /* Boundary table (5 columns; collapses to readable stacked on narrow) */
@@ -3876,6 +4080,23 @@ code {
   font-weight: 620;
 }
 
+/* Homepage meta band: release line spans the full content shell so its
+   outer edges align with the proof strip below (must follow base rule). */
+.hero-section--stacked .hero-meta .hero-launch-line {
+  width: 100%;
+  max-width: none;
+  flex: 1 1 100%;
+  margin-top: 0;
+  box-sizing: border-box;
+}
+
+.hero-section--stacked .hero-meta,
+.hero-section--stacked .hero-visual,
+.hero-section--stacked .hero-visual-frame {
+  width: 100%;
+  max-width: none;
+}
+
 .hero-launch-line strong {
   color: var(--ink-primary);
   font-weight: 720;
@@ -4195,7 +4416,11 @@ code {
    320-375px. Implemented in CSS, not by rendering different DOM. */
 @media (max-width: 768px) {
   .hero-section {
-    padding-block: clamp(16px, 4vw, 32px);
+    padding-block: clamp(8px, 2vw, 16px) clamp(20px, 4vw, 36px);
+  }
+
+  .page-hero.compact {
+    padding-block: clamp(8px, 2vw, 16px) clamp(20px, 4vw, 36px);
   }
 
   /* The homepage h1 carries the long adjudicated headline ("Understand code

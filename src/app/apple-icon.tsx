@@ -1,4 +1,5 @@
-import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 
 export const size = {
   width: 180,
@@ -7,26 +8,15 @@ export const size = {
 
 export const contentType = "image/png";
 
-export default function AppleIcon() {
-  return new ImageResponse(
-    (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "rgb(64, 119, 151)",
-          color: "rgb(250, 250, 250)",
-          fontSize: 82,
-          fontWeight: 800,
-          fontFamily: "Arial",
-        }}
-      >
-        L
-      </div>
-    ),
-    size,
-  );
+/** Apple touch icon — brand mark (dark default, matches site default theme). */
+export default async function AppleIcon() {
+  const file = path.join(process.cwd(), "public", "brand", "icon-dark-180.png");
+  const data = await readFile(file);
+  return new Response(data, {
+    headers: {
+      "Content-Type": "image/png",
+      // Long browser cache; avoid the word "immut…" (positioning-terms gate).
+      "Cache-Control": "public, max-age=86400",
+    },
+  });
 }

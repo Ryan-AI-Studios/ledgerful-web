@@ -44,6 +44,9 @@ const fallbackHashes = [
 const nextConfig: NextConfig = {
   outputFileTracingRoot: process.cwd(),
   generateBuildId: async () => buildId(),
+  // Next 16 treats localhost vs 127.0.0.1 as cross-origin for dev assets/HMR.
+  // Without this, hydration (theme toggle, etc.) can hang when browsing via 127.0.0.1.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
   // Do not re-enable experimental SRI without a real Vercel deploy proving CDN parity.
   // Vercel can serve transformed chunk bytes that fail browser validation:
   // https://github.com/vercel/next.js/issues/91633
@@ -57,6 +60,20 @@ const nextConfig: NextConfig = {
     ];
   },
   async headers() {
+    // Production (and `next start`) uses hash-locked CSP from build-with-csp.
+    // `next dev` injects changing Turbopack/HMR/React refresh inline scripts that
+    // are not in the static hash allowlist. Applying production CSP there blocks
+    // hydration — client components (theme toggle, BrandMark) never become live.
+    // Keep the other security headers in all environments.
+    if (process.env.NODE_ENV === "development") {
+      return [
+        {
+          source: "/(.*)",
+          headers: commonHeaders,
+        },
+      ];
+    }
+
     return [
       {
         source: "/(.*)",

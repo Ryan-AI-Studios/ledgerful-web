@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { footerNavigation, mainNavigation, footerOnlyNavigation } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
+import { BrandMark } from "./brand-mark";
 
 const licensePath = "/trust#license";
 
@@ -8,9 +9,7 @@ export function SiteFooter() {
   return (
     <footer className="site-footer">
       <div>
-        <Link href="/" className="footer-brand">
-          Ledgerful
-        </Link>
+        <BrandMark footer />
         <span className="license-badge">
           <Link href={licensePath}>PolyForm NC</Link>
         </span>

@@ -59,6 +59,8 @@ export const pageDescriptions = {
     "A draft mapping of Ledgerful's framework-agnostic evidence to named SOC 2 controls. Draft — pending design-partner validation. Not a certification or compliance attestation.",
   docsPolicyCheck:
     "Run ledgerful policy check to gate merges on declared named rules. Offline evaluation, base-branch policy in CI, JSON machine contract — not a compliance certificate.",
+  docsGoldenPath:
+    "Self-guided proof loop: install, run ledgerful demo --keep, see cryptographic VALID (signatures + chain + against-export), open the DEMO evidence zip. Two clocks (T_proof vs T_first), DEMO honesty, not a compliance verdict.",
   ledger:
     "Ledgerful's development change ledger, published as a redacted, signed, and verifiable sample. Verify Ed25519 signatures in the browser.",
 };

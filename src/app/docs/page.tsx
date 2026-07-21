@@ -26,8 +26,12 @@ export const metadata: Metadata = {
 const taskGroups = [
   {
     label: "Get started",
-    description: "Install the CLI, run your first scan, and launch the local dashboard.",
-    topics: ["CLI install and smoke test", "Local dashboard launch"],
+    description: "Install the CLI, run the golden-path proof, and launch the local dashboard.",
+    topics: [
+      "CLI install and smoke test",
+      "Golden path (prove it yourself)",
+      "Local dashboard launch",
+    ],
   },
   {
     label: "Integrate",

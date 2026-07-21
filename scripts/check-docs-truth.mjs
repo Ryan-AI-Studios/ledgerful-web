@@ -48,6 +48,7 @@ const slugs = [
   "sync",
   "releases",
   "public-ledger",
+  "golden-path",
 ];
 
 for (const slug of slugs) {
@@ -765,6 +766,150 @@ if (!pages["github-action"].includes("Ryan-AI-Studios/Ledgerful/action@")) {
   ) {
     failures.push(
       "Assert 22 FAIL [docs/policy-check]: install path (cargo install / source) missing",
+    );
+  }
+}
+
+// ── Assert 24: /docs/golden-path — 0070 DoD-5 ────────────────────────────────
+// Canonical commands, two clocks, DEMO honesty, no compliance overclaim,
+// install link, commercial CTA after 0069, public ledger out of stopwatch.
+
+{
+  const page = pages["golden-path"];
+  const lower = page.toLowerCase();
+
+  for (const cmd of [
+    "ledgerful demo --keep",
+    "ledgerful verify --signatures --chain",
+    "against-export",
+    "ledgerful-DEMO-evidence.zip",
+  ]) {
+    if (!page.includes(cmd) && !lower.includes(cmd.toLowerCase())) {
+      failures.push(
+        `Assert 24 FAIL [docs/golden-path]: required command/token "${cmd}" missing`,
+      );
+    }
+  }
+
+  // PowerShell + bash copy-paste surfaces
+  if (!lower.includes("powershell") || !lower.includes("bash")) {
+    failures.push(
+      "Assert 24 FAIL [docs/golden-path]: PowerShell + Bash copy-paste blocks missing",
+    );
+  }
+
+  // Two clocks, never averaged
+  if (!page.includes("T_proof") || !page.includes("T_first")) {
+    failures.push(
+      "Assert 24 FAIL [docs/golden-path]: T_proof and T_first clocks must both appear",
+    );
+  }
+  if (!lower.includes("never average") && !lower.includes("never averaged")) {
+    failures.push(
+      "Assert 24 FAIL [docs/golden-path]: never-average two-clocks language missing",
+    );
+  }
+
+  // Pin real measured numbers from review.md (no invented figures)
+  for (const pin of ["5.31", "12.92", "2026-07-21"]) {
+    if (!page.includes(pin)) {
+      failures.push(
+        `Assert 24 FAIL [docs/golden-path]: pinned timing/date "${pin}" missing`,
+      );
+    }
+  }
+
+  // DEMO / observe / disposable-key honesty
+  for (const phrase of [
+    "disposable",
+    "observe",
+    "synthetic",
+    "not a certification",
+  ]) {
+    if (!lower.includes(phrase)) {
+      failures.push(
+        `Assert 24 FAIL [docs/golden-path]: honesty phrase "${phrase}" missing`,
+      );
+    }
+  }
+
+  // Skeptic checklist surface
+  if (!lower.includes("skeptic") || !lower.includes("crypto valid")) {
+    failures.push(
+      "Assert 24 FAIL [docs/golden-path]: skeptic exit-criteria / CRYPTO VALID missing",
+    );
+  }
+
+  // Install link (post-0068)
+  if (!lower.includes('href="/install"') && !lower.includes("href=\\\"/install\\\"")) {
+    // Built HTML may rewrite; also accept plain path text + Install CTA
+    if (!lower.includes("/install") || !lower.includes("install ledgerful")) {
+      failures.push(
+        "Assert 24 FAIL [docs/golden-path]: install link/CTA missing",
+      );
+    }
+  }
+
+  // Commercial CTA (0069 shipped) — request path, not generic "review license" only
+  if (
+    !lower.includes("request commercial license") &&
+    !lower.includes("mailto:legal@ledgerful.dev")
+  ) {
+    failures.push(
+      "Assert 24 FAIL [docs/golden-path]: commercial license request CTA missing",
+    );
+  }
+
+  // Public ledger is post-success / not in stopwatch
+  if (
+    !lower.includes("not in this stopwatch") &&
+    !lower.includes("post-success")
+  ) {
+    failures.push(
+      "Assert 24 FAIL [docs/golden-path]: public-ledger-out-of-stopwatch framing missing",
+    );
+  }
+
+  // CLI-only default
+  if (!lower.includes("cli-only") && !lower.includes("cli only")) {
+    failures.push(
+      "Assert 24 FAIL [docs/golden-path]: CLI-only default not stated",
+    );
+  }
+
+  // Banned overclaims on this path (positive claims only — negation phrases
+  // like "not a certification" are required and must not be treated as hits
+  // on partial substrings such as "compliant" alone).
+  for (const banned of [
+    "you are compliant",
+    "makes you compliant",
+    "soc 2 certified",
+    "soc2 certified",
+  ]) {
+    if (lower.includes(banned)) {
+      // Allow only when the same sentence clearly negates certification.
+      const idx = lower.indexOf(banned);
+      const window = lower.slice(Math.max(0, idx - 40), idx + banned.length + 40);
+      if (
+        window.includes("not ") ||
+        window.includes("never ") ||
+        window.includes("not a ")
+      ) {
+        continue;
+      }
+      failures.push(
+        `Assert 24 FAIL [docs/golden-path]: banned overclaim "${banned}"`,
+      );
+    }
+  }
+
+  // Must not claim control-mapping / 0048 certification on this path
+  if (
+    lower.includes("control lens") ||
+    (lower.includes("control-mapping") && lower.includes("makes you"))
+  ) {
+    failures.push(
+      "Assert 24 FAIL [docs/golden-path]: control-mapping compliance claim must not appear as positive claim",
     );
   }
 }

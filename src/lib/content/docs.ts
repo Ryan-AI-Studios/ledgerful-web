@@ -23,6 +23,16 @@ export const docTopics: DocTopic[] = [
     href: "/docs/cli",
   },
   {
+    title: "Golden path (prove it yourself)",
+    maturity: "available",
+    deployment: "runs-locally",
+    pillar: "prove",
+    summary:
+      "Self-guided magic moment: demo --keep → cryptographic VALID (signatures + chain + against-export) → openable DEMO evidence zip. CLI-only; not a compliance verdict.",
+    nextAction: "Run the golden path and check the skeptic exit-criteria.",
+    href: "/docs/golden-path",
+  },
+  {
     title: "Local dashboard launch",
     maturity: "available",
     deployment: "runs-locally",

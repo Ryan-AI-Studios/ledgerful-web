@@ -24,6 +24,9 @@ export const apiContextAllowlist = Object.freeze([
   "crypto test isolation",
   "crypto path refs",
   "WebCrypto",
+  // Exact product stdout from `ledgerful demo` (track 0070) — quoting the
+  // brand moment, not marketing "crypto" as a category.
+  "CRYPTO VALID",
 ]);
 
 const termPatterns = bannedPositioningTerms.map((term) => ({

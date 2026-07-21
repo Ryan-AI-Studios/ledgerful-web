@@ -528,8 +528,11 @@ ledgerful verify --health`}
           local dashboard and evidence export are one command away.
         </p>
         <div className="hero-actions">
-          <Link href="/docs/cli" className="button-primary">
-            Read the CLI docs <ArrowRight size={18} aria-hidden="true" />
+          <Link href="/docs/golden-path" className="button-primary">
+            Golden path proof <ArrowRight size={18} aria-hidden="true" />
+          </Link>
+          <Link href="/docs/cli" className="button-secondary">
+            CLI docs
           </Link>
           <Link href="/docs/dashboard" className="button-secondary">
             Dashboard guide

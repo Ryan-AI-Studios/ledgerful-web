@@ -11,6 +11,7 @@ const docRoutes = [
   "/docs/sync",
   "/docs/releases",
   "/docs/public-ledger",
+  "/docs/golden-path",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

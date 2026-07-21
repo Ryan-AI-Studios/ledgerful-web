@@ -8,6 +8,14 @@ export type ChangelogEntry = {
 
 export const changelogEntries: ChangelogEntry[] = [
   {
+    date: "2026-07-21",
+    area: "Public web",
+    title: "Golden-path proof loop page",
+    state: "completed",
+    details:
+      "New /docs/golden-path: self-guided install → demo --keep → CRYPTO VALID → openable DEMO evidence zip. Two clocks (T_proof vs T_first) pinned from engine measurements, DEMO/observe/disposable-key honesty, skeptic checklist, commercial request CTA, public ledger as post-success only.",
+  },
+  {
     date: "2026-07-19",
     area: "Public web",
     title: "Policy as code (CI gates) documented",

@@ -553,6 +553,42 @@ test("docs/policy-check documents rules, permissions, and machine contract", asy
   await expect(page.locator("body")).toContainText("presented");
 });
 
+// Track 0070 DoD-5 — golden-path proof loop page
+test("docs/golden-path shows two clocks, crypto commands, honesty, and commercial CTA", async ({
+  page,
+}) => {
+  await page.goto("/docs/golden-path");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Golden path");
+  await expect(page.locator("body")).toContainText("ledgerful demo --keep");
+  await expect(page.locator("body")).toContainText("verify --signatures --chain");
+  await expect(page.locator("body")).toContainText("against-export");
+  await expect(page.locator("body")).toContainText("T_proof");
+  await expect(page.locator("body")).toContainText("T_first");
+  await expect(page.locator("body")).toContainText("5.31");
+  await expect(page.locator("body")).toContainText("CRYPTO VALID");
+  await expect(page.locator("body")).toContainText("CLI-only");
+  await expect(page.locator("body")).toContainText("disposable");
+  await expect(page.locator("body")).toContainText("observe");
+  await expect(page.getByRole("link", { name: /install ledgerful/i })).toBeVisible();
+  await expect(
+    page.getByRole("link", { name: /request commercial license/i }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: /open public ledger/i })).toBeVisible();
+  // Skeptic checklist section
+  await expect(page.locator("#skeptic-checklist")).toBeVisible();
+  // Keyboard: install CTA is focusable
+  await page.getByRole("link", { name: /install ledgerful/i }).focus();
+  await expect(page.getByRole("link", { name: /install ledgerful/i })).toBeFocused();
+});
+
+test("docs index links to golden-path guide", async ({ page }) => {
+  await page.goto("/docs");
+  const card = page.getByRole("link", { name: /golden path/i });
+  await expect(card).toBeVisible();
+  await card.click();
+  await expect(page).toHaveURL(/\/docs\/golden-path/);
+});
+
 // WEB-0024 — recomposed /docs/security adds the reads/writes/uploads boundary
 // table, the supply-chain attestation components table, and splits the
 // subprocessor list into two. Seven `.table-scroll` wrappers in total:

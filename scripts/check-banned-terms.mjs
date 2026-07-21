@@ -33,6 +33,8 @@ const API_CONTEXT_ALLOWLIST = Object.freeze([
   { pattern: /window\.crypto/gi },
   { pattern: /crypto\.subtle/gi },
   { pattern: /E1-CRYPTO/g },
+  // Exact product stdout from `ledgerful demo` (track 0070).
+  { pattern: /CRYPTO VALID/g },
 ]);
 
 const BANNED_TERMS = Object.freeze([

@@ -414,17 +414,26 @@ html[data-theme="light"] .brand-banner-img--light {
 .hero-section {
   display: grid;
   grid-template-columns: 1fr;
-  gap: clamp(28px, 5vw, 56px);
+  gap: clamp(20px, 3.5vw, 40px);
   align-items: start;
-  /* Asymmetric: less top gap under the header/nav, keep breathing room below. */
-  padding-block: clamp(12px, 2.5vw, 24px) clamp(36px, 6vw, 72px);
+  /* Asymmetric: less top gap under the header/nav, keep breathing room below.
+     Vertical rhythm ~30% tighter than the original 36/6vw/72 band. */
+  padding-block: clamp(10px, 1.8vw, 18px) clamp(25px, 4.2vw, 50px);
 }
 
 /* Homepage stacked hero: full content-shell width (same shell as proof strip). */
 .hero-section--stacked {
   grid-template-columns: minmax(0, 1fr);
-  gap: clamp(20px, 3.5vw, 32px);
+  gap: clamp(14px, 2.5vw, 22px);
   justify-items: stretch;
+  /* Tight bottom so the release line sits close to "What Ledgerful does". */
+  padding-bottom: clamp(6px, 1vw, 12px);
+}
+
+/* First narrative section after the stacked hero — less top pad than a
+   full content-band so the gap under the release line is not doubled. */
+.hero-section--stacked + .content-band {
+  padding-top: clamp(12px, 1.8vw, 20px);
 }
 
 .hero-section--stacked .hero-copy {
@@ -606,10 +615,25 @@ h3 {
   max-width: none;
 }
 
+/* Release pill sits on the same row as Install / Copy / See how it works. */
+.hero-actions--with-release {
+  align-items: center;
+  row-gap: 12px;
+  column-gap: 12px;
+}
+
+.hero-actions--with-release .hero-launch-line {
+  margin: 0;
+  width: auto;
+  max-width: min(100%, 42rem);
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
 .page-hero.compact {
   min-height: 0;
   /* Match homepage: short top under nav, modest bottom before next band. */
-  padding-block: clamp(12px, 2.5vw, 24px) clamp(28px, 5vw, 48px);
+  padding-block: clamp(10px, 1.8vw, 18px) clamp(20px, 3.5vw, 34px);
 }
 
 .page-hero.compact h1 {
@@ -770,14 +794,15 @@ code {
 
 .content-band,
 .split-band {
-  padding-block: clamp(36px, 6vw, 72px);
+  /* ~30% less vertical section padding than the original 36/6vw/72. */
+  padding-block: clamp(25px, 4.2vw, 50px);
 }
 
 .section-heading {
   display: grid;
-  gap: 14px;
+  gap: 12px;
   max-width: 780px;
-  margin-bottom: clamp(28px, 5vw, 48px);
+  margin-bottom: clamp(20px, 3.5vw, 34px);
 }
 
 .section-heading h2 {
@@ -930,6 +955,12 @@ code {
   list-style: none;
 }
 
+/* Edition capability rows: label + optional caveat + pill stacked under the
+   check icon so the status pill does not compete for horizontal space. */
+.pricing-card-includes {
+  gap: 0 !important;
+}
+
 .pricing-card li {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -937,8 +968,43 @@ code {
   align-items: center;
 }
 
+.pricing-card-includes > li {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.pricing-card-includes > li:last-child {
+  border-bottom: none;
+  padding-bottom: 4px;
+}
+
+.pricing-card-includes > li:first-child {
+  padding-top: 4px;
+}
+
+.pricing-card-include-body {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  justify-items: start;
+}
+
+.pricing-card-include-label {
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
 .pricing-card li svg {
   color: var(--available);
+}
+
+.pricing-card-includes > li svg {
+  margin-top: 3px;
+  flex-shrink: 0;
 }
 
 .timeline article {
@@ -999,6 +1065,18 @@ code {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 28px;
+}
+
+/* Two-column page list so the footer link stack is shorter site-wide. */
+.footer-pages-list {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
+  row-gap: 10px;
+}
+
+.footer-pages-list li {
+  justify-content: flex-start;
 }
 
 .error-boundary {
@@ -1114,7 +1192,9 @@ code {
 
   .feature-row,
   .fact-row,
-  .pricing-card li,
+  /* Capability includes keep icon + stacked body; only collapse legacy
+     three-column pricing list rows if any remain without .pricing-card-includes. */
+  .pricing-card > ul:not(.pricing-card-includes):not(.pricing-card-bands) > li,
   .timeline article {
     grid-template-columns: 1fr;
   }
@@ -2281,7 +2361,7 @@ code {
 
 /* Concise /trust landing: slightly tighter section rhythm than deep-dive docs */
 .trust-landing-band {
-  padding-block: clamp(28px, 4.5vw, 52px);
+  padding-block: clamp(20px, 3.2vw, 36px);
 }
 
 .trust-landing-band .section-heading {
@@ -2641,33 +2721,31 @@ code {
   flex-wrap: wrap;
   align-items: center;
   gap: 12px;
+  width: 100%;
 }
 
 .available-today-head h2 {
+  flex: 1 1 auto;
+  min-width: min(100%, 12rem);
   font-size: clamp(1.5rem, 2.8vw, 1.95rem);
   line-height: 1.15;
   letter-spacing: -0.02em;
 }
 
-.available-today-head .available-today-price {
-  margin-left: auto;
-  color: var(--ink);
-  font-size: clamp(1.4rem, 2.6vw, 1.85rem);
-  font-weight: 800;
-  letter-spacing: -0.02em;
-}
-
-.available-today p {
+/* Full card width — do not cap at 70ch; the capability grid below is wide. */
+.available-today > p {
   color: var(--muted);
   line-height: 1.6;
-  max-width: 70ch;
+  max-width: none;
+  width: 100%;
   text-wrap: pretty;
 }
 
+/* 4×2-style capability grid (7 items → 4 + 3 on wide viewports). */
 .available-today-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 12px 18px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px 14px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -2680,6 +2758,12 @@ code {
   gap: 10px;
   font-size: 0.95rem;
   line-height: 1.45;
+  margin: 0;
+  padding: 14px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg);
+  min-width: 0;
 }
 
 .available-today-list li svg {
@@ -2688,16 +2772,16 @@ code {
   flex-shrink: 0;
 }
 
+.available-today-item-body {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  justify-items: start;
+}
+
 .available-today-list li .available-today-label {
   color: var(--ink);
   font-weight: 600;
-}
-
-.available-today-list li .available-today-state {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 4px;
 }
 
 .available-today-actions {
@@ -2713,11 +2797,13 @@ code {
   font-size: 0.88rem;
 }
 
-@media (max-width: 640px) {
-  .available-today-head .available-today-price {
-    margin-left: 0;
+@media (max-width: 1100px) {
+  .available-today-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
 
+@media (max-width: 560px) {
   .available-today-list {
     grid-template-columns: 1fr;
   }
@@ -2830,6 +2916,21 @@ code {
 .matrix-table thead th:not(:first-child),
 .matrix-table td {
   text-align: center;
+}
+
+/* Checkmarks and em-dashes both centered in edition columns. */
+.matrix-included,
+.matrix-empty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.matrix-included svg {
+  display: block;
+  margin-inline: auto;
+  color: var(--available);
 }
 
 .matrix-empty {
@@ -3148,6 +3249,46 @@ code {
 .telemetry-table th,
 .telemetry-table td {
   overflow-wrap: anywhere;
+}
+
+/* How-it-works (/architecture): force full content-shell width.
+   Default .section-heading is 780px and .step-body is 70ch (~66% on wide). */
+.architecture-page .section-heading,
+.architecture-page .section-heading--full,
+.architecture-page .section-heading h2,
+.architecture-page .section-heading p,
+.architecture-page .step-block,
+.architecture-page .step-body,
+.architecture-page .step-body p,
+.architecture-page .doc-caption,
+.architecture-page .page-hero h1,
+.architecture-page .page-hero p,
+.architecture-page .arch-diagram-caption,
+.architecture-page .architecture-read-next {
+  max-width: none !important;
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+.section-heading--full {
+  max-width: none !important;
+  width: 100% !important;
+}
+
+.architecture-read-next {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: none;
+  width: 100%;
+}
+
+.architecture-page .step-body {
+  max-width: none !important;
 }
 
 /* Homepage comprehension, install page, architecture page */
@@ -3780,12 +3921,33 @@ code {
   }
 }
 
-/* 3-surface strip */
+/* 3-surface strip (also used for workflow READS/ANALYZES/PRODUCES cards) */
 .surface-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 14px;
   margin-block: 8px 0;
+}
+
+/* Fixed 3-up / 2-up rows on wide screens (workflow + detail cards). */
+.surface-strip--3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.surface-strip--2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 900px) {
+  .surface-strip--3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .surface-strip--2 {
+    grid-template-columns: 1fr;
+  }
 }
 
 .surface-card {
@@ -3803,7 +3965,13 @@ code {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
+  width: 100%;
+}
+
+.surface-card .surface-icon {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: var(--muted);
 }
 
 .surface-card h3 {
@@ -4277,7 +4445,7 @@ code {
    vertical pause than a full narrative chapter — DESIGN.md reserves the
    larger content-band rhythm for chapters with a visible SectionHeading. */
 .content-band--strip {
-  padding-block: clamp(20px, 3vw, 36px);
+  padding-block: clamp(14px, 2.1vw, 25px);
 }
 
 /* Hero: compact, quiet launch-state line. A <div>, not a <p>, so it never
@@ -4298,21 +4466,21 @@ code {
   font-weight: 620;
 }
 
-/* Homepage meta band: release line spans the full content shell so its
-   outer edges align with the proof strip below (must follow base rule). */
-.hero-section--stacked .hero-meta .hero-launch-line {
-  width: 100%;
-  max-width: none;
-  flex: 1 1 100%;
-  margin-top: 0;
-  box-sizing: border-box;
-}
-
-.hero-section--stacked .hero-meta,
 .hero-section--stacked .hero-visual,
 .hero-section--stacked .hero-visual-frame {
   width: 100%;
   max-width: none;
+}
+
+/* Match button-secondary height/padding so the release pill aligns with CTAs. */
+.hero-section--stacked .hero-actions--with-release .hero-launch-line {
+  margin-top: 0;
+  box-sizing: border-box;
+  min-height: 46px;
+  padding: 12px 18px;
+  font-size: 0.9rem;
+  font-weight: 640;
+  gap: 10px;
 }
 
 .hero-launch-line strong {
@@ -4504,12 +4672,13 @@ code {
   letter-spacing: -0.01em;
 }
 
-/* Pillar grid — four capability cards (Track/Assess/Prove/Ask). */
+/* Pillar grid — four capability cards (Track/Assess/Prove/Ask) in a 2×2
+   layout matching the problem-grid card treatment. */
 .pillar-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 22px;
-  align-items: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: stretch;
 }
 
 @media (max-width: 640px) {
@@ -4523,6 +4692,11 @@ code {
   align-content: start;
   gap: 10px;
   min-width: 0;
+  height: 100%;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-panel);
+  background: var(--canvas);
+  padding: clamp(20px, 3vw, 28px);
 }
 
 .pillar-card h3 {
@@ -4533,7 +4707,8 @@ code {
 
 .pillar-card p {
   color: var(--ink-muted);
-  line-height: 1.55;
+  line-height: 1.6;
+  text-wrap: pretty;
 }
 
 .pillar-caveat {
@@ -4634,11 +4809,11 @@ code {
    320-375px. Implemented in CSS, not by rendering different DOM. */
 @media (max-width: 768px) {
   .hero-section {
-    padding-block: clamp(8px, 2vw, 16px) clamp(20px, 4vw, 36px);
+    padding-block: clamp(6px, 1.4vw, 12px) clamp(14px, 2.8vw, 25px);
   }
 
   .page-hero.compact {
-    padding-block: clamp(8px, 2vw, 16px) clamp(20px, 4vw, 36px);
+    padding-block: clamp(6px, 1.4vw, 12px) clamp(14px, 2.8vw, 25px);
   }
 
   /* The homepage h1 carries the long adjudicated headline ("Understand code
@@ -4789,19 +4964,54 @@ code {
 
 /* ── Public ledger (Track 0045) ─────────────────────────────────────────── */
 
-.ledger-hero {
-  max-width: 900px;
+/* Stay inside the site content shell (side gutters from .page-hero /
+   .content-band). Only lift the old ~780–900px reading-measure caps so
+   blocks use the full shell, not the full viewport. */
+.ledger-page .ledger-honest-ceiling,
+.ledger-page .ledger-stats,
+.ledger-page .ledger-actions,
+.ledger-page .section-heading {
+  max-width: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.ledger-honest-ceiling {
-  max-width: 840px;
+.ledger-hero {
+  /* Do not override shell width/margins — that caused edge-to-edge text. */
+  text-align: left;
+}
+
+.ledger-hero h1,
+.ledger-hero p {
+  max-width: none;
+  text-align: left;
+  /* balance can visually center multi-line titles — keep ragged left. */
+  text-wrap: pretty;
 }
 
 .ledger-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
-  max-width: 840px;
+}
+
+@media (max-width: 720px) {
+  .ledger-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 420px) {
+  .ledger-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ledger-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
 }
 
 .ledger-stat {
@@ -4861,13 +5071,6 @@ code {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.ledger-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
 }
 
 .ledger-verifier {

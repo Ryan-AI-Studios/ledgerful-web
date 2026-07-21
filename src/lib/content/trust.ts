@@ -160,6 +160,16 @@ export const boundaryRows: BoundaryRow[] = [
   },
 ];
 
+/**
+ * Completeness footnote for the boundary table: the optional local context
+ * bridge. Off by default, local IPC only, INTERNAL/UNSTABLE, not a supported
+ * public API. Disclosed generically (never names AI-Brains, implies no cloud
+ * path) so the "what can leave the engine process" boundary is complete.
+ * Governed by Claims Register A18 + the Bridge surface firewall (Track 0064/0065).
+ */
+export const boundaryNote =
+  "Optional local context bridge (off by default, advanced/unstable). Ledgerful can expose an INTERNAL/UNSTABLE local interface — inactive unless you explicitly enable it — that passes analysis context (file paths, symbols, verify outcomes, and exported ledger and impact records) to a separate local process you run. Transport is local IPC only (a named pipe or local subprocess); Ledgerful opens no network connection for it, and it is not a supported public API. It is listed for completeness of the data-flow boundary, not as a product surface we promote.";
+
 type TelemetryFieldName =
   (typeof launchTruth.facts.telemetry.payloadFields)[number];
 
@@ -333,7 +343,7 @@ export const publicSiteInfra: Subprocessor[] = [
   {
     name: "Kit (waitlist)",
     purpose:
-      "Email capture for the /waitlist interest form. Receives the email address, an opt-in timestamp, and a design_partner custom field (set to \"true\" only if the design-partner checkbox is checked) via a first-party server relay. No source code, project data, or product data is sent. Double opt-in is mandatory: adding a subscriber to a double opt-in form triggers a confirmation email that must be acted on. The Kit API key stays server-side and never ships to the browser. To request deletion of your email from the waitlist, contact hello@ledgerful.dev with the subject \"Waitlist deletion request\" — your email and associated data will be removed from Kit within 5 business days.",
+      "Email capture for the /waitlist interest form. Receives the email address and an opt-in timestamp via a first-party server relay. No source code, project data, or product data is sent. Double opt-in is mandatory: adding a subscriber to a double opt-in form triggers a confirmation email that must be acted on. The Kit API key stays server-side and never ships to the browser. To request deletion of your email from the waitlist, contact hello@ledgerful.dev with the subject \"Waitlist deletion request\" — your email and associated data will be removed from Kit within 5 business days.",
     maturity: "available",
     deployment: "runs-locally",
   },

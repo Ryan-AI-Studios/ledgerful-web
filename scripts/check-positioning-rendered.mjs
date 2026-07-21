@@ -5,6 +5,23 @@ import { findPositioningViolations } from "./lib/positioning-terms.mjs";
 
 const outputRoot = resolve(".next/server/app");
 
+/**
+ * Public ledger entry detail pages SSG real signed summaries from the engine
+ * ledger (e.g. commit messages that legitimately mention crypto.rs). That is
+ * verifiable historical content, not marketing copy — exclude them from the
+ * positioning vocabulary gate. Keep /ledger and /docs/* in scope.
+ */
+function isPublicLedgerEntryPage(relativePath) {
+  // .next/server/app/ledger/<txId>.html  or  ledger/<txId>/index.html
+  const normalized = relativePath.replaceAll("\\", "/");
+  return (
+    /^(\.next\/server\/app\/)?ledger\/[0-9a-f-]{36}(\.html|\/index\.html)$/i.test(
+      normalized,
+    ) ||
+    /^(\.next\/server\/app\/)?ledger\/[0-9a-f-]{36}\.html$/i.test(normalized)
+  );
+}
+
 async function collectHtmlFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
   const files = [];
@@ -41,13 +58,23 @@ function renderedText(html) {
   return text.reverse().join("\n");
 }
 
-const files = await Promise.all(
-  (await collectHtmlFiles(outputRoot)).map(async (path) => ({
-    path: relative(process.cwd(), path).replaceAll("\\", "/"),
-    content: renderedText(await readFile(path, "utf8")),
-  })),
-);
-const violations = findPositioningViolations(files);
+const allHtml = await collectHtmlFiles(outputRoot);
+const scanned = [];
+let skippedLedgerEntries = 0;
+
+for (const absolute of allHtml) {
+  const rel = relative(process.cwd(), absolute).replaceAll("\\", "/");
+  if (isPublicLedgerEntryPage(rel)) {
+    skippedLedgerEntries += 1;
+    continue;
+  }
+  scanned.push({
+    path: rel,
+    content: renderedText(await readFile(absolute, "utf8")),
+  });
+}
+
+const violations = findPositioningViolations(scanned);
 
 if (violations.length > 0) {
   console.error("Rendered positioning vocabulary check failed:");
@@ -60,5 +87,9 @@ if (violations.length > 0) {
 }
 
 console.log(
-  `Rendered positioning vocabulary check passed (${files.length} pages).`,
+  `Rendered positioning vocabulary check passed (${scanned.length} pages` +
+    (skippedLedgerEntries > 0
+      ? `; skipped ${skippedLedgerEntries} public-ledger entry pages with real signed content`
+      : "") +
+    `).`,
 );

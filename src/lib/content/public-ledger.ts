@@ -42,6 +42,33 @@ export type PublicLedgerManifest = {
     sha256: string;
     size: number;
   }[];
+  /** Present when exported by engine `ledger export-public --sign`. */
+  honestCeiling?: string;
+  publicKeyFingerprint?: string;
+};
+
+/** Raw engine export-public manifest (field names differ from the sample). */
+type EngineExportManifest = {
+  publisher?: string;
+  entryCount?: number;
+  generatedAt?: string;
+  timeRange?: {
+    first?: string | null;
+    last?: string | null;
+    earliest?: string | null;
+    latest?: string | null;
+  };
+  signatureAlgorithm?: string;
+  sigAlg?: string;
+  allowlist?: readonly string[];
+  allowlistVersion?: number;
+  chainHead?: unknown;
+  chainHeadPresent?: boolean;
+  files?: PublicLedgerManifest["files"];
+  bundleType?: string;
+  honestCeiling?: string;
+  publicKeyFingerprint?: string;
+  entriesSha256?: string;
 };
 
 export const publicLedgerAllowlist = [
@@ -76,9 +103,46 @@ export function getPublicLedgerEntries(): PublicLedgerEntry[] {
     });
 }
 
+/**
+ * Normalize either the legacy sample manifest or a live
+ * `ledger export-public` manifest into the shape the pages render.
+ */
 export function getPublicLedgerManifest(): PublicLedgerManifest {
   const raw = readFileSync(bundlePath("manifest.json"), "utf8");
-  return JSON.parse(raw) as PublicLedgerManifest;
+  const parsed = JSON.parse(raw) as EngineExportManifest;
+
+  const first =
+    parsed.timeRange?.first ?? parsed.timeRange?.earliest ?? null;
+  const last = parsed.timeRange?.last ?? parsed.timeRange?.latest ?? null;
+
+  const files =
+    parsed.files ??
+    (parsed.entriesSha256
+      ? [
+          {
+            name: "entries.ndjson",
+            sha256: parsed.entriesSha256,
+            size: 0,
+          },
+        ]
+      : []);
+
+  return {
+    publisher: parsed.publisher ?? "ledgerful-ledger-bot",
+    entryCount: parsed.entryCount ?? 0,
+    timeRange: { first, last },
+    generatedAt: parsed.generatedAt ?? "",
+    allowlist: parsed.allowlist ?? publicLedgerAllowlist,
+    sigAlg: parsed.sigAlg ?? parsed.signatureAlgorithm ?? "Ed25519",
+    bundleType: parsed.bundleType ?? "public-ledger",
+    chainHeadPresent:
+      typeof parsed.chainHeadPresent === "boolean"
+        ? parsed.chainHeadPresent
+        : Boolean(parsed.chainHead),
+    files,
+    honestCeiling: parsed.honestCeiling,
+    publicKeyFingerprint: parsed.publicKeyFingerprint,
+  };
 }
 
 export function getPublicLedgerEntryByTxId(txId: string): PublicLedgerEntry | undefined {

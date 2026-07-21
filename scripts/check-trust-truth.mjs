@@ -336,6 +336,19 @@ for (const banned of ["you are compliant", "makes you compliant", "soc 2 certifi
   }
 }
 
+// Assert 18: the optional local context bridge is disclosed for completeness of
+// the data-flow boundary, and kept generic — Claims Register A18 + the bridge
+// surface firewall (Track 0064/0065): never name AI-Brains, never imply a
+// cloud/LLM/session nature or a supported API.
+if (!securityLower.includes("local context bridge")) {
+  failures.push('Assert 18 FAIL: optional "local context bridge" completeness note missing on /docs/security');
+}
+for (const [route, html] of [["/trust", trustLower], ["/docs/security", securityLower]]) {
+  if (html.includes("ai-brains") || html.includes("ai brains")) {
+    failures.push(`Assert 18 FAIL: bridge disclosure must stay generic — must not name AI-Brains on ${route} (Claims Register A18 / bridge firewall)`);
+  }
+}
+
 if (failures.length > 0) {
   console.error("\ncheck-trust-truth: FAILED\n");
   failures.forEach((f) => console.error(" ", f));

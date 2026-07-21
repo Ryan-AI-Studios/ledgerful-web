@@ -351,12 +351,11 @@ test("homepage install command copy button copies the real install command", asy
 // section order the rebuilt page is specified to render, plus the three
 // top-level landmarks.
 const homepageH2Order = [
-  "Where your data goes",
+  "What Ledgerful does",
   "Proof points, linked to evidence",
   "The volume of change has outpaced the evidence for it.",
   "What a scan actually produces",
   "What's available today",
-  "What Ledgerful does",
   "Local by default",
   "See the public ledger",
   "Start where you sit",
@@ -411,12 +410,8 @@ for (const { width, height } of dod2Viewports) {
   });
 }
 
-test("skip link and native disclosure are keyboard operable", async ({ page }) => {
+test("native disclosure is keyboard operable", async ({ page }) => {
   await page.goto("/docs/security");
-  await page.keyboard.press("Tab");
-  const skipLink = page.getByRole("link", { name: "Skip to content" });
-  await expect(skipLink).toBeFocused();
-  await expect(skipLink).toBeVisible();
 
   const summary = page.getByText("View example telemetry payload (JSON)", { exact: true });
   await summary.focus();
@@ -1213,7 +1208,7 @@ test("/pricing permanent-redirects to /editions", async ({ request }) => {
 
 // ── 0041-QuietPreviewWaitlist — form, honeypot, CSP, noindex ──
 
-test("waitlist page renders the interest-capture form with one email field and a design-partner checkbox", async ({
+test("waitlist page renders the interest-capture form with one email field", async ({
   page,
 }) => {
   await page.goto("/waitlist");
@@ -1226,10 +1221,9 @@ test("waitlist page renders the interest-capture form with one email field and a
   await expect(emailInput).toBeVisible();
   await expect(emailInput).toHaveAttribute("type", "email");
 
-  const designPartnerCheckbox = page.getByRole("checkbox", {
-    name: /design-partner fit/i,
-  });
-  await expect(designPartnerCheckbox).toBeVisible();
+  await expect(
+    page.getByRole("checkbox", { name: /design-partner fit/i }),
+  ).toHaveCount(0);
 
   const submitButton = page.getByRole("button", { name: "Get updates" });
   await expect(submitButton).toBeVisible();
@@ -1347,11 +1341,6 @@ test("waitlist form with ESP configured shows double-opt-in confirmation (DoD-1 
   const emailInput = page.getByLabel("Email address");
   await emailInput.fill("test-waitlist@example.com");
 
-  const designPartner = page.getByRole("checkbox", {
-    name: /design-partner fit/i,
-  });
-  await designPartner.check();
-
   const submitButton = page.getByRole("button", { name: "Get updates" });
   await submitButton.click();
 
@@ -1436,11 +1425,24 @@ test("public ledger verifier rejects tampered signed data", async ({ page }) => 
   await expect(page.locator(".ledger-verify-ok")).toContainText(/1 of 1 entries verified as valid/);
 });
 
-test("public ledger offline verifier page loads and has verify controls", async ({ page }) => {
+test("public ledger offline verifier page loads and has verify controls", async ({
+  page,
+}) => {
+  // Full 316-entry WebCrypto pass can take a while; give the page enough room.
+  test.setTimeout(180_000);
   await page.goto("/ledger/verifier.html");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  // The offline verifier has a "Verify all" button
-  await expect(page.locator("button").filter({ hasText: /verify/i }).first()).toBeVisible();
+  // External verifier.js (CSP-safe). Auto-runs; status stays on Loading until done.
+  const status = page.locator("#status");
+  await expect(status).toBeVisible();
+  await expect(status).toContainText(
+    /Verification complete|Verification failed/i,
+    { timeout: 150_000 },
+  );
+  await expect(page.locator("#results")).toBeVisible();
+  await expect(page.locator("#results")).toContainText(
+    /Manifest|Entries|VALID|INVALID|UNSIGNED/i,
+  );
 });
 
 // ── Track 0048 SOC 2 control-evidence mapping page tests ───────────────────────

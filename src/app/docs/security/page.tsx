@@ -14,6 +14,7 @@ import {
 } from "@/lib/content/policy-check";
 import {
   boundaryRows,
+  boundaryNote,
   dontProveClaims,
   networkOutbound,
   nonGoals,
@@ -896,6 +897,12 @@ export default function SecurityPage() {
               machine&rdquo; section below; the known outbound paths and their
               activation conditions are listed in the data-flow and
               release-verification sections.
+            </p>
+            <p
+              className="item-caveat"
+              style={{ marginTop: "12px", color: "var(--muted)" }}
+            >
+              {boundaryNote}
             </p>
           </section>
 

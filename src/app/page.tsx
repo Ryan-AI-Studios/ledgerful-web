@@ -7,6 +7,7 @@ import { AudienceRoutes } from "@/components/audience-routes";
 import { DataFlowStrip } from "@/components/data-flow-strip";
 import { EvidencePanel } from "@/components/evidence-panel";
 import { InstallCommand } from "@/components/install-command";
+import { LegendHashRedirect } from "@/components/legend-hash-redirect";
 import { PageShell } from "@/components/page-shell";
 import { ProofStrip } from "@/components/proof-strip";
 import { SectionHeading } from "@/components/section-heading";
@@ -67,10 +68,9 @@ export default function Home() {
 
   return (
     <PageShell>
-      {/* 2. Hero — headline, subhead, install CTA, release status. The right
-          column shows a real, 0056-clean captured provenance record rendered as
-          a native terminal window so it is theme-adaptive without extra images. */}
-      <div className="hero-section">
+      {/* 2. Hero — headline/CTAs at reading measure; release line, docs link,
+          and signed receipt span the full hero content width below. */}
+      <div className="hero-section hero-section--stacked">
         <section className="hero-copy" id="hero">
           <h1>
             Understand code change risk before it ships. Runs locally.
@@ -86,6 +86,8 @@ export default function Home() {
               See how it works
             </Link>
           </div>
+        </section>
+        <div className="hero-meta">
           <div className="hero-launch-line">
             <span className="hero-launch-line-dot" aria-hidden="true" />
             <span>
@@ -98,10 +100,11 @@ export default function Home() {
               Read the docs
             </Link>
           </div>
-        </section>
-        <div className="hero-visual">
-          <ArtifactPreview id="provenanceRecord" className="hero-visual-frame" />
         </div>
+        <aside className="hero-visual" aria-label="Sample signed provenance receipt">
+          <p className="hero-visual-label">Sample signed receipt</p>
+          <ArtifactPreview id="provenanceRecord" className="hero-visual-frame" />
+        </aside>
       </div>
 
       {/* 4. Data-flow strip */}
@@ -275,20 +278,15 @@ export default function Home() {
         </div>
       </section>
 
+      {/* JSON-LD as a non-executable script type — valid in RSC; no runtime. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(softwareApplicationJsonLd),
         }}
       />
-      <script
-        // Forward the old #legend anchor on the homepage to /editions#legend
-        // now that the full 5-state glossary lives on the editions page.
-        dangerouslySetInnerHTML={{
-          __html:
-            "(function(){if(location.hash==='#legend'){location.replace('/editions#legend');}})();",
-        }}
-      />
+      {/* Old #legend → /editions#legend (client effect, not an inline script tag). */}
+      <LegendHashRedirect />
     </PageShell>
   );
 }

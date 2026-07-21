@@ -2,41 +2,35 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShieldCheck } from "lucide-react";
 import { mainNavigation } from "@/lib/content/navigation";
 import { launchTruth } from "@/lib/content/launch-facts";
+import { BrandMark } from "./brand-mark";
 import { ThemeToggle } from "./theme-toggle";
 
 export function SiteHeader() {
   const pathname = usePathname();
   return (
     <header className="site-header">
-      <Link href="/" className="brand-mark" aria-label="Ledgerful home">
-        <span className="brand-glyph" aria-hidden="true">
-          <ShieldCheck size={19} strokeWidth={2.1} />
-        </span>
-        <span>Ledgerful</span>
-      </Link>
+      <BrandMark />
       <div className="header-actions">
         <nav className="site-nav" aria-label="Primary navigation">
-          {mainNavigation
-            .map((item) => {
-              const basePath = item.href.split("#")[0];
-              const isActive =
-                basePath === "/"
-                  ? pathname === "/"
-                  : pathname === basePath || pathname.startsWith(basePath + "/");
-              return (
-                <Link
-                  href={item.href}
-                  key={item.href}
-                  aria-current={isActive ? "page" : undefined}
-                  className={isActive ? "nav-link-active" : undefined}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
+          {mainNavigation.map((item) => {
+            const basePath = item.href.split("#")[0];
+            const isActive =
+              basePath === "/"
+                ? pathname === "/"
+                : pathname === basePath || pathname.startsWith(basePath + "/");
+            return (
+              <Link
+                href={item.href}
+                key={item.href}
+                aria-current={isActive ? "page" : undefined}
+                className={isActive ? "nav-link-active" : undefined}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
         <Link
           href={launchTruth.facts.repository.href}

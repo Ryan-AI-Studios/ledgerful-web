@@ -67,8 +67,24 @@ export const metadata: Metadata = {
     images: [homeOgImage.url],
   },
   icons: {
-    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
-    apple: [{ url: "/apple-icon" }],
+    icon: [
+      {
+        url: "/brand/favicon-32-dark.png",
+        type: "image/png",
+        sizes: "32x32",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/brand/favicon-32-light.png",
+        type: "image/png",
+        sizes: "32x32",
+        media: "(prefers-color-scheme: light)",
+      },
+      // Fallback when media is unsupported
+      { url: "/brand/favicon-32.png", type: "image/png", sizes: "32x32" },
+      { url: "/brand/icon-dark-512.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/brand/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
@@ -112,10 +128,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // data-theme / data-theme-preference are owned by themeScript + ThemeToggle
+    // (see src/lib/theme.ts). Do NOT hardcode them as React props — React would
+    // re-apply the server values on layout re-render and cancel client changes.
+    // suppressHydrationWarning: the blocking script may set attributes before
+    // hydrate (standard App Router theme pattern; same as next-themes).
     <html
       lang="en"
-      data-theme="dark"
-      data-theme-preference="system"
       suppressHydrationWarning
       className={`${archivo.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >

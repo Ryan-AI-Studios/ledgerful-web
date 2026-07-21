@@ -33,6 +33,7 @@
     "check:jsonld": "node scripts/check-jsonld.mjs",
     "generate:og": "node scripts/generate-og-images.mjs",
     "generate:ledger": "node scripts/generate-public-ledger-sample.mjs",
+    "generate:brand": "node scripts/generate-brand-assets.mjs",
     "test:e2e": "npm run build && playwright test",
     "test:e2e:run": "playwright test",
     "test:policy": "node --test tests/indexing-policy.test.mjs tests/positioning-terms.test.mjs"

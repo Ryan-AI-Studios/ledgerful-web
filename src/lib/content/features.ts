@@ -75,7 +75,7 @@ export const featureStates: FeatureItem[] = [
     maturity: "available",
     deployment: "runs-locally",
     description:
-      "The @ledgerful/mcp-server package is published on npm (v0.1.10). The local MCP server connects AI assistants to the engine.",
+      "The @ledgerful/mcp-server package is published on npm (v0.1.11; engine pin v0.1.9). The local MCP server connects AI assistants to the engine.",
     evidence: "launch-facts.ts confirms @ledgerful/mcp-server is published on npm.",
   },
   {

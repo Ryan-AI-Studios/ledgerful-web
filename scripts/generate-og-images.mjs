@@ -187,7 +187,7 @@ const ROUTES = [
       "Ledgerful editions with explicit available, beta, and planned states.",
     // NOTE: install/page.tsx's own code block lists `ledgerful compliance
     // export` as a CLI command, but that subcommand does not exist in the
-    // shipped v0.1.8 CLI (`ledgerful compliance --help` errors with
+    // shipped CLI (`ledgerful compliance --help` errors with
     // "unrecognized subcommand 'compliance'" — SOC2 export is a dashboard/
     // API-only feature, see `Soc2ExportButton.tsx` +
     // `GET /api/compliance/export`). That's a pre-existing bug in
@@ -202,7 +202,7 @@ const ROUTES = [
       title: "src/app/editions/page.tsx metadata.title",
       description: "src/lib/content/navigation.ts pageDescriptions.pricing",
       command:
-        "ledgerful verify --signatures output captured against the sample repo (see C:\\dev\\FrontendDev\\output\\ledgerful-assets\\) — NOT install/page.tsx's `ledgerful compliance export` (that subcommand doesn't exist in v0.1.8; pre-existing bug in install/page.tsx, tracked in deferred.md, out of scope here)",
+        "ledgerful verify --signatures output captured against the sample repo (see C:\\dev\\FrontendDev\\output\\ledgerful-assets\\) — NOT install/page.tsx's `ledgerful compliance export` (that subcommand doesn't exist in current CLI; pre-existing bug in install/page.tsx, tracked in deferred.md, out of scope here)",
     },
   },
   {
@@ -212,7 +212,7 @@ const ROUTES = [
     title: "Install the Ledgerful CLI",
     // src/lib/content/navigation.ts pageDescriptions.install
     description:
-      "Install the Ledgerful CLI from a pre-built v0.1.8 release binary or build from source. Verify the binary and run your first scan.",
+      "Install the Ledgerful CLI from a pre-built v0.1.9 release binary or build from source. Verify the binary and run your first scan.",
     // src/app/install/page.tsx "02 · Install" CodeBlock, verbatim.
     command: "cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful",
     commandLabel: "Source build · ~3–6 min on first run",

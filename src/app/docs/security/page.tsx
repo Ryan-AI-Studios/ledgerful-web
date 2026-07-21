@@ -1221,8 +1221,8 @@ export default function SecurityPage() {
               not yet implemented. Binaries may trigger OS security prompts
               on first launch. Code signing for both platforms is a
               separate planned enhancement. Supply chain attestation
-              (SBOM, cosign signing, SLSA provenance) shipped with v0.1.8 —
-              see{" "}
+              (SBOM, cosign signing, SLSA provenance) shipped since v0.1.8
+              and continue in v0.1.9 — see{" "}
               <a
                 href="#supply-chain-attestation"
                 className="inline-link"
@@ -1247,9 +1247,9 @@ export default function SecurityPage() {
               className="disclosure-notice"
               style={{ marginBottom: "24px" }}
             >
-              <strong>Shipped with v0.1.8:</strong>{" "}
+              <strong>Shipped since v0.1.8 (current v0.1.9):</strong>{" "}
               {supplyChainAttestation.note} The verification commands below
-              are actionable for the v0.1.8 release. The{" "}
+              are actionable for the v0.1.9 release. The{" "}
               <code>gh attestation verify</code> commands require the
               repository to be public (it is) or on GitHub Enterprise Cloud.
             </div>
@@ -1421,7 +1421,7 @@ export default function SecurityPage() {
                 <code>{`{
   "schema_version": 1,
   "anonymous_id": "00000000-0000-4000-8000-000000000000",
-  "client_version": "0.1.8",
+  "client_version": "0.1.9",
   "platform": "windows",
   "sent_at": "2026-07-02T14:00:00Z",
   "window_start": "2026-06-25T14:00:00Z",
@@ -1533,7 +1533,7 @@ export default function SecurityPage() {
               <pre>
                 <code>{`{
   "generatedAt": "2026-06-30T14:22:08.114Z",
-  "toolVersion": "0.1.8",
+  "toolVersion": "0.1.9",
   "entryCount": 3,
   "files": [
     {

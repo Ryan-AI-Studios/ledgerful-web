@@ -82,7 +82,7 @@ function DoctorOutputPreview() {
       </pre>
       <div className="terminal-annotation">
         <span className="terminal-caption">
-          Representative output — captured from a real v0.1.8 run
+          Representative output — captured from a real v0.1.9 run
         </span>
         <span className="terminal-meta">{panel.command}</span>
       </div>
@@ -198,7 +198,7 @@ export default function InstallPage() {
         <p className="hero-kicker">Install</p>
         <h1>Install Ledgerful locally</h1>
         <p className="install-hero-lead">
-          v0.1.8 · macOS, Linux, Windows · package managers and prebuilt binaries
+          v0.1.9 · macOS, Linux, Windows · package managers and prebuilt binaries
           · no hosted account required.
         </p>
         <div className="install-hero-command">
@@ -426,7 +426,7 @@ export default function InstallPage() {
           {`ledgerful --version
 ledgerful verify --health`}
         </CodeBlock>
-        <ExpectedOutput caption="Expected output — captured from a real v0.1.8 run">
+        <ExpectedOutput caption="Expected output — captured from a real v0.1.9 run">
           <div className="expected-output-grid">
             <div className="expected-output-sample">
               <p className="expected-output-command">ledgerful --version</p>

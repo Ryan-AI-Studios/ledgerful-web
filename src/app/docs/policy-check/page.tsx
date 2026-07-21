@@ -64,10 +64,10 @@ export default function DocsPolicyCheckPage() {
             </code>
           </pre>
           <p style={{ marginTop: "12px" }}>
-            The v0.1.8 prebuilt release binaries predate this command. Use a
-            source install, or a later release that ships{" "}
-            <code>policy check</code>, until the next numbered release catches
-            up. Confirm with <code>ledgerful policy check --help</code>.
+            Prebuilt v0.1.9 release binaries include{" "}
+            <code>ledgerful policy check</code>. Older archives (for example
+            v0.1.8) may not — use a source install or upgrade. Confirm with{" "}
+            <code>ledgerful policy check --help</code>.
           </p>
         </div>
       </section>

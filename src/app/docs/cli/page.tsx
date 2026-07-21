@@ -29,7 +29,7 @@ export default function DocsCliPage() {
         <p className="hero-kicker">Docs · CLI</p>
         <h1>Install and run Ledgerful.</h1>
         <p>
-          Install the <code>ledgerful</code> CLI from a pre-built v0.1.8 release
+          Install the <code>ledgerful</code> CLI from a pre-built v0.1.9 release
           binary or build from source using Cargo.
         </p>
       </section>
@@ -38,7 +38,7 @@ export default function DocsCliPage() {
       <section className="content-band">
         <SectionHeading title="Prerequisites">
           The source install requires the Rust toolchain. Pre-built release
-          binaries (v0.1.8) do not require Rust.
+          binaries (v0.1.9) do not require Rust.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>

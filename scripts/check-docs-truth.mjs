@@ -385,14 +385,14 @@ function hasAncestor(node, predicate) {
   for (const phrase of stalePhrases) {
     if (lower.includes(phrase)) {
       failures.push(
-        `Assert 6 FAIL [docs/cli]: stale phrase "${phrase}" found — release is resolved (v0.1.8 shipped)`
+        `Assert 6 FAIL [docs/cli]: stale phrase "${phrase}" found — release is resolved (v0.1.9 shipped)`
       );
     }
   }
   // "when available" / "once available" as future tense for a shipped release
   if (lower.includes("when available") || lower.includes("once available")) {
     failures.push(
-      `Assert 6 FAIL [docs/cli]: future-tense "when/once available" found — release is resolved (v0.1.8 shipped)`
+      `Assert 6 FAIL [docs/cli]: future-tense "when/once available" found — release is resolved (v0.1.9 shipped)`
     );
   }
 }
@@ -484,7 +484,7 @@ function hasAncestor(node, predicate) {
   }
 
   // The page must disclose the release status — either available or pending
-  if (!lower.includes("pending") && !lower.includes("available") && !lower.includes("v0.1.8")) {
+  if (!lower.includes("pending") && !lower.includes("available") && !lower.includes("v0.1.9")) {
     failures.push(
       `Assert 10 FAIL [docs/releases]: no "available", "pending", or version notice found — must disclose release status`
     );
@@ -493,7 +493,7 @@ function hasAncestor(node, predicate) {
   // future tense "when release artifacts are available" for a shipped release
   if (lower.includes("when release artifacts are available")) {
     failures.push(
-      `Assert 10 FAIL [docs/releases]: stale future-tense "when release artifacts are available" found — release is resolved (v0.1.8 shipped)`
+      `Assert 10 FAIL [docs/releases]: stale future-tense "when release artifacts are available" found — release is resolved (v0.1.9 shipped)`
     );
   }
 }
@@ -757,7 +757,7 @@ if (!pages["github-action"].includes("Ryan-AI-Studios/Ledgerful/action@")) {
     }
   }
 
-  // Availability honesty: v0.1.8 prebuilt caveat or source-install path.
+  // Availability honesty: prebuilt caveat or source-install path.
   if (
     !lower.includes("cargo install") &&
     !lower.includes("source install") &&

@@ -491,7 +491,7 @@ test("docs/security supply chain attestation section reflects shipped state", as
   const section = page.locator("#supply-chain-attestation");
   await expect(section).toBeVisible();
   const sectionText = await section.textContent();
-  // Must not still say "Planned (track 0053)" — v0.1.8 shipped these
+  // Must not still say "Planned (track 0053)" — supply-chain attestation shipped
   expect(sectionText?.toLowerCase()).not.toContain("planned (track 0053)");
   // Must not say "will be actionable once the pipeline ships"
   expect(sectionText?.toLowerCase()).not.toContain("will be actionable once the pipeline ships");

@@ -183,7 +183,7 @@ if (scaIdx !== -1) {
     sectionEnd !== -1 ? sectionEnd : securityLower.length,
   );
   if (section.includes("planned (track 0053)")) {
-    failures.push('Assert 13 FAIL: supply chain section still says "Planned (track 0053)" — v0.1.8 shipped these capabilities');
+    failures.push('Assert 13 FAIL: supply chain section still says "Planned (track 0053)" — supply-chain attestation shipped since v0.1.8');
   }
   if (section.includes("will be actionable once the pipeline ships")) {
     failures.push('Assert 13 FAIL: supply chain section still says commands "will be actionable once the pipeline ships" — they are actionable now');

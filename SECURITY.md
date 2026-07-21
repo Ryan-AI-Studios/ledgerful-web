@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Ledgerful is pre-1.0 software. The latest release is v0.1.8. Security fixes are applied to the main branch and included in the next release. There are no backport branches.
+Ledgerful is pre-1.0 software. The latest release is v0.1.9. Security fixes are applied to the main branch and included in the next release. There are no backport branches.
 
 ## Reporting a vulnerability
 
@@ -23,9 +23,9 @@ Report vulnerabilities through one of these channels:
 
 **No PGP key is published.** We do not require or recommend encrypted reporting at this stage.
 
-## Supply chain attestation (shipped with v0.1.8)
+## Supply chain attestation (shipped since v0.1.8; current v0.1.9)
 
-Ledgerful's release pipeline is hardened with verifiable supply-chain integrity. The following capabilities shipped with the v0.1.8 release:
+Ledgerful's release pipeline is hardened with verifiable supply-chain integrity. The following capabilities shipped with v0.1.8 and continue in the current v0.1.9 release:
 
 | Capability | Tool | Status |
 |---|---|---|

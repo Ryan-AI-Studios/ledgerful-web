@@ -88,7 +88,7 @@ export const docTopics: DocTopic[] = [
     deployment: "runs-locally",
     pillar: "prove",
     summary:
-      "Verify the v0.1.8 release binary with its SHA-256 checksum and run the local health report.",
+      "Verify the v0.1.9 release binary with its SHA-256 checksum and run the local health report.",
     nextAction: "Download the release and verify the SHA-256 checksum.",
     href: "/docs/releases",
   },

@@ -155,7 +155,7 @@ export default function Home() {
       {/* 7. What Ledgerful produces */}
       <section className="content-band" id="produces">
         <SectionHeading title="What a scan actually produces">
-          Each output is a captured artifact from a real v0.1.8 run.
+          Each output is a captured artifact from a real v0.1.9 run.
         </SectionHeading>
         <div className="produces-grid">
           <article>
@@ -252,7 +252,7 @@ export default function Home() {
       {/* 11. Waitlist / launch updates */}
       <section className="content-band" id="waitlist">
         <SectionHeading title="Get launch updates">
-          Ledgerful v0.1.8 is installed today. If you want launch announcements
+          Ledgerful v0.1.9 is installed today. If you want launch announcements
           and changelog updates, leave your email.{" "}
           <Link href="/waitlist" className="inline-link">
             Open the full form

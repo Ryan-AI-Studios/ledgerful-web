@@ -70,11 +70,11 @@ export function TrustSummary() {
         <div>
           <dt>Release verification</dt>
           <dd>
-            The v0.1.8 release is publicly available with SHA-256 checksums
+            The v0.1.9 release is publicly available with SHA-256 checksums
             for each binary archive. Supply chain attestation (SBOM, cosign
-            signing, SLSA provenance) shipped with v0.1.8 — see the supply
-            chain attestation section below. OS code signing (Windows
-            Authenticode, macOS notarization) is planned.
+            signing, SLSA provenance) shipped since v0.1.8 and continues in
+            v0.1.9 — see the supply chain attestation section below. OS code
+            signing (Windows Authenticode, macOS notarization) is planned.
           </dd>
         </div>
         <div>

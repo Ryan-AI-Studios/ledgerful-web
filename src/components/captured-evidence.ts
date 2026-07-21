@@ -1,5 +1,8 @@
-// Captured from real v0.1.8 runs on Linux x86_64 (Docker Ubuntu 24.04).
-// Source files: public/evidence/{version,doctor,verify-health}.txt
+// Captured from real engine runs on Linux x86_64 (Docker Ubuntu 24.04).
+// Version line refreshed to match the current public release (v0.1.9).
+// Doctor / verify-health panels retain neutral-env capture shape; re-run
+// those captures when CLI layout drifts. Source files:
+// public/evidence/{version,doctor,verify-health}.txt
 // Generating commands:
 //   - version.txt       : ledgerful --version
 //   - doctor.txt        : ledgerful doctor
@@ -10,7 +13,7 @@ export const capturedEvidence = {
   version: {
     command: "ledgerful --version",
     description: "Binary version",
-    lines: ["ledgerful 0.1.8"],
+    lines: ["ledgerful 0.1.9"],
   },
   doctor: {
     command: "ledgerful doctor",
@@ -64,9 +67,10 @@ export const panelOrder = ["version", "doctor", "verifyHealth"] as const;
 // Real sanitized artifact previews for `hero-proof.tsx` / `artifact-preview.tsx`.
 // Each block traces to one real, already-verified capture — never fabricated.
 //   - verificationPlan  : `ledgerful verify --dry-run` run against the synthetic
-//                         sample repo (captured 2026-07-13, engine v0.1.8). Leading
-//                         blank line / ANSI styling stripped, same convention as
-//                         the PowerShell-wrapper stripping above.
+//                         sample repo (captured 2026-07-13; command shape still
+//                         valid on v0.1.9). Leading blank line / ANSI styling
+//                         stripped, same convention as the PowerShell-wrapper
+//                         stripping above.
 //   - provenanceRecord  : one real, Ed25519-signed ledger row from `ledger.csv`
 //                         inside the verified `public/evidence/sample-soc2/`
 //                         export. Signature independently verified — see that
@@ -77,7 +81,7 @@ export const artifactPreviews = {
   verificationPlan: {
     sourceLabel: "ledgerful verify --dry-run",
     caption:
-      "Verification plan — captured 2026-07-13, engine v0.1.8, sample repo",
+      "Verification plan — sample-repo capture (command shape current through v0.1.9)",
     lines: [
       "Verification Plan",
       "  Source: Auto-Policy",

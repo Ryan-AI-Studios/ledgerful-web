@@ -234,9 +234,12 @@ main {
   max-width: min(600px, 80vw);
 }
 
+/* Do not set display here — theme rules below own show/hide. A compound
+   `.brand-mark .brand-banner-img { display:block }` outranked
+   `.brand-banner-img--light { display:none }` and painted both wordmarks. */
 .brand-mark .brand-banner-img,
+.footer-brand .brand-banner-img,
 .brand-banner-img {
-  display: block;
   height: 96px;
   width: auto;
   max-width: 100%;
@@ -248,15 +251,27 @@ main {
   height: 84px;
 }
 
-/* Hide the inactive theme variant (next-themes data-hide-on-theme pattern). */
+/* Theme swap: default (dark / no attribute) shows dark wordmark only. */
+.brand-mark .brand-banner-img--dark,
+.footer-brand .brand-banner-img--dark,
+.brand-banner-img--dark {
+  display: block;
+}
+
+.brand-mark .brand-banner-img--light,
+.footer-brand .brand-banner-img--light,
 .brand-banner-img--light {
   display: none;
 }
 
+html[data-theme="light"] .brand-mark .brand-banner-img--dark,
+html[data-theme="light"] .footer-brand .brand-banner-img--dark,
 html[data-theme="light"] .brand-banner-img--dark {
   display: none;
 }
 
+html[data-theme="light"] .brand-mark .brand-banner-img--light,
+html[data-theme="light"] .footer-brand .brand-banner-img--light,
 html[data-theme="light"] .brand-banner-img--light {
   display: block;
 }

@@ -73,13 +73,13 @@ syft ledgerful
 
 ### Boundary
 
-Artifact signing and build provenance are release-pipeline metadata — not a product feature that generates SBOMs or attestations for your repository. They are distinct from the product's Ed25519 ledger signing basis (the 5-field payload: `tx_id`, `category`, `summary`, `reason`, `committed_at`). These capabilities change neither the ledger signing basis nor the no-network runtime invariant.
+Artifact signing and build provenance are release-pipeline metadata — not a product feature that generates SBOMs or attestations for your repository. They are distinct from the product's Ed25519 ledger signing basis (v2 provenance payload: `sig_version:2` binds `tx_id`, `category`, `summary`, `reason`, `committed_at`, `entity`, `change_type`, `entry_type`, `author`, `risk`, `is_breaking`, `related_tickets`, and `origin`; historical v1 rows use the legacy five-field payload under dual-verify). These capabilities change neither the ledger signing basis nor the no-network runtime invariant.
 
 ## Ledger signing vs. artifact signing
 
 Ledgerful has two distinct signing surfaces that should not be confused:
 
-- **Ed25519 ledger signing** (product): every committed ledger entry is signed over a 5-field payload. This is the product's core provenance mechanism. The signing key lives at `~/.ledgerful/keys/`.
+- **Ed25519 ledger signing** (product): every new committed ledger entry is signed over the v2 provenance payload (`sig_version:2`), binding entity, author, risk, origin, and related fields in addition to the legacy five fields. Historical rows with `sig_version=1` still verify under dual-verify. The signing key lives at `~/.ledgerful/keys/`.
 - **cosign/Sigstore artifact signing** (release pipeline): release archives and SBOMs are signed with cosign keyless signing using the GitHub Actions OIDC identity. No long-lived keys. This proves the download came from the documented release workflow.
 
 These are orthogonal: one proves ledger entry integrity, the other proves release artifact integrity.

@@ -454,8 +454,11 @@ export const proveClaims: ProveDontClaim[] = [
   {
     heading: "Each ledger entry is Ed25519-signed",
     body:
-      "Every committed entry is signed over a 5-field payload: tx_id, category, summary, reason, and committed_at. " +
-      "The signature verifies that those fields have not changed since the entry was signed. (sign_ledger_entry basis: tx_id, category, summary, reason, committed_at)",
+      "Every new committed entry is signed over the v2 provenance payload (sig_version:2): " +
+      "tx_id, category, summary, reason, committed_at, entity, change_type, entry_type, author, risk, is_breaking, related_tickets, and origin. " +
+      "Historical v1 rows remain dual-verifiable until re-sign upgrades them. " +
+      "When intent.trusted_public_keys is pinned, verify reports VALID (trusted) vs VALID (unknown key). " +
+      "(ledger::crypto v2 basis; track 0072)",
   },
   {
     heading: "The SOC 2-style export manifest is signed",
@@ -507,10 +510,23 @@ export const dontProveClaims: ProveDontClaim[] = [
       "We do not fabricate retroactive chain history. (chain-hash decision memo §6)",
   },
   {
-    heading: "Ground truth of category and summary",
+    heading: "Ground truth of free-text provenance fields",
     body:
-      "Category, summary, and reason are strings entered by the user. The signature proves they have not been altered since signing; " +
-      "it does not prove they are accurate or complete.",
+      "Category, summary, reason, risk, related_tickets, and similar free-text fields are entered by the user or automation. " +
+      "The v2 signature proves they have not been altered since signing; it does not prove they are accurate or complete.",
+  },
+  {
+    heading: "Full key compromise + re-sign everything",
+    body:
+      "An attacker with the local private key can re-sign a rewritten ledger (ledger re-sign). " +
+      "Trusted-key pins distinguish foreign keys when configured, but a compromised trusted key still wins locally. " +
+      "Out-of-band head retention remains required against silent rewrite.",
+  },
+  {
+    heading: "Unsigned residual metadata",
+    body:
+      "verification_status, observed, outcome_notes, and prev_hash (chain layer) are outside the entry Ed25519 basis. " +
+      "Mutating residual columns alone does not invalidate the entry signature.",
   },
 ];
 

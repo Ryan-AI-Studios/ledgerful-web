@@ -1352,9 +1352,11 @@ export default function SecurityPage() {
               <strong>Boundary:</strong> Artifact signing and build
               provenance are release-pipeline metadata. They are
               distinct from the product&apos;s Ed25519 ledger signing basis
-              (the 5-field payload: tx_id, category, summary, reason,
-              committed_at). This track changes neither the ledger
-              signing basis nor the no-network runtime invariant.
+              (v2 provenance: sig_version:2 binds entity, author, risk,
+              origin, and related fields in addition to the legacy five
+              fields; historical v1 rows dual-verify). This track changes
+              neither the ledger signing basis nor the no-network runtime
+              invariant.
             </div>
           </section>
 

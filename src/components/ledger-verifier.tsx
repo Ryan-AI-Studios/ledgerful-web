@@ -4,10 +4,21 @@ import { useCallback, useState } from "react";
 import { ShieldCheck, AlertCircle } from "lucide-react";
 import type { PublicLedgerEntry } from "@/lib/content/public-ledger";
 
+/** Offline status for one public entry (0072 dual-path honesty). */
+const V2_FENCE_LABEL =
+  "SIGNATURE: not re-verified offline (v2 provenance fields redacted; verify with local ledgerful verify --signatures)";
+
 type VerifyState =
   | { status: "idle" }
   | { status: "running" }
-  | { status: "done"; valid: number; invalid: number; errors: string[] };
+  | {
+      status: "done";
+      valid: number;
+      invalid: number;
+      /** v2 rows: signed but provenance redacted — not claimed offline. */
+      notReverified: number;
+      errors: string[];
+    };
 
 function buildVerificationPayload(entry: PublicLedgerEntry): string {
   return [
@@ -17,6 +28,13 @@ function buildVerificationPayload(entry: PublicLedgerEntry): string {
     `reason:${entry.reason ?? ""}`,
     `committed_at:${entry.committed_at ?? ""}`,
   ].join("\n");
+}
+
+/** Dual-path by stored sig_version (missing → 1 = historical five-field). */
+function entrySigVersion(entry: PublicLedgerEntry): number {
+  if (entry.sig_version == null) return 1;
+  const n = Number(entry.sig_version);
+  return Number.isFinite(n) ? n : 1;
 }
 
 function hexToBytes(hex: string): ArrayBuffer {
@@ -50,6 +68,7 @@ export function LedgerVerifier({ entries, entryCount }: { entries?: PublicLedger
           status: "done",
           valid: 0,
           invalid: 0,
+          notReverified: 0,
           errors: [`Failed to load entries: ${(err as Error).message}`],
         });
         return;
@@ -61,6 +80,7 @@ export function LedgerVerifier({ entries, entryCount }: { entries?: PublicLedger
         status: "done",
         valid: 0,
         invalid: entriesToVerify.length,
+        notReverified: 0,
         errors: [
           "WebCrypto is not available in this browser. Use the CLI verifier or open the offline verifier in a modern browser (Chrome 113+, Firefox 130+, Safari 17+).",
         ],
@@ -72,6 +92,7 @@ export function LedgerVerifier({ entries, entryCount }: { entries?: PublicLedger
     const errors: string[] = [];
     let valid = 0;
     let invalid = 0;
+    let notReverified = 0;
 
     for (const entry of entriesToVerify) {
       try {
@@ -80,6 +101,16 @@ export function LedgerVerifier({ entries, entryCount }: { entries?: PublicLedger
           errors.push(`${entry.tx_id}: missing public key or signature`);
           continue;
         }
+
+        const sigVersion = entrySigVersion(entry);
+        if (sigVersion >= 2) {
+          // Honesty fence (mirrors engine public_export verifier): do not
+          // Ed25519-verify five-field payload for v2 — provenance is redacted.
+          notReverified++;
+          errors.push(`${entry.tx_id}: ${V2_FENCE_LABEL}`);
+          continue;
+        }
+
         const key = await subtle.importKey(
           "raw",
           hexToBytes(entry.public_key),
@@ -104,7 +135,7 @@ export function LedgerVerifier({ entries, entryCount }: { entries?: PublicLedger
       }
     }
 
-    setState({ status: "done", valid, invalid, errors });
+    setState({ status: "done", valid, invalid, notReverified, errors });
   }, [entries, entryCount]);
 
   const totalEntries = entries?.length ?? entryCount ?? 0;
@@ -126,24 +157,42 @@ export function LedgerVerifier({ entries, entryCount }: { entries?: PublicLedger
 
       {state.status === "done" && (
         <div className="ledger-verify-result">
-          <p className={state.invalid === 0 ? "ledger-verify-ok" : "ledger-verify-bad"}>
-            {state.invalid === 0 ? (
+          <p
+            className={
+              state.invalid === 0 ? "ledger-verify-ok" : "ledger-verify-bad"
+            }
+          >
+            {state.invalid === 0 && state.notReverified === 0 ? (
               <>
                 <ShieldCheck size={16} aria-hidden="true" />{" "}
                 {state.valid} of {totalEntries} entries verified as valid.
+              </>
+            ) : state.invalid === 0 ? (
+              <>
+                <ShieldCheck size={16} aria-hidden="true" />{" "}
+                {state.valid} of {totalEntries} entries verified as valid offline
+                (v1 five-field). {state.notReverified} not re-verified offline
+                (v2 provenance redacted; use local{" "}
+                <code>ledgerful verify --signatures</code>).
               </>
             ) : (
               <>
                 <AlertCircle size={16} aria-hidden="true" />{" "}
                 {state.valid} of {totalEntries} entries valid,{" "}
-                {state.invalid} invalid.
+                {state.invalid} invalid
+                {state.notReverified > 0
+                  ? `, ${state.notReverified} not re-verified offline (v2)`
+                  : ""}
+                .
               </>
             )}
           </p>
           {state.errors.length > 0 && (
             <div className="ledger-verify-errors">
               {state.errors.map((err) => (
-                <p key={err} className="mono">{err}</p>
+                <p key={err} className="mono">
+                  {err}
+                </p>
               ))}
             </div>
           )}

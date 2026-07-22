@@ -1432,6 +1432,11 @@ test("public ledger offline verifier page loads and has verify controls", async 
   test.setTimeout(180_000);
   await page.goto("/ledger/verifier.html");
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  // 0072 honesty fence: v1 offline; v2 not re-verified offline.
+  await expect(page.locator("body")).toContainText(/Honesty fence/i);
+  await expect(page.locator("body")).toContainText(
+    /not.*re-verified offline|ledgerful verify --signatures/i,
+  );
   // External verifier.js (CSP-safe). Auto-runs; status stays on Loading until done.
   const status = page.locator("#status");
   await expect(status).toBeVisible();
@@ -1441,7 +1446,7 @@ test("public ledger offline verifier page loads and has verify controls", async 
   );
   await expect(page.locator("#results")).toBeVisible();
   await expect(page.locator("#results")).toContainText(
-    /Manifest|Entries|VALID|INVALID|UNSIGNED/i,
+    /Manifest|Entries|VALID|INVALID|UNSIGNED|not re-verified offline/i,
   );
 });
 
@@ -1466,6 +1471,8 @@ test("public ledger offline verifier renders malicious free-text as textContent 
     summary: maliciousSummary,
     reason: "safe reason",
     committed_at: "2026-07-21T00:00:00Z",
+    // Missing sig_version → dual-path default 1 (v1 five-field / UNSIGNED).
+    sig_version: 1,
   };
   const fixtureNdjson = JSON.stringify(fixtureEntry) + "\n";
   const fixtureManifest = {
@@ -1502,10 +1509,12 @@ test("public ledger offline verifier renders malicious free-text as textContent 
     { timeout: 30_000 },
   );
 
+  // Columns: tx_id, category, summary, sig_version, status (0072 dual-path).
   const cells = page.locator("#results table tbody tr td");
   await expect(cells.nth(0)).toHaveText(maliciousTx);
   await expect(cells.nth(1)).toHaveText(maliciousCategory);
   await expect(cells.nth(2)).toHaveText(maliciousSummary);
+  await expect(cells.nth(3)).toHaveText("1");
 
   // Literal tag text in the DOM textContent — not parsed as HTML.
   const summaryText = await cells.nth(2).evaluate((el) => el.textContent);

@@ -23,6 +23,12 @@ export type PublicLedgerEntry = {
   public_key: string | null;
   entry_hash: string | null;
   prev_hash: string | null;
+  /**
+   * Signature codec version from engine export allowlist v2+.
+   * `1` / missing = legacy five-field offline verify;
+   * `>=2` = full provenance (redacted offline — honesty fence).
+   */
+  sig_version?: number;
 };
 
 export type PublicLedgerManifest = {
@@ -85,6 +91,7 @@ export const publicLedgerAllowlist = [
   "public_key",
   "entry_hash",
   "prev_hash",
+  "sig_version",
 ] as const;
 
 function bundlePath(relative: string): string {

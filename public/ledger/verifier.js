@@ -5,6 +5,9 @@
 //
 // Track 0075 (RT-X0): free-text entry fields and status hashes are rendered via
 // textContent / createElement only — never string-built into innerHTML.
+//
+// Track 0072: dual-path by sig_version — v1/missing re-verifies the published
+// five-field Ed25519 basis; v2+ is honesty-fenced (provenance fields redacted).
 (async function () {
   const statusEl = document.getElementById("status");
   const resultsEl = document.getElementById("results");
@@ -124,6 +127,25 @@
     }
     resultsEl.appendChild(manifestStatus);
 
+    if (manifest.chainHead) {
+      const chainP = document.createElement("p");
+      const chainStrong = document.createElement("strong");
+      chainStrong.textContent = "Chain head:";
+      chainP.appendChild(chainStrong);
+      appendText(chainP, " present (length=");
+      appendText(
+        chainP,
+        String(
+          manifest.chainHead.length != null ? manifest.chainHead.length : "?",
+        ),
+      );
+      appendText(
+        chainP,
+        "). Full prev_hash walk is not re-verified offline (prev_hash redacted).",
+      );
+      resultsEl.appendChild(chainP);
+    }
+
     const entriesText = await loadText("entries.ndjson");
     const expectedEntriesHash = manifest.entriesSha256;
     const actualEntriesHash = await sha256Hex(
@@ -153,12 +175,18 @@
     }
     resultsEl.appendChild(entriesStatus);
 
+    const note = document.createElement("div");
+    note.className = "note";
+    note.textContent =
+      "SIGNATURE: v2 rows are not re-verified offline (v2 provenance fields redacted; verify with local ledgerful verify --signatures). v1 rows use the legacy five-field basis.";
+    resultsEl.appendChild(note);
+
     const lines = entriesText.split("\n").filter((line) => line.trim());
 
     const table = document.createElement("table");
     const thead = document.createElement("thead");
     const headRow = document.createElement("tr");
-    for (const h of ["tx_id", "category", "summary", "status"]) {
+    for (const h of ["tx_id", "category", "summary", "sig_version", "status"]) {
       const th = document.createElement("th");
       th.textContent = h;
       headRow.appendChild(th);
@@ -170,43 +198,58 @@
     let valid = 0;
     let invalid = 0;
     let unsigned = 0;
+    let v2fenced = 0;
 
     for (const line of lines) {
       const entry = JSON.parse(line);
       const key = entry.public_key ? hexToBytes(entry.public_key) : null;
       const sig = entry.signature ? hexToBytes(entry.signature) : null;
-      // VERIFY-ON-RAW: basis uses raw entry fields for signature verification.
-      // Display uses textContent only — never merge escaping into this basis.
-      const basis =
-        "tx_id:" +
-        entry.tx_id +
-        "\ncategory:" +
-        (entry.category ?? "") +
-        "\nsummary:" +
-        (entry.summary ?? "") +
-        "\nreason:" +
-        (entry.reason ?? "") +
-        "\ncommitted_at:" +
-        (entry.committed_at ?? "");
-      const payload = new TextEncoder().encode(basis);
+      // Dual-path by sig_version (default 1 when missing = historical bundles).
+      const sigVersion =
+        entry.sig_version == null ? 1 : Number(entry.sig_version);
       let label = "UNSIGNED";
+      let cls = "unsigned";
       if (key && sig) {
-        try {
-          const entryValid = await verifyEd25519(key, sig, payload);
-          label = entryValid ? "VALID" : "INVALID";
-        } catch {
-          label = "INVALID";
+        if (sigVersion >= 2) {
+          // Honesty fence: full v2 payload fields are redacted from the public
+          // allowlist; do not claim crypto verify of the free-text provenance.
+          label =
+            "SIGNATURE: not re-verified offline (v2 provenance fields redacted; verify with local ledgerful verify --signatures)";
+          cls = "v2fence";
+        } else {
+          // VERIFY-ON-RAW: legacy five-field basis uses raw published fields.
+          // Display uses textContent only — never merge escaping into this basis.
+          const basis =
+            "tx_id:" +
+            entry.tx_id +
+            "\ncategory:" +
+            (entry.category ?? "") +
+            "\nsummary:" +
+            (entry.summary ?? "") +
+            "\nreason:" +
+            (entry.reason ?? "") +
+            "\ncommitted_at:" +
+            (entry.committed_at ?? "");
+          const payload = new TextEncoder().encode(basis);
+          try {
+            const entryValid = await verifyEd25519(key, sig, payload);
+            label = entryValid ? "VALID" : "INVALID";
+            cls = entryValid ? "valid" : "invalid";
+          } catch {
+            label = "INVALID";
+            cls = "invalid";
+          }
         }
       }
-      if (label === "VALID") valid += 1;
-      else if (label === "INVALID") invalid += 1;
+      if (cls === "valid") valid += 1;
+      else if (cls === "invalid") invalid += 1;
+      else if (cls === "v2fence") v2fenced += 1;
       else unsigned += 1;
-      const cls =
-        label === "VALID" ? "valid" : label === "INVALID" ? "invalid" : "unsigned";
       const tr = document.createElement("tr");
       appendCell(tr, entry.tx_id);
       appendCell(tr, entry.category);
       appendCell(tr, entry.summary || "");
+      appendCell(tr, String(sigVersion));
       appendStatusCell(tr, label, cls);
       tbody.appendChild(tr);
     }
@@ -220,7 +263,9 @@
       invalid +
       " invalid, " +
       unsigned +
-      " unsigned of " +
+      " unsigned, " +
+      v2fenced +
+      " not re-verified offline (v2) of " +
       lines.length +
       " entries.";
   } catch (err) {

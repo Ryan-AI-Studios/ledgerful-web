@@ -12,8 +12,9 @@ engine's own signed ledger entries.
   fields.
 - `index.html` — static browse page (no JavaScript).
 - `verifier.html` — standalone offline WebCrypto verifier. Open this file in a
-  modern browser to verify the manifest signature and every entry's Ed25519
-  signature without network access.
+  modern browser to verify the manifest signature, entries.ndjson integrity,
+  and (for v1 rows only) entry Ed25519 signatures. v2 entry signatures require
+  unredacted provenance fields and are verified with the local CLI.
 - `README.md` — this file.
 
 ## Allowlist
@@ -29,6 +30,8 @@ Each published entry includes only:
 - `verification_result`
 - `risk_level`
 - `entry_hash`
+- `sig_version` (1 = legacy five-field; 2 = full provenance; optional on
+  historical bundles — missing is treated as 1)
 - `signature`
 - `public_key`
 
@@ -38,8 +41,11 @@ trace ID, related tickets, raw author, observed flag, and previous chain hash.
 
 ## Verification
 
-1. Open `verifier.html` in a browser, or
-2. Use the CLI: `ledgerful ledger export-public --output <dir> --sign`
+1. Open `verifier.html` in a browser (manifest + entries hash always; v1 entry
+   sigs offline; v2 entry sigs honesty-fenced), or
+2. Full entry + chain verify against the source ledger:
+   `ledgerful verify --signatures --chain`
+3. Export: `ledgerful ledger export-public --output <dir> --sign`
 
 If signed, the bundle also contains:
 
@@ -48,7 +54,15 @@ If signed, the bundle also contains:
 
 ## Honest ceiling
 
-This bundle proves each entry's Ed25519 signature and the manifest signature. It does not prove the order or set of entries (that's the chain head) or the identity behind the key (out-of-band fingerprint comparison).
+This bundle proves the manifest signature and the integrity of entries.ndjson.
+Legacy v1 entry signatures (`sig_version=1` or missing) can be re-verified
+offline over the published five-field payload. v2 entry signatures
+(`sig_version>=2`) bind redacted provenance fields (entity, author, origin, …)
+that are not published — offline entry-sig re-verify is intentionally not
+claimed for v2; use `ledgerful verify --signatures` against the local ledger.
+Chain head (when present) is a rollback checkpoint, not a full offline chain
+walk (`prev_hash` is redacted). Key identity requires out-of-band fingerprint
+comparison.
 
 ## Bot key
 

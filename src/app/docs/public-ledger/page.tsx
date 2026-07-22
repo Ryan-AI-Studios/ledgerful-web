@@ -48,32 +48,35 @@ export default function DocsPublicLedgerPage() {
             /ledger
           </Link>
           . Every entry carries a real Ed25519 signature from the engine&apos;s
-          commit hook.
+          commit hook. Offline browser re-verify works for legacy v1 payloads;
+          v2 provenance fields may be redacted, so the offline verifier fences
+          full re-verify and points to local{" "}
+          <code>ledgerful verify --signatures</code>.
         </SectionHeading>
       </section>
 
       {/* ── What it proves ─────────────────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="What it proves">
-          Each entry&apos;s Ed25519 signature verifies against the entry&apos;s
-          public key using WebCrypto in the browser — no backend call, no CLI
-          install needed.
+          For v1 (or missing <code>sig_version</code>) rows: Ed25519 over the
+          published five-field basis via WebCrypto — no backend call. For v2
+          rows: signature presence and an honest fence when free-text provenance
+          is redacted from the public allowlist.
         </SectionHeading>
       </section>
 
       {/* ── Honest ceiling ─────────────────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="What it does not prove">
-          The order or set of entries (chain continuity — future) or the identity
-          behind the key (out-of-band fingerprint comparison required).
+          Chain continuity as a full walk, signer identity without an out-of-band
+          key pin, or full v2 free-text provenance when those fields are redacted.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
-            <strong>Honest ceiling:</strong> the public ledger proves each
-            entry&apos;s signature. It does not prove the order or set of entries
-            (chain continuity) or the identity behind the signing key.
-            Out-of-band fingerprint comparison is required before treating a key
-            as authentic.
+            <strong>Honest ceiling:</strong> the public ledger proves v1 entry
+            signatures offline and publishes signed material for inspection. It
+            does not prove order/set alone, key identity without a pin, or
+            offline re-verify of redacted v2 provenance — use local CLI for that.
           </p>
         </div>
       </section>

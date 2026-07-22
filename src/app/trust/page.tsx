@@ -143,8 +143,10 @@ export default function TrustPage() {
       <section className="content-band trust-landing-band" id="public-ledger">
         <SectionHeading title="Public ledger">
           Ledgerful publishes its own development change ledger as a redacted,
-          signed, browser-verifiable bundle. Every entry carries a real Ed25519
-          signature you can verify without a backend call.
+          signed, browser-verifiable bundle. Legacy v1 entries can be
+          Ed25519-verified offline in the browser; v2 provenance rows honesty-fence
+          offline re-verify when redacted fields are required (use local{" "}
+          <code>ledgerful verify --signatures</code>).
         </SectionHeading>
         <p>
           View the ledger at{" "}
@@ -159,14 +161,15 @@ export default function TrustPage() {
         </p>
         <div className="disclosure-notice disclosure-notice--follow">
           <p>
-            <strong>What this proves:</strong> each entry&apos;s Ed25519
-            signature.
+            <strong>What this proves:</strong> for v1 sample rows, each
+            entry&apos;s Ed25519 signature over the published basis; for v2, signature
+            presence plus the honesty fence (full provenance re-verify needs unredacted
+            local CLI).
           </p>
           <p className="disclosure-notice-gap">
-            <strong>What this does not prove:</strong> the order or set of
-            entries (chain continuity) or the identity behind the signing key.
-            Out-of-band fingerprint comparison is required before treating a key
-            as authentic.
+            <strong>What this does not prove:</strong> chain continuity, signer
+            identity without an out-of-band key pin, or full v2 free-text provenance
+            when fields are redacted from the public bundle.
           </p>
         </div>
       </section>

@@ -71,21 +71,26 @@ export default function LedgerPage() {
         <h1>Ledgerful&apos;s development ledger, signed and verifiable.</h1>
         <p>
           A redacted, cryptographically signed sample of the Ledgerful engine&apos;s
-          own change ledger. Every entry carries an Ed25519 signature you can
-          verify in the browser, with no backend call.
+          own change ledger. Historical (v1) entries can be Ed25519-verified in the
+          browser offline; v2 provenance rows fence offline entry-sig re-verify when
+          redacted fields are required (use local{" "}
+          <code>ledgerful verify --signatures</code>). No backend call.
         </p>
       </section>
 
       <section className="content-band">
         <div className="ledger-honest-ceiling disclosure-notice">
           <p>
-            <strong>What this proves:</strong> each entry&apos;s Ed25519 signature.
+            <strong>What this proves:</strong> for legacy v1 sample rows, each
+            entry&apos;s Ed25519 signature over the published five-field basis;
+            for v2 rows, presence of a signature plus the honesty fence (full
+            provenance re-verify requires unredacted local CLI).
           </p>
           <p style={{ marginTop: "12px" }}>
             <strong>What this does not prove:</strong> the order or set of
-            entries (chain continuity) or the identity behind the signing key.
-            Out-of-band fingerprint comparison is required before treating a key
-            as authentic.
+            entries (chain continuity), signer identity without out-of-band key
+            pin, or full v2 free-text provenance when fields are redacted from
+            the public bundle.
           </p>
           <p style={{ marginTop: "12px" }}>
             This is the engine&apos;s development ledger published as a static
@@ -193,7 +198,8 @@ export default function LedgerPage() {
 
       <section className="content-band">
         <SectionHeading title="Verify and download">
-          Open the offline verifier to check all entry signatures in your
+          Open the offline verifier to check v1 entry signatures (and v2 honesty
+          fence status) in your
           browser, or download the raw bundle.
         </SectionHeading>
         <div className="ledger-actions">

@@ -223,7 +223,8 @@ export default function Home() {
           <Link href="/ledger" className="inline-link">
             /ledger
           </Link>{" "}
-          — every entry is Ed25519-signed and verifiable in your browser.
+          — signed for provenance; v1 sample rows verify offline in the browser,
+          with a v2 honesty fence when redacted fields block full re-verify.
         </SectionHeading>
       </section>
 

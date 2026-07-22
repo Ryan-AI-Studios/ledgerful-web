@@ -52,7 +52,7 @@ export const trustDataFlows: TrustDataFlow[] = [
   {
     iconName: "RadioTower",
     title: "Telemetry (opt-in)",
-    body: `Usage metrics are excluded from the default build. A build with ${launchTruth.facts.telemetry.feature} must still be enabled with ${launchTruth.facts.telemetry.enableCommand} before aggregate command counts, platform/version metadata, enabled features, and an anonymous ID are sent.`,
+    body: `Usage metrics are excluded from the default build. A build with ${launchTruth.facts.telemetry.feature} must still be enabled with ${launchTruth.facts.telemetry.enableCommand} before aggregate command counts, platform/version metadata, enabled features, and an anonymous ID are sent. ${launchTruth.facts.telemetry.ingestPosture}`,
     maturity: "available",
     deployment: "runs-locally",
   },
@@ -135,7 +135,10 @@ export const boundaryRows: BoundaryRow[] = [
       "Local aggregate top-level command-name counts, enabled features, and an anonymous UUID generated when enabled",
     writes: "A single JSON payload to the configured Supabase ingest endpoint",
     uploads:
-      "Aggregate command counts, platform/version metadata, enabled features, and an anonymous ID — only after explicit enable. " + launchTruth.facts.telemetry.ipRetention,
+      "Aggregate command counts, platform/version metadata, enabled features, and an anonymous ID — only after explicit enable. " +
+      launchTruth.facts.telemetry.ipRetention +
+      " " +
+      launchTruth.facts.telemetry.ingestPosture,
     staysLocal:
       "Source code, file paths, diff text, query text, commit messages, and author identities.",
   },
@@ -373,7 +376,7 @@ export const productSubprocessors: ProductSubprocessor[] = [
   {
     name: "Supabase (telemetry)",
     purpose:
-      "Opt-in usage telemetry ingest only. No source code or project data is sent. Disabled by default.",
+      "Opt-in usage telemetry ingest only. No source code or project data is sent. Disabled by default. Ingest rejects unauthenticated and over-quota traffic; clients send a non-secret bar-raising token (not strong authentication).",
     maturity: "available",
     deployment: "runs-locally",
     tier: "current-product",

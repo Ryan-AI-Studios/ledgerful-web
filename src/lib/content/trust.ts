@@ -458,7 +458,7 @@ export const proveClaims: ProveDontClaim[] = [
       "tx_id, category, summary, reason, committed_at, entity, change_type, entry_type, author, risk, is_breaking, related_tickets, and origin. " +
       "Historical v1 rows remain dual-verifiable until re-sign upgrades them. " +
       "When intent.trusted_public_keys is pinned, verify reports VALID (trusted) vs VALID (unknown key). " +
-      "(ledger::crypto v2 basis; track 0072)",
+      "(crypto.rs v2 basis; track 0072)",
   },
   {
     heading: "The SOC 2-style export manifest is signed",

@@ -35,6 +35,8 @@ const API_CONTEXT_ALLOWLIST = Object.freeze([
   { pattern: /E1-CRYPTO/g },
   // Exact product stdout from `ledgerful demo` (track 0070).
   { pattern: /CRYPTO VALID/g },
+  // Engine module path citation (0072 honesty / proveClaims).
+  { pattern: /crypto\.rs/g },
 ]);
 
 const BANNED_TERMS = Object.freeze([

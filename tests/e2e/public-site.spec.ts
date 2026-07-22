@@ -1445,6 +1445,86 @@ test("public ledger offline verifier page loads and has verify controls", async 
   );
 });
 
+// Track 0075 (RT-X0): offline verifier must DOM-escape free-text, never execute it.
+test("public ledger offline verifier renders malicious free-text as textContent only", async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+
+  const maliciousSummary =
+    '<img src=x onerror="window.__xss=1"><script>window.__xss=1</script>';
+  const maliciousTx =
+    '"><img src=x onerror="window.__xss=1">tx-xss';
+  const maliciousCategory =
+    '<svg onload="window.__xss=1">FEATURE';
+  const maliciousHash =
+    'abc</span><img src=x onerror="window.__xss=1">';
+
+  const fixtureEntry = {
+    tx_id: maliciousTx,
+    category: maliciousCategory,
+    summary: maliciousSummary,
+    reason: "safe reason",
+    committed_at: "2026-07-21T00:00:00Z",
+  };
+  const fixtureNdjson = JSON.stringify(fixtureEntry) + "\n";
+  const fixtureManifest = {
+    schemaVersion: 1,
+    entriesSha256: maliciousHash,
+    signature: null,
+    publicKey: null,
+    publicKeyFingerprint: null,
+  };
+
+  await page.addInitScript(() => {
+    (window as unknown as { __xss?: number }).__xss = undefined;
+  });
+
+  await page.route("**/ledger/entries.ndjson", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/x-ndjson",
+      body: fixtureNdjson,
+    });
+  });
+  await page.route("**/ledger/manifest.json", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(fixtureManifest),
+    });
+  });
+
+  await page.goto("/ledger/verifier.html");
+  const status = page.locator("#status");
+  await expect(status).toContainText(
+    /Verification complete|Verification failed/i,
+    { timeout: 30_000 },
+  );
+
+  const cells = page.locator("#results table tbody tr td");
+  await expect(cells.nth(0)).toHaveText(maliciousTx);
+  await expect(cells.nth(1)).toHaveText(maliciousCategory);
+  await expect(cells.nth(2)).toHaveText(maliciousSummary);
+
+  // Literal tag text in the DOM textContent — not parsed as HTML.
+  const summaryText = await cells.nth(2).evaluate((el) => el.textContent);
+  expect(summaryText).toContain("<script>");
+  expect(summaryText).toContain("<img");
+
+  // No live injected elements under #results (hashes + free-text are text nodes).
+  await expect(page.locator("#results img, #results script, #results svg")).toHaveCount(0);
+
+  // Hash mismatch path also surfaces attacker-controlled strings as text only.
+  const resultsText = await page.locator("#results").innerText();
+  expect(resultsText).toContain(maliciousHash);
+
+  const xssFlag = await page.evaluate(
+    () => (window as unknown as { __xss?: number }).__xss,
+  );
+  expect(xssFlag).toBeUndefined();
+});
+
 // ── Track 0048 SOC 2 control-evidence mapping page tests ───────────────────────
 
 test("/docs/soc2-mapping 404s when ENABLE_SOC2_MAPPING is off (default)", async ({

@@ -126,7 +126,9 @@ export const launchTruth = {
         "features_enabled",
         "active_days_in_window",
       ],
-      ipRetention: "The connection IP is transiently visible to the ingestion endpoint but is scrubbed and never stored; stored telemetry contains no IP or PII.",
+      ipRetention: "The connection IP is transiently visible to the ingestion endpoint for rate limiting but is scrubbed and never stored; stored telemetry contains no IP or PII.",
+      ingestPosture:
+        "Ingest rejects unauthenticated (when required) and over-quota traffic; clients send a non-secret bar-raising token (X-Ledgerful-Telemetry-Token); telemetry stays best-effort. Fail-closed global quotas and platform spend caps are the real controls — the embedded CLI token is not strong authentication.",
     },
     waitlistEsp: {
       label: "Waitlist email provider",

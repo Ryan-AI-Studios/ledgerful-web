@@ -62,5 +62,5 @@ export const pageDescriptions = {
   docsGoldenPath:
     "Self-guided proof loop: install, run ledgerful demo --keep, see cryptographic VALID (signatures + chain + against-export), open the DEMO evidence zip. Two clocks (T_proof vs T_first), DEMO honesty, not a compliance verdict.",
   ledger:
-    "Ledgerful's development change ledger, published as a redacted, signed, and verifiable sample. Verify Ed25519 signatures in the browser.",
+    "Ledgerful's development change ledger, published as a redacted, signed sample. Offline v1 Ed25519 verify in the browser; v2 rows honesty-fence redacted re-verify (local CLI for full provenance).",
 };

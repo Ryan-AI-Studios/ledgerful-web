@@ -179,8 +179,9 @@ export default async function LedgerEntryPage({
       <section className="content-band">
         <SectionHeading title="Verify this entry" />
         <p className="ledger-verify-hint">
-          Click below to verify the Ed25519 signature for this entry using
-          WebCrypto in your browser.
+          Click below to verify this entry with WebCrypto: v1 rows run full
+          Ed25519 offline; v2 rows show the redaction honesty fence and point to
+          local <code>ledgerful verify --signatures</code>.
         </p>
         <LedgerVerifier entries={[entry]} />
       </section>

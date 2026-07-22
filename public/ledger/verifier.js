@@ -2,6 +2,9 @@
 // External script (not inline) so production CSP script-src 'self' allows it
 // when served from the site; also works from a downloaded directory via file://
 // when the browser permits local fetch of sibling files.
+//
+// Track 0075 (RT-X0): free-text entry fields and status hashes are rendered via
+// textContent / createElement only — never string-built into innerHTML.
 (async function () {
   const statusEl = document.getElementById("status");
   const resultsEl = document.getElementById("results");
@@ -60,6 +63,31 @@
       .join("");
   }
 
+  // DOM-safe helpers: free-text fields always go through textContent, never innerHTML.
+  function appendCell(tr, v) {
+    const td = document.createElement("td");
+    td.textContent = v == null ? "" : String(v);
+    tr.appendChild(td);
+  }
+
+  function appendStatusCell(tr, label, cls) {
+    const td = document.createElement("td");
+    td.textContent = label;
+    td.className = cls;
+    tr.appendChild(td);
+  }
+
+  function appendText(parent, text) {
+    parent.appendChild(document.createTextNode(text));
+  }
+
+  function appendStatusLabel(parent, label, cls) {
+    const span = document.createElement("span");
+    span.textContent = label;
+    span.className = cls;
+    parent.appendChild(span);
+  }
+
   try {
     const manifestText = await loadText("manifest.json");
     const manifest = JSON.parse(manifestText);
@@ -83,13 +111,17 @@
     }
 
     const manifestStatus = document.createElement("p");
-    manifestStatus.innerHTML =
-      "<strong>Manifest:</strong> " +
-      (manifestValid
-        ? '<span class="valid">VALID</span>'
-        : sigHex
-          ? '<span class="invalid">INVALID</span>'
-          : '<span class="unsigned">UNSIGNED</span>');
+    const manifestStrong = document.createElement("strong");
+    manifestStrong.textContent = "Manifest:";
+    manifestStatus.appendChild(manifestStrong);
+    appendText(manifestStatus, " ");
+    if (manifestValid) {
+      appendStatusLabel(manifestStatus, "VALID", "valid");
+    } else if (sigHex) {
+      appendStatusLabel(manifestStatus, "INVALID", "invalid");
+    } else {
+      appendStatusLabel(manifestStatus, "UNSIGNED", "unsigned");
+    }
     resultsEl.appendChild(manifestStatus);
 
     const entriesText = await loadText("entries.ndjson");
@@ -100,25 +132,38 @@
     const entriesHashMatch =
       expectedEntriesHash && expectedEntriesHash === actualEntriesHash;
     const entriesStatus = document.createElement("p");
-    entriesStatus.innerHTML =
-      "<strong>Entries:</strong> " +
-      (entriesHashMatch
-        ? '<span class="valid">MATCH</span> (' + actualEntriesHash + ")"
-        : expectedEntriesHash
-          ? '<span class="invalid">MISMATCH</span> (expected ' +
-            expectedEntriesHash +
-            ", got " +
-            actualEntriesHash +
-            ")"
-          : '<span class="unsigned">NO HASH</span>');
+    const entriesStrong = document.createElement("strong");
+    entriesStrong.textContent = "Entries:";
+    entriesStatus.appendChild(entriesStrong);
+    appendText(entriesStatus, " ");
+    if (entriesHashMatch) {
+      appendStatusLabel(entriesStatus, "MATCH", "valid");
+      appendText(entriesStatus, " (");
+      appendText(entriesStatus, actualEntriesHash);
+      appendText(entriesStatus, ")");
+    } else if (expectedEntriesHash) {
+      appendStatusLabel(entriesStatus, "MISMATCH", "invalid");
+      appendText(entriesStatus, " (expected ");
+      appendText(entriesStatus, expectedEntriesHash);
+      appendText(entriesStatus, ", got ");
+      appendText(entriesStatus, actualEntriesHash);
+      appendText(entriesStatus, ")");
+    } else {
+      appendStatusLabel(entriesStatus, "NO HASH", "unsigned");
+    }
     resultsEl.appendChild(entriesStatus);
 
     const lines = entriesText.split("\n").filter((line) => line.trim());
 
     const table = document.createElement("table");
     const thead = document.createElement("thead");
-    thead.innerHTML =
-      "<tr><th>tx_id</th><th>category</th><th>summary</th><th>status</th></tr>";
+    const headRow = document.createElement("tr");
+    for (const h of ["tx_id", "category", "summary", "status"]) {
+      const th = document.createElement("th");
+      th.textContent = h;
+      headRow.appendChild(th);
+    }
+    thead.appendChild(headRow);
     table.appendChild(thead);
     const tbody = document.createElement("tbody");
 
@@ -130,6 +175,8 @@
       const entry = JSON.parse(line);
       const key = entry.public_key ? hexToBytes(entry.public_key) : null;
       const sig = entry.signature ? hexToBytes(entry.signature) : null;
+      // VERIFY-ON-RAW: basis uses raw entry fields for signature verification.
+      // Display uses textContent only — never merge escaping into this basis.
       const basis =
         "tx_id:" +
         entry.tx_id +
@@ -157,18 +204,10 @@
       const cls =
         label === "VALID" ? "valid" : label === "INVALID" ? "invalid" : "unsigned";
       const tr = document.createElement("tr");
-      tr.innerHTML =
-        "<td>" +
-        entry.tx_id +
-        "</td><td>" +
-        (entry.category || "") +
-        "</td><td>" +
-        (entry.summary || "") +
-        '</td><td class="' +
-        cls +
-        '">' +
-        label +
-        "</td>";
+      appendCell(tr, entry.tx_id);
+      appendCell(tr, entry.category);
+      appendCell(tr, entry.summary || "");
+      appendStatusCell(tr, label, cls);
       tbody.appendChild(tr);
     }
     table.appendChild(tbody);

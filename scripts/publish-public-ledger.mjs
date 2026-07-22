@@ -55,12 +55,12 @@ if (existsSync(currentEntries)) {
   }
 }
 
-const bundleFiles = [
-  "entries.ndjson",
-  "manifest.json",
-  "README.md",
-  "verifier.html",
-];
+// Data + docs only. Do NOT copy engine verifier.html over the production pair.
+// Engine export emits an inline-script verifier; production CSP requires the
+// dual-file shell (verifier.html + verifier.js) fixed in track 0075 / RT-X0.
+// Overwriting would either reintroduce a sink (pre-fix engine) or break CSP
+// (post-fix engine inline script under script-src 'self').
+const bundleFiles = ["entries.ndjson", "manifest.json", "README.md"];
 
 for (const file of bundleFiles) {
   const src = join(EXPORT_DIR, file);
@@ -68,6 +68,15 @@ for (const file of bundleFiles) {
   if (existsSync(src)) {
     copyFileSync(src, dst);
   }
+}
+
+const liveVerifierJs = join(WEB_LEDGER_DIR, "verifier.js");
+const liveVerifierHtml = join(WEB_LEDGER_DIR, "verifier.html");
+if (!existsSync(liveVerifierJs) || !existsSync(liveVerifierHtml)) {
+  console.error(
+    "FAIL: public/ledger must keep the CSP dual-file verifier (verifier.html + verifier.js). Restore track 0075 assets before publishing.",
+  );
+  process.exit(1);
 }
 
 console.log("Staging public/ledger/...");

@@ -73,6 +73,16 @@ export const docTopics: DocTopic[] = [
     href: "/docs/compliance",
   },
   {
+    title: "Security architecture",
+    maturity: "available",
+    deployment: "runs-locally",
+    pillar: "prove",
+    summary:
+      "Deep local-first security model: data boundary, token auth, signing and keys, release verification, telemetry schema, threat model, and responsible disclosure.",
+    nextAction: "Read the security architecture when reviewing trust posture in depth.",
+    href: "/docs/security",
+  },
+  {
     title: "SOC 2 control-evidence mapping",
     maturity: "planned",
     deployment: "runs-locally",

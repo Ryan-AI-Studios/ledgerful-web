@@ -61,6 +61,8 @@ export const pageDescriptions = {
     "Run ledgerful policy check to gate merges on declared named rules. Offline evaluation, base-branch policy in CI, JSON machine contract — not a compliance certificate.",
   docsGoldenPath:
     "Self-guided proof loop: install, run ledgerful demo --keep, see cryptographic VALID (signatures + chain + against-export), open the DEMO evidence zip. Two clocks (T_proof vs T_first), DEMO honesty, not a compliance verdict.",
+  docsSecurity:
+    "Deep security architecture for Ledgerful's local-first model: reads and writes boundary, loopback token auth, signing and key storage, release verification, opt-in telemetry schema, threat model, and responsible disclosure.",
   ledger:
     "Ledgerful's development change ledger, published as a redacted, signed sample. Offline v1 Ed25519 verify in the browser; v2 rows honesty-fence redacted re-verify (local CLI for full provenance).",
 };

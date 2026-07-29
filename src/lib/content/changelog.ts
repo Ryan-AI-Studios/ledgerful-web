@@ -4,9 +4,24 @@ export type ChangelogEntry = {
   title: string;
   state: "completed" | "in progress" | "planned";
   details: string;
+  /** Stable permalink fragment: date + slugified title (0097 Atom feed). */
+  slug: string;
 };
 
-export const changelogEntries: ChangelogEntry[] = [
+/** Deterministic slug: date + slugified title (lowercase, non-alnum → `-`). */
+export function changelogSlug(date: string, title: string): string {
+  const datePart = date
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  const titlePart = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return `${datePart}-${titlePart}`;
+}
+
+const rawEntries: Omit<ChangelogEntry, "slug">[] = [
   {
     date: "2026-07-21",
     area: "Public web",
@@ -56,3 +71,13 @@ export const changelogEntries: ChangelogEntry[] = [
       "Hosted tenancy, GitHub App webhooks, billing, SSO, SCIM, RBAC, and hosted audit logs are future control-plane work.",
   },
 ];
+
+export const changelogEntries: ChangelogEntry[] = rawEntries.map((entry) => ({
+  ...entry,
+  slug: changelogSlug(entry.date, entry.title),
+}));
+
+const slugSet = new Set(changelogEntries.map((e) => e.slug));
+if (slugSet.size !== changelogEntries.length) {
+  throw new Error("changelogEntries: duplicate slug derived from date+title");
+}

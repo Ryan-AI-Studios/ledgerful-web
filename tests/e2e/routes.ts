@@ -1,23 +1,7 @@
-export const publicRoutes = [
-  "/",
-  "/architecture",
-  "/changelog",
-  "/docs",
-  "/docs/cli",
-  "/docs/compliance",
-  "/docs/dashboard",
-  "/docs/github-action",
-  "/docs/mcp",
-  "/docs/policy-check",
-  "/docs/public-ledger",
-  "/docs/golden-path",
-  "/docs/releases",
-  "/docs/sync",
-  "/install",
-  "/editions",
-  "/trust",
-  "/waitlist",
-] as const;
+import { indexableRoutes } from "../../src/lib/content/routes";
+
+/** Browser e2e coverage list — derived from the single route registry (0097). */
+export const publicRoutes = indexableRoutes;
 
 export const primaryNavigation = [
   { href: "/#pillars", label: "Product" },

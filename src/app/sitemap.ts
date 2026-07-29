@@ -1,34 +1,16 @@
-﻿import type { MetadataRoute } from "next";
-import { publicNavigation, siteUrl } from "@/lib/content/navigation";
+import type { MetadataRoute } from "next";
+import { indexableRoutes } from "@/lib/content/routes";
+import { siteUrl } from "@/lib/content/navigation";
 
-const docRoutes = [
-  "/docs/cli",
-  "/docs/dashboard",
-  "/docs/mcp",
-  "/docs/github-action",
-  "/docs/policy-check",
-  "/docs/compliance",
-  "/docs/sync",
-  "/docs/releases",
-  "/docs/public-ledger",
-  "/docs/golden-path",
-];
-
+/**
+ * Public sitemap derived solely from `indexableRoutes` (0097).
+ * lastModified is intentionally omitted: a single hardcoded date was worse than
+ * none (Illyes 2026-07-16), and git-derived dates are unreliable on Vercel shallow clones.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date("2026-06-27");
-
-  return [
-    ...publicNavigation.map((route) => ({
-      url: `${siteUrl}${route.href === "/" ? "" : route.href}`,
-      lastModified: now,
-      changeFrequency: (route.href === "/" ? "weekly" : "monthly") as MetadataRoute.Sitemap[number]["changeFrequency"],
-      priority: route.href === "/" ? 1 : 0.8,
-    })),
-    ...docRoutes.map((path) => ({
-      url: `${siteUrl}${path}`,
-      lastModified: now,
-      changeFrequency: "monthly" as MetadataRoute.Sitemap[number]["changeFrequency"],
-      priority: 0.7,
-    })),
-  ];
+  return indexableRoutes.map((path) => ({
+    url: path === "/" ? siteUrl : `${siteUrl}${path}`,
+    changeFrequency: (path === "/" ? "weekly" : "monthly") as MetadataRoute.Sitemap[number]["changeFrequency"],
+    priority: path === "/" ? 1 : path.startsWith("/docs") ? 0.7 : 0.8,
+  }));
 }

@@ -86,7 +86,8 @@ jobs:
             echo "Launch truth: live state matches register."
             exit 0
           elif [ "$code" -eq 2 ]; then
-            echo "::error::Launch truth UNVERIFIED (transport failure — exit 2). Not claim drift; re-run or check network."
+            # ::warning:: for transport (not claim drift); job still fails (exit 2).
+            echo "::warning::Launch truth UNVERIFIED (transport failure — exit 2). Not claim drift; re-run or check network."
             exit 2
           else
             echo "::error::Launch truth DRIFT (exit $code). Public claims no longer match published state."

@@ -80,9 +80,9 @@ export const localCapabilities: EditionItem[] = [
   },
   {
     label: "GitHub Action setup path",
-    maturity: "planned",
+    maturity: "available",
     deployment: "runs-locally",
-    caveat: "Not publicly installable yet",
+    caveat: "Self-hosted Action; pin version; not Marketplace / not hosted GitHub App",
   },
   {
     label: "Local team sync foundation",
@@ -258,12 +258,12 @@ export const matrixGroups: MatrixGroup[] = [
       },
       {
         feature: "GitHub Action setup path",
-        caveat: "Not publicly installable yet",
+        caveat: "Self-hosted Action; pin version; not Marketplace / not hosted GitHub App",
         cells: [
-          { maturity: "planned", deployment: "runs-locally" },
-          { maturity: "planned", deployment: "runs-locally" },
-          { maturity: "planned", deployment: "runs-locally" },
-          { maturity: "planned", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
         ],
       },
       {

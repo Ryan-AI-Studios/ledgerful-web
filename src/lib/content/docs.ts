@@ -44,7 +44,7 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "MCP setup",
-    maturity: "beta",
+    maturity: "available",
     deployment: "runs-locally",
     pillar: "ask",
     summary:
@@ -54,12 +54,12 @@ export const docTopics: DocTopic[] = [
   },
   {
     title: "GitHub Action setup",
-    maturity: "planned",
-    deployment: "hosted",
+    maturity: "available",
+    deployment: "runs-locally",
     pillar: "assess",
-    summary:
-      "A future hosted control-plane integration for PR risk comments. The workflow YAML is a reference shape, not an installable action today.",
-    nextAction: "Publish install YAML after the public action is released.",
+    summary: launchTruth.facts.githubAction.note,
+    nextAction:
+      "Pin Ryan-AI-Studios/ledgerful-action and ledgerful-version in your workflow; see /docs/github-action.",
     href: "/docs/github-action",
   },
   {

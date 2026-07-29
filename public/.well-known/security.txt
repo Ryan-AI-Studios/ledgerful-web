@@ -1,0 +1,9 @@
+# Ledgerful responsible disclosure (RFC 9116)
+# Renewal: scripts/check-security-txt.mjs fails CI when Expires is within 30 days.
+# Source of truth for contact posture: src/lib/content/launch-facts.ts
+Contact: mailto:security@ledgerful.dev
+Contact: https://github.com/Ryan-AI-Studios/Ledgerful/security/advisories/new
+Expires: 2027-07-28T00:00:00.000Z
+Canonical: https://www.ledgerful.dev/.well-known/security.txt
+Policy: https://www.ledgerful.dev/trust#disclosure
+Preferred-Languages: en

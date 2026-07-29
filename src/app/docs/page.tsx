@@ -46,7 +46,12 @@ const taskGroups = [
   {
     label: "Evidence & security",
     description: "Export audit evidence, verify releases, review the public ledger, and review local data handling.",
-    topics: ["SOC 2-style evidence export", "Release verification", "Public ledger"],
+    topics: [
+      "SOC 2-style evidence export",
+      "Security architecture",
+      "Release verification",
+      "Public ledger",
+    ],
   },
 ] as const;
 

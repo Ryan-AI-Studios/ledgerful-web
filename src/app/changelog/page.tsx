@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   description: pageDescriptions.changelog,
   alternates: {
     canonical: "/changelog",
+    types: {
+      "application/atom+xml": "/changelog/feed.xml",
+    },
   },
   openGraph: {
     url: "/changelog",
@@ -36,7 +39,7 @@ export default function ChangelogPage() {
         <SectionHeading title="Current entries" />
         <div className="timeline">
           {changelogEntries.map((entry) => (
-            <article key={`${entry.area}-${entry.title}`}>
+            <article key={entry.slug} id={entry.slug}>
               <CalendarClock size={22} aria-hidden="true" />
               <div>
                 <div className="timeline-meta">

@@ -60,7 +60,10 @@ assert.ok(
   "public/.well-known/security.txt is missing",
 );
 
-const text = await readFile(securityTxtPath, "utf8");
+// Fatal UTF-8 decode: Node's readFile(..., "utf8") replaces bad sequences with
+// U+FFFD; that would silently accept corrupted bytes in comments/fields.
+const raw = await readFile(securityTxtPath);
+const text = new TextDecoder("utf-8", { fatal: true }).decode(raw);
 // UTF-8 BOM would be a different encoding presentation; reject it.
 assert.ok(!text.startsWith("\uFEFF"), "security.txt must not start with a UTF-8 BOM");
 

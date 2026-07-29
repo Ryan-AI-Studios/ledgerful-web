@@ -23,6 +23,14 @@ export function changelogSlug(date: string, title: string): string {
 
 const rawEntries: Omit<ChangelogEntry, "slug">[] = [
   {
+    date: "2026-07-29",
+    area: "Public web",
+    title: "Claim currency: v0.2.3 and public Action",
+    state: "completed",
+    details:
+      "Present-tense site claims refreshed to engine v0.2.3 and npm @ledgerful/mcp-server 0.1.12 (engine pin v0.2.3). GitHub Action docs corrected to the public Ryan-AI-Studios/ledgerful-action install path with pin honesty. Live launch-truth gate now distinguishes drift (exit 1) from transport UNVERIFIED (exit 2) and runs on weekday schedule + dispatch + main push.",
+  },
+  {
     date: "2026-07-21",
     area: "Public web",
     title: "Golden-path proof loop page",

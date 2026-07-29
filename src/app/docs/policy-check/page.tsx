@@ -14,6 +14,7 @@ import {
   policyTomlFull,
 } from "@/lib/content/policy-check";
 import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
+import { launchTruth } from "@/lib/content/launch-facts";
 
 export const metadata: Metadata = {
   title: { absolute: "Policy check — Ledgerful Docs" },
@@ -64,7 +65,7 @@ export default function DocsPolicyCheckPage() {
             </code>
           </pre>
           <p style={{ marginTop: "12px" }}>
-            Prebuilt v0.1.9 release binaries include{" "}
+            Prebuilt {launchTruth.facts.release.tag} release binaries include{" "}
             <code>ledgerful policy check</code>. Older archives (for example
             v0.1.8) may not — use a source install or upgrade. Confirm with{" "}
             <code>ledgerful policy check --help</code>.

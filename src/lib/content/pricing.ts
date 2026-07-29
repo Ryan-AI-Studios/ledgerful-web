@@ -80,9 +80,9 @@ export const localCapabilities: EditionItem[] = [
   },
   {
     label: "GitHub Action setup path",
-    maturity: "planned",
+    maturity: "available",
     deployment: "runs-locally",
-    caveat: "Not publicly installable yet",
+    caveat: "Self-hosted Action; pin version; not Marketplace / not hosted GitHub App",
   },
   {
     label: "Local team sync foundation",
@@ -258,12 +258,12 @@ export const matrixGroups: MatrixGroup[] = [
       },
       {
         feature: "GitHub Action setup path",
-        caveat: "Not publicly installable yet",
+        caveat: "Self-hosted Action; pin version; not Marketplace / not hosted GitHub App",
         cells: [
-          { maturity: "planned", deployment: "runs-locally" },
-          { maturity: "planned", deployment: "runs-locally" },
-          { maturity: "planned", deployment: "runs-locally" },
-          { maturity: "planned", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
+          { maturity: "available", deployment: "runs-locally" },
         ],
       },
       {
@@ -316,7 +316,7 @@ export const pricingFootnotes: string[] = [
   `${launchTruth.facts.license.note} Commercial License headcount-band prices are introductory/provisional and published on this page; Hosted and Enterprise prices are not announced.`,
   "GitHub App, hosted portfolio, hosted audit log, and billing portal require a future hosted control plane. No timeline is announced.",
   "SAML / OIDC SSO, SCIM, and RBAC are planned for enterprise and require a future hosted control plane with enterprise identity infrastructure. No timeline is announced.",
-  `MCP stdio tools are published on npm (v${launchTruth.facts.mcpPackage.version}). GitHub Action setup path is planned — not publicly installable yet. ${launchTruth.facts.githubAction.note}`,
+  `MCP stdio tools are published on npm (v${launchTruth.facts.mcpPackage.version}; engine pin ${launchTruth.facts.mcpPackage.engineTag}). ${launchTruth.facts.githubAction.note}`,
   "Source upload is never required for local editions. The local daemon does not implement SSO, RBAC, or tenant isolation.",
   "No Hosted or Enterprise price is announced. OEM, hosting-as-a-service, resale, and redistribution require a separate written agreement regardless of size.",
 ];

@@ -133,9 +133,9 @@ export default function DocsPage() {
                 marginBottom: "16px",
               }}
             >
-              {release.value}. The hosted GitHub App is a planned surface —
-              its workflow YAML is documented as a reference shape, not an
-              installable action.
+              {release.value}. Surfaces marked planned below are not
+              installable today (for example a future hosted GitHub App). The
+              public self-hosted GitHub Action is available — see Integrate.
             </p>
             <div className="doc-grid">{pendingTopics.map(renderCard)}</div>
           </>

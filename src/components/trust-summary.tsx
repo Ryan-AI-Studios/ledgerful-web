@@ -1,3 +1,5 @@
+import { launchTruth } from "@/lib/content/launch-facts";
+
 /**
  * Concise executive summary (1-screen target) for /trust.
  *
@@ -10,6 +12,7 @@
  * naturally on smaller widths.
  */
 export function TrustSummary() {
+  const releaseTag = launchTruth.facts.release.tag;
   return (
     <aside className="trust-summary" aria-labelledby="trust-summary-title">
       <p className="trust-summary-kicker">Five-minute executive summary</p>
@@ -70,10 +73,10 @@ export function TrustSummary() {
         <div>
           <dt>Release verification</dt>
           <dd>
-            The v0.1.9 release is publicly available with SHA-256 checksums
+            The {releaseTag} release is publicly available with SHA-256 checksums
             for each binary archive. Supply chain attestation (SBOM, cosign
-            signing, SLSA provenance) shipped since v0.1.8 and continues in
-            v0.1.9 — see the supply chain attestation section below. OS code
+            signing, SLSA provenance) shipped since v0.1.8 and continues in{" "}
+            {releaseTag} — see the supply chain attestation section below. OS code
             signing (Windows Authenticode, macOS notarization) is planned.
           </dd>
         </div>

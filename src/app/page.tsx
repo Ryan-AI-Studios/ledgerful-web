@@ -239,7 +239,7 @@ export default function Home() {
       {/* 11. Waitlist / launch updates */}
       <section className="content-band" id="waitlist">
         <SectionHeading title="Get launch updates">
-          Ledgerful v0.1.9 is installed today. If you want launch announcements
+          Ledgerful {release.tag} is installed today. If you want launch announcements
           and changelog updates, leave your email.{" "}
           <Link href="/waitlist" className="inline-link">
             Open the full form

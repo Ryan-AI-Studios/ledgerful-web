@@ -5,9 +5,9 @@
 // public evidence captures. Runs as part of `check:truth`.
 //
 // What this catches:
-//   - Engine version labels older than launch-facts release.localSourceVersion
-//     (e.g. 0.1.6–0.1.8 once current is 0.1.9), except allowlisted historical
-//     phrasing ("since v0.1.8", "shipped with v0.1.8", older-archive caveats)
+//   - Present-tense engine version labels older than launch-facts
+//     release.localSourceVersion, except allowlisted historical / dated-capture
+//     phrasing ("since v0.1.8", "captured from a real v0.1.9 run", Scoop measure notes)
 //   - Personal/local paths (C:\Users\, RyanB, gemini.cmd) in text captures
 //   - Machine-specific noise (GPU VRAM, Driver limitation) in text captures
 //   - "Quiet preview" / "ready to install" contradiction language
@@ -57,9 +57,16 @@ function isOlderThanCurrent(version) {
   return false;
 }
 
-/** Historical mentions that may still cite an older release honestly. */
+/** Historical / dated-capture mentions that may still cite an older release honestly. */
 const HISTORICAL_ALLOW =
-  /\b(since|shipped with|shipped since|continues? in|older(?: archives?)?|predate|before)\b[\s\S]{0,40}v?0\.1\.\d+/gi;
+  /\b(since|shipped with|shipped since|continues? in|older(?: archives?)?|predate|before|captured from|captured artifact|real v?\d+\.\d+\.\d+ run|measured on|through v?\d+\.\d+\.\d+|era|sample-repo capture|command shape current through|dual-number|ledgerful-mcp-server-|mcp-server@|@ledgerful\/mcp-server|engine pin|package version|action-repo residual|action default|defaultValue|default ledgerful-version|residual default is still|ledgerful-action@)\b[\s\S]{0,120}v?0\.\d+\.\d+/gi;
+
+/**
+ * Paths whose version tokens are dated capture provenance, not present-tense
+ * currency claims. Do not re-capture in claim-currency tracks (0103 DoD-4).
+ */
+const DATED_CAPTURE_PATH =
+  /(?:captured-evidence\.ts|evidence-panel\.tsx|golden-path\.ts|[\\/]public[\\/]evidence[\\/])/i;
 
 const FORBIDDEN_PATTERNS = [
   { pattern: /C:\\Users\\RyanB/gi, label: "personal Windows path (C:\\Users\\RyanB)" },
@@ -94,19 +101,39 @@ const violations = [];
  * @param {string} content
  */
 function findStaleVersionHits(filePath, content) {
+  // Dated capture modules keep their provenance versions on purpose.
+  if (DATED_CAPTURE_PATH.test(filePath)) return;
+
   // Strip allowlisted historical phrases before scanning version tokens.
   const scrubbed = content.replace(HISTORICAL_ALLOW, " ");
   const re = /\bv?0\.\d+\.\d+\b/g;
   /** @type {string[]} */
   const hits = [];
   let m;
+  // Engine is 0.2.x (localSourceVersion). MCP package stays on 0.1.x dual-number —
+  // do not treat every 0.1.x token as a stale engine claim.
+  const engineMajorMinor = `${currentParts[0]}.${currentParts[1]}.`;
   while ((m = re.exec(scrubbed)) !== null) {
     const token = m[0].replace(/^v/, "");
-    // Skip MCP package versions and other non-engine triples that aren't 0.1.x engine
-    // Only treat 0.1.x as engine line (Ledgerful engine is still 0.1.z).
-    if (!token.startsWith("0.1.")) continue;
-    // MCP package versions live at 0.1.10+; those are package numbers, not engine.
-    // Engine is 0.1.9 today; MCP is 0.1.11. Flag only engine-like labels that are older.
+    // Only engine-line majors matching current series (e.g. 0.2.x when current is 0.2.3).
+    // Older major/minor series in remaining text are treated as non-engine or residual
+    // after HISTORICAL_ALLOW; explicit present-tense stale minors still flag.
+    if (!token.startsWith(engineMajorMinor) && !token.startsWith("0.1.")) {
+      // other series (future-proof)
+    }
+    // Flag 0.1.x only when they look like bare present-tense engine claims
+    // (e.g. "v0.1.9 is installed") — after HISTORICAL_ALLOW scrubbing.
+    // Prefer engine series match when current is 0.2+:
+    const isEngineSeries = token.startsWith(engineMajorMinor);
+    const isLegacyEngineSeries = token.startsWith("0.1.");
+    if (!isEngineSeries && !isLegacyEngineSeries) continue;
+    // MCP 0.1.1x package numbers: skip when clearly package-shaped (>= 0.1.10)
+    // while engine has moved to 0.2.x.
+    if (isLegacyEngineSeries && currentParts[1] >= 2) {
+      const patch = Number.parseInt(token.split(".")[2] ?? "", 10);
+      // 0.1.10+ are MCP package line; 0.1.0–0.1.9 may still be bare engine claims
+      if (!Number.isNaN(patch) && patch >= 10) continue;
+    }
     if (isOlderThanCurrent(token)) {
       hits.push(m[0]);
     }

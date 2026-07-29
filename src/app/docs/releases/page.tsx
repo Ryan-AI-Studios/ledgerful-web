@@ -32,14 +32,14 @@ export default function DocsReleasesPage() {
       {/* ── Section 1: Release status ─────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="Release artifact status">
-          {release.value}. Download URLs are live on the v0.1.9 GitHub
+          {release.value}. Download URLs are live on the {release.tag} GitHub
           Release page.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
             <strong>Release artifacts available:</strong> {release.note} The
-            verification process documented below is actionable for the
-            v0.1.9 release.
+            verification process documented below is actionable for the{" "}
+            {release.tag} release.
           </p>
           <p style={{ marginTop: "12px" }}>
             <strong>Install from source:</strong> You can also build from
@@ -55,7 +55,7 @@ export default function DocsReleasesPage() {
             implemented. Binaries may trigger OS security prompts on first
             launch. Code signing for both platforms is a separate planned
             enhancement. Supply chain attestation (SBOM, cosign signing, SLSA
-            provenance) shipped since v0.1.8 and continue in v0.1.9 — see the{" "}
+            provenance) shipped since v0.1.8 and continue in {release.tag} — see the{" "}
             <Link href="/docs/security#supply-chain-attestation" className="inline-link">
               trust page supply chain section
             </Link>

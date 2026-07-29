@@ -25,7 +25,10 @@
    ```
 6. If the review reports blocking findings, the orchestrator fixes them,
    pushes new commits, and re-runs the review until clean.
-7. The human (repo owner) makes the final **product/merge decision** based
+7. A reviewer's **"verification gap, not a defect in this diff"** finding
+   must become a `deferred.md` row (coordinated conductor) before the PR
+   merges — do not leave gaps only in review prose.
+8. The human (repo owner) makes the final **product/merge decision** based
    on the plain-language review summary — not a code review.
 
 ## What the AI reviewer does NOT do
@@ -41,7 +44,7 @@
 - `build-and-lint` (GitHub Actions)
 - `test-links` (GitHub Actions)
 - `test-browser` (GitHub Actions)
-- `launch-truth-drift` (GitHub Actions, push only)
+- `launch-truth-drift` (GitHub Actions: push to main + weekday schedule + workflow_dispatch; not a required PR check)
 - `ai-reviewed` (AI Review Gate + orchestrator)
 - `npm audit` (GitHub Actions security workflow)
 - `Secret scan` (GitHub Actions security workflow)

@@ -60,45 +60,44 @@ export type GithubActionInput = {
   description: string;
 };
 
-/** GitHub Action inputs confirmed from action/action.yml */
+/**
+ * GitHub Action inputs from live Ryan-AI-Studios/ledgerful-action action.yml
+ * (repo root; measured 2026-07-29). Do not invent inputs.
+ */
 export const githubActionInputs: GithubActionInput[] = [
-  {
-    name: "github-token",
-    required: true,
-    description: "GitHub token used to post and update PR risk comments. Use secrets.GITHUB_TOKEN.",
-  },
-  {
-    name: "project-path",
-    required: false,
-    defaultValue: ".",
-    description: "Workspace-relative path to the repository root. Defaults to the workspace root.",
-  },
-  {
-    name: "base-ref",
-    required: false,
-    description: "Git ref to compare against. Defaults to the PR base branch.",
-  },
-  {
-    name: "risk-threshold",
-    required: false,
-    defaultValue: "TRIVIAL",
-    description: "Minimum risk level to include in the comment (TRIVIAL, LOW, MEDIUM, HIGH).",
-  },
-  {
-    name: "fail-on-risk",
-    required: false,
-    description: "Set to LOW, MEDIUM, or HIGH to fail the job when risk meets or exceeds this level.",
-  },
   {
     name: "ledgerful-version",
     required: false,
-    description: "Git tag to install. Defaults to the latest published release.",
+    defaultValue: "v0.2.1",
+    description:
+      "Pinned Ledgerful engine release version to run. Not `latest` — supply-chain hygiene. Action default may lag the Latest engine release (action-repo residual defaultValue v0.2.1); pin explicitly.",
   },
   {
-    name: "post-on-clean",
+    name: "ledgerful-checksum",
     required: false,
-    defaultValue: "false",
-    description: "When true, posts a comment even when no risk is detected.",
+    description:
+      "SHA-256 checksum of the pinned release archive (.tar.gz/.zip) for the runner OS/arch. Verified against the downloaded archive before extraction. Required in Workflow A (scan); not used in Workflow B.",
+  },
+  {
+    name: "github-token",
+    required: false,
+    defaultValue: "${{ github.token }}",
+    description:
+      "GITHUB_TOKEN used to authenticate the release download (Workflow A) and to post the PR comment / check-run (Workflow B). Prefer secrets.GITHUB_TOKEN in workflow YAML.",
+  },
+  {
+    name: "report-path",
+    required: false,
+    defaultValue: "ledgerful-pr-report.json",
+    description:
+      "Path to the JSON report file. Workflow A writes it; Workflow B reads it (relative to GITHUB_WORKSPACE).",
+  },
+  {
+    name: "fail-on",
+    required: false,
+    defaultValue: "",
+    description:
+      "Optional non-blocking fail condition (low|medium|high). Reporting only — policy enforcement is out of scope here.",
   },
 ];
 

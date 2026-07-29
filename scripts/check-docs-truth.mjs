@@ -323,7 +323,9 @@ function hasAncestor(node, predicate) {
   }
 }
 
-// ── Assert 5: /docs/github-action — version placeholder near `uses:` ─────────
+// ── Assert 5: /docs/github-action — uses: pin + honesty near pin ─────────────
+// Public action is installable; docs must show a real uses: pin and nearby
+// pin / Marketplace / residual honesty (not a floating "latest" claim).
 
 {
   const lower = pages["github-action"].toLowerCase();
@@ -333,31 +335,29 @@ function hasAncestor(node, predicate) {
       `Assert 5 FAIL [docs/github-action]: "uses:" not found — workflow YAML section missing`
     );
   } else {
-    const window = lower.slice(Math.max(0, usesIdx - 100), usesIdx + 200);
-    // Look for version placeholder: literal <version>, HTML-encoded &lt;version&gt;, or "pending"
-    const hasVersionPlaceholder =
-      window.includes("&lt;version&gt;") ||
-      window.includes("<version>") ||
-      window.includes("pending");
-    if (!hasVersionPlaceholder) {
+    const window = lower.slice(Math.max(0, usesIdx - 100), usesIdx + 280);
+    const hasPin =
+      /ledgerful-action@v?\d/.test(window) ||
+      window.includes("ledgerful-action@");
+    if (!hasPin) {
       failures.push(
-        `Assert 5 FAIL [docs/github-action]: version placeholder or "pending" not found near "uses:" line`
+        `Assert 5 FAIL [docs/github-action]: uses: pin to ledgerful-action@ not found near "uses:" line`
       );
     }
-    // Also ensure there's no pinned @v<digit> tag without a caveat
-    const pinnedTagRe = /@v\d/g;
-    let match;
-    while ((match = pinnedTagRe.exec(lower)) !== null) {
-      const surround = lower.slice(
-        Math.max(0, match.index - 200),
-        match.index + match[0].length + 200
+    // Honesty: pin language, Marketplace disclaimer, or note residual near the pin
+    const honestyTerms = [
+      "pin",
+      "marketplace",
+      "note",
+      "residual",
+      "not `latest`",
+      "not latest",
+      "caveat",
+    ];
+    if (!honestyTerms.some((term) => window.includes(term))) {
+      failures.push(
+        `Assert 5 FAIL [docs/github-action]: pin honesty (pin/Marketplace/residual/not latest) not found near "uses:" line`
       );
-      if (!surround.includes("pending") && !surround.includes("caveat") && !surround.includes("note")) {
-        failures.push(
-          `Assert 5 FAIL [docs/github-action]: pinned @v<tag> found without any caveat nearby`
-        );
-        break;
-      }
     }
   }
 }
@@ -386,14 +386,14 @@ function hasAncestor(node, predicate) {
   for (const phrase of stalePhrases) {
     if (lower.includes(phrase)) {
       failures.push(
-        `Assert 6 FAIL [docs/cli]: stale phrase "${phrase}" found — release is resolved (v0.1.9 shipped)`
+        `Assert 6 FAIL [docs/cli]: stale phrase "${phrase}" found — release is resolved and available`
       );
     }
   }
   // "when available" / "once available" as future tense for a shipped release
   if (lower.includes("when available") || lower.includes("once available")) {
     failures.push(
-      `Assert 6 FAIL [docs/cli]: future-tense "when/once available" found — release is resolved (v0.1.9 shipped)`
+      `Assert 6 FAIL [docs/cli]: future-tense "when/once available" found — release is resolved and available`
     );
   }
 }
@@ -484,8 +484,9 @@ function hasAncestor(node, predicate) {
     }
   }
 
-  // The page must disclose the release status — either available or pending
-  if (!lower.includes("pending") && !lower.includes("available") && !lower.includes("v0.1.9")) {
+  // The page must disclose the release status — available/pending or a version tag
+  const hasVersionTag = /v\d+\.\d+\.\d+/.test(lower);
+  if (!lower.includes("pending") && !lower.includes("available") && !hasVersionTag) {
     failures.push(
       `Assert 10 FAIL [docs/releases]: no "available", "pending", or version notice found — must disclose release status`
     );
@@ -494,7 +495,7 @@ function hasAncestor(node, predicate) {
   // future tense "when release artifacts are available" for a shipped release
   if (lower.includes("when release artifacts are available")) {
     failures.push(
-      `Assert 10 FAIL [docs/releases]: stale future-tense "when release artifacts are available" found — release is resolved (v0.1.9 shipped)`
+      `Assert 10 FAIL [docs/releases]: stale future-tense "when release artifacts are available" found — release is resolved and available`
     );
   }
 }
@@ -538,11 +539,11 @@ function hasAncestor(node, predicate) {
   }
 }
 
-// ── Assert 14: action example points at the action subdirectory ───────────────
+// ── Assert 14: action example points at the public ledgerful-action repo ──────
 
-if (!pages["github-action"].includes("Ryan-AI-Studios/Ledgerful/action@")) {
+if (!pages["github-action"].includes("Ryan-AI-Studios/ledgerful-action@")) {
   failures.push(
-    "Assert 14 FAIL [docs/github-action]: uses reference must include /action",
+    "Assert 14 FAIL [docs/github-action]: uses reference must be Ryan-AI-Studios/ledgerful-action@",
   );
 }
 

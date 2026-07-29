@@ -1,4 +1,22 @@
-﻿import assert from "node:assert/strict";
+/**
+ * Launch-truth baseline and optional live publication drift check.
+ *
+ * Exit taxonomy (fixed; used by CI launch-truth-drift):
+ *   0 — pass (internal baseline OK; when live, published state matches register)
+ *   1 — drift / assert fail (claims wrong, required asset missing, stale baseline, …)
+ *   2 — UNVERIFIED (transport: timeout, DNS/network error, HTTP 429, HTTP 5xx)
+ *
+ * Live network is OFF by default so PR `check:truth` stays offline.
+ * Enable live:  LAUNCH_TRUTH_LIVE=1  (or `npm run check:launch-truth:live`)
+ * Offline escape when something else set LIVE: LAUNCH_TRUTH_LIVE=0
+ *
+ * Test hook (DoD-2 transport proof): LAUNCH_TRUTH_API_BASE
+ *   When set, rewrites https://api.github.com → this base for GitHub API URLs only.
+ *   Example (force UNVERIFIED): LAUNCH_TRUTH_API_BASE=https://198.51.100.1
+ *   npm registry URLs are never rewritten by this override.
+ */
+
+import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
 import ts from "typescript";
@@ -17,21 +35,66 @@ const contentModule = await import(
 const { launchTruth, launchFacts } = contentModule;
 
 const USER_AGENT = "ledgerful-web-launch-truth-check/1.0";
+const GH_API_ORIGIN = "https://api.github.com";
 
-async function request(url) {
-  return fetch(url, {
-    redirect: "follow",
-    signal: AbortSignal.timeout(15_000),
-    headers: {
-      Accept: "application/vnd.github+json, application/json;q=0.9, */*;q=0.8",
-      "User-Agent": USER_AGENT,
-    },
-  });
+/** Transport / environment failure — must exit 2, never silent 0. */
+class UnverifiedError extends Error {
+  constructor(reason) {
+    super(reason);
+    this.name = "UnverifiedError";
+  }
 }
 
+function isTransportHttpStatus(status) {
+  return status === 429 || status >= 500;
+}
+
+/**
+ * Optional override for GitHub API base (DoD-2 / local transport tests).
+ * Only rewrites urls that start with https://api.github.com.
+ */
+function resolveRequestUrl(url) {
+  const override = process.env.LAUNCH_TRUTH_API_BASE?.trim();
+  if (!override) return url;
+  if (!url.startsWith(GH_API_ORIGIN)) return url;
+  const base = override.replace(/\/$/, "");
+  return `${base}${url.slice(GH_API_ORIGIN.length)}`;
+}
+
+async function request(url) {
+  const resolved = resolveRequestUrl(url);
+  try {
+    return await fetch(resolved, {
+      redirect: "follow",
+      signal: AbortSignal.timeout(15_000),
+      headers: {
+        Accept: "application/vnd.github+json, application/json;q=0.9, */*;q=0.8",
+        "User-Agent": USER_AGENT,
+      },
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    throw new UnverifiedError(`request failed for ${resolved}: ${message}`);
+  }
+}
+
+/**
+ * Publication-state assertion.
+ * - Transport (429/5xx) → UnverifiedError (exit 2)
+ * - expectedPublished true + non-ok (incl. 404) → assert fail (exit 1 / drift)
+ * - expectedPublished false → only 404 is OK; other non-transport statuses fail assert
+ */
 function assertPublishedState(response, expectedPublished, label) {
+  if (isTransportHttpStatus(response.status)) {
+    throw new UnverifiedError(
+      `${label}: transport HTTP ${response.status}`,
+    );
+  }
   if (expectedPublished) {
-    assert.ok(response.ok, `${label} became unavailable (HTTP ${response.status})`);
+    assert.ok(
+      response.ok,
+      `${label} became unavailable (HTTP ${response.status})`,
+    );
     return;
   }
   assert.equal(
@@ -150,13 +213,23 @@ async function checkPublishedState() {
     "Published release state",
   );
   if (release.ok) {
-    const data = await release.json();
+    let data;
+    try {
+      data = await release.json();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      throw new UnverifiedError(
+        `Published release state: response body not JSON (${message})`,
+      );
+    }
     assert.equal(
       data.tag_name,
       launchTruth.facts.release.tag,
       `Published release tag drifted from ${launchTruth.facts.release.tag} to ${data.tag_name}`,
     );
-    const assetNames = new Set(data.assets.map((asset) => asset.name));
+    const assetNames = new Set(
+      (data.assets ?? []).map((asset) => asset.name),
+    );
     for (const requiredAsset of launchTruth.facts.release.requiredAssets) {
       assert.ok(
         assetNames.has(requiredAsset),
@@ -172,11 +245,25 @@ async function checkPublishedState() {
     "Published MCP package state",
   );
   if (npmPackage.ok) {
-    const data = await npmPackage.json();
+    let data;
+    try {
+      data = await npmPackage.json();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      throw new UnverifiedError(
+        `Published MCP package state: response body not JSON (${message})`,
+      );
+    }
     assert.equal(
       data.version,
       launchTruth.facts.mcpPackage.version,
       `Published MCP package version drifted from ${launchTruth.facts.mcpPackage.version} to ${data.version}`,
+    );
+    // ledgerfulEngineTag is a top-level field on the registry document (0101).
+    assert.equal(
+      data.ledgerfulEngineTag,
+      launchTruth.facts.mcpPackage.engineTag,
+      `Published MCP ledgerfulEngineTag drifted from ${launchTruth.facts.mcpPackage.engineTag} to ${data.ledgerfulEngineTag}`,
     );
   }
 }
@@ -187,7 +274,7 @@ function assertPublicLedgerBundle() {
   const manifestPath = new URL("manifest.json", bundleDir);
   assert.ok(
     existsSync(ndjsonPath),
-    "Public ledger bundle missing: public/ledger/entries.ndjson â€” run npm run generate:ledger",
+    "Public ledger bundle missing: public/ledger/entries.ndjson — run npm run generate:ledger",
   );
   const ndjson = readFileSync(ndjsonPath, "utf8");
   const lines = ndjson.split("\n").filter(Boolean);
@@ -210,17 +297,49 @@ function assertPublicLedgerBundle() {
   );
 }
 
-assertInternalBaseline();
+function emitUnverified(reason) {
+  const line = `Launch truth: UNVERIFIED — ${reason}`;
+  console.error(line);
+  if (process.env.GITHUB_ACTIONS === "true") {
+    // warning annotation (not error): this is transport, not claim drift
+    console.error(`::warning::Launch truth UNVERIFIED — ${reason}`);
+  }
+}
 
-assertPublicLedgerBundle();
+function liveEnabled() {
+  // Explicit offline escape if LIVE was set elsewhere in the environment.
+  if (process.env.LAUNCH_TRUTH_LIVE === "0") return false;
+  return process.env.LAUNCH_TRUTH_LIVE === "1";
+}
 
-if (process.env.LAUNCH_TRUTH_LIVE === "1") {
-  await checkPublishedState();
-  console.log(
-    `Launch truth baseline matches anonymous published state (verified ${launchTruth.verifiedAt}).`,
-  );
-} else {
-  console.log(
-    "Launch truth: live network drift-check skipped (set LAUNCH_TRUTH_LIVE=1 to enable).",
-  );
+async function main() {
+  assertInternalBaseline();
+  assertPublicLedgerBundle();
+
+  if (liveEnabled()) {
+    await checkPublishedState();
+    console.log(
+      `Launch truth baseline matches anonymous published state (verified ${launchTruth.verifiedAt}).`,
+    );
+  } else {
+    console.log(
+      "Launch truth: live network drift-check skipped (set LAUNCH_TRUTH_LIVE=1 to enable; LAUNCH_TRUTH_LIVE=0 forces offline).",
+    );
+  }
+}
+
+try {
+  await main();
+} catch (err) {
+  if (err instanceof UnverifiedError) {
+    emitUnverified(err.message);
+    process.exit(2);
+  }
+  // AssertionError and other hard failures → drift / assert (exit 1)
+  if (err && typeof err === "object" && "message" in err) {
+    console.error(err.message);
+  } else {
+    console.error(err);
+  }
+  process.exit(1);
 }

@@ -241,7 +241,7 @@ export const releaseVerificationSteps: string[] = [
   "Download the binary archive and its companion .sha256 checksum file from the GitHub Release page for your platform (Linux, macOS, or Windows).",
   "Run sha256sum -c ledgerful-<platform>.tar.gz.sha256 on Linux/macOS. On Windows, hash ledgerful-x86_64-pc-windows-msvc.zip with Get-FileHash -Algorithm SHA256 and compare it with the companion .zip.sha256 file.",
   "A successful verification prints filename: OK for each file. Any FAILED output means the download is corrupt or tampered — do not use the binary.",
-  "Note: download URLs are live on the v0.1.9 GitHub Release. Windows Authenticode signing and macOS Developer ID / Gatekeeper notarization are not yet implemented — binaries may trigger OS security prompts on first launch. OS code signing is a planned enhancement. Supply chain attestation (SBOM, cosign, SLSA) shipped since v0.1.8 and continues in v0.1.9 — see the supply chain section below.",
+  "Note: download URLs are live on the v0.2.3 GitHub Release. Windows Authenticode signing and macOS Developer ID / Gatekeeper notarization are not yet implemented — binaries may trigger OS security prompts on first launch. OS code signing is a planned enhancement. Supply chain attestation (SBOM, cosign, SLSA) shipped since v0.1.8 and continues in v0.2.3 — see the supply chain section below.",
 ];
 
 export type SupplyChainComponent = {
@@ -400,7 +400,7 @@ export const productSubprocessors: ProductSubprocessor[] = [
   {
     name: "GitHub",
     purpose:
-      "Future GitHub App installation records and webhooks for the hosted control plane. The current self-managed GitHub Action is a separate planned path run in the customer's own repository — not publicly installable yet.",
+      "Future GitHub App installation records and webhooks for the hosted control plane. Separate from the current public self-hosted GitHub Action (Ryan-AI-Studios/ledgerful-action), which runs in the customer's own repository CI.",
     maturity: "planned",
     deployment: "hosted",
     tier: "hosted-planned",

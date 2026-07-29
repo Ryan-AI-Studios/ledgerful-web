@@ -198,7 +198,7 @@ export default function InstallPage() {
         <p className="hero-kicker">Install</p>
         <h1>Install Ledgerful locally</h1>
         <p className="install-hero-lead">
-          v0.1.9 · macOS, Linux, Windows · package managers and prebuilt binaries
+          {launchTruth.facts.release.tag} · macOS, Linux, Windows · package managers and prebuilt binaries
           · no hosted account required.
         </p>
         <div className="install-hero-command">

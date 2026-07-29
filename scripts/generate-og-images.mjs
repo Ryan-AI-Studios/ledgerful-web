@@ -212,7 +212,7 @@ const ROUTES = [
     title: "Install the Ledgerful CLI",
     // src/lib/content/navigation.ts pageDescriptions.install
     description:
-      "Install the Ledgerful CLI from a pre-built v0.1.9 release binary or build from source. Verify the binary and run your first scan.",
+      "Install the Ledgerful CLI from a pre-built release binary or build from source. Verify the binary and run your first scan.",
     // src/app/install/page.tsx "02 · Install" CodeBlock, verbatim.
     command: "cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful",
     commandLabel: "Source build · ~3–6 min on first run",

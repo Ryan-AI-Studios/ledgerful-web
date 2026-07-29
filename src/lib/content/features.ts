@@ -1,3 +1,5 @@
+import { launchTruth } from "./launch-facts";
+
 export type Maturity = "available" | "beta" | "planned";
 export type Deployment = "runs-locally" | "hosted";
 export type Edition = "local" | "commercial" | "hosted" | "enterprise";
@@ -74,17 +76,16 @@ export const featureStates: FeatureItem[] = [
     name: "MCP stdio tools",
     maturity: "available",
     deployment: "runs-locally",
-    description:
-      "The @ledgerful/mcp-server package is published on npm (v0.1.11; engine pin v0.1.9). The local MCP server connects AI assistants to the engine.",
+    description: `The @ledgerful/mcp-server package is published on npm (v${launchTruth.facts.mcpPackage.version}; engine pin ${launchTruth.facts.mcpPackage.engineTag}). The local MCP server connects AI assistants to the engine.`,
     evidence: "launch-facts.ts confirms @ledgerful/mcp-server is published on npm.",
   },
   {
     name: "GitHub Action path",
-    maturity: "beta",
+    maturity: "available",
     deployment: "runs-locally",
     description:
-      "Action package and PR validation path exist; public install docs are still in progress.",
-    evidence: "Roadmap separates Action implementation from public release docs.",
+      "Public self-hosted Action (Ryan-AI-Studios/ledgerful-action) posts PR risk comments from the real engine binary. Pin ledgerful-version; not Marketplace; not a hosted GitHub App.",
+    evidence: "launch-facts.ts githubAction publiclyInstallable; public action.yml at repo root.",
   },
   {
     name: "Hosted control plane",

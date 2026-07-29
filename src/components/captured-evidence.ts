@@ -1,6 +1,6 @@
 // Captured from real engine runs on Linux x86_64 (Docker Ubuntu 24.04).
-// Version line refreshed to match the current public release (v0.1.9).
-// Doctor / verify-health panels retain neutral-env capture shape; re-run
+// Dated capture provenance (v0.1.9 era); not a present-tense "current release"
+// claim. Doctor / verify-health panels retain neutral-env capture shape; re-run
 // those captures when CLI layout drifts. Source files:
 // public/evidence/{version,doctor,verify-health}.txt
 // Generating commands:

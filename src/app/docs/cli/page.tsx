@@ -9,6 +9,7 @@ import {
   BREW_COMMAND,
   INSTALL_COMMAND,
   SCOOP_COMMANDS,
+  WINGET_COMMAND,
 } from "@/lib/content/install";
 
 export const metadata: Metadata = {
@@ -121,9 +122,24 @@ export default function DocsCliPage() {
           </pre>
         </div>
         <p className="doc-caption">
-          Official Scoop bucket for the portable Windows x86_64 zip. winget (
-          <code>Ledgerful.Ledgerful</code>) is Planned until the first package is
-          accepted on microsoft/winget-pkgs.
+          Official Scoop bucket for the portable Windows x86_64 zip. Manifest
+          version/hash track published GitHub release sidecars.
+        </p>
+        <h3 className="doc-subhead">winget (Windows, community)</h3>
+        <div className="terminal-window">
+          <div className="terminal-bar">
+            <span />
+            <span />
+            <span />
+          </div>
+          <pre>
+            <code>{WINGET_COMMAND}</code>
+          </pre>
+        </div>
+        <p className="doc-caption">
+          Package id <code>Ledgerful.Ledgerful</code> on microsoft/winget-pkgs
+          (first package accepted 2026-07-30). Community index versions can lag
+          the latest GitHub release until a version-update PR merges.
         </p>
         <h3 className="doc-subhead">Cargo (source)</h3>
         <div className="terminal-window">

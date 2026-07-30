@@ -577,8 +577,8 @@ if (!pages["github-action"].includes("Ryan-AI-Studios/ledgerful-action@")) {
 }
 
 // ── Assert 23: /install — package-manager channels (0051 DoD-5) ───────────────
-// Live channels must appear with real commands. Scoop/winget are Planned until
-// their public packages ship — do not render their install commands as live.
+// Live channels must appear with real commands. winget is live after
+// microsoft/winget-pkgs#405128 merged (2026-07-30).
 
 {
   const lower = installHtml.toLowerCase();
@@ -625,16 +625,15 @@ if (!pages["github-action"].includes("Ryan-AI-Studios/ledgerful-action@")) {
     );
   }
 
-  // winget must not ship as a live install command until microsoft/winget-pkgs
-  // accepts the first package. Coming-state card may name the manager.
-  if (installHtml.includes("winget install Ledgerful.Ledgerful")) {
+  // winget first package accepted 2026-07-30 — command must be present as live.
+  if (!installHtml.includes("winget install Ledgerful.Ledgerful")) {
     failures.push(
-      'Assert 23 FAIL [install]: "winget install Ledgerful.Ledgerful" found while winget is still Planned — do not ship an unverified command as live',
+      'Assert 23 FAIL [install]: winget live command missing — expected "winget install Ledgerful.Ledgerful"',
     );
   }
   if (!lower.includes("winget")) {
     failures.push(
-      "Assert 23 FAIL [install]: winget must be mentioned as a Planned/coming channel",
+      "Assert 23 FAIL [install]: winget channel must appear on /install",
     );
   }
 
@@ -681,9 +680,14 @@ if (!pages["github-action"].includes("Ryan-AI-Studios/ledgerful-action@")) {
       'Assert 23 FAIL [docs/cli]: Scoop live command missing',
     );
   }
+  if (!pages["cli"].includes("winget install Ledgerful.Ledgerful")) {
+    failures.push(
+      'Assert 23 FAIL [docs/cli]: winget live command missing — expected "winget install Ledgerful.Ledgerful"',
+    );
+  }
   if (!cliLower.includes("winget")) {
     failures.push(
-      "Assert 23 FAIL [docs/cli]: winget Planned disclosure missing",
+      "Assert 23 FAIL [docs/cli]: winget channel must be documented",
     );
   }
 }

@@ -34,7 +34,7 @@ scoop bucket add ledgerful https://github.com/Ryan-AI-Studios/scoop-bucket
 scoop install ledgerful
 ```
 
-winget (`Ledgerful.Ledgerful`) is planned until the first microsoft/winget-pkgs package is accepted.
+winget: `winget install Ledgerful.Ledgerful` (community package on microsoft/winget-pkgs; first package accepted 2026-07-30).
 
 ## Scope
 

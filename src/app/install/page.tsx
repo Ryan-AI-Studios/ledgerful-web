@@ -178,7 +178,7 @@ const platformRows = [
     altCommand: BINSTALL_COMMAND,
     installPath: "Scoop shims or %USERPROFILE%\\.cargo\\bin\\ledgerful.exe",
     keyPath: "%USERPROFILE%\\.ledgerful\\keys\\",
-    note: "Authenticode signing is not yet implemented; SmartScreen may prompt on first run. winget (Ledgerful.Ledgerful) is Planned until microsoft/winget-pkgs accepts the first package.",
+    note: "Authenticode signing is not yet implemented; SmartScreen may prompt on first run. Prefer Scoop or winget install Ledgerful.Ledgerful for a prebuilt Windows binary; community winget can lag the latest GitHub release slightly.",
   },
 ];
 
@@ -253,9 +253,8 @@ export default function InstallPage() {
         aria-label="Package managers and prebuilt installs"
       >
         <SectionHeading title="Package managers and prebuilt installs">
-          Live channels install a real release binary (or a source build). Planned
-          channels stay labeled until their public package is verified — no
-          fabricated install commands.
+          Live channels install a real release binary (or a source build). Only
+          verified public packages show install commands — no fabricated paths.
         </SectionHeading>
         <div className="install-channel-grid">
           {packageChannels.map((channel) => (

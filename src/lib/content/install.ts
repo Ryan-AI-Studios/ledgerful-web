@@ -9,8 +9,8 @@
 //
 // Track 0051: package-manager + prebuilt channels live beside the source
 // install. Status is truth-gated — only channels that are public and
-// verified appear as "available". winget stays "coming" until the first
-// microsoft/winget-pkgs package is accepted.
+// verified appear as "available". winget flipped to available 2026-07-30
+// after microsoft/winget-pkgs#405128 merged (`Ledgerful.Ledgerful`).
 
 /** Canonical source-build install. Crates.io is not used for distribution. */
 export const INSTALL_COMMAND =
@@ -28,6 +28,9 @@ export const SCOOP_COMMANDS = [
   "scoop bucket add ledgerful https://github.com/Ryan-AI-Studios/scoop-bucket",
   "scoop install ledgerful",
 ] as const;
+
+/** Community winget package (microsoft/winget-pkgs). */
+export const WINGET_COMMAND = "winget install Ledgerful.Ledgerful";
 
 /** One-line installers (download release archive when available; fall back to cargo). */
 export const INSTALL_SCRIPT_UNIX =
@@ -63,8 +66,7 @@ export type InstallChannel = {
 
 /**
  * Package-manager and prebuilt channels for /install (0051 DoD-5).
- * Flip winget to "available" and fill `commands` only after the first
- * microsoft/winget-pkgs package is accepted.
+ * winget is live after first package accept (winget-pkgs#405128, 2026-07-30).
  */
 export const packageChannels: readonly InstallChannel[] = [
   {
@@ -107,12 +109,13 @@ export const packageChannels: readonly InstallChannel[] = [
     id: "winget",
     name: "winget",
     scope: "Windows",
-    status: "coming",
-    commands: [],
+    status: "available",
+    commands: [WINGET_COMMAND],
     summary:
-      "Ledgerful.Ledgerful on microsoft/winget-pkgs. Command ships after the first package is accepted by winget review.",
+      "Community package Ledgerful.Ledgerful on microsoft/winget-pkgs (portable Windows zip).",
     notes:
-      "Bootstrap manifests are prepared; first submission is owner-approved. Do not treat the package id as installable until listed as Available.",
+      "First package accepted 2026-07-30. The community index can lag the latest GitHub release by a release or two until a version-update PR merges; Homebrew/Scoop (org-owned) and GitHub Releases track the engine cut more tightly. Authenticode is not yet implemented; SmartScreen may prompt on first run.",
+    prereq: "App Installer / winget (Windows 10+)",
   },
   {
     id: "cargo-source",

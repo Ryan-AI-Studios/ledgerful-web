@@ -929,12 +929,11 @@ test("install page leads with command, package managers, OS tabs, then five numb
   expect(order.oldSmokeTestGone).toBe(true);
 });
 
-test("install page documents live package managers and keeps winget planned (0051)", async ({
+test("install page documents live package managers including winget (0051)", async ({
   page,
 }) => {
   await page.goto("/install");
   const bodyText = await page.locator("body").innerText();
-  const lower = bodyText.toLowerCase();
 
   expect(bodyText).toContain("brew install Ryan-AI-Studios/tap/ledgerful");
   expect(bodyText).toContain(
@@ -947,15 +946,14 @@ test("install page documents live package managers and keeps winget planned (005
   expect(bodyText).toContain(
     "scoop bucket add ledgerful https://github.com/Ryan-AI-Studios/scoop-bucket",
   );
-  expect(lower).toContain("winget");
-  // winget remains Planned until microsoft/winget-pkgs accepts the package.
-  expect(bodyText).not.toContain("winget install Ledgerful.Ledgerful");
+  // winget first package accepted 2026-07-30 (winget-pkgs#405128).
+  expect(bodyText).toContain("winget install Ledgerful.Ledgerful");
   expect(bodyText).toContain("xattr -d com.apple.quarantine");
 
   const scoopCard = page.locator('[data-channel="scoop"]');
   const wingetCard = page.locator('[data-channel="winget"]');
   await expect(scoopCard).toHaveAttribute("data-status", "available");
-  await expect(wingetCard).toHaveAttribute("data-status", "coming");
+  await expect(wingetCard).toHaveAttribute("data-status", "available");
   await expect(page.locator('[data-channel="homebrew"]')).toHaveAttribute(
     "data-status",
     "available",

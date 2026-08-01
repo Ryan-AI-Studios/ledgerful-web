@@ -479,9 +479,10 @@ export const proveClaims: ProveDontClaim[] = [
   {
     heading: "verify --against-export detects rollback when the head is retained",
     body:
-      "ledgerful verify --against-export <path> compares the live chain head against a previously exported signed head. " +
-      "If the live chain is shorter, points to a different latest entry, or presents a mismatched head, the command fails. " +
-      "Detection requires the export to be kept outside the machine — for example, an auditor copy or CI artifact. (chain-hash decision memo §4)",
+      "ledgerful verify --against-export <path> checks the live chain against a retained export head (SOC2 zip or bare chain_head.json from export head). " +
+      "Default is checkpoint (ancestor/prefix): the live ordered chain must extend or equal the export — genesis matches and the entry hash at export.length equals export.latest_entry_hash. " +
+      "Truncation, wipe, or a fork/rewrite at the checkpoint position fails; legitimate advance past the export passes. Use --exact for full snapshot equality. " +
+      "Detection requires the export to be kept outside the machine — for example, an auditor copy or CI artifact. (chain-hash decision memo §4; 0119)",
   },
   {
     heading: "The offline verifier is a standalone, dependency-free Node.js script",
@@ -504,7 +505,8 @@ export const dontProveClaims: ProveDontClaim[] = [
     heading: "Rollback to an earlier valid state from the same machine",
     body:
       "The chain head stored on the local machine can be rolled back alongside the database, and that earlier head will still verify. " +
-      "Detecting rollback requires a chain head retained independently of the machine. (chain-hash decision memo §3)",
+      "Detecting rollback requires a chain head retained independently of the machine " +
+      "(ledgerful export head or a SOC2 zip, stored off-machine, then verify --against-export). (chain-hash decision memo §3; 0119)",
   },
   {
     heading: "Pre-chain entries",

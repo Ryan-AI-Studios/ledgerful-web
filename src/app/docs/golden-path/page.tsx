@@ -160,7 +160,7 @@ export default function DocsGoldenPathPage() {
             <code>{goldenPathCanonicalSteps.signaturesChain}</code> → exit 0
             with VALID entries / chain verified.{" "}
             <code>{goldenPathCanonicalSteps.againstExport}</code> → exit 0 (live
-            head matches retained export). Open{" "}
+            chain extends or equals retained export). Open{" "}
             <code>{goldenPathCanonicalSteps.keepZip}</code>.
           </p>
         </div>

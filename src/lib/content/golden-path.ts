@@ -89,7 +89,7 @@ export const goldenPathSkepticChecklist = [
   },
   {
     id: "valid-export",
-    label: "CRYPTO VALID — live chain head matches retained DEMO export",
+    label: "CRYPTO VALID — live chain extends or equals retained DEMO export",
   },
   {
     id: "openable-zip",

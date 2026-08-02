@@ -31,6 +31,16 @@ export type PublicLedgerEntry = {
   sig_version?: number;
 };
 
+/** Thin chain head shape (`export head` / manifest.chainHead / chain_head.json). */
+export type PublicLedgerChainHead = {
+  latest_entry_hash: string;
+  genesis: string;
+  length: number;
+  head_signature?: string;
+  head_public_key?: string;
+  updated_at?: string;
+};
+
 export type PublicLedgerManifest = {
   publisher: string;
   entryCount: number;
@@ -43,6 +53,8 @@ export type PublicLedgerManifest = {
   sigAlg: string;
   bundleType: string;
   chainHeadPresent: boolean;
+  /** Structural head when present (length / hash / genesis + optional sig fields). */
+  chainHead: PublicLedgerChainHead | null;
   files: readonly {
     name: string;
     sha256: string;
@@ -68,7 +80,7 @@ type EngineExportManifest = {
   sigAlg?: string;
   allowlist?: readonly string[];
   allowlistVersion?: number;
-  chainHead?: unknown;
+  chainHead?: PublicLedgerChainHead | null;
   chainHeadPresent?: boolean;
   files?: PublicLedgerManifest["files"];
   bundleType?: string;
@@ -134,6 +146,15 @@ export function getPublicLedgerManifest(): PublicLedgerManifest {
         ]
       : []);
 
+  const chainHead =
+    parsed.chainHead &&
+    typeof parsed.chainHead === "object" &&
+    typeof parsed.chainHead.length === "number" &&
+    typeof parsed.chainHead.latest_entry_hash === "string" &&
+    typeof parsed.chainHead.genesis === "string"
+      ? parsed.chainHead
+      : null;
+
   return {
     publisher: parsed.publisher ?? "ledgerful-ledger-bot",
     entryCount: parsed.entryCount ?? 0,
@@ -145,11 +166,33 @@ export function getPublicLedgerManifest(): PublicLedgerManifest {
     chainHeadPresent:
       typeof parsed.chainHeadPresent === "boolean"
         ? parsed.chainHeadPresent
-        : Boolean(parsed.chainHead),
+        : Boolean(chainHead),
+    chainHead,
     files,
     honestCeiling: parsed.honestCeiling,
     publicKeyFingerprint: parsed.publicKeyFingerprint,
   };
+}
+
+/**
+ * Thin public head at `/ledger/chain_head.json` (export-head shape).
+ * Falls back to manifest.chainHead when the standalone file is absent.
+ */
+export function getPublicLedgerChainHead(): PublicLedgerChainHead | null {
+  try {
+    const raw = readFileSync(bundlePath("chain_head.json"), "utf8");
+    const parsed = JSON.parse(raw) as PublicLedgerChainHead;
+    if (
+      typeof parsed.length === "number" &&
+      typeof parsed.latest_entry_hash === "string" &&
+      typeof parsed.genesis === "string"
+    ) {
+      return parsed;
+    }
+  } catch {
+    // Fall through to manifest.
+  }
+  return getPublicLedgerManifest().chainHead;
 }
 
 export function getPublicLedgerEntryByTxId(txId: string): PublicLedgerEntry | undefined {

@@ -139,23 +139,33 @@ if (existsSync(generateSample)) {
 const publishScript = join(root, "scripts", "publish-public-ledger.mjs");
 if (existsSync(publishScript)) {
   const pub = readFileSync(publishScript, "utf8");
-  if (
-    /bundleFiles\s*=\s*\[[^\]]*["']verifier\.html["']/.test(pub) ||
-    /["']verifier\.html["']\s*,/.test(pub) &&
-      pub.includes("copyFileSync") &&
-      /bundleFiles[\s\S]*verifier\.html/.test(pub)
-  ) {
-    // Narrow: fail if verifier.html is still listed in the publish copy list.
-    const listMatch = pub.match(/const bundleFiles\s*=\s*\[([\s\S]*?)\];/);
-    if (listMatch && listMatch[1].includes("verifier.html")) {
-      fail(
-        "publish-public-ledger.mjs must not copy engine verifier.html over the CSP dual-file pair",
-      );
-    }
+  // Narrow: fail if verifier.html is still listed in the publish copy list.
+  const listMatch = pub.match(/const bundleFiles\s*=\s*\[([\s\S]*?)\];/);
+  if (!listMatch) {
+    fail(
+      "publish-public-ledger.mjs must declare `const bundleFiles = [...]` for the copy allowlist",
+    );
+  } else if (listMatch[1].includes("verifier.html") || listMatch[1].includes("verifier.js")) {
+    fail(
+      "publish-public-ledger.mjs must not copy engine verifier.html/verifier.js over the CSP dual-file pair",
+    );
   }
   if (!pub.includes("verifier.js") || !pub.includes("dual-file")) {
     fail(
       "publish-public-ledger.mjs must document/enforce the CSP dual-file verifier pair",
+    );
+  }
+  // 0120: signed publish path copies sig/pub and writes thin chain_head.json.
+  for (const token of ["manifest.sig", "manifest.pub", "chain_head.json"]) {
+    if (!pub.includes(token)) {
+      fail(
+        `publish-public-ledger.mjs must mention ${token} (signed bundle + thin head)`,
+      );
+    }
+  }
+  if (pub.includes("--force")) {
+    fail(
+      "publish-public-ledger.mjs must not pass --force to export-public (flag does not exist)",
     );
   }
 }

@@ -150,45 +150,105 @@ export default function DocsPublicLedgerPage() {
         </ol>
       </section>
 
-      {/* ── No network, local generation ───────────────────── */}
+      {/* ── Thin chain head ──────────────────────────────────── */}
       <section className="content-band">
-        <SectionHeading title="No data is sent anywhere">
-          The public ledger is generated locally by running{" "}
-          <code>ledgerful ledger export-provenance</code> and committing the
-          output. No data is sent to any server. The publishing helper is
-          disabled by default and must be explicitly enabled.
+        <SectionHeading title="Thin signed chain head">
+          A stable thin head artifact is published alongside the full bundle.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
-            <strong>Sample bundle:</strong> the files in{" "}
-            <code>public/ledger/</code> are produced by{" "}
-            <code>scripts/generate-public-ledger-sample.mjs</code>, which runs
-            the real engine export against the Ledgerful engine repo and then
-            applies the allowlist and redactions.
+            <strong>URL:</strong>{" "}
+            <a
+              href="https://www.ledgerful.dev/ledger/chain_head.json"
+              className="inline-link"
+            >
+              https://www.ledgerful.dev/ledger/chain_head.json
+            </a>{" "}
+            (same shape as <code>ledgerful export head</code> /
+            <code>manifest.chainHead</code>:{" "}
+            <code>latest_entry_hash</code>, <code>genesis</code>,{" "}
+            <code>length</code>, signature fields when signed).
           </p>
           <p style={{ marginTop: "12px" }}>
-            <strong>Real publishing cron:</strong> once the engine-side{" "}
-            <code>ledger export-public</code> command and bot signing key are in
-            place, the production cron will run the same command in your own
-            environment and commit the result.
+            <strong>Checkpoint semantics:</strong> download the public head,
+            then compare your <em>local</em> workspace ledger against it. The
+            local chain must <strong>extend or equal</strong> the published
+            checkpoint (same genesis; hash at public <code>length</code>{" "}
+            matches). That detects local rollback/rewrite relative to the
+            published head — not “the public site proves your private product
+            history.” Customer repos still need their own off-machine retention
+            (operator path: <code>export head</code> + retain +{" "}
+            <code>verify --against-export</code>).
+          </p>
+          <pre
+            className="doc-code-block"
+            style={{
+              marginTop: "16px",
+              overflow: "auto",
+              padding: "12px 16px",
+              background: "var(--surface-2, var(--surface))",
+              borderRadius: "8px",
+              fontSize: "0.875rem",
+            }}
+          >
+{`curl -fsSL -o head.json https://www.ledgerful.dev/ledger/chain_head.json
+ledgerful verify --signatures --against-export .\\head.json`}
+          </pre>
+          <p style={{ marginTop: "12px" }}>
+            There is no <code>verify --against-url</code> (path-only by design).
+            Compose <code>curl</code> + <code>--against-export</code> as above.
+            No Rekor / multi-party transparency log is claimed.
           </p>
         </div>
       </section>
 
-      {/* ── Publishing cron ships disabled ─────────────────────── */}
+      {/* ── No network, local generation ───────────────────── */}
       <section className="content-band">
-        <SectionHeading title="Publishing cron">
-          The publishing cron ships disabled. It is opt-in only, default off.
+        <SectionHeading title="Export-then-commit (no data sent anywhere)">
+          The public ledger is generated locally with{" "}
+          <code>ledgerful ledger export-public</code>, then committed into this
+          web repository. No data is sent to a Ledgerful server. GitHub-hosted
+          CI validates committed artifacts; it does not invent ledger history.
+        </SectionHeading>
+        <div className="disclosure-notice">
+          <p>
+            <strong>Publish path:</strong> on a machine that holds the engine{" "}
+            <code>.ledgerful</code> state (and bot key for{" "}
+            <code>--sign</code>), run{" "}
+            <code>ledgerful ledger export-public --output &lt;dir&gt; --sign</code>{" "}
+            or enable the helper{" "}
+            <code>scripts/publish-public-ledger.mjs</code> with{" "}
+            <code>LEDGERFUL_PUBLISH_LEDGER_ENABLED=1</code>. Copy artifacts into{" "}
+            <code>public/ledger/</code> (entries, manifest, README,{" "}
+            <code>manifest.sig</code>/<code>manifest.pub</code>,{" "}
+            <code>chain_head.json</code>) and open a PR. There is no engine{" "}
+            <code>publish-public</code> command.
+          </p>
+          <p style={{ marginTop: "12px" }}>
+            <strong>CSP dual-file verifier:</strong> production{" "}
+            <code>verifier.html</code> + <code>verifier.js</code> are never
+            overwritten by the publish helper (track 0075).
+          </p>
+        </div>
+      </section>
+
+      {/* ── Publishing helper ships disabled ───────────────────── */}
+      <section className="content-band">
+        <SectionHeading title="Publishing helper">
+          The web publish helper ships disabled. It is opt-in only, default off.
         </SectionHeading>
         <div className="disclosure-notice">
           <p>
             The web helper script{" "}
             <code>scripts/publish-public-ledger.mjs</code> ships disabled. Enable
-            it with the environment variable{" "}
+            it with{" "}
             <code>LEDGERFUL_PUBLISH_LEDGER_ENABLED=1</code>. It runs in your own
-            environment, not a hosted service. The web sample remains unsigned at
-            the manifest level; per-entry Ed25519 signatures are real and
-            verifiable.
+            environment (portable <code>LEDGERFUL_ENGINE_REPO</code>, default{" "}
+            <code>../ledgerful</code>), prefers <code>--sign</code>, writes{" "}
+            <code>chain_head.json</code>, and by default only copies artifacts
+            (set <code>LEDGERFUL_PUBLISH_LEDGER_COMMIT=1</code> for optional
+            auto-commit). Manifest and chain-head signatures are real when the
+            bot key is available.
           </p>
         </div>
       </section>

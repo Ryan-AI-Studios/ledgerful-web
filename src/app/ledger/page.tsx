@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/section-heading";
 import {
   getPublicLedgerEntries,
   getPublicLedgerManifest,
+  getPublicLedgerChainHead,
 } from "@/lib/content/public-ledger";
 import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
 
@@ -52,6 +53,7 @@ function displayMask(text: string | null): string {
 export default function LedgerPage() {
   const allEntries = getPublicLedgerEntries();
   const manifest = getPublicLedgerManifest();
+  const chainHead = getPublicLedgerChainHead();
 
   // Bundle is chronological (oldest → newest). Surface the newest rows first.
   const MAX_PAGE_ENTRIES = 20;
@@ -131,6 +133,21 @@ export default function LedgerPage() {
             </span>
             <span className="ledger-stat-label">Generated</span>
           </div>
+          {chainHead && (
+            <div className="ledger-stat">
+              <span className="ledger-stat-value">{chainHead.length}</span>
+              <span className="ledger-stat-label">
+                Chain head length{" "}
+                <a
+                  href="/ledger/chain_head.json"
+                  className="inline-link"
+                  style={{ fontWeight: 400 }}
+                >
+                  (JSON)
+                </a>
+              </span>
+            </div>
+          )}
         </div>
       </section>
 

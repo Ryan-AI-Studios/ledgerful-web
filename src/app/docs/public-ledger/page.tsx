@@ -158,13 +158,12 @@ export default function DocsPublicLedgerPage() {
         <div className="disclosure-notice">
           <p>
             <strong>URL:</strong>{" "}
-            <a
-              href="https://www.ledgerful.dev/ledger/chain_head.json"
-              className="inline-link"
-            >
-              https://www.ledgerful.dev/ledger/chain_head.json
+            <a href="/ledger/chain_head.json" className="inline-link">
+              /ledger/chain_head.json
             </a>{" "}
-            (same shape as <code>ledgerful export head</code> /
+            (canonical production:{" "}
+            <code>https://www.ledgerful.dev/ledger/chain_head.json</code>
+            ; same shape as <code>ledgerful export head</code> /
             <code>manifest.chainHead</code>:{" "}
             <code>latest_entry_hash</code>, <code>genesis</code>,{" "}
             <code>length</code>, signature fields when signed).

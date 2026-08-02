@@ -45,6 +45,7 @@ import {
   existsSync,
   mkdirSync,
   unlinkSync,
+  rmSync,
 } from "node:fs";
 import { join, resolve, isAbsolute } from "node:path";
 import { execFileSync } from "node:child_process";
@@ -168,6 +169,12 @@ if (!existsSync(ENGINE_REPO)) {
 const wantSign = process.env.LEDGERFUL_PUBLISH_LEDGER_SIGN !== "0";
 const keyDir = process.env.LEDGERFUL_BOT_KEY_DIR?.trim();
 
+// Always start from a clean export dir so a prior signed run cannot leave
+// stale manifest.sig/pub that an unsigned export would re-copy (engine
+// export-public does not delete leftover files in the output directory).
+if (existsSync(EXPORT_DIR)) {
+  rmSync(EXPORT_DIR, { recursive: true, force: true });
+}
 mkdirSync(EXPORT_DIR, { recursive: true });
 
 const exportArgs = ["ledger", "export-public", "--output", EXPORT_DIR];

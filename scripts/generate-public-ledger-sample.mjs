@@ -1,22 +1,34 @@
 import { createHash, createHmac } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, unlinkSync, writeFileSync } from "node:fs";
-import path from "node:path";
+import path, { isAbsolute, resolve } from "node:path";
 
 // Generate a deterministic, redacted sample of the Ledgerful engine's own signed
 // change ledger for publication at /ledger on the public web site.
 //
-// Source of truth: real ledger data from the engine repo (C:\dev\ledgerful),
+// Source of truth: real ledger data from the engine repo
+// (LEDGERFUL_ENGINE_REPO or ../ledgerful relative to cwd),
 // read via `ledgerful ledger export-provenance`. The sample applies a strict
 // field allowlist and replaces author identifiers with deterministic HMAC
 // pseudonyms so email addresses and names never reach the public bundle.
+//
+// Residual: this sample path is NOT the production publish path. Production
+// refresh uses `scripts/publish-public-ledger.mjs` + `ledger export-public`
+// (track 0120 export-then-commit). Do not treat this script as load-bearing
+// for signed public heads.
 //
 // This script must be deterministic: running it twice produces byte-identical
 // output (sorted entries, stable JSON key order, no timestamps in output other
 // than the recorded committed_at values and an explicit generatedAt).
 
-const ENGINE_REPO = "C:\\dev\\ledgerful";
 const WEB_REPO = process.cwd();
+const ENGINE_REPO = (() => {
+  const fromEnv = process.env.LEDGERFUL_ENGINE_REPO?.trim();
+  if (fromEnv) {
+    return isAbsolute(fromEnv) ? fromEnv : resolve(WEB_REPO, fromEnv);
+  }
+  return resolve(WEB_REPO, "..", "ledgerful");
+})();
 const OUTPUT_DIR = path.join(WEB_REPO, "public", "ledger");
 
 const DEMO_SECRET =

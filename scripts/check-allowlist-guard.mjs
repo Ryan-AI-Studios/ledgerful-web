@@ -9,6 +9,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
+// Keep in sync with engine export-public allowlist (v1 + v2) and
+// src/lib/content/public-ledger.ts publicLedgerAllowlist.
 const allowlist = [
   "tx_id",
   "category",
@@ -23,6 +25,8 @@ const allowlist = [
   "public_key",
   "entry_hash",
   "prev_hash",
+  // allowlistVersion 2+: codec version for offline v1 vs honesty-fence v2
+  "sig_version",
 ];
 
 const ndjsonPath = join(process.cwd(), "public", "ledger", "entries.ndjson");

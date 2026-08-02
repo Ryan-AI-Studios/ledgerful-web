@@ -268,10 +268,44 @@ async function checkPublishedState() {
   }
 }
 
+function structuralHeadFields(source, label) {
+  assert.ok(source && typeof source === "object", `${label} must be an object`);
+  assert.equal(
+    typeof source.latest_entry_hash,
+    "string",
+    `${label}.latest_entry_hash must be a string`,
+  );
+  assert.ok(
+    source.latest_entry_hash.length > 0,
+    `${label}.latest_entry_hash must be non-empty`,
+  );
+  assert.equal(
+    typeof source.genesis,
+    "string",
+    `${label}.genesis must be a string`,
+  );
+  assert.ok(source.genesis.length > 0, `${label}.genesis must be non-empty`);
+  assert.equal(
+    typeof source.length,
+    "number",
+    `${label}.length must be a number`,
+  );
+  assert.ok(
+    Number.isFinite(source.length) && source.length > 0,
+    `${label}.length must be a positive finite number`,
+  );
+  return {
+    latest_entry_hash: source.latest_entry_hash,
+    genesis: source.genesis,
+    length: source.length,
+  };
+}
+
 function assertPublicLedgerBundle() {
   const bundleDir = new URL("../public/ledger/", import.meta.url);
   const ndjsonPath = new URL("entries.ndjson", bundleDir);
   const manifestPath = new URL("manifest.json", bundleDir);
+  const chainHeadPath = new URL("chain_head.json", bundleDir);
   assert.ok(
     existsSync(ndjsonPath),
     "Public ledger bundle missing: public/ledger/entries.ndjson — run npm run generate:ledger",
@@ -292,8 +326,92 @@ function assertPublicLedgerBundle() {
     lines.length,
     `Public ledger manifest entryCount (${manifest.entryCount}) does not match entries.ndjson line count (${lines.length})`,
   );
+
+  // Thin signed chain head (track 0120) — required public artifact.
+  assert.ok(
+    existsSync(chainHeadPath),
+    "Public ledger thin head missing: public/ledger/chain_head.json",
+  );
+  const chainHead = JSON.parse(readFileSync(chainHeadPath, "utf8"));
+  const headStruct = structuralHeadFields(chainHead, "chain_head.json");
+  // Prefer signed heads when the publish path claims signatures.
+  if (chainHead.head_signature != null) {
+    assert.equal(
+      typeof chainHead.head_signature,
+      "string",
+      "chain_head.json.head_signature must be a string when present",
+    );
+    assert.ok(
+      chainHead.head_signature.length > 0,
+      "chain_head.json.head_signature must be non-empty when present",
+    );
+  }
+  if (chainHead.head_public_key != null) {
+    assert.equal(
+      typeof chainHead.head_public_key,
+      "string",
+      "chain_head.json.head_public_key must be a string when present",
+    );
+    assert.ok(
+      chainHead.head_public_key.length > 0,
+      "chain_head.json.head_public_key must be non-empty when present",
+    );
+  }
+
+  // DoD-2/DoD-5: thin head and manifest.chainHead must both exist and match.
+  assert.ok(
+    manifest.chainHead,
+    "Public ledger manifest missing chainHead — must match chain_head.json",
+  );
+  const manifestHead = structuralHeadFields(
+    manifest.chainHead,
+    "manifest.chainHead",
+  );
+  assert.equal(
+    manifestHead.length,
+    headStruct.length,
+    `manifest.chainHead.length (${manifestHead.length}) does not match chain_head.json.length (${headStruct.length})`,
+  );
+  assert.equal(
+    manifestHead.latest_entry_hash,
+    headStruct.latest_entry_hash,
+    "manifest.chainHead.latest_entry_hash does not match chain_head.json",
+  );
+  assert.equal(
+    manifestHead.genesis,
+    headStruct.genesis,
+    "manifest.chainHead.genesis does not match chain_head.json",
+  );
+
+  // Signed publish path: dual-file bot signature must accompany the manifest
+  // when the manifest embeds signature material (export-public --sign).
+  const claimsSigned =
+    Boolean(manifest.signature) ||
+    Boolean(manifest.publicKey) ||
+    Boolean(manifest.publicKeyFingerprint);
+  if (claimsSigned) {
+    const sigPath = new URL("manifest.sig", bundleDir);
+    const pubPath = new URL("manifest.pub", bundleDir);
+    assert.ok(
+      existsSync(sigPath),
+      "Public ledger claims signed but missing public/ledger/manifest.sig",
+    );
+    assert.ok(
+      existsSync(pubPath),
+      "Public ledger claims signed but missing public/ledger/manifest.pub",
+    );
+    assert.ok(
+      readFileSync(sigPath).length > 0,
+      "public/ledger/manifest.sig must be non-empty",
+    );
+    assert.ok(
+      readFileSync(pubPath).length > 0,
+      "public/ledger/manifest.pub must be non-empty",
+    );
+  }
+
   console.log(
-    `Public ledger bundle: ${lines.length} entries, manifest verified.`,
+    `Public ledger bundle: ${lines.length} entries, chain_head.length=${headStruct.length}, manifest verified.`,
   );
 }
 

@@ -27,6 +27,9 @@ export const apiContextAllowlist = Object.freeze([
   // Exact product stdout from `ledgerful demo` (track 0070) — quoting the
   // brand moment, not marketing "crypto" as a category.
   "CRYPTO VALID",
+  // Exact product CLI phrase from `ledgerful doctor` stdout for the
+  // sig-pin finding (0168 exhibit) — not marketing "crypto" as a category.
+  "crypto-valid signatures",
   // Engine module path in real commit summaries / review notes.
   "crypto.rs",
 ]);

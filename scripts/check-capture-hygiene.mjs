@@ -59,7 +59,7 @@ function isOlderThanCurrent(version) {
 
 /** Historical / dated-capture mentions that may still cite an older release honestly. */
 const HISTORICAL_ALLOW =
-  /\b(since|shipped with|shipped since|continues? in|older(?: archives?)?|predate|before|captured from|captured artifact|real v?\d+\.\d+\.\d+ run|measured on|through v?\d+\.\d+\.\d+|era|sample-repo capture|command shape current through|dual-number|ledgerful-mcp-server-|mcp-server@|@ledgerful\/mcp-server|engine pin|package version|action-repo residual|action default|defaultValue|default ledgerful-version|residual default is still|ledgerful-action@)\b[\s\S]{0,120}v?0\.\d+\.\d+/gi;
+  /\b(since|shipped with|shipped since|continues? in|older(?: archives?)?|predate|before|captured from|captured artifact|real v?\d+\.\d+\.\d+ run|measured on|through v?\d+\.\d+\.\d+|era|sample-repo capture|dual-number|ledgerful-mcp-server-|mcp-server@|@ledgerful\/mcp-server|engine pin|package version|action-repo residual|action default|defaultValue|default ledgerful-version|residual default is still|ledgerful-action@)\b[\s\S]{0,120}v?0\.\d+\.\d+/gi;
 
 /**
  * Paths whose version tokens are dated capture provenance, not present-tense
@@ -79,6 +79,12 @@ const FORBIDDEN_PATTERNS = [
   { pattern: /quiet preview/gi, label: "stale quiet-preview language" },
   { pattern: /ready to install/gi, label: "stale ready-to-install language" },
   { pattern: /let you know when/gi, label: "stale waitlist language" },
+  // 0168-A: currency-lie caption — never allow "command shape current through"
+  // even inside dated-capture paths (version scan skips those files).
+  {
+    pattern: /\bcommand shape current through\b/i,
+    label: "currency-lie caption (command shape current through)",
+  },
 ];
 
 const SCAN_DIRS = [

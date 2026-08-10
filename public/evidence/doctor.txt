@@ -1,4 +1,6 @@
-﻿Ledgerful Doctor - Environment Health Check
+✓ Doctor: ready for publish env · 6 warning(s)
+
+Ledgerful Doctor - Environment Health Check
 ==================================================
 Environment:         Wsl
 Active Shell:        Unknown
@@ -10,15 +12,40 @@ Tools:
 
 Current Path:        /tmp/neutral-repo
 Path Type:           Native
+Work root:           /tmp/neutral-repo
+State dir:           /tmp/neutral-repo/.ledgerful
 
 Active Ask Backend:  Local (127.0.0.1)
-Embedding Model:     Not configured
-Completion Model:    Not configured
-Native Graph:        Ready (CozoDB active, 1 nodes, 1 edges)
+Native Graph:        Ready (CozoDB active, 0 nodes, 0 edges)
 
 Index Health:
-  • Gate mode: observe (matches ledger history)
-  • Search index: OK (0 documents)
-  • Graph state: Empty (never indexed)
-  • Impact report: None (run 'ledgerful scan --impact')
+  • Gate mode: observe (no ledger transition history yet)
+  • Search index: Empty (0 documents — run 'ledgerful index')
+  • [warn] [graph-empty] Graph state: Empty (never indexed)
+  • [warn] [impact-missing] Impact report: None (run 'ledgerful scan --impact')
+  • [warn] [search-empty] Search index: present but empty (0 documents); full-text search unusable until populated
+    ledgerful index
+    # first search also rebuilds when empty:
+    # ledgerful search "<query>"
+    ledgerful doctor --json
+  • [warn] [sig-pin] no intent.trusted_public_keys pinned; crypto-valid signatures report VALID (unknown key). Pin keys after init or re-sign. Local signing identity not found under ~/.ledgerful/keys; complete init/signing before pinning.
+    ledgerful init
+    # or complete first signing so ~/.ledgerful/keys/public.pem exists, then:
+    ledgerful doctor --json
+    # follow the sig-pin remediation once the public key is readable
+  • [warn] [sig-version] intent.min_sig_version=1 still accepts legacy v1 signatures. All LOCAL rows already have sig_version >= 2; set min_sig_version=2 to close the downgrade path.
+    ledgerful config set intent.min_sig_version=2
+    ledgerful verify --signatures
+
+── Optional Accelerators ──────────────────────
+Embedding Model:     unreachable (Local embedding model server at http://127.0.0.1:8083 is unreachable after 1 retries)
+Completion Model:    Not configured
+[info] [completion-not-configured] Completion model not configured
+[warn] [embed-unreachable] Embedding model unreachable
+[info] [sccache-hint] Cold or CI builds may benefit from sccache 0.17.0+. Set RUSTC_WRAPPER=sccache and CARGO_INCREMENTAL=0. Note: do not combine with CARGO_INCREMENTAL=1; use one or the other.
+[info] [scip-go-not-wired] SCIP Go: upstream scip-go exists, not wired here — native Go tree-sitter path only
+[info] [scip-python-missing] SCIP Python: scip-python not available (capability probe). Install with `npm install -g @sourcegraph/scip-python` to enable cross-file references via --auto-scip
+[info] [scip-rust-missing] SCIP Rust: rust-analyzer not available (capability probe). Install with `rustup component add rust-analyzer` to enable cross-file references via --auto-scip
+[info] [scip-typescript-missing] SCIP TypeScript: scip-typescript not available (capability probe). Install with `npm install -g @sourcegraph/scip-typescript` to enable cross-file references via --auto-scip
+[info] [tool-gemini] gemini NOT FOUND (optional ask backend CLI)
 GPU VRAM:            n/a (Windows-only monitoring)

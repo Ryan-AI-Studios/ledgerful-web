@@ -35,6 +35,8 @@ const API_CONTEXT_ALLOWLIST = Object.freeze([
   { pattern: /E1-CRYPTO/g },
   // Exact product stdout from `ledgerful demo` (track 0070).
   { pattern: /CRYPTO VALID/g },
+  // Exact product CLI phrase from `ledgerful doctor` sig-pin finding (0168 exhibit).
+  { pattern: /crypto-valid signatures/gi },
   // Engine module path citation (0072 honesty / proveClaims).
   { pattern: /crypto\.rs/g },
 ]);

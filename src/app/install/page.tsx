@@ -82,7 +82,7 @@ function DoctorOutputPreview() {
       </pre>
       <div className="terminal-annotation">
         <span className="terminal-caption">
-          Representative output — captured from a real v0.1.9 run
+          Representative output — captured from a real v0.2.7 run
         </span>
         <span className="terminal-meta">{panel.command}</span>
       </div>
@@ -425,7 +425,7 @@ export default function InstallPage() {
           {`ledgerful --version
 ledgerful verify --health`}
         </CodeBlock>
-        <ExpectedOutput caption="Expected output — captured from a real v0.1.9 run">
+        <ExpectedOutput caption="Expected output — captured from a real v0.2.7 run">
           <div className="expected-output-grid">
             <div className="expected-output-sample">
               <p className="expected-output-command">ledgerful --version</p>

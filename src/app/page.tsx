@@ -165,7 +165,7 @@ export default function Home() {
       {/* What Ledgerful produces */}
       <section className="content-band" id="produces">
         <SectionHeading title="What a scan actually produces">
-          Each output is a captured artifact from a real v0.1.9 run.
+          Each output is a captured artifact from a real v0.2.7 run.
         </SectionHeading>
         <div className="produces-grid">
           <article>

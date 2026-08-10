@@ -15,6 +15,9 @@ const eslintConfig = defineConfig([
     // Agent worktrees — contain build artifacts and foreign .next/ directories
     ".agents/**",
     ".claude/**",
+    // Local generated scratch (see .gitignore output/) — capture tarballs /
+    // extracted release web bundles must not be linted as product code.
+    "output/**",
   ]),
 ]);
 

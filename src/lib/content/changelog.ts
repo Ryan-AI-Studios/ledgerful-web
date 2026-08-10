@@ -23,12 +23,20 @@ export function changelogSlug(date: string, title: string): string {
 
 const rawEntries: Omit<ChangelogEntry, "slug">[] = [
   {
-    date: "2026-07-29",
+    date: "2026-08-10",
     area: "Public web",
-    title: "Claim currency: v0.2.3 and public Action",
+    title: "Claim currency: v0.2.7 and exhibit re-capture",
     state: "completed",
     details:
-      "Present-tense site claims refreshed to engine v0.2.3 and npm @ledgerful/mcp-server 0.1.12 (engine pin v0.2.3). GitHub Action docs corrected to the public Ryan-AI-Studios/ledgerful-action install path with pin honesty. Live launch-truth gate now distinguishes drift (exit 1) from transport UNVERIFIED (exit 2) and runs on weekday schedule + dispatch + main push.",
+      "Present-tense site claims refreshed to engine v0.2.7 and npm @ledgerful/mcp-server 0.1.16 (engine pin v0.2.7; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04. Capture-hygiene forbids obsolete currency-lie verification-plan captions. Action default ledgerful-version residual v0.2.1 honesty retained.",
+  },
+  {
+    date: "2026-07-29",
+    area: "Public web",
+    title: "Claim currency and public Action (0103)",
+    state: "completed",
+    details:
+      "Present-tense site claims refreshed (measured on engine v0.2.3) and npm @ledgerful/mcp-server 0.1.12 (engine pin v0.2.3). GitHub Action docs corrected to the public Ryan-AI-Studios/ledgerful-action install path with pin honesty. Live launch-truth gate now distinguishes drift (exit 1) from transport UNVERIFIED (exit 2) and runs on weekday schedule + dispatch + main push.",
   },
   {
     date: "2026-07-21",

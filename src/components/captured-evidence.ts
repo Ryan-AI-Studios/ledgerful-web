@@ -145,3 +145,5 @@ export const artifactPreviews = {
     ],
   },
 } as const;
+
+export type ArtifactPreviewId = keyof typeof artifactPreviews;

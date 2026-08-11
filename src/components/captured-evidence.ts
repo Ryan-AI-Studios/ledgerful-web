@@ -1,5 +1,5 @@
 // Captured from real engine runs on Linux x86_64 (Docker Ubuntu 24.04).
-// Capture provenance: binary ledgerful 0.2.7 (ccc18ddd7796), measured 2026-08-10.
+// Capture provenance: binary ledgerful 0.2.8 (c99779aa2b9b), measured 2026-08-11.
 // Doctor / version / verify-health: neutral-env Docker Ubuntu 24.04, /tmp/neutral-repo.
 // Verification plan: JS sample-repo dry-run stdout only (stderr redirected).
 // Source files: public/evidence/{version,doctor,verify-health}.txt
@@ -13,7 +13,9 @@ export const capturedEvidence = {
   version: {
     command: "ledgerful --version",
     description: "Binary version",
-    lines: ["ledgerful 0.2.7 (ccc18ddd7796)"],
+    lines: [
+      "ledgerful 0.2.8 (c99779aa2b9b)",
+    ],
   },
   doctor: {
     command: "ledgerful doctor",
@@ -58,17 +60,11 @@ export const capturedEvidence = {
       "    ledgerful config set intent.min_sig_version=2",
       "    ledgerful verify --signatures",
       "",
-      "\u2500\u2500 Optional Accelerators \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
+      "\u2500\u2500 Optional Accelerators \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500",
       "Embedding Model:     unreachable (Local embedding model server at http://127.0.0.1:8083 is unreachable after 1 retries)",
       "Completion Model:    Not configured",
-      "[info] [completion-not-configured] Completion model not configured",
-      "[warn] [embed-unreachable] Embedding model unreachable",
-      "[info] [sccache-hint] Cold or CI builds may benefit from sccache 0.17.0+. Set RUSTC_WRAPPER=sccache and CARGO_INCREMENTAL=0. Note: do not combine with CARGO_INCREMENTAL=1; use one or the other.",
-      "[info] [scip-go-not-wired] SCIP Go: upstream scip-go exists, not wired here \u2014 native Go tree-sitter path only",
-      "[info] [scip-python-missing] SCIP Python: scip-python not available (capability probe). Install with `npm install -g @sourcegraph/scip-python` to enable cross-file references via --auto-scip",
-      "[info] [scip-rust-missing] SCIP Rust: rust-analyzer not available (capability probe). Install with `rustup component add rust-analyzer` to enable cross-file references via --auto-scip",
-      "[info] [scip-typescript-missing] SCIP TypeScript: scip-typescript not available (capability probe). Install with `npm install -g @sourcegraph/scip-typescript` to enable cross-file references via --auto-scip",
-      "[info] [tool-gemini] gemini NOT FOUND (optional ask backend CLI)",
+      "",
+      "9 hygiene finding(s) collapsed \u2014 run doctor --full",
       "GPU VRAM:            n/a (Windows-only monitoring)",
     ],
   },
@@ -80,11 +76,11 @@ export const capturedEvidence = {
       "Checking verification dependencies...",
       "  Checking git...",
       "  [OK] git is available.",
-      "  Checking npm...",
-      "  [FAILED] npm not found on PATH. (install Node.js)",
       "  Checking ledger state...",
       "  [NOTE] No impact report found. Run 'ledgerful scan --impact' after making changes.",
       "  [OK] Runner: cargo test (nextest not available)",
+      "",
+      "All verification dependencies are available.",
     ],
   },
 } as const;
@@ -94,8 +90,8 @@ export const panelOrder = ["version", "doctor", "verifyHealth"] as const;
 // Real sanitized artifact previews for `hero-proof.tsx` / `artifact-preview.tsx`.
 // Each block traces to one real, already-verified capture — never fabricated.
 //   - verificationPlan  : `ledgerful verify --dry-run` against a minimal JS
-//                         sample repo (Docker / neutral capture 2026-08-10 on
-//                         v0.2.7; stdout only). Leading blank line / ANSI
+//                         sample repo (Docker / neutral capture 2026-08-11 on
+//                         v0.2.8; stdout only). Leading blank line / ANSI
 //                         styling stripped.
 //   - provenanceRecord  : one real, Ed25519-signed ledger row from `ledger.csv`
 //                         inside the verified `public/evidence/sample-soc2/`
@@ -106,7 +102,7 @@ export const panelOrder = ["version", "doctor", "verifyHealth"] as const;
 export const artifactPreviews = {
   verificationPlan: {
     sourceLabel: "ledgerful verify --dry-run",
-    caption: "Verification plan — sample-repo capture on v0.2.7",
+    caption: "Verification plan — sample-repo capture on v0.2.8",
     lines: [
       "Verification Steps:",
       "  \u2022 git diff --cached --check (timeout: 400s)",

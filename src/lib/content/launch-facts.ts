@@ -20,7 +20,7 @@ const repositoryUrl = "https://github.com/Ryan-AI-Studios/Ledgerful";
  */
 export const launchTruth = {
   schemaVersion: 1,
-  verifiedAt: "2026-08-10",
+  verifiedAt: "2026-08-11",
   sources: {
     // Portable relative path from this web checkout; not a host-absolute Windows path.
     engine: "../ledgerful",
@@ -66,10 +66,10 @@ export const launchTruth = {
       label: "MCP npm package",
       status: "resolved",
       value: "Published on npm",
-      note: "@ledgerful/mcp-server is published on the public npm registry at version 0.1.16. It downloads the prebuilt binary from the v0.2.7 GitHub release (ledgerfulEngineTag pin). The GitHub release MCP tarball (ledgerful-mcp-server-0.1.16.tgz) matches the npm package version. npx and npm install instructions are actionable.",
+      note: "@ledgerful/mcp-server is published on the public npm registry at version 0.1.17. It downloads the prebuilt binary from the v0.2.8 GitHub release (ledgerfulEngineTag pin). The GitHub release MCP tarball (ledgerful-mcp-server-0.1.17.tgz) matches the npm package version. npx and npm install instructions are actionable.",
       name: "@ledgerful/mcp-server",
-      version: "0.1.16",
-      engineTag: "v0.2.7",
+      version: "0.1.17",
+      engineTag: "v0.2.8",
       registryUrl:
         "https://registry.npmjs.org/@ledgerful%2fmcp-server/latest",
       publiclyAvailable: true,
@@ -77,10 +77,10 @@ export const launchTruth = {
     release: {
       label: "Release downloads and checksums",
       status: "resolved",
-      value: "v0.2.7 with SHA-256 checksums, SBOM, and cosign signing",
-      note: "The v0.2.7 release is publicly available on GitHub with binary archives for 4 platforms, SHA-256 checksums for each, CycloneDX SBOM (engine + MCP), cosign keyless signing (Sigstore Fulcio), SLSA build-provenance attestation, SBOM attestation, and cargo-auditable dependency embedding. Homebrew tap and Scoop bucket track the current release and resolve to 0.2.7.",
-      tag: "v0.2.7",
-      localSourceVersion: "0.2.7",
+      value: "v0.2.8 with SHA-256 checksums, SBOM, and cosign signing",
+      note: "The v0.2.8 release is publicly available on GitHub with binary archives for 4 platforms, SHA-256 checksums for each, CycloneDX SBOM (engine + MCP), cosign keyless signing (Sigstore Fulcio), SLSA build-provenance attestation, SBOM attestation, and cargo-auditable dependency embedding. Homebrew tap and Scoop bucket track the current release and resolve to 0.2.8.",
+      tag: "v0.2.8",
+      localSourceVersion: "0.2.8",
       apiUrl:
         "https://api.github.com/repos/Ryan-AI-Studios/Ledgerful/releases/latest",
       publiclyAvailable: true,
@@ -153,8 +153,8 @@ export const launchTruth = {
     supplyChainAttestation: {
       label: "Supply chain attestation",
       status: "resolved",
-      value: "SBOM, cosign signing, SLSA provenance shipped with v0.1.8+ (current: v0.2.7)",
-      note: "Supply-chain attestation has shipped since v0.1.8 and continues in the current v0.2.7 release: CycloneDX SBOM (engine + MCP), cosign keyless signing (Sigstore Fulcio, GitHub OIDC), SLSA build-provenance attestation (actions/attest), SBOM attestation (actions/attest-sbom), and cargo-auditable dependency embedding. Two honest SBOM gaps: the cozo git-dependency has no registry coordinate (not automatically CVE-matched), and bundled native SQLite is not enumerated as its own component.",
+      value: "SBOM, cosign signing, SLSA provenance shipped with v0.1.8+ (current: v0.2.8)",
+      note: "Supply-chain attestation has shipped since v0.1.8 and continues in the current v0.2.8 release: CycloneDX SBOM (engine + MCP), cosign keyless signing (Sigstore Fulcio, GitHub OIDC), SLSA build-provenance attestation (actions/attest), SBOM attestation (actions/attest-sbom), and cargo-auditable dependency embedding. Two honest SBOM gaps: the cozo git-dependency has no registry coordinate (not automatically CVE-matched), and bundled native SQLite is not enumerated as its own component.",
       components: [
         "CycloneDX SBOM (engine --all-features + MCP npm)",
         "cosign keyless signing (Sigstore Fulcio, GitHub OIDC)",

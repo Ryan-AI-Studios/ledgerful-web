@@ -185,7 +185,7 @@ export default function ArchitecturePage() {
               A scan can produce a risk summary, a verification plan, and a
               signed provenance record written to the ledger; the dashboard
               can turn ledger history into a SOC 2-style evidence export.
-              Below is real, redacted output from a dated v0.2.7 capture of
+              Below is real, redacted output from a dated v0.2.8 capture of
               each — the same artifacts shown on the homepage.
             </p>
           </article>

@@ -23,12 +23,20 @@ export function changelogSlug(date: string, title: string): string {
 
 const rawEntries: Omit<ChangelogEntry, "slug">[] = [
   {
-    date: "2026-08-10",
+    date: "2026-08-11",
     area: "Public web",
-    title: "Claim currency: v0.2.7 and exhibit re-capture",
+    title: "Claim currency: v0.2.8 and exhibit re-capture",
     state: "completed",
     details:
-      "Present-tense site claims refreshed to engine v0.2.7 and npm @ledgerful/mcp-server 0.1.16 (engine pin v0.2.7; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04. Capture-hygiene forbids obsolete currency-lie verification-plan captions. Action default ledgerful-version residual v0.2.1 honesty retained.",
+      "Present-tense site claims refreshed to engine v0.2.8 and npm @ledgerful/mcp-server 0.1.17 (engine pin v0.2.8; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04 with default doctor progressive disclosure (hygiene collapse). Action default ledgerful-version residual v0.2.1 honesty retained.",
+  },
+  {
+    date: "2026-08-10",
+    area: "Public web",
+    title: "Claim currency and exhibit re-capture",
+    state: "completed",
+    details:
+      "Present-tense site claims refreshed (measured on engine v0.2.7) and npm @ledgerful/mcp-server 0.1.16 (engine pin v0.2.7; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04. Capture-hygiene forbids obsolete currency-lie verification-plan captions. Action default ledgerful-version residual v0.2.1 honesty retained.",
   },
   {
     date: "2026-07-29",

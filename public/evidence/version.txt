@@ -1,1 +1,1 @@
-ledgerful 0.2.9 (9f5893102440)
+ledgerful 0.2.10 (c4a2308fe985)

@@ -41,7 +41,7 @@ export function EvidencePanel() {
       })}
       <p className="evidence-caption">
         <span>
-          Real output from a <strong>{captureTag}</strong> run on Linux x86_64.
+          Real output from a <strong>{captureTag}</strong> Linux binary run.
           Source files in <code>public/evidence/</code>. Program stdout is
           reproduced verbatim.
         </span>

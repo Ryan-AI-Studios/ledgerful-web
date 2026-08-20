@@ -29,7 +29,7 @@ Index Health:
     # ledgerful search "<query>"
     ledgerful doctor --json
   • [warn] [sig-pin] no intent.trusted_public_keys pinned; crypto-valid signatures report VALID (unknown key). Pin keys after init or re-sign. Next: pin the current identity via config set (see remediation).
-    ledgerful config set 'intent.trusted_public_keys=["ecc491fcd4ecb1d564925364485c4489a418e4bc2896adcbf646589916fbd7aa"]'
+    ledgerful config set 'intent.trusted_public_keys=["65bdbc3ba71407bbfe019a87dc6a05a8ec8c0935ce41cee526a62807d437b326"]'
     ledgerful doctor --json
     ledgerful verify --signatures
   • [warn] [sig-version] intent.min_sig_version=1 still accepts legacy v1 signatures. All LOCAL rows already have sig_version >= 2; set min_sig_version=2 to close the downgrade path.

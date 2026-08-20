@@ -62,7 +62,7 @@ export type GithubActionInput = {
 
 /**
  * GitHub Action inputs from live Ryan-AI-Studios/ledgerful-action action.yml
- * (repo root; measured 2026-07-29). Do not invent inputs.
+ * (repo root; measured 2026-08-20). Do not invent inputs.
  */
 export const githubActionInputs: GithubActionInput[] = [
   {

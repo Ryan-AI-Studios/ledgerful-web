@@ -114,7 +114,7 @@ export const packageChannels: readonly InstallChannel[] = [
     summary:
       "Community package Ledgerful.Ledgerful on microsoft/winget-pkgs (portable Windows zip).",
     notes:
-      "First package accepted 2026-07-30. The community index can lag the latest GitHub release by a release or two until a version-update PR merges; Homebrew/Scoop (org-owned) and GitHub Releases track the engine cut more tightly. Authenticode is not yet implemented; SmartScreen may prompt on first run.",
+      "First package accepted 2026-07-30. Advertise winget install with lag: last merged package predates Latest (measured on 0.2.7, #414094); older open update 0.2.8 (#415913) and 0.2.9 (#416853) remain OPEN (WDSI). Homebrew/Scoop (org-owned) and GitHub Releases track the engine cut more tightly. Authenticode is not yet implemented; SmartScreen may prompt on first run.",
     prereq: "App Installer / winget (Windows 10+)",
   },
   {

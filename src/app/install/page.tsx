@@ -15,7 +15,7 @@ import {
   scriptChannels,
   type InstallChannel,
 } from "@/lib/content/install";
-import { capturedEvidence } from "@/components/captured-evidence";
+import { capturedEvidence, captureTag } from "@/components/captured-evidence";
 import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions } from "@/lib/content/navigation";
 
@@ -82,7 +82,7 @@ function DoctorOutputPreview() {
       </pre>
       <div className="terminal-annotation">
         <span className="terminal-caption">
-          Representative output — captured from a real v0.2.8 run
+          {`Representative output — captured from a real ${captureTag} run`}
         </span>
         <span className="terminal-meta">{panel.command}</span>
       </div>
@@ -425,7 +425,7 @@ export default function InstallPage() {
           {`ledgerful --version
 ledgerful verify --health`}
         </CodeBlock>
-        <ExpectedOutput caption="Expected output — captured from a real v0.2.8 run">
+        <ExpectedOutput caption={`Expected output — captured from a real ${captureTag} run`}>
           <div className="expected-output-grid">
             <div className="expected-output-sample">
               <p className="expected-output-command">ledgerful --version</p>

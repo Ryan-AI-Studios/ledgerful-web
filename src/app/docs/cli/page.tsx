@@ -138,8 +138,10 @@ export default function DocsCliPage() {
         </div>
         <p className="doc-caption">
           Package id <code>Ledgerful.Ledgerful</code> on microsoft/winget-pkgs
-          (first package accepted 2026-07-30). Community index versions can lag
-          the latest GitHub release until a version-update PR merges.
+          (first package accepted 2026-07-30). Community index last merged
+          predates Latest (measured on 0.2.7); older open update 0.2.8 and
+          current 0.2.9 PRs remain OPEN (WDSI). Advertise{" "}
+          <code>winget install</code> with that lag.
         </p>
         <h3 className="doc-subhead">Cargo (source)</h3>
         <div className="terminal-window">

@@ -1,5 +1,7 @@
 // Captured from real engine runs on Linux x86_64 (Docker Ubuntu 24.04).
-// Capture provenance: binary ledgerful 0.2.8 (c99779aa2b9b), measured 2026-08-11.
+// Capture provenance: binary ledgerful 0.2.9 (9f5893102440), measured 2026-08-19.
+// captureTag is exhibit provenance for chrome strings — do not bind chrome to
+// launchFacts.release.tag (that would hide exhibit lag).
 // Doctor / version / verify-health: neutral-env Docker Ubuntu 24.04, /tmp/neutral-repo.
 // Verification plan: JS sample-repo dry-run stdout only (stderr redirected).
 // Source files: public/evidence/{version,doctor,verify-health}.txt
@@ -9,12 +11,15 @@
 //   - verify-health.txt : ledgerful verify --health
 // ANSI styling is stripped; program stdout is reproduced verbatim below.
 
+/** Exhibit provenance for chrome. Not launchFacts.release.tag. */
+export const captureTag = "v0.2.9";
+
 export const capturedEvidence = {
   version: {
     command: "ledgerful --version",
     description: "Binary version",
     lines: [
-      "ledgerful 0.2.8 (c99779aa2b9b)",
+      "ledgerful 0.2.9 (9f5893102440)",
     ],
   },
   doctor: {
@@ -39,10 +44,10 @@ export const capturedEvidence = {
       "State dir:           /tmp/neutral-repo/.ledgerful",
       "",
       "Active Ask Backend:  Local (127.0.0.1)",
-      "Native Graph:        Ready (CozoDB active, 0 nodes, 0 edges)",
+      "Native Graph:        Ready (CozoDB active, 1 nodes, 1 edges)",
       "",
       "Index Health:",
-      "  \u2022 Gate mode: observe (no ledger transition history yet)",
+      "  \u2022 Gate mode: observe (matches ledger history)",
       "  \u2022 Search index: Empty (0 documents \u2014 run 'ledgerful index')",
       "  \u2022 [warn] [graph-empty] Graph state: Empty (never indexed)",
       "  \u2022 [warn] [impact-missing] Impact report: None (run 'ledgerful scan --impact')",
@@ -51,11 +56,10 @@ export const capturedEvidence = {
       "    # first search also rebuilds when empty:",
       "    # ledgerful search \"<query>\"",
       "    ledgerful doctor --json",
-      "  \u2022 [warn] [sig-pin] no intent.trusted_public_keys pinned; crypto-valid signatures report VALID (unknown key). Pin keys after init or re-sign. Local signing identity not found under ~/.ledgerful/keys; complete init/signing before pinning.",
-      "    ledgerful init",
-      "    # or complete first signing so ~/.ledgerful/keys/public.pem exists, then:",
+      "  \u2022 [warn] [sig-pin] no intent.trusted_public_keys pinned; crypto-valid signatures report VALID (unknown key). Pin keys after init or re-sign. Next: pin the current identity via config set (see remediation).",
+      "    ledgerful config set 'intent.trusted_public_keys=[\"ecc491fcd4ecb1d564925364485c4489a418e4bc2896adcbf646589916fbd7aa\"]'",
       "    ledgerful doctor --json",
-      "    # follow the sig-pin remediation once the public key is readable",
+      "    ledgerful verify --signatures",
       "  \u2022 [warn] [sig-version] intent.min_sig_version=1 still accepts legacy v1 signatures. All LOCAL rows already have sig_version >= 2; set min_sig_version=2 to close the downgrade path.",
       "    ledgerful config set intent.min_sig_version=2",
       "    ledgerful verify --signatures",
@@ -64,7 +68,7 @@ export const capturedEvidence = {
       "Embedding Model:     unreachable (Local embedding model server at http://127.0.0.1:8083 is unreachable after 1 retries)",
       "Completion Model:    Not configured",
       "",
-      "9 hygiene finding(s) collapsed \u2014 run doctor --full",
+      "11 hygiene finding(s) collapsed \u2014 run doctor --full",
       "GPU VRAM:            n/a (Windows-only monitoring)",
     ],
   },
@@ -90,8 +94,8 @@ export const panelOrder = ["version", "doctor", "verifyHealth"] as const;
 // Real sanitized artifact previews for `hero-proof.tsx` / `artifact-preview.tsx`.
 // Each block traces to one real, already-verified capture — never fabricated.
 //   - verificationPlan  : `ledgerful verify --dry-run` against a minimal JS
-//                         sample repo (Docker / neutral capture 2026-08-11 on
-//                         v0.2.8; stdout only). Leading blank line / ANSI
+//                         sample repo (Docker / neutral capture 2026-08-19 on
+//                         v0.2.9; stdout only). Leading blank line / ANSI
 //                         styling stripped.
 //   - provenanceRecord  : one real, Ed25519-signed ledger row from `ledger.csv`
 //                         inside the verified `public/evidence/sample-soc2/`
@@ -102,7 +106,7 @@ export const panelOrder = ["version", "doctor", "verifyHealth"] as const;
 export const artifactPreviews = {
   verificationPlan: {
     sourceLabel: "ledgerful verify --dry-run",
-    caption: "Verification plan — sample-repo capture on v0.2.8",
+    caption: "Verification plan — sample-repo capture on v0.2.9",
     lines: [
       "Verification Steps:",
       "  \u2022 git diff --cached --check (timeout: 400s)",

@@ -5,6 +5,7 @@ import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { StatusPill } from "@/components/status-pill";
 import { ArtifactPreview } from "@/components/artifact-preview";
+import { captureTag } from "@/components/captured-evidence";
 import { ArchitectureDiagram } from "@/components/architecture-diagram";
 import { pageDescriptions } from "@/lib/content/navigation";
 import { boundaryNote } from "@/lib/content/trust";
@@ -185,7 +186,7 @@ export default function ArchitecturePage() {
               A scan can produce a risk summary, a verification plan, and a
               signed provenance record written to the ledger; the dashboard
               can turn ledger history into a SOC 2-style evidence export.
-              Below is real, redacted output from a dated v0.2.8 capture of
+              Below is real, redacted output from a dated {captureTag} capture of
               each — the same artifacts shown on the homepage.
             </p>
           </article>

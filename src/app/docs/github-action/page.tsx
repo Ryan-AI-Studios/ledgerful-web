@@ -15,8 +15,9 @@ export const metadata: Metadata = {
   twitter: { images: [homeOgImage.url] },
 };
 
-/** Public action pin example — matches action default ledgerful-version residual. */
-const ACTION_USES_PIN = "Ryan-AI-Studios/ledgerful-action@v0.2.1";
+/** Public action pin example — 40-char SHA (no Action GitHub Release tags). */
+const ACTION_USES_PIN =
+  "Ryan-AI-Studios/ledgerful-action@bacf400797142884c46e97c6ce755b7ef7433a53";
 
 export default function DocsGithubActionPage() {
   const { githubAction, release } = launchTruth.facts;
@@ -86,8 +87,9 @@ export default function DocsGithubActionPage() {
           <p style={{ marginTop: "12px" }}>
             <strong>Engine binary:</strong> Set{" "}
             <code>ledgerful-version</code> to a published engine tag (current
-            Latest is {release.tag}). Action-repo residual default is still{" "}
-            <code>v0.2.1</code> and does not auto-track Latest. Prefer also
+            Latest is {release.tag}). The Action default tracks the published
+            engine tag last written into action.yml at the last Action-repo bump;
+            later engine tags require another Action bump. Prefer also
             setting <code>ledgerful-checksum</code> from the matching release{" "}
             <code>.sha256</code> asset.
           </p>
@@ -134,7 +136,7 @@ jobs:
           fetch-depth: 0
 
       - uses: ${ACTION_USES_PIN}
-        # note: pin Action ref + ledgerful-version; not Marketplace; default engine pin may lag Latest
+        # note: pin Action ref (40-char SHA) + ledgerful-version; not Marketplace
         with:
           github-token: `}
               {"${{ secrets.GITHUB_TOKEN }}"}

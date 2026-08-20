@@ -99,7 +99,7 @@ export const launchTruth = {
       label: "GitHub Action install URL",
       status: "resolved",
       value: "Public self-hosted Action",
-      note: "Public repo Ryan-AI-Studios/ledgerful-action ships action.yml at the repository root (name: Ledgerful PR Risk Report). Install with uses: Ryan-AI-Studios/ledgerful-action@<tag-or-sha> and pin ledgerful-version (and preferably ledgerful-checksum). The action default ledgerful-version input is still v0.2.1 (action-repo residual — does not auto-track latest engine). Not listed on the GitHub Marketplace. Not the planned hosted GitHub App.",
+      note: "Public repo Ryan-AI-Studios/ledgerful-action ships action.yml at the repository root (name: Ledgerful PR Risk Report). Install with uses: Ryan-AI-Studios/ledgerful-action@<sha> and pin ledgerful-version (and preferably ledgerful-checksum). Not listed on the GitHub Marketplace. Not the planned hosted GitHub App.",
       sourcePath: "Ryan-AI-Studios/ledgerful-action/action.yml",
       publiclyInstallable: true,
     },

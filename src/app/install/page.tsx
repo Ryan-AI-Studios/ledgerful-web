@@ -15,7 +15,7 @@ import {
   scriptChannels,
   type InstallChannel,
 } from "@/lib/content/install";
-import { capturedEvidence } from "@/components/captured-evidence";
+import { capturedEvidence, captureTag } from "@/components/captured-evidence";
 import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions } from "@/lib/content/navigation";
 
@@ -82,7 +82,7 @@ function DoctorOutputPreview() {
       </pre>
       <div className="terminal-annotation">
         <span className="terminal-caption">
-          Representative output — captured from a real v0.2.8 run
+          {`Representative output — captured from a real ${captureTag} run`}
         </span>
         <span className="terminal-meta">{panel.command}</span>
       </div>
@@ -178,7 +178,7 @@ const platformRows = [
     altCommand: BINSTALL_COMMAND,
     installPath: "Scoop shims or %USERPROFILE%\\.cargo\\bin\\ledgerful.exe",
     keyPath: "%USERPROFILE%\\.ledgerful\\keys\\",
-    note: "Authenticode signing is not yet implemented; SmartScreen may prompt on first run. Prefer Scoop or winget install Ledgerful.Ledgerful for a prebuilt Windows binary; community winget can lag the latest GitHub release slightly.",
+    note: "Authenticode signing is not yet implemented; SmartScreen may prompt on first run. Prefer Scoop or winget install Ledgerful.Ledgerful for a prebuilt Windows binary; community index last merged package predates Latest (measured on 0.2.7) and later PRs may still be open.",
   },
 ];
 
@@ -425,7 +425,7 @@ export default function InstallPage() {
           {`ledgerful --version
 ledgerful verify --health`}
         </CodeBlock>
-        <ExpectedOutput caption="Expected output — captured from a real v0.2.8 run">
+        <ExpectedOutput caption={`Expected output — captured from a real ${captureTag} run`}>
           <div className="expected-output-grid">
             <div className="expected-output-sample">
               <p className="expected-output-command">ledgerful --version</p>

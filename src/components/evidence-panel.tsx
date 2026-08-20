@@ -1,4 +1,4 @@
-import { capturedEvidence, panelOrder } from "./captured-evidence";
+import { capturedEvidence, captureTag, panelOrder } from "./captured-evidence";
 
 /**
  * WEB-0022: relocated from the hero (where `HeroProof` now owns the
@@ -32,7 +32,7 @@ export function EvidencePanel() {
             </pre>
             <div className="terminal-annotation">
               <span className="terminal-caption">
-                {`${panel.description} — captured from v0.2.8`}
+                {`${panel.description} — captured from ${captureTag}`}
               </span>
               <span className="terminal-meta">{panel.command}</span>
             </div>
@@ -41,7 +41,7 @@ export function EvidencePanel() {
       })}
       <p className="evidence-caption">
         <span>
-          Real output from a <strong>v0.2.8</strong> run on Linux x86_64.
+          Real output from a <strong>{captureTag}</strong> run on Linux x86_64.
           Source files in <code>public/evidence/</code>. Program stdout is
           reproduced verbatim.
         </span>

@@ -11,6 +11,7 @@ import { PageShell } from "@/components/page-shell";
 import { ProofStrip } from "@/components/proof-strip";
 import { SectionHeading } from "@/components/section-heading";
 import { WaitlistForm } from "@/components/waitlist-form";
+import { captureTag } from "@/components/captured-evidence";
 import { launchTruth } from "@/lib/content/launch-facts";
 import { pageDescriptions, siteUrl } from "@/lib/content/navigation";
 import { pillars, askCaveat } from "@/lib/content/pillars";
@@ -165,7 +166,7 @@ export default function Home() {
       {/* What Ledgerful produces */}
       <section className="content-band" id="produces">
         <SectionHeading title="What a scan actually produces">
-          Each output is a captured artifact from a real v0.2.8 run.
+          Each output is a captured artifact from a real {captureTag} run.
         </SectionHeading>
         <div className="produces-grid">
           <article>

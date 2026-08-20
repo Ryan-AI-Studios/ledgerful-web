@@ -23,10 +23,20 @@ export function changelogSlug(date: string, title: string): string {
 
 const rawEntries: Omit<ChangelogEntry, "slug">[] = [
   {
+    date: "2026-08-19",
+    area: "Public web",
+    title: "Claim currency: v0.2.9 and exhibit re-capture",
+    state: "completed",
+    details:
+      "Present-tense site claims refreshed to engine v0.2.9 and npm @ledgerful/mcp-server 0.1.18 (engine pin v0.2.9; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04 with default doctor progressive disclosure (hygiene collapse). Community winget advertised with lag (older last-merged 0.2.7; older open 0.2.8 and 0.2.9 PRs). Action default ledgerful-version residual v0.2.1 honesty retained.",
+  },
+  {
     date: "2026-08-11",
     area: "Public web",
+    // historical measured on — title token kept; hygiene allowlist only
     title: "Claim currency: v0.2.8 and exhibit re-capture",
     state: "completed",
+    // historical measured on — details token kept; hygiene allowlist only
     details:
       "Present-tense site claims refreshed to engine v0.2.8 and npm @ledgerful/mcp-server 0.1.17 (engine pin v0.2.8; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04 with default doctor progressive disclosure (hygiene collapse). Action default ledgerful-version residual v0.2.1 honesty retained.",
   },

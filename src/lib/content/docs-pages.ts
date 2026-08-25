@@ -62,15 +62,15 @@ export type GithubActionInput = {
 
 /**
  * GitHub Action inputs from live Ryan-AI-Studios/ledgerful-action action.yml
- * (repo root; measured 2026-08-20). Do not invent inputs.
+ * (repo root; measured 2026-08-24). Do not invent inputs.
  */
 export const githubActionInputs: GithubActionInput[] = [
   {
     name: "ledgerful-version",
     required: false,
-    defaultValue: "v0.2.10",
+    defaultValue: "v0.2.11",
     description:
-      "Pinned Ledgerful engine release version to run. Default is the published engine tag last written into action.yml (currently v0.2.10); pin explicitly for supply-chain hygiene. Not `latest`.",
+      "Pinned Ledgerful engine release version to run. Default is the published engine tag last written into action.yml (currently v0.2.11); pin explicitly for supply-chain hygiene. Not `latest`.",
   },
   {
     name: "ledgerful-checksum",

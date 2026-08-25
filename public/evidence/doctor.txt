@@ -1,14 +1,14 @@
-✓ Doctor: ready for publish env · 6 warning(s)
+✓ Doctor: ready for publish env · 5 warning(s) · 1 optional
 
 Ledgerful Doctor - Environment Health Check
 ==================================================
-Environment:         Wsl
+Environment:         Linux
 Active Shell:        Unknown
 LEDGERFUL_PLATFORM:  os=linux, arch=x86_64, family=unix, target_triple=x86_64-unknown-linux-gnu
 
 Tools:
   git                Found (/usr/bin/git)
-  gemini             NOT FOUND
+  gemini CLI         NOT FOUND (optional CLI; not the Cloud Ask backend)
 
 Current Path:        /tmp/neutral-repo
 Path Type:           Native
@@ -29,7 +29,7 @@ Index Health:
     # ledgerful search "<query>"
     ledgerful doctor --json
   • [warn] [sig-pin] no intent.trusted_public_keys pinned; crypto-valid signatures report VALID (unknown key). Pin keys after init or re-sign. Next: pin the current identity via config set (see remediation).
-    ledgerful config set 'intent.trusted_public_keys=["65bdbc3ba71407bbfe019a87dc6a05a8ec8c0935ce41cee526a62807d437b326"]'
+    ledgerful config set 'intent.trusted_public_keys=["a349e4961c08229a70effeafc94bbd797839a145389f7bbf24c8c2ad806fe4bc"]'
     ledgerful doctor --json
     ledgerful verify --signatures
   • [warn] [sig-version] intent.min_sig_version=1 still accepts legacy v1 signatures. All LOCAL rows already have sig_version >= 2; set min_sig_version=2 to close the downgrade path.
@@ -40,5 +40,5 @@ Index Health:
 Embedding Model:     unreachable (Local embedding model server at http://127.0.0.1:8083 is unreachable after 1 retries)
 Completion Model:    Not configured
 
-11 hygiene finding(s) collapsed — run doctor --full
+11 hygiene finding(s) collapsed (1 optional warning) — run doctor --full
 GPU VRAM:            n/a (Windows-only monitoring)

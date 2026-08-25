@@ -23,12 +23,22 @@ export function changelogSlug(date: string, title: string): string {
 
 const rawEntries: Omit<ChangelogEntry, "slug">[] = [
   {
-    date: "2026-08-20",
+    date: "2026-08-24",
     area: "Public web",
-    title: "Claim currency: v0.2.10 and exhibit re-capture",
+    title: "Claim currency: v0.2.11 and exhibit re-capture",
     state: "completed",
     details:
-      "Present-tense site claims refreshed to engine v0.2.10 and npm @ledgerful/mcp-server 0.1.19 (engine pin v0.2.10; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04 with default doctor progressive disclosure (hygiene collapse). Community winget advertised as live at 0.2.10 matching Latest. Action default ledgerful-version already v0.2.10.",
+      "Present-tense site claims refreshed to engine v0.2.11 and npm @ledgerful/mcp-server 0.1.20 (engine pin v0.2.11; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04 with default doctor progressive disclosure (hygiene collapse). Community winget advertised with lag (last merged predates Latest, measured on 0.2.10; version PR #423248 OPEN). Action default ledgerful-version and uses pin updated to v0.2.11 / #13 merge SHA.",
+  },
+  {
+    date: "2026-08-20",
+    area: "Public web",
+    // historical measured on — title token kept; hygiene allowlist only
+    title: "Claim currency: v0.2.10 and exhibit re-capture",
+    state: "completed",
+    // historical measured on — details token kept; hygiene allowlist only
+    details:
+      "Present-tense site claims refreshed to engine v0.2.10 and npm @ledgerful/mcp-server 0.1.19 (engine pin v0.2.10; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04 with default doctor progressive disclosure (hygiene collapse). Community winget advertised as live at older 0.2.10 matching Latest. Action default ledgerful-version already v0.2.10.",
   },
   {
     date: "2026-08-19",

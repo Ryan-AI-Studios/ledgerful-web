@@ -141,8 +141,9 @@ export default function DocsCliPage() {
           (first package accepted 2026-07-30). Community index last merged
           predates Latest (measured on 0.2.10); version update 0.2.11 (PR
           #423248) remains OPEN. Leftover older skipped 0.2.8 (#415913) and
-          older skipped 0.2.9 (#416853) PRs remain OPEN (WDSI). Advertise{" "}
-          <code>winget install</code> with that lag.
+          older skipped 0.2.9 (#416853) PRs remain OPEN (WDSI).{" "}
+          <code>winget install Ledgerful.Ledgerful</code> installs the index
+          build, not necessarily Latest.
         </p>
         <h3 className="doc-subhead">Cargo (source)</h3>
         <div className="terminal-window">

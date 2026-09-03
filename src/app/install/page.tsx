@@ -178,7 +178,7 @@ const platformRows = [
     altCommand: BINSTALL_COMMAND,
     installPath: "Scoop shims or %USERPROFILE%\\.cargo\\bin\\ledgerful.exe",
     keyPath: "%USERPROFILE%\\.ledgerful\\keys\\",
-    note: "Authenticode signing is not yet implemented; SmartScreen may prompt on first run. Prefer Scoop or winget install Ledgerful.Ledgerful for a prebuilt Windows binary; community index last merged predates Latest (measured on 0.2.10) and version PR #423248 remains OPEN.",
+    note: "Authenticode signing is not yet implemented; SmartScreen may prompt on first run. Prefer Scoop or winget install Ledgerful.Ledgerful for a prebuilt Windows binary; community index is live at 0.2.11 (#423248 merged 2026-08-26).",
   },
 ];
 

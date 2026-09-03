@@ -20,7 +20,7 @@ const repositoryUrl = "https://github.com/Ryan-AI-Studios/Ledgerful";
  */
 export const launchTruth = {
   schemaVersion: 1,
-  verifiedAt: "2026-08-24",
+  verifiedAt: "2026-09-02",
   sources: {
     // Portable relative path from this web checkout; not a host-absolute Windows path.
     engine: "../ledgerful",
@@ -78,7 +78,7 @@ export const launchTruth = {
       label: "Release downloads and checksums",
       status: "resolved",
       value: "v0.2.11 with SHA-256 checksums, SBOM, and cosign signing",
-      note: "The v0.2.11 release is publicly available on GitHub with binary archives for 4 platforms, SHA-256 checksums for each, CycloneDX SBOM (engine + MCP), cosign keyless signing (Sigstore Fulcio), SLSA build-provenance attestation, SBOM attestation, and cargo-auditable dependency embedding. Homebrew tap and Scoop bucket track the current release and resolve to 0.2.11. Community winget (winget install Ledgerful.Ledgerful) is advertised with lag: community index last merged predates Latest (measured on 0.2.10); version update 0.2.11 (microsoft/winget-pkgs#423248) remains OPEN. Leftover older skipped 0.2.8 (#415913) and older skipped 0.2.9 (#416853) remain OPEN (WDSI) and are not live in the community index.",
+      note: "The v0.2.11 release is publicly available on GitHub with binary archives for 4 platforms, SHA-256 checksums for each, CycloneDX SBOM (engine + MCP), cosign keyless signing (Sigstore Fulcio), SLSA build-provenance attestation, SBOM attestation, and cargo-auditable dependency embedding. Homebrew tap and Scoop bucket track the current release and resolve to 0.2.11. Community winget (winget install Ledgerful.Ledgerful) is live at 0.2.11 (microsoft/winget-pkgs#423248 merged 2026-08-26). History: older leftover 0.2.8 (#415913) merged; older leftover 0.2.9 (#416853) closed-superseded. The community index can lag a merge by minutes–hours.",
       tag: "v0.2.11",
       localSourceVersion: "0.2.11",
       apiUrl:

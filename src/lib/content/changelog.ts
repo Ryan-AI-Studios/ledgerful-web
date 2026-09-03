@@ -23,6 +23,14 @@ export function changelogSlug(date: string, title: string): string {
 
 const rawEntries: Omit<ChangelogEntry, "slug">[] = [
   {
+    date: "2026-09-02",
+    area: "Public web",
+    title: "Winget live at 0.2.11",
+    state: "completed",
+    details:
+      "Present-tense site claims: community winget is live at 0.2.11 (microsoft/winget-pkgs #423248 merged 2026-08-26). Launch-facts, install, and CLI docs drop the lag copy. History: older leftover #415913 merged / older leftover #416853 closed-superseded. Community search can lag a merge by minutes–hours.",
+  },
+  {
     date: "2026-08-24",
     area: "Public web",
     title: "Claim currency: v0.2.11 and exhibit re-capture",

@@ -36,16 +36,28 @@
 - Does not approve PRs. `ai-reviewed` is a status check, not a review
   approval. The human makes the merge decision.
 - Does not modify code. The review is read-only.
-- Does not replace automated CI checks (build, lint, e2e, link check,
-  launch truth). All CI checks must also pass.
+- Does not replace the live required status checks listed below.
 
-## Required automated checks (all mandatory for merge)
+## Required automated checks (live branch protection)
+
+Live `main` branch protection (`required_status_checks.contexts`, re-verified
+2026-09-03) requires a pull request plus these four checks before merge:
 
 - `build-and-lint` (GitHub Actions)
 - `test-links` (GitHub Actions)
 - `test-browser` (GitHub Actions)
-- `launch-truth-drift` (GitHub Actions: push to main + weekday schedule + workflow_dispatch; not a required PR check)
 - `ai-reviewed` (AI Review Gate + orchestrator)
-- `npm audit` (GitHub Actions security workflow)
-- `Secret scan` (GitHub Actions security workflow)
-- `Semgrep scan` (GitHub Actions security workflow)
+
+`launch-truth-drift` still runs (push to `main`, weekday schedule, and
+`workflow_dispatch`). It is **not** a required PR check.
+
+## Advisory (non-blocking) security checks
+
+`.github/workflows/security.yml` still runs on pull_request, push to `main`,
+and the weekly schedule. Job names include `Secret scan`, `Semgrep scan`, and
+`npm audit`. Those jobs **do not gate merge** unless branch protection is
+updated to include them.
+
+HITL names if protection is updated: `Secret scan`, `Semgrep scan`, `npm audit`.
+Default is honesty against live protection; this track does not flip GitHub
+settings.

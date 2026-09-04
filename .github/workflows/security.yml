@@ -59,10 +59,20 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Run Semgrep
-        uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d # v1
-        with:
-          config: >-
-            p/typescript
-            p/react
-            p/owasp-top-ten
-            p/nextjs
+        # NOTE: CodeQL is unavailable on private repos without GHAS. Semgrep is
+        # used as the SAST floor. The deprecated returntocorp/semgrep-action has
+        # been replaced with a direct run of the official semgrep/semgrep image
+        # pinned by digest (frontend 0014 shape, plus p/nextjs).
+        run: |
+          docker run --rm \
+            -v "${{ github.workspace }}:/src" \
+            -w /src \
+            -e SEMGREP_SEND_METRICS=off \
+            semgrep/semgrep:1.168.0@sha256:59fbed6127ea7c5dde3ba6a85142733bb20ea9aaa36120c953904f1539aaf66e \
+            semgrep scan \
+            --config p/typescript \
+            --config p/react \
+            --config p/owasp-top-ten \
+            --config p/nextjs \
+            --metrics=off \
+            .

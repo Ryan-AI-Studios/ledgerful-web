@@ -23,18 +23,30 @@ export function changelogSlug(date: string, title: string): string {
 
 const rawEntries: Omit<ChangelogEntry, "slug">[] = [
   {
+    date: "2026-09-06",
+    area: "Public web",
+    title: "Claim currency: v0.2.12 and exhibit re-capture",
+    state: "completed",
+    details:
+      "Present-tense site claims refreshed to engine v0.2.12 and npm @ledgerful/mcp-server 0.1.21 (engine pin v0.2.12; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04. Community winget live at 0.2.12 (microsoft/winget-pkgs #430322 merged 2026-09-06). Action uses pin updated to #15 merge SHA.",
+  },
+  {
     date: "2026-09-02",
     area: "Public web",
+    // historical measured on — title token kept; hygiene allowlist only
     title: "Winget live at 0.2.11",
     state: "completed",
+    // historical measured on — details token kept
     details:
       "Present-tense site claims: community winget is live at 0.2.11 (microsoft/winget-pkgs #423248 merged 2026-08-26). Launch-facts, install, and CLI docs drop the lag copy. History: older leftover #415913 merged / older leftover #416853 closed-superseded. Community search can lag a merge by minutes–hours.",
   },
   {
     date: "2026-08-24",
     area: "Public web",
+    // historical measured on — title token kept; hygiene allowlist only
     title: "Claim currency: v0.2.11 and exhibit re-capture",
     state: "completed",
+    // historical measured on — details token kept; hygiene allowlist only
     details:
       "Present-tense site claims refreshed to engine v0.2.11 and npm @ledgerful/mcp-server 0.1.20 (engine pin v0.2.11; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04 with default doctor progressive disclosure (hygiene collapse). Community winget advertised with lag (last merged predates Latest, measured on 0.2.10; version PR #423248 OPEN). Action default ledgerful-version and uses pin updated to v0.2.11 / #13 merge SHA.",
   },

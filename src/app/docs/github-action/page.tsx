@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 /** Public action pin example — 40-char SHA (no Action GitHub Release tags). */
 const ACTION_USES_PIN =
-  "Ryan-AI-Studios/ledgerful-action@2142ced7092a9b3e41cb842255272df979ed4b87";
+  "Ryan-AI-Studios/ledgerful-action@678e00b9360e889d30215f344b21ef808d5109a8";
 
 export default function DocsGithubActionPage() {
   const { githubAction, release } = launchTruth.facts;

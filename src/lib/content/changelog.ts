@@ -28,7 +28,7 @@ const rawEntries: Omit<ChangelogEntry, "slug">[] = [
     title: "Claim currency: v0.2.14",
     state: "completed",
     details:
-      "Present-tense site claims refreshed to GitHub Latest v0.2.14. npm @ledgerful/mcp-server is the live registry pair 0.1.23 / engine pin v0.2.14. Community winget measured on 0.2.13 (search 2026-09-18); do not claim 0.2.14 until search shows it. Action uses pin updated to #16 merge SHA. Dated exhibits captured from a real v0.2.12 run kept (0103/0178).",
+      "Present-tense site claims refreshed to GitHub Latest v0.2.14. npm @ledgerful/mcp-server is the live registry pair 0.1.23 / engine pin v0.2.14. Community winget measured on 0.2.13 (search 2026-09-18); do not claim 0.2.14 until search shows it. Action uses pin updated to #18 squash SHA. Dated exhibits captured from a real v0.2.12 run kept (0103/0178).",
   },
   {
     date: "2026-09-06",

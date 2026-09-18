@@ -68,9 +68,9 @@ export const githubActionInputs: GithubActionInput[] = [
   {
     name: "ledgerful-version",
     required: false,
-    defaultValue: "v0.2.12",
+    defaultValue: "v0.2.14",
     description:
-      "Pinned Ledgerful engine release version to run. Default is the published engine tag last written into action.yml (currently v0.2.12); pin explicitly for supply-chain hygiene. Not `latest`.",
+      "Pinned Ledgerful engine release version to run. Default is the published engine tag last written into action.yml (currently v0.2.14); pin explicitly for supply-chain hygiene. Not `latest`.",
   },
   {
     name: "ledgerful-checksum",

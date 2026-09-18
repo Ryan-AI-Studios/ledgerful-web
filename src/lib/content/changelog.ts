@@ -23,12 +23,21 @@ export function changelogSlug(date: string, title: string): string {
 
 const rawEntries: Omit<ChangelogEntry, "slug">[] = [
   {
+    date: "2026-09-18",
+    area: "Public web",
+    title: "Claim currency: v0.2.14",
+    state: "completed",
+    details:
+      "Present-tense site claims refreshed to GitHub Latest v0.2.14. npm @ledgerful/mcp-server is the live registry pair 0.1.23 / engine pin v0.2.14. Community winget measured on 0.2.13 (search 2026-09-18); do not claim 0.2.14 until search shows it. Action uses pin updated to #18 squash SHA. Dated exhibits captured from a real v0.2.12 run kept (0103/0178).",
+  },
+  {
     date: "2026-09-06",
     area: "Public web",
+    // historical measured on - title token kept; hygiene allowlist only
     title: "Claim currency: v0.2.12 and exhibit re-capture",
     state: "completed",
     details:
-      "Present-tense site claims refreshed to engine v0.2.12 and npm @ledgerful/mcp-server 0.1.21 (engine pin v0.2.12; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04. Community winget live at 0.2.12 (microsoft/winget-pkgs #430322 merged 2026-09-06). Action uses pin updated to #15 merge SHA.",
+      "Present-tense site claims refreshed to engine measured on v0.2.12 and npm @ledgerful/mcp-server 0.1.21 (engine pin v0.2.12; GH MCP tarball aligned). Homepage/install/architecture verification-plan and doctor/version/verify-health exhibits re-captured on Docker Ubuntu 24.04. Community winget measured on 0.2.12 (microsoft/winget-pkgs #430322 merged 2026-09-06). Action uses pin updated to #15 merge SHA.",
   },
   {
     date: "2026-09-02",

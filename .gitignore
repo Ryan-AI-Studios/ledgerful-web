@@ -58,7 +58,7 @@ CLAUDE.md
 PRODUCT.md
 product.md
 .agents/
-.claude/
+.claude
 conductor/
 
 docs/ToDo.md

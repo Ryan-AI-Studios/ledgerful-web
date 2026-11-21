@@ -3,8 +3,9 @@
  *
  * Exit taxonomy (fixed; used by CI launch-truth-drift):
  *   0 — pass (internal baseline OK; when live, published state matches register)
- *   1 — drift / assert fail (claims wrong, required asset missing, stale baseline, …)
+ *   1 — drift / assert fail (claims wrong, required asset missing, …)
  *   2 — UNVERIFIED (transport: timeout, DNS/network error, HTTP 429, HTTP 5xx)
+ *   3 — STALE (invalid, future, or older than 30 UTC days)
  *
  * Live network is OFF by default so PR `check:truth` stays offline.
  * Enable live:  LAUNCH_TRUTH_LIVE=1  (or `npm run check:launch-truth:live`)
@@ -19,20 +20,23 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { existsSync, readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 import ts from "typescript";
 
-const sourceUrl = new URL("../src/lib/content/launch-facts.ts", import.meta.url);
-const source = await readFile(sourceUrl, "utf8");
-const compiled = ts.transpileModule(source, {
-  compilerOptions: {
-    module: ts.ModuleKind.ESNext,
-    target: ts.ScriptTarget.ES2022,
-  },
-});
-const contentModule = await import(
-  `data:text/javascript;base64,${Buffer.from(compiled.outputText).toString("base64")}`
-);
-const { launchTruth, launchFacts } = contentModule;
+async function loadLaunchFacts() {
+  const sourceUrl = new URL("../src/lib/content/launch-facts.ts", import.meta.url);
+  const source = await readFile(sourceUrl, "utf8");
+  const compiled = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.ESNext,
+      target: ts.ScriptTarget.ES2022,
+    },
+  });
+  const contentModule = await import(
+    `data:text/javascript;base64,${Buffer.from(compiled.outputText).toString("base64")}`
+  );
+  return contentModule;
+}
 
 const USER_AGENT = "ledgerful-web-launch-truth-check/1.0";
 const GH_API_ORIGIN = "https://api.github.com";
@@ -61,10 +65,9 @@ function resolveRequestUrl(url) {
   return `${base}${url.slice(GH_API_ORIGIN.length)}`;
 }
 
-async function request(url) {
-  const resolved = resolveRequestUrl(url);
+async function request(url, fetchResponse) {
   try {
-    return await fetch(resolved, {
+    return await fetchResponse(url, {
       redirect: "follow",
       signal: AbortSignal.timeout(15_000),
       headers: {
@@ -74,7 +77,7 @@ async function request(url) {
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    throw new UnverifiedError(`request failed for ${resolved}: ${message}`);
+    throw new UnverifiedError(`request failed for ${url}: ${message}`);
   }
 }
 
@@ -104,32 +107,33 @@ function assertPublishedState(response, expectedPublished, label) {
   );
 }
 
-function assertStaleness() {
-  assert.match(launchTruth.verifiedAt, /^\d{4}-\d{2}-\d{2}$/);
-  const verifiedDate = new Date(`${launchTruth.verifiedAt}T00:00:00Z`);
-  const now = new Date();
-  const today = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  const ageMs = today.getTime() - verifiedDate.getTime();
-  const ageDays = ageMs / (1000 * 60 * 60 * 24);
-  if (ageDays > 14) {
-    console.warn(
-      `Launch truth baseline is older than 14 days (verified ${launchTruth.verifiedAt}). Consider refreshing with current verified evidence.`,
-    );
+export function evaluateStaleness(verifiedAt, now) {
+  if (typeof verifiedAt !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(verifiedAt)) {
+    return { staleReason: "Verification date must be YYYY-MM-DD." };
+  }
+  const verifiedDate = new Date(`${verifiedAt}T00:00:00Z`);
+  if (!Number.isFinite(verifiedDate.getTime()) ||
+      verifiedDate.toISOString().slice(0, 10) !== verifiedAt) {
+    return { staleReason: `Verification date ${verifiedAt} is not a valid UTC calendar date.` };
+  }
+  const today = new Date(now);
+  today.setUTCHours(0, 0, 0, 0);
+  const ageDays = (today.getTime() - verifiedDate.getTime()) / 86_400_000;
+  if (ageDays < 0) {
+    return { ageDays, staleReason: `Verification date ${verifiedAt} is in the future.` };
   }
   if (ageDays > 30) {
-    assert.fail(
-      `Launch truth baseline is stale (verified ${launchTruth.verifiedAt}, older than 30 days). Update launch-facts.ts with current verified evidence.`,
-    );
+    return { ageDays, staleReason: `Verification date ${verifiedAt} is older than 30 days.` };
   }
+  return { ageDays };
 }
 
-function assertInternalBaseline() {
+function assertInternalBaseline(launchTruth, launchFacts) {
   assert.equal(
     launchTruth.schemaVersion,
     1,
     "Update the drift checker when the launch-truth schema changes",
   );
-  assertStaleness();
   assert.equal(
     launchFacts.length,
     Object.keys(launchTruth.facts).length,
@@ -198,15 +202,15 @@ function assertInternalBaseline() {
   );
 }
 
-async function checkPublishedState() {
-  const repository = await request(launchTruth.facts.repository.apiUrl);
+async function checkPublishedState(launchTruth, fetchResponse) {
+  const repository = await request(launchTruth.facts.repository.apiUrl, fetchResponse);
   assertPublishedState(
     repository,
     launchTruth.facts.repository.anonymousAccess,
     "Anonymous repository state",
   );
 
-  const release = await request(launchTruth.facts.release.apiUrl);
+  const release = await request(launchTruth.facts.release.apiUrl, fetchResponse);
   assertPublishedState(
     release,
     launchTruth.facts.release.publiclyAvailable,
@@ -238,7 +242,7 @@ async function checkPublishedState() {
     }
   }
 
-  const npmPackage = await request(launchTruth.facts.mcpPackage.registryUrl);
+  const npmPackage = await request(launchTruth.facts.mcpPackage.registryUrl, fetchResponse);
   assertPublishedState(
     npmPackage,
     launchTruth.facts.mcpPackage.publiclyAvailable,
@@ -301,7 +305,7 @@ function structuralHeadFields(source, label) {
   };
 }
 
-function assertPublicLedgerBundle() {
+function assertPublicLedgerBundle(output) {
   const bundleDir = new URL("../public/ledger/", import.meta.url);
   const ndjsonPath = new URL("entries.ndjson", bundleDir);
   const manifestPath = new URL("manifest.json", bundleDir);
@@ -410,54 +414,54 @@ function assertPublicLedgerBundle() {
     );
   }
 
-  console.log(
+  output.log(
     `Public ledger bundle: ${lines.length} entries, chain_head.length=${headStruct.length}, manifest verified.`,
   );
 }
 
-function emitUnverified(reason) {
-  const line = `Launch truth: UNVERIFIED — ${reason}`;
-  console.error(line);
-  if (process.env.GITHUB_ACTIONS === "true") {
-    // warning annotation (not error): this is transport, not claim drift
-    console.error(`::warning::Launch truth UNVERIFIED — ${reason}`);
-  }
-}
-
-function liveEnabled() {
-  // Explicit offline escape if LIVE was set elsewhere in the environment.
-  if (process.env.LAUNCH_TRUTH_LIVE === "0") return false;
-  return process.env.LAUNCH_TRUTH_LIVE === "1";
-}
-
-async function main() {
-  assertInternalBaseline();
-  assertPublicLedgerBundle();
-
-  if (liveEnabled()) {
-    await checkPublishedState();
-    console.log(
-      `Launch truth baseline matches anonymous published state (verified ${launchTruth.verifiedAt}).`,
-    );
-  } else {
-    console.log(
-      "Launch truth: live network drift-check skipped (set LAUNCH_TRUTH_LIVE=1 to enable; LAUNCH_TRUTH_LIVE=0 forces offline).",
+export async function checkLaunchTruth({ launchTruth, launchFacts, now, live, fetchResponse, output = console }) {
+  const { ageDays, staleReason } = evaluateStaleness(launchTruth.verifiedAt, now);
+  if (ageDays > 14) {
+    output.warn(
+      `Launch truth baseline is older than 14 days (verified ${launchTruth.verifiedAt}). Consider refreshing with current verified evidence.`,
     );
   }
+  if (staleReason) {
+    output.error(`Launch truth: STALE — ${staleReason} Update launch-facts.ts with current verified evidence.`);
+    return 3;
+  }
+
+  try {
+    assertInternalBaseline(launchTruth, launchFacts);
+    assertPublicLedgerBundle(output);
+
+    if (live) {
+      await checkPublishedState(launchTruth, fetchResponse);
+      output.log(
+        `Launch truth baseline matches anonymous published state (verified ${launchTruth.verifiedAt}).`,
+      );
+    } else {
+      output.log(
+        "Launch truth: live network drift-check skipped (set LAUNCH_TRUTH_LIVE=1 to enable; LAUNCH_TRUTH_LIVE=0 forces offline).",
+      );
+    }
+    return 0;
+  } catch (err) {
+    if (err instanceof UnverifiedError) {
+      output.error(`Launch truth: UNVERIFIED — ${err.message}`);
+      return 2;
+    }
+    output.error(err instanceof Error ? err.message : err);
+    return 1;
+  }
 }
 
-try {
-  await main();
-} catch (err) {
-  if (err instanceof UnverifiedError) {
-    emitUnverified(err.message);
-    process.exit(2);
-  }
-  // AssertionError and other hard failures → drift / assert (exit 1)
-  if (err && typeof err === "object" && "message" in err) {
-    console.error(err.message);
-  } else {
-    console.error(err);
-  }
-  process.exit(1);
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const facts = await loadLaunchFacts();
+  process.exitCode = await checkLaunchTruth({
+    ...facts,
+    now: new Date(),
+    live: process.env.LAUNCH_TRUTH_LIVE === "1",
+    fetchResponse: (url, options) => fetch(resolveRequestUrl(url), options),
+  });
 }

@@ -9,6 +9,14 @@ export type LaunchFact = {
   href?: string;
 };
 
+const wingetCatalog = {
+  version: "0.2.18",
+  observedAt: "2026-11-21",
+} as const;
+
+export const wingetCatalogNote =
+  `The community winget catalog showed Ledgerful.Ledgerful ${wingetCatalog.version} on ${wingetCatalog.observedAt} (UTC). The catalog can lag behind GitHub Releases.`;
+
 const repositoryUrl = "https://github.com/Ryan-AI-Studios/Ledgerful";
 
 /**
@@ -20,7 +28,7 @@ const repositoryUrl = "https://github.com/Ryan-AI-Studios/Ledgerful";
  */
 export const launchTruth = {
   schemaVersion: 1,
-  verifiedAt: "2026-09-18",
+  verifiedAt: "2026-11-21",
   sources: {
     // Portable relative path from this web checkout; not a host-absolute Windows path.
     engine: "../ledgerful",
@@ -66,10 +74,10 @@ export const launchTruth = {
       label: "MCP npm package",
       status: "resolved",
       value: "Published on npm",
-      note: "@ledgerful/mcp-server is published on the public npm registry at version 0.1.23 (engine pin v0.2.14). The GitHub release MCP tarball (ledgerful-mcp-server-0.1.23.tgz) matches the npm package version. npx and npm install instructions are actionable.",
+      note: "@ledgerful/mcp-server is published on the public npm registry at version 0.1.27 (engine pin v0.2.18). The GitHub release MCP tarball (ledgerful-mcp-server-0.1.27.tgz) matches the npm package version. npx and npm install instructions are actionable.",
       name: "@ledgerful/mcp-server",
-      version: "0.1.23",
-      engineTag: "v0.2.14",
+      version: "0.1.27",
+      engineTag: "v0.2.18",
       registryUrl:
         "https://registry.npmjs.org/@ledgerful%2fmcp-server/latest",
       publiclyAvailable: true,
@@ -77,10 +85,11 @@ export const launchTruth = {
     release: {
       label: "Release downloads and checksums",
       status: "resolved",
-      value: "v0.2.14 with SHA-256 checksums, SBOM, and cosign signing",
-      note: "The v0.2.14 release is publicly available on GitHub with binary archives for 4 platforms, SHA-256 checksums for each, CycloneDX SBOM (engine + MCP), cosign keyless signing (Sigstore Fulcio), SLSA build-provenance attestation, SBOM attestation, and cargo-auditable dependency embedding. Homebrew tap and Scoop bucket remotes match GitHub Latest 0.2.14 (sidecar hashes). Community winget (winget install Ledgerful.Ledgerful) was measured on 0.2.13 (winget search 2026-09-18); do not claim 0.2.14 until search shows it. History: older 0.2.12 was microsoft/winget-pkgs#430322 merged 2026-09-06. History: older leftover 0.2.8 (#415913) merged; older leftover 0.2.9 (#416853) closed-superseded; older 0.2.11 was #423248. The community index can lag a merge by minutes–hours.",
-      tag: "v0.2.14",
-      localSourceVersion: "0.2.14",
+      value: "v0.2.18 with SHA-256 checksums, SBOM, and cosign signing",
+      note: `GitHub Release v0.2.18 includes four platform archives with SHA-256 checksums, signed CycloneDX SBOMs for the engine and MCP wrapper, and GitHub provenance and SBOM attestations for the archives and wrapper tarball. Homebrew and Scoop manifests match the release checksums. ${wingetCatalogNote}`,
+      tag: "v0.2.18",
+      linuxX64Sha256: "1fcefb24d184b1a06d493b51175a8fac7fa5ce25dcac28dd0a7a1401488cea2e",
+      localSourceVersion: "0.2.18",
       apiUrl:
         "https://api.github.com/repos/Ryan-AI-Studios/Ledgerful/releases/latest",
       publiclyAvailable: true,
@@ -99,7 +108,7 @@ export const launchTruth = {
       label: "GitHub Action install URL",
       status: "resolved",
       value: "Public self-hosted Action",
-      note: "Public repo Ryan-AI-Studios/ledgerful-action ships action.yml at the repository root (name: Ledgerful PR Risk Report). Install with uses: Ryan-AI-Studios/ledgerful-action@<sha> and pin ledgerful-version (and preferably ledgerful-checksum). Not listed on the GitHub Marketplace. Not the planned hosted GitHub App.",
+      note: "Ledgerful PR Risk Report is a public Action installed from Ryan-AI-Studios/ledgerful-action at a commit SHA. Workflow A requires the checksum for the chosen engine version and runner platform.",
       sourcePath: "Ryan-AI-Studios/ledgerful-action/action.yml",
       publiclyInstallable: true,
     },
@@ -107,7 +116,7 @@ export const launchTruth = {
       label: "Usage telemetry",
       status: "resolved",
       value: "Optional build feature; disabled by default",
-      note: "Usage metrics are excluded from the default engine feature set. Builds that include usage-metrics still require an explicit ledgerful usage enable command before structured usage events can be sent.",
+      note: "The default Cargo feature set excludes usage-metrics. Prebuilt releases include the feature and require an explicit ledgerful usage enable command before sending structured usage events.",
       feature: "usage-metrics",
       inDefaultBuild: false,
       enabledByDefault: false,
@@ -135,11 +144,11 @@ export const launchTruth = {
       label: "Waitlist email provider",
       status: "resolved",
       value: "Kit (double opt-in)",
-      note: "The /waitlist form sends your email address to Kit (formerly ConvertKit) via a first-party server relay. Kit receives the email address and an opt-in timestamp. No name, source code, or project data is sent. Double opt-in is mandatory: adding you to a double opt-in form triggers a confirmation email, and you must confirm from your inbox before you are added. The Kit API key lives only in the server environment and never appears in the browser bundle. To request deletion, contact hello@ledgerful.dev with the subject \"Waitlist deletion request\" — your data will be removed from Kit within 5 business days.",
+      note: "The /waitlist form sends your email address to Kit (formerly ConvertKit) via a first-party server relay. The relay sends your email address and, if selected, a design-partner preference. It enrolls the new subscriber as inactive in the confirmation form. You must confirm from your inbox to activate the subscription. The Kit API key lives only in the server environment and never appears in the browser bundle. To request deletion, contact hello@ledgerful.dev with the subject \"Waitlist deletion request\" — your data will be removed from Kit within 5 business days.",
       provider: "Kit",
       providerUrl: "https://kit.com",
       doubleOptIn: true,
-      dataReceived: ["email_address", "opt_in_timestamp"],
+      dataReceived: ["email_address", "design_partner (if selected)"],
       apiVersion: "v4",
       apiBaseUrl: "https://api.kit.com/v4",
       keyLocation: "server environment only (never client bundle)",
@@ -153,8 +162,8 @@ export const launchTruth = {
     supplyChainAttestation: {
       label: "Supply chain attestation",
       status: "resolved",
-      value: "SBOM, cosign signing, SLSA provenance shipped with v0.1.8+ (current: v0.2.14)",
-      note: "Supply-chain attestation has shipped since v0.1.8 and continues in the current v0.2.14 release: CycloneDX SBOM (engine + MCP), cosign keyless signing (Sigstore Fulcio, GitHub OIDC), SLSA build-provenance attestation (actions/attest), SBOM attestation (actions/attest-sbom), and cargo-auditable dependency embedding. Two honest SBOM gaps: the cozo git-dependency has no registry coordinate (not automatically CVE-matched), and bundled native SQLite is not enumerated as its own component.",
+      value: "SBOM, cosign signing, SLSA provenance shipped with v0.1.8+ (current: v0.2.18)",
+      note: "Supply-chain attestation has shipped since v0.1.8 and continues in the current v0.2.18 release: CycloneDX SBOM (engine + MCP), cosign keyless signing (Sigstore Fulcio, GitHub OIDC), SLSA build-provenance attestation (actions/attest), SBOM attestation (actions/attest-sbom), and cargo-auditable dependency embedding. Two honest SBOM gaps: the cozo git-dependency has no registry coordinate (not automatically CVE-matched), and bundled native SQLite is not enumerated as its own component.",
       components: [
         "CycloneDX SBOM (engine --all-features + MCP npm)",
         "cosign keyless signing (Sigstore Fulcio, GitHub OIDC)",

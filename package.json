@@ -39,6 +39,7 @@
     "generate:brand": "node scripts/generate-brand-assets.mjs",
     "test:e2e": "npm run build && playwright test",
     "test:e2e:run": "playwright test",
+    "test:launch-truth": "node --test tests/launch-truth.test.mjs",
     "test:policy": "node --test tests/indexing-policy.test.mjs tests/positioning-terms.test.mjs"
   },
   "dependencies": {

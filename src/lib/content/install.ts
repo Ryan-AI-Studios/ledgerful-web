@@ -12,6 +12,8 @@
 // verified appear as "available". winget flipped to available 2026-07-30
 // after microsoft/winget-pkgs#405128 merged (`Ledgerful.Ledgerful`).
 
+import { wingetCatalogNote } from "./launch-facts";
+
 /** Canonical source-build install. Crates.io is not used for distribution. */
 export const INSTALL_COMMAND =
   "cargo install --git https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful";
@@ -114,7 +116,7 @@ export const packageChannels: readonly InstallChannel[] = [
     summary:
       "Community package Ledgerful.Ledgerful on microsoft/winget-pkgs (portable Windows zip).",
     notes:
-      "First package accepted 2026-07-30. Community index was measured on 0.2.13 (winget search 2026-09-18). GitHub Release v0.2.14 is published; do not claim winget 0.2.14 until search shows it. History: older 0.2.12 was microsoft/winget-pkgs#430322 merged 2026-09-06; older leftover 0.2.8 (#415913) merged; older leftover 0.2.9 (#416853) closed-superseded. Homebrew/Scoop (org-owned) and GitHub Releases track the engine cut more tightly. Authenticode is not yet implemented; SmartScreen may prompt on first run.",
+      `${wingetCatalogNote} Authenticode signing is unavailable. SmartScreen may prompt on first run.`,
     prereq: "App Installer / winget (Windows 10+)",
   },
   {

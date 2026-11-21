@@ -87,11 +87,11 @@ export default function DocsGithubActionPage() {
           <p style={{ marginTop: "12px" }}>
             <strong>Engine binary:</strong> Set{" "}
             <code>ledgerful-version</code> to a published engine tag (current
-            Latest is {release.tag}). The Action default tracks the published
-            engine tag last written into action.yml at the last Action-repo bump;
-            later engine tags require another Action bump. Prefer also
-            setting <code>ledgerful-checksum</code> from the matching release{" "}
-            <code>.sha256</code> asset.
+            Latest is {release.tag}). The pinned Action commit defaults to{" "}
+            <code>{githubActionInputs[0].defaultValue}</code>. The example sets
+            the engine tag explicitly. Workflow A requires{" "}
+            <code>ledgerful-checksum</code> for the matching platform archive.
+            Workflow B uses the scan report and has no archive to download.
           </p>
           <p style={{ marginTop: "12px" }}>{githubAction.note}</p>
         </div>
@@ -100,11 +100,11 @@ export default function DocsGithubActionPage() {
       {/* ── Section 3: Workflow YAML ──────────────────────────── */}
       <section className="content-band">
         <SectionHeading title="Workflow YAML">
-          Add this step to a workflow triggered on <code>pull_request</code>{" "}
-          events. The action needs <code>pull-requests: write</code> (and often{" "}
-          <code>checks: write</code>) to post results, and{" "}
-          <code>contents: read</code> to check out the repository and download
-          the pinned release.
+          Workflow A runs the scan on <code>pull_request</code> with{" "}
+          <code>contents: read</code>. In the separate{" "}
+          <code>workflow_run</code> workflow, Workflow B downloads the scan
+          report with <code>actions: read</code> and posts the result with{" "}
+          <code>pull-requests: write</code> and <code>checks: write</code>.
         </SectionHeading>
         <div
           style={{
@@ -116,15 +116,13 @@ export default function DocsGithubActionPage() {
         >
           <pre style={{ background: "var(--surface)", whiteSpace: "pre" }}>
             <code>
-              {`name: Ledgerful Risk Scan
+              {`name: Ledgerful PR Scan
 
 on:
   pull_request:
     branches: [main]
 
 permissions:
-  pull-requests: write
-  checks: write
   contents: read
 
 jobs:
@@ -142,9 +140,15 @@ jobs:
               {"${{ secrets.GITHUB_TOKEN }}"}
               {`
           ledgerful-version: ${release.tag}
-          # ledgerful-checksum: <sha256 of the matching platform archive>
+          ledgerful-checksum: ${release.linuxX64Sha256}
           report-path: ledgerful-pr-report.json
-          fail-on: high`}
+        env:
+          LEDGERFUL_NO_NETWORK: "1"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: ledgerful-pr-report
+          path: ledgerful-pr-report.json`}
             </code>
           </pre>
         </div>
@@ -152,10 +156,14 @@ jobs:
           <strong>Token value:</strong> Always use{" "}
           <code>{"${{ secrets.GITHUB_TOKEN }}"}</code> — the built-in token
           provided by GitHub Actions. Do not create a personal access token for
-          this purpose. The action only needs the permissions required for
-          release download and PR / check posting. Prefer pinning a commit SHA
-          for the Action ref in production workflows when supply-chain policy
-          requires it.
+          this purpose. Follow the{" "}
+          <a
+            href="https://github.com/Ryan-AI-Studios/ledgerful-action/tree/a867acedfb80798c4d96bea9f68020b2f899b3bd#usage--workflow-b-downloads-the-artifact-posts-the-commentcheck-run"
+            className="inline-link"
+          >
+            pinned Action guide
+          </a>{" "}
+          to add the posting workflow.
         </div>
       </section>
 

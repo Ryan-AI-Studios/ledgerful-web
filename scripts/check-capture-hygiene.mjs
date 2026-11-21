@@ -111,7 +111,10 @@ function findStaleVersionHits(filePath, content) {
   if (DATED_CAPTURE_PATH.test(filePath)) return;
 
   // Strip allowlisted historical phrases before scanning version tokens.
-  const scrubbed = content.replace(HISTORICAL_ALLOW, " ");
+  const historicalChangelog = filePath === join(root, "src", "lib", "content", "changelog.ts")
+    ? content.replace(/    date: "2026-09-18",\n[\s\S]*?\n  },/, " ")
+    : content;
+  const scrubbed = historicalChangelog.replace(HISTORICAL_ALLOW, " ");
   const re = /\bv?0\.\d+\.\d+\b/g;
   /** @type {string[]} */
   const hits = [];

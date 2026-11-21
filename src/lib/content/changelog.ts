@@ -23,6 +23,14 @@ export function changelogSlug(date: string, title: string): string {
 
 const rawEntries: Omit<ChangelogEntry, "slug">[] = [
   {
+    date: "2026-11-21",
+    area: "Public web",
+    title: "Launch facts refreshed for v0.2.18",
+    state: "completed",
+    details:
+      "Install and trust documentation now reflect release v0.2.18 and npm wrapper 0.1.27. The Windows winget catalog showed 0.2.18 on November 21, 2026. The Action guide gives the pinned commit’s engine default separately from its explicit v0.2.18 example. Launch truth checks now report stale verification dates separately from publication drift.",
+  },
+  {
     date: "2026-09-18",
     area: "Public web",
     title: "Claim currency: v0.2.14",

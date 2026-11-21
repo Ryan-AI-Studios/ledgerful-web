@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PageShell } from "@/components/page-shell";
 import { SectionHeading } from "@/components/section-heading";
 import { homeOgImage, pageDescriptions } from "@/lib/content/navigation";
-import { launchTruth } from "@/lib/content/launch-facts";
+import { launchTruth, wingetCatalogNote } from "@/lib/content/launch-facts";
 import {
   BINSTALL_COMMAND,
   BREW_COMMAND,
@@ -137,12 +137,7 @@ export default function DocsCliPage() {
           </pre>
         </div>
         <p className="doc-caption">
-          Package id <code>Ledgerful.Ledgerful</code> on microsoft/winget-pkgs
-          (first package accepted 2026-07-30). Community index is live at
-          measured on 0.2.13 (winget search 2026-09-18; GitHub v0.2.14 published, index may lag. History: older 0.2.12 was PR #430322 merged 2026-09-06; older leftover 0.2.8
-          (#415913) merged; older leftover 0.2.9 (#416853) closed-superseded.{" "}
-          <code>winget install Ledgerful.Ledgerful</code> installs the
-          community-index build. The index can lag a merge by minutes–hours.
+          {wingetCatalogNote}
         </p>
         <h3 className="doc-subhead">Cargo (source)</h3>
         <div className="terminal-window">

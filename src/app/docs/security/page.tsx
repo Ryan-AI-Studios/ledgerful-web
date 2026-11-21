@@ -1369,9 +1369,9 @@ export default function SecurityPage() {
               className="disclosure-notice"
               style={{ marginBottom: "24px" }}
             >
-              <strong>Opt-in only:</strong> The default binary does not
-              include the <code>{telemetry.feature}</code> feature. In a
-              build that does, enable collection with{" "}
+              <strong>Opt-in only:</strong> Cargo default features exclude{" "}
+              <code>{telemetry.feature}</code>. Prebuilt releases include it
+              and leave collection disabled until you run{" "}
               <code>{telemetry.enableCommand}</code>; its state is stored in{" "}
               <code>{telemetry.configPath}</code>. Telemetry is never
               activated without explicit user action. The payload contains

@@ -44,7 +44,7 @@ export function TrustSummary() {
         <div>
           <dt>Opt-in telemetry</dt>
           <dd>
-            Excluded from the default build. A <code>usage-metrics</code> build
+            Excluded from Cargo default features. A <code>usage-metrics</code> build
             sends a fixed aggregate JSON payload (command counts, platform,
             version, features, anonymous ID) to the documented Supabase
             ingest only after <code>ledgerful usage enable</code>. No source,

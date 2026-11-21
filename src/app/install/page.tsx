@@ -16,7 +16,7 @@ import {
   type InstallChannel,
 } from "@/lib/content/install";
 import { capturedEvidence, captureTag } from "@/components/captured-evidence";
-import { launchTruth } from "@/lib/content/launch-facts";
+import { launchTruth, wingetCatalogNote } from "@/lib/content/launch-facts";
 import { pageDescriptions } from "@/lib/content/navigation";
 
 export const metadata: Metadata = {
@@ -178,7 +178,7 @@ const platformRows = [
     altCommand: BINSTALL_COMMAND,
     installPath: "Scoop shims or %USERPROFILE%\\.cargo\\bin\\ledgerful.exe",
     keyPath: "%USERPROFILE%\\.ledgerful\\keys\\",
-    note: "Authenticode signing is not yet implemented; SmartScreen may prompt on first run. Prefer Scoop or winget install Ledgerful.Ledgerful for a prebuilt Windows binary; community index was measured on 0.2.13 (winget search 2026-09-18). GitHub Release v0.2.14 is published; do not claim winget 0.2.14 until search shows it.",
+    note: `Authenticode signing is unavailable. SmartScreen may prompt on first run. For a prebuilt Windows binary, use Scoop or winget. ${wingetCatalogNote}`,
   },
 ];
 

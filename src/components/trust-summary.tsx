@@ -36,7 +36,7 @@ export function TrustSummary() {
           <dd>
             Reads: git history, project files, <code>.ledgerful/ledger.db</code>,
             config, and selected model settings. Writes: ledger, reports, and
-            signing keys by default; sync bundles only in a sync-enabled build
+            signing keys by default. Sync bundles are written only after opt-in
             using local <code>dir://</code>. Uploads: none by default. See the
             boundary table below.
           </dd>
@@ -44,7 +44,7 @@ export function TrustSummary() {
         <div>
           <dt>Opt-in telemetry</dt>
           <dd>
-            Excluded from the default build. A <code>usage-metrics</code> build
+            Excluded from Cargo default features. A <code>usage-metrics</code> build
             sends a fixed aggregate JSON payload (command counts, platform,
             version, features, anonymous ID) to the documented Supabase
             ingest only after <code>ledgerful usage enable</code>. No source,

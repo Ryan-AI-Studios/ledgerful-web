@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Ledgerful is pre-1.0 software. The latest release is v0.2.14. Security fixes are applied to the main branch and included in the next release. There are no backport branches.
+Ledgerful is pre-1.0 software. The latest release is v0.2.18. Security fixes are applied to the main branch and included in the next release. There are no backport branches.
 
 ## Reporting a vulnerability
 
@@ -23,9 +23,9 @@ Report vulnerabilities through one of these channels:
 
 **No PGP key is published.** We do not require or recommend encrypted reporting at this stage.
 
-## Supply chain attestation (shipped since v0.1.8; current v0.2.14)
+## Supply chain attestation (shipped since v0.1.8; current v0.2.18)
 
-Ledgerful's release pipeline is hardened with verifiable supply-chain integrity. The following capabilities shipped with v0.1.8 and continue in the current v0.2.14 release:
+Ledgerful's release pipeline is hardened with verifiable supply-chain integrity. The following capabilities shipped with v0.1.8 and continue in the current v0.2.18 release:
 
 | Capability | Tool | Status |
 |---|---|---|
@@ -38,6 +38,8 @@ Ledgerful's release pipeline is hardened with verifiable supply-chain integrity.
 ### Verification recipes
 
 **Verify SBOM signature (cosign keyless):**
+
+The v0.2.18 release workflow uses cosign v3.1.3. Use that verifier for the Windows ZIP if cosign v3.1.4 reports an invalid signature.
 ```bash
 cosign verify-blob \
   --certificate-identity-regexp '^https://github\.com/Ryan-AI-Studios/Ledgerful/\.github/workflows/release\.yml@.+' \
@@ -54,8 +56,9 @@ gh attestation verify ledgerful-<platform>.tar.gz \
 
 **Verify SBOM attestation:**
 ```bash
-gh attestation verify ledgerful-<ver>.cdx.json \
-  --owner Ryan-AI-Studios
+gh attestation verify ledgerful-<platform>.tar.gz \
+  --owner Ryan-AI-Studios \
+  --predicate-type https://cyclonedx.org/bom
 ```
 
 **Inspect embedded dependencies (offline):**

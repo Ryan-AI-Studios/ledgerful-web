@@ -61,8 +61,7 @@ export type GithubActionInput = {
 };
 
 /**
- * GitHub Action inputs from live Ryan-AI-Studios/ledgerful-action action.yml
- * (repo root; measured 2026-09-06). Do not invent inputs.
+ * GitHub Action inputs from action.yml at a867acedfb80798c4d96bea9f68020b2f899b3bd.
  */
 export const githubActionInputs: GithubActionInput[] = [
   {
@@ -70,13 +69,13 @@ export const githubActionInputs: GithubActionInput[] = [
     required: false,
     defaultValue: "v0.2.14",
     description:
-      "Pinned Ledgerful engine release version to run. Default is the published engine tag last written into action.yml (currently v0.2.14); pin explicitly for supply-chain hygiene. Not `latest`.",
+      "Pinned Ledgerful engine release version to run. Set a published version explicitly to use an engine tag other than the pinned Action commit’s default.",
   },
   {
     name: "ledgerful-checksum",
     required: false,
     description:
-      "SHA-256 checksum of the pinned release archive (.tar.gz/.zip) for the runner OS/arch. Verified against the downloaded archive before extraction. Required in Workflow A (scan); not used in Workflow B.",
+      "SHA-256 checksum of the pinned release archive (.tar.gz/.zip) for the runner OS/arch. Verified against the downloaded archive before extraction. The input has no default. Workflow A requires a checksum at runtime. Workflow B uses the scan report.",
   },
   {
     name: "github-token",
@@ -97,7 +96,7 @@ export const githubActionInputs: GithubActionInput[] = [
     required: false,
     defaultValue: "",
     description:
-      "Optional non-blocking fail condition (low|medium|high). Reporting only — policy enforcement is out of scope here.",
+      "Optional job-failure threshold (low, medium, or high). It does not change the posted check-run conclusion.",
   },
 ];
 

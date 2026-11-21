@@ -131,7 +131,7 @@ function DataFlowDiagram() {
         fill="currentColor"
         opacity="0.65"
       >
-        sync requires --features sync
+        sync · opt-in shared folder
       </text>
 
       {/* ── Local resources (left of engine) ─────────────── */}
@@ -951,7 +951,7 @@ export default function SecurityPage() {
                   <ul className="print-flow-list">
                     <li>CLI · daemon · dashboard</li>
                     <li>audit · verify · export</li>
-                    <li>sync only in a --features sync build</li>
+                    <li>shared-folder sync only after opt-in</li>
                   </ul>
                 </div>
                 <p className="print-flow-arrow" aria-hidden="true">▼</p>
@@ -1369,9 +1369,9 @@ export default function SecurityPage() {
               className="disclosure-notice"
               style={{ marginBottom: "24px" }}
             >
-              <strong>Opt-in only:</strong> The default binary does not
-              include the <code>{telemetry.feature}</code> feature. In a
-              build that does, enable collection with{" "}
+              <strong>Opt-in only:</strong> Cargo default features exclude{" "}
+              <code>{telemetry.feature}</code>. Prebuilt releases include it
+              and leave collection disabled until you run{" "}
               <code>{telemetry.enableCommand}</code>; its state is stored in{" "}
               <code>{telemetry.configPath}</code>. Telemetry is never
               activated without explicit user action. The payload contains

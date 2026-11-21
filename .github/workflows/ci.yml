@@ -38,10 +38,15 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test launch truth verdicts
+        run: npm run test:launch-truth
+
       - name: Build
         run: npm run build
 
       - name: Check quiet preview and public truth
+        env:
+          LAUNCH_TRUTH_LIVE: "0"
         run: npm run check:truth
 
       - name: Check dependency provenance
@@ -53,7 +58,7 @@ jobs:
   # Live publication drift — NOT a required PR check (GLM-review).
   # Runs on push to main, weekday schedule, and manual dispatch.
   # Exit taxonomy from scripts/check-launch-truth.mjs:
-  #   0 = match, 1 = DRIFT, 2 = UNVERIFIED (transport). Never continue-on-error.
+  #   0 = match, 1 = DRIFT, 2 = UNVERIFIED (transport), 3 = STALE.
   launch-truth-drift:
     runs-on: ubuntu-latest
     if: >
@@ -78,21 +83,10 @@ jobs:
 
       - name: Check launch truth against live published state
         run: |
-          set +e
-          npm run check:launch-truth:live
-          code=$?
-          set -e
-          if [ "$code" -eq 0 ]; then
-            echo "Launch truth: live state matches register."
-            exit 0
-          elif [ "$code" -eq 2 ]; then
-            # ::warning:: for transport (not claim drift); job still fails (exit 2).
-            echo "::warning::Launch truth UNVERIFIED (transport failure — exit 2). Not claim drift; re-run or check network."
-            exit 2
-          else
-            echo "::error::Launch truth DRIFT (exit $code). Public claims no longer match published state."
-            exit "$code"
-          fi
+          unset LAUNCH_TRUTH_API_BASE
+          code=0
+          npm run check:launch-truth:live || code=$?
+          node scripts/report-launch-truth-status.mjs "$code"
 
   test-links:
     runs-on: ubuntu-latest

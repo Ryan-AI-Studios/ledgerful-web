@@ -88,7 +88,7 @@ export const localCapabilities: EditionItem[] = [
     label: "Local team sync foundation",
     maturity: "beta",
     deployment: "runs-locally",
-    caveat: "Requires a build compiled with --features sync",
+    caveat: "Opt-in shared-folder sync",
   },
 ];
 
@@ -216,7 +216,7 @@ export const matrixGroups: MatrixGroup[] = [
     label: "Collaboration",
     rows: [
       {
-        feature: "Local team sync (sync-enabled build)",
+        feature: "Local team sync (opt-in)",
         cells: [
           { maturity: "available", deployment: "runs-locally" },
           { maturity: "available", deployment: "runs-locally" },

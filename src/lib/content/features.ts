@@ -44,8 +44,8 @@ export const featureStates: FeatureItem[] = [
     maturity: "beta",
     deployment: "runs-locally",
     description:
-      "Signed, encrypted dir:// bundles are available in a feature-gated build compiled with --features sync; sync is not included in the default install.",
-    evidence: "The engine Cargo feature list keeps sync outside default features.",
+      "Standard CLI builds include local sync. It writes signed, encrypted dir:// bundles after you configure a shared folder and opt in.",
+    evidence: "Sync is part of the engine’s default Cargo features. The sync configuration defaults to disabled.",
   },
   {
     name: "Local dashboard",

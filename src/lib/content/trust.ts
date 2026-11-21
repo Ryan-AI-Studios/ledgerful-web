@@ -38,7 +38,7 @@ export const trustDataFlows: TrustDataFlow[] = [
   {
     iconName: "Shield",
     title: "Local default",
-    body: "Ledgerful reads git state and project structure locally and writes evidence to .ledgerful/. Scan, ledger, audit, verify, dashboard, and export stay on the machine by default. Local sync is separate and requires a sync-enabled build compiled with --features sync.",
+    body: "Ledgerful reads git state and project structure locally and writes evidence to .ledgerful/. Scan, ledger, audit, verify, dashboard, and export stay on the machine by default. Local sync is included in standard CLI builds and writes to your configured shared folder after you opt in.",
     maturity: "available",
     deployment: "runs-locally",
   },
@@ -52,7 +52,7 @@ export const trustDataFlows: TrustDataFlow[] = [
   {
     iconName: "RadioTower",
     title: "Telemetry (opt-in)",
-    body: `Usage metrics are excluded from the default build. A build with ${launchTruth.facts.telemetry.feature} must still be enabled with ${launchTruth.facts.telemetry.enableCommand} before aggregate command counts, platform/version metadata, enabled features, and an anonymous ID are sent. ${launchTruth.facts.telemetry.ingestPosture}`,
+    body: `The default Cargo feature set excludes usage metrics. Prebuilt releases include the feature and keep it off by default. A build with ${launchTruth.facts.telemetry.feature} must still be enabled with ${launchTruth.facts.telemetry.enableCommand} before aggregate command counts, platform/version metadata, enabled features, and an anonymous ID are sent. ${launchTruth.facts.telemetry.ingestPosture}`,
     maturity: "available",
     deployment: "runs-locally",
   },
@@ -299,8 +299,8 @@ export const supplyChainVerifyCommands: { label: string; command: string; note: 
   {
     label: "Verify the SBOM attestation",
     command:
-      "gh attestation verify ledgerful-<ver>.cdx.json \\\n  --owner Ryan-AI-Studios",
-    note: "Confirms the SBOM is the bill of materials for this release. Requires the repository to be public or on GitHub Enterprise Cloud.",
+      "gh attestation verify ledgerful-<platform>.tar.gz \\\n  --owner Ryan-AI-Studios \\\n  --predicate-type https://cyclonedx.org/bom",
+    note: "Verify the CycloneDX attestation against the release archive or MCP tarball. Verify the separate SBOM download with its cosign bundle.",
   },
   {
     label: "Inspect embedded dependencies (offline)",
@@ -443,7 +443,7 @@ export const nonGoals: string[] = [
   "Hosted-mode guarantees. The local-first engine does not promise the SLAs, RBAC, audit log retention, or team-scope guarantees of a hosted control plane. Hosted mode is planned and does not exist today.",
   "We are not SOC 2 certified or SOC 2 compliant. Ledgerful generates a local SOC 2-style evidence export from your ledger; we are not a certified audit firm and do not claim third-party SOC 2 attestation.",
   "FedRAMP, FIPS 140, or other government baselines. No claim is made about FedRAMP authorization, FIPS-validated cryptography, or comparable government certification.",
-  "Zero-network or zero-telemetry absolutes. The default build excludes telemetry; opt-in telemetry and the configured cloud-model ask and index --fast workflows are the outbound paths for project data. The optional viz command generates a local HTML file that loads the vis-network library from a public CDN when opened in a browser. Nothing here is a 'no network ever' guarantee.",
+  "Zero-network or zero-telemetry absolutes. The default Cargo feature set excludes telemetry; opt-in telemetry and the configured cloud-model ask and index --fast workflows are the outbound paths for project data. The optional viz command generates a local HTML file that loads the vis-network library from a public CDN when opened in a browser. Nothing here is a 'no network ever' guarantee.",
   "Air-gap. The engine can run fully offline, but this page does not claim that every install configuration is air-gapped. Operators are responsible for their own network posture.",
   "SSO / SAML / OIDC / SCIM / RBAC in the local daemon. None of these are implemented locally. They are planned for enterprise for a future control plane.",
 ];

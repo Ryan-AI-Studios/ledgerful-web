@@ -153,7 +153,7 @@ function hasAncestor(node, predicate) {
   }
 }
 
-// ── Assert 17: sync docs disclose the non-default build feature ──────────────
+// ── Assert 17: sync docs distinguish build availability from opt-in activation ──────────────
 
 {
   const syncDoc = parseHtml(pages["sync"]);
@@ -168,27 +168,28 @@ function hasAncestor(node, predicate) {
     );
   }
 
-  const missingBuildRequirement = syncSurfaceNodes.filter(
-    (node) => getAttr(node, "data-build-required") !== "--features sync",
+  const missingActivation = syncSurfaceNodes.filter(
+    (node) => getAttr(node, "data-sync-activation") !== "opt-in",
   );
-  if (missingBuildRequirement.length > 0) {
+  if (missingActivation.length > 0) {
     failures.push(
-      'Assert 17 FAIL [docs/sync]: every semantic sync surface node must carry data-build-required="--features sync"',
+      'Assert 17 FAIL [docs/sync]: every semantic sync surface node must carry data-sync-activation="opt-in"',
     );
   }
 
   const syncCaveatNode = syncSurfaceNodes.find((node) => {
     const lower = getText(node).toLowerCase();
     return (
-      lower.includes("--features sync") &&
-      (lower.includes("not included in the default") ||
-        lower.includes("feature-gated build") ||
-        lower.includes("standard install command"))
+      lower.includes("cargo default") &&
+      lower.includes("prebuilt cli releases include sync") &&
+      lower.includes("disabled by default") &&
+      lower.includes("dir://") &&
+      lower.includes("opt in")
     );
   });
   if (!syncCaveatNode) {
     failures.push(
-      'Assert 17 FAIL [docs/sync]: a semantic sync surface node must state that sync is not included in the default build and requires "--features sync"',
+      'Assert 17 FAIL [docs/sync]: a semantic sync surface node must explain sync is included in standard builds and stays disabled until users configure dir:// and opt in',
     );
   }
 
@@ -208,20 +209,28 @@ function hasAncestor(node, predicate) {
         node,
         (ancestor) =>
           getAttr(ancestor, "data-feature") === "sync" &&
-          getAttr(ancestor, "data-build-required") === "--features sync",
+          getAttr(ancestor, "data-sync-activation") === "opt-in",
       ),
   );
   if (unscopedCommands.length > 0) {
     failures.push(
-      'Assert 17 FAIL [docs/sync]: every "ledgerful sync" code example must live inside a semantic sync surface node with the build requirement hook',
+      'Assert 17 FAIL [docs/sync]: every "ledgerful sync" code example must live inside a semantic sync surface node with the opt-in activation hook',
     );
   }
 }
 
-// ── Assert 18: architecture does not present sync as a default CLI surface ───
+// ── Assert 18: architecture distinguishes standard builds from opt-in activation ───
 
 {
   const architectureDoc = parseHtml(architectureHtml);
+  const modes = collectElements(architectureDoc, (node) => getAttr(node, "id") === "modes");
+  const modeText = getText(modes[0]).replace(/\s+/g, " ");
+  if (!modeText.includes("Sync is off by default.") || /\bfeature-gated sync\b/i.test(modeText)) {
+    failures.push(
+      "Assert 18 FAIL [architecture]: the operating modes must distinguish disabled-by-default sync from build availability",
+    );
+  }
+
   const syncSurfaceNodes = collectElements(
     architectureDoc,
     (node) => getAttr(node, "data-feature") === "sync",
@@ -236,14 +245,14 @@ function hasAncestor(node, predicate) {
   const missingQualifier = syncSurfaceNodes.filter((node) => {
     const lower = getText(node).toLowerCase();
     return (
-      getAttr(node, "data-build-required") !== "--features sync" ||
-      !lower.includes("feature-gated") ||
-      !lower.includes("--features sync")
+      getAttr(node, "data-sync-activation") !== "opt-in" ||
+      !lower.includes("included in standard builds") ||
+      !lower.includes("opt-in shared folder")
     );
   });
   if (missingQualifier.length > 0) {
     failures.push(
-      'Assert 18 FAIL [architecture]: the sync surface must carry data-build-required="--features sync" and visible feature-gated copy',
+      'Assert 18 FAIL [architecture]: the sync surface must carry the opt-in activation hook and describe standard-build availability and the opt-in shared folder',
     );
   }
 }

@@ -131,7 +131,7 @@ function DataFlowDiagram() {
         fill="currentColor"
         opacity="0.65"
       >
-        sync requires --features sync
+        sync · opt-in shared folder
       </text>
 
       {/* ── Local resources (left of engine) ─────────────── */}
@@ -951,7 +951,7 @@ export default function SecurityPage() {
                   <ul className="print-flow-list">
                     <li>CLI · daemon · dashboard</li>
                     <li>audit · verify · export</li>
-                    <li>sync only in a --features sync build</li>
+                    <li>shared-folder sync only after opt-in</li>
                   </ul>
                 </div>
                 <p className="print-flow-arrow" aria-hidden="true">▼</p>

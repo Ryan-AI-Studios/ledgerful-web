@@ -32,21 +32,15 @@ export default function DocsSyncPage() {
         <div
           className="disclosure-notice"
           data-feature="sync"
-          data-build-required="--features sync"
-          data-feature-state="feature-gated"
+          data-sync-activation="opt-in"
         >
           <p>
-            <strong>Feature-gated build:</strong> Sync is not included in the
-            default Ledgerful build. The source repository is a private preview,
-            so this command requires authorized repository access. Authorized
-            testers can install a sync-enabled binary with{" "}
-            <code>
-              cargo install --git
-              https://github.com/Ryan-AI-Studios/Ledgerful --bin ledgerful
-              --features sync
-            </code>
-            . The standard install command elsewhere on this site does not add
-            this optional feature.
+            <strong>Included in standard builds:</strong> Cargo default
+            features and prebuilt CLI releases include sync. Custom builds
+            with defaults disabled must include the <code>sync</code> feature.
+            Sync stays disabled by default. Set up a <code>dir://</code>{" "}
+            shared folder and opt in before using it. See{" "}
+            <Link href="/install">CLI install options</Link>.
           </p>
         </div>
       </section>
@@ -85,13 +79,13 @@ export default function DocsSyncPage() {
       <section
         className="content-band"
         data-feature="sync"
-        data-build-required="--features sync"
-        data-feature-state="feature-gated"
+        data-sync-activation="opt-in"
       >
         <SectionHeading title="Initialize sync">
-          After installing a sync-enabled build, run{" "}
-          <code>ledgerful sync init</code> from the repository root to set up
-          the sync configuration and create a transport entry.
+          Run <code>ledgerful sync init</code> from the repository root to
+          prepare the local sync configuration. Initialization leaves sync
+          disabled. Configure your shared folder and pair devices before
+          enabling sync with <code>ledgerful sync setup --enable</code>.
         </SectionHeading>
         <div className="terminal-window">
           <div className="terminal-bar">
@@ -117,11 +111,10 @@ ledgerful sync init`}
       <section
         className="content-band"
         data-feature="sync"
-        data-build-required="--features sync"
-        data-feature-state="feature-gated"
+        data-sync-activation="opt-in"
       >
         <SectionHeading title="Sync commands">
-          All sync subcommands run from the repository root.
+          Run sync subcommands from the repository root. The run command requires an enabled sync configuration.
         </SectionHeading>
         <div className="table-scroll-wrapper">
           <table className="trust-table" aria-label="Ledgerful sync commands">
@@ -171,8 +164,7 @@ ledgerful sync log`}
       <section
         className="content-band"
         data-feature="sync"
-        data-build-required="--features sync"
-        data-feature-state="feature-gated"
+        data-sync-activation="opt-in"
       >
         <SectionHeading title="Sync security model">
           Bundles are signed and encrypted before being written to the transport

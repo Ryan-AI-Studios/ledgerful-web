@@ -54,7 +54,7 @@ const surfaces: Surface[] = [
     role: "Engine",
     title: "Local CLI and engine",
     icon: "monitor",
-    body: "The Ledgerful binary runs entirely on your machine. The default build owns the ledger, scan, audit, verify, web (daemon), and MCP command surfaces. Local sync is feature-gated and requires a --features sync build. No remote service is required for normal operation.",
+    body: "The Ledgerful binary runs entirely on your machine. The default build owns the ledger, scan, audit, verify, web (daemon), and MCP command surfaces. The standard CLI includes local sync, which stays disabled until you configure it and opt in. No remote service is required for normal operation.",
     meta: "Runs on host · no network calls by default",
     maturity: "available",
     deployment: "runs-locally",
@@ -96,7 +96,7 @@ const stateRows: StateRow[] = [
   },
   {
     scope: "Local team sync",
-    body: "With a sync-enabled build, signed and encrypted bundles are written to a directory you choose. You control the transport (a shared drive, a USB stick, or any other dir://-compatible path). Nothing broadcasts.",
+    body: "After you opt in, sync writes signed, encrypted bundles to a directory you choose. You control the transport (a shared drive, a USB stick, or any other dir://-compatible path). Nothing broadcasts.",
     maturity: "beta",
     deployment: "runs-locally",
   },
@@ -279,7 +279,7 @@ export default function ArchitecturePage() {
         >
           Five modes describe what crosses the local-first boundary. Scan,
           ledger, audit, verify, dashboard, and export stay local. Feature-gated
-          sync also stays local when compiled with <code>--features sync</code>;
+          sync writes to the <code>dir://</code> folder you configure after opting in.
           cloud model context and aggregate telemetry are separate configured
           paths.
         </SectionHeading>

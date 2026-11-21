@@ -24,7 +24,7 @@ type ArchNodeProps = {
   meta?: string;
   planned?: boolean;
   feature?: string;
-  buildRequired?: string;
+  syncActivation?: "opt-in";
 };
 
 function ArchNode({
@@ -34,13 +34,13 @@ function ArchNode({
   meta,
   planned = false,
   feature,
-  buildRequired,
+  syncActivation,
 }: ArchNodeProps) {
   return (
     <div
       className={`arch-node${planned ? " arch-node--planned" : ""}`}
       data-feature={feature}
-      data-build-required={buildRequired}
+      data-sync-activation={syncActivation}
     >
       <span className="arch-node-kicker">{kicker}</span>
       <span className="arch-node-title">{title}</span>
@@ -61,9 +61,9 @@ export function ArchitectureDiagram() {
             kicker="SURFACE 01 · ENGINE"
             title="ledgerful CLI"
             body="scan · ledger · audit · verify · mcp"
-            meta="sync is feature-gated · --features sync"
+            meta="sync included in standard builds · opt-in shared folder"
             feature="sync"
-            buildRequired="--features sync"
+            syncActivation="opt-in"
           />
           <ArchNode
             kicker="SURFACE 02 · DASHBOARD"

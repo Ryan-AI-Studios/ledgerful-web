@@ -36,7 +36,7 @@ export function TrustSummary() {
           <dd>
             Reads: git history, project files, <code>.ledgerful/ledger.db</code>,
             config, and selected model settings. Writes: ledger, reports, and
-            signing keys by default; sync bundles only in a sync-enabled build
+            signing keys by default. Sync bundles are written only after opt-in
             using local <code>dir://</code>. Uploads: none by default. See the
             boundary table below.
           </dd>

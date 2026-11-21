@@ -38,7 +38,7 @@ export const trustDataFlows: TrustDataFlow[] = [
   {
     iconName: "Shield",
     title: "Local default",
-    body: "Ledgerful reads git state and project structure locally and writes evidence to .ledgerful/. Scan, ledger, audit, verify, dashboard, and export stay on the machine by default. Local sync is separate and requires a sync-enabled build compiled with --features sync.",
+    body: "Ledgerful reads git state and project structure locally and writes evidence to .ledgerful/. Scan, ledger, audit, verify, dashboard, and export stay on the machine by default. Local sync is included in standard CLI builds and writes to your configured shared folder after you opt in.",
     maturity: "available",
     deployment: "runs-locally",
   },

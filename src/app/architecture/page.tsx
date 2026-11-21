@@ -278,10 +278,10 @@ export default function ArchitecturePage() {
           title="Operating modes and their data flow"
         >
           Five modes describe what crosses the local-first boundary. Scan,
-          ledger, audit, verify, dashboard, and export stay local. Feature-gated
-          sync writes to the <code>dir://</code> folder you configure after opting in.
-          cloud model context and aggregate telemetry are separate configured
-          paths.
+          ledger, audit, verify, dashboard, and export stay local. Sync is
+          off by default. Once you opt in, it writes to the <code>dir://</code>{" "}
+          folder you configure. Cloud model context and aggregate telemetry use
+          separate configured paths.
         </SectionHeading>
         <div className="table-scroll-wrapper">
           <table

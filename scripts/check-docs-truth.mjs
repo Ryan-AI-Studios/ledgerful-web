@@ -223,6 +223,14 @@ function hasAncestor(node, predicate) {
 
 {
   const architectureDoc = parseHtml(architectureHtml);
+  const modes = collectElements(architectureDoc, (node) => getAttr(node, "id") === "modes");
+  const modeText = getText(modes[0]).replace(/\s+/g, " ");
+  if (!modeText.includes("Sync is off by default.") || /\bfeature-gated sync\b/i.test(modeText)) {
+    failures.push(
+      "Assert 18 FAIL [architecture]: the operating modes must distinguish disabled-by-default sync from build availability",
+    );
+  }
+
   const syncSurfaceNodes = collectElements(
     architectureDoc,
     (node) => getAttr(node, "data-feature") === "sync",

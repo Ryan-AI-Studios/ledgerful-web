@@ -45,7 +45,7 @@ export const featureStates: FeatureItem[] = [
     deployment: "runs-locally",
     description:
       "Standard CLI builds include local sync. It writes signed, encrypted dir:// bundles after you configure a shared folder and opt in.",
-    evidence: "The engine Cargo feature list keeps sync outside default features.",
+    evidence: "Sync is part of the engine’s default Cargo features. The sync configuration defaults to disabled.",
   },
   {
     name: "Local dashboard",
